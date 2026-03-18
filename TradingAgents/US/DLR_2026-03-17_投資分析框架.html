@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DLR — 投資大師思考框架 | 2026-03-17</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ─── Custom Properties ─────────────────────────────── */
+:root {
+    --bg-primary: #0b0f19;
+    --bg-secondary: #0f1629;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --bg-inset: #0d1117;
+    --border-subtle: #1e293b;
+    --border-medium: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --signal-color: #ef4444;
+    --signal-glow: rgba(239, 68, 68, 0.15);
+    --signal-rgb: 239, 68, 68;
+    --accent-gold: #f59e0b;
+    --accent-gold-rgb: 245, 158, 11;
+    --accent-blue: #3b82f6;
+    --accent-green: #10b981;
+    --accent-purple: #8b5cf6;
+    --accent-cyan: #06b6d4;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --sidebar-w: 220px;
+    --header-h: 56px;
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ─── Noise Texture ─────────────────────────────────── */
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* ─── Header Bar ────────────────────────────────────── */
+.header-bar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 100;
+    display: flex; align-items: center;
+}
+.header-inner {
+    width: 100%; max-width: 1400px;
+    margin: 0 auto; padding: 0 2rem;
+    display: flex; align-items: center; gap: 1rem;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+}
+.header-badge {
+    display: inline-flex; align-items: center;
+    padding: 0.2rem 0.7rem;
+    background: rgba(var(--accent-gold-rgb), 0.15);
+    border: 1px solid rgba(var(--accent-gold-rgb), 0.3);
+    color: var(--accent-gold);
+    font-family: var(--font-mono);
+    font-weight: 500; font-size: 0.72rem;
+    border-radius: 20px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+/* ─── Signal Pill ───────────────────────────────────── */
+.signal-pill {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.85rem;
+    background: rgba(var(--signal-rgb), 0.15);
+    border: 1px solid rgba(var(--signal-rgb), 0.3);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-weight: 500; font-size: 0.8rem;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* ─── Layout ────────────────────────────────────────── */
+.layout {
+    display: flex; max-width: 1400px;
+    margin: 0 auto; padding-top: var(--header-h);
+    min-height: 100vh;
+}
+
+/* ─── Sidebar ───────────────────────────────────────── */
+.sidebar {
+    position: sticky; top: var(--header-h);
+    width: var(--sidebar-w); flex-shrink: 0;
+    height: calc(100vh - var(--header-h));
+    padding: 1.5rem 0 1.5rem 1.5rem;
+    overflow-y: auto;
+}
+.sidebar-inner {
+    display: flex; flex-direction: column; gap: 0.25rem;
+}
+.nav-group-label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.75rem 1rem 0.25rem;
+}
+.nav-link {
+    display: block; padding: 0.5rem 1rem;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.82rem; font-weight: 500;
+    border-radius: var(--radius-sm);
+    border-left: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+.nav-link:hover {
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.03);
+}
+.nav-link.active {
+    color: var(--accent-gold);
+    border-left-color: var(--accent-gold);
+    background: rgba(var(--accent-gold-rgb), 0.08);
+}
+
+/* ─── Main Content ──────────────────────────────────── */
+.main-content {
+    flex: 1; min-width: 0;
+    padding: 1.5rem 2rem 3rem 1.5rem;
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+
+/* ─── Hero Card ─────────────────────────────────────── */
+.hero-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    overflow: hidden;
+}
+.hero-mesh {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(var(--accent-gold-rgb), 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(var(--signal-rgb), 0.06) 0%, transparent 40%),
+        radial-gradient(ellipse at 60% 80%, rgba(var(--accent-gold-rgb), 0.03) 0%, transparent 60%);
+    pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-header {
+    display: flex; align-items: center; gap: 1rem;
+    flex-wrap: wrap; margin-bottom: 0.5rem;
+}
+.hero-ticker {
+    font-family: var(--font-heading);
+    font-size: 2.5rem; font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text-primary), var(--accent-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-subtitle {
+    font-family: var(--font-heading);
+    font-size: 1.1rem; font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+.hero-date {
+    font-family: var(--font-mono);
+    font-size: 0.9rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+/* Risk Badge */
+.risk-badge {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 20px; letter-spacing: 0.05em;
+}
+.risk-high { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+
+/* ─── Confidence Score ──────────────────────────────── */
+.confidence-ring {
+    display: flex; align-items: center; gap: 1.5rem;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+}
+.ring-svg { width: 100px; height: 100px; flex-shrink: 0; }
+.ring-track { fill: none; stroke: #1e293b; stroke-width: 8; }
+.ring-fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1.5s ease; }
+.ring-text {
+    font-family: var(--font-mono);
+    font-size: 1.6rem; font-weight: 600;
+    fill: var(--text-primary);
+}
+.ring-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    fill: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+.confidence-details { flex: 1; }
+.confidence-details h3 {
+    font-family: var(--font-heading);
+    font-size: 1.1rem; font-weight: 600;
+    color: var(--signal-color);
+    margin-bottom: 0.5rem;
+}
+.confidence-details p {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+
+/* ─── Metrics Grid ──────────────────────────────────── */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+.metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+    position: relative; overflow: hidden;
+}
+.metric-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    transition: opacity 0.25s ease;
+}
+.metric-card:hover {
+    border-color: rgba(var(--signal-rgb), 0.3);
+    box-shadow: 0 0 20px rgba(var(--signal-rgb), 0.08);
+}
+.metric-card.red::before { background: #ef4444; opacity: 1; }
+.metric-card.yellow::before { background: #f59e0b; opacity: 0.6; }
+.metric-card.green::before { background: #10b981; opacity: 0.6; }
+.metric-card.neutral::before { background: #64748b; opacity: 0.3; }
+.metric-label {
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+}
+.metric-value {
+    font-family: var(--font-mono);
+    font-size: 1.35rem; font-weight: 500;
+    color: var(--text-primary);
+}
+.metric-status {
+    font-size: 0.72rem; font-weight: 500;
+    margin-top: 0.3rem;
+}
+.metric-status.red { color: #ef4444; }
+.metric-status.yellow { color: #f59e0b; }
+.metric-status.green { color: #10b981; }
+
+/* ─── Section Cards ─────────────────────────────────── */
+.section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2rem;
+    transition: border-color 0.25s ease;
+}
+.section-card:hover { border-color: var(--border-medium); }
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.section-title .accent-bar {
+    display: inline-block;
+    width: 4px; height: 20px;
+    border-radius: 2px;
+}
+
+/* ─── Master Card ───────────────────────────────────── */
+.master-header {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 1.5rem; padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.master-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+.master-info h2 {
+    font-family: var(--font-heading);
+    font-size: 1.25rem; font-weight: 600;
+    color: var(--text-primary);
+}
+.master-info .master-method {
+    font-size: 0.82rem; color: var(--text-muted);
+    font-style: italic;
+}
+.master-question {
+    background: var(--bg-inset);
+    border-left: 3px solid;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* ─── Analysis Blocks ───────────────────────────────── */
+.analysis-block {
+    margin-bottom: 1.25rem;
+}
+.analysis-block h3 {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+.analysis-block p, .analysis-block li {
+    color: var(--text-secondary);
+    font-size: 0.9rem; line-height: 1.8;
+}
+.analysis-block ul, .analysis-block ol {
+    margin: 0.5rem 0 0.75rem 1.5rem;
+}
+.analysis-block li { margin-bottom: 0.4rem; }
+.analysis-block strong { color: var(--text-primary); }
+.highlight-text {
+    background: rgba(var(--accent-gold-rgb), 0.15);
+    color: var(--accent-gold);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+}
+.danger-text {
+    background: rgba(var(--signal-rgb), 0.15);
+    color: var(--signal-color);
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+}
+
+/* ─── Verdict Box ───────────────────────────────────── */
+.verdict-box {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    border-left: 3px solid;
+    margin-top: 1.5rem;
+}
+.verdict-box h4 {
+    font-family: var(--font-heading);
+    font-size: 0.95rem; font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.verdict-box p {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+}
+
+/* ─── Matrix Table ──────────────────────────────────── */
+.matrix-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.85rem; margin: 1rem 0;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.matrix-table thead th {
+    padding: 0.7rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.matrix-table tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.matrix-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.matrix-table tbody td {
+    padding: 0.6rem 0.8rem; color: var(--text-secondary);
+}
+.matrix-table .dim-name {
+    font-family: var(--font-mono); font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* ─── Path Cards ────────────────────────────────────── */
+.path-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; margin: 1rem 0;
+}
+.path-card {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+    border-top: 3px solid var(--signal-color);
+}
+.path-card h4 {
+    font-family: var(--font-heading);
+    font-size: 0.95rem; font-weight: 600;
+    color: var(--signal-color);
+    margin-bottom: 0.75rem;
+}
+.path-card p, .path-card li {
+    color: var(--text-secondary);
+    font-size: 0.85rem; line-height: 1.7;
+}
+.path-card ul { margin: 0.4rem 0 0 1.2rem; }
+.path-card li { margin-bottom: 0.3rem; }
+.path-card strong { color: var(--text-primary); }
+
+/* ─── Flow Diagram ──────────────────────────────────── */
+.flow-diagram {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    margin: 1rem 0;
+    display: flex; align-items: center; justify-content: center;
+    flex-wrap: wrap; gap: 0.5rem;
+}
+.flow-node {
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem; font-weight: 500;
+    text-align: center; min-width: 100px;
+}
+.flow-node.neutral { background: rgba(100,116,139,0.2); color: var(--text-secondary); border: 1px solid rgba(100,116,139,0.3); }
+.flow-node.danger { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+.flow-node.warning { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+.flow-arrow {
+    color: var(--text-muted); font-size: 1.2rem;
+    display: flex; align-items: center;
+}
+
+/* ─── Scenario Compare ──────────────────────────────── */
+.scenario-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem; margin: 1rem 0;
+}
+.scenario-card {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.scenario-card h4 {
+    font-family: var(--font-heading);
+    font-size: 0.95rem; font-weight: 600;
+    margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.scenario-card table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.82rem;
+}
+.scenario-card td {
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+}
+.scenario-card td:first-child {
+    font-weight: 500; color: var(--text-primary);
+    width: 35%;
+}
+
+/* ─── Ratio Bar ─────────────────────────────────────── */
+.ratio-visual {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    margin: 1rem 0;
+    text-align: center;
+}
+.ratio-bar {
+    display: flex; height: 32px;
+    border-radius: 16px; overflow: hidden;
+    margin: 1rem auto; max-width: 400px;
+}
+.ratio-up { background: #10b981; }
+.ratio-down { background: #ef4444; }
+.ratio-labels {
+    display: flex; justify-content: space-between;
+    max-width: 400px; margin: 0.5rem auto 0;
+    font-family: var(--font-mono); font-size: 0.78rem;
+}
+.ratio-labels .up { color: #10b981; }
+.ratio-labels .down { color: #ef4444; }
+.ratio-number {
+    font-family: var(--font-mono);
+    font-size: 2rem; font-weight: 600;
+    color: var(--signal-color);
+    margin-bottom: 0.25rem;
+}
+.ratio-desc {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+}
+
+/* ─── Final Verdict ─────────────────────────────────── */
+.final-grid {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.88rem; margin: 1rem 0;
+}
+.final-grid thead th {
+    background: rgba(var(--signal-rgb), 0.1);
+    color: var(--signal-color);
+    padding: 0.7rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.final-grid tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.final-grid tbody tr:hover { background: rgba(255,255,255,0.02); }
+.final-grid tbody td {
+    padding: 0.6rem 0.8rem; color: var(--text-secondary);
+}
+.stars { color: var(--accent-gold); letter-spacing: 1px; }
+
+/* ─── Checklist ─────────────────────────────────────── */
+.checklist-section {
+    margin-top: 0.5rem;
+}
+.checklist-group {
+    margin-bottom: 1.25rem;
+}
+.checklist-group h4 {
+    font-family: var(--font-heading);
+    font-size: 0.92rem; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    padding-left: 0.5rem;
+    border-left: 3px solid var(--accent-gold);
+}
+.checklist-item {
+    display: flex; align-items: flex-start; gap: 0.6rem;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.85rem; color: var(--text-secondary);
+    border-radius: 4px;
+    transition: background 0.15s ease;
+    cursor: pointer;
+}
+.checklist-item:hover { background: rgba(255,255,255,0.02); }
+.checklist-item input[type="checkbox"] {
+    margin-top: 0.25rem; flex-shrink: 0;
+    accent-color: var(--accent-gold);
+    width: 15px; height: 15px;
+}
+.checklist-item.checked { color: var(--text-muted); text-decoration: line-through; }
+
+/* ─── Logic Chain ───────────────────────────────────── */
+.logic-chain {
+    display: flex; flex-direction: column; gap: 0;
+    margin: 1rem 0;
+}
+.logic-step {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 0.75rem 0;
+}
+.logic-num {
+    width: 28px; height: 28px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(var(--signal-rgb), 0.15);
+    color: var(--signal-color);
+    font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600;
+    border-radius: 50%;
+}
+.logic-text {
+    color: var(--text-secondary);
+    font-size: 0.9rem; line-height: 1.6;
+    padding-top: 0.15rem;
+}
+.logic-text strong { color: var(--text-primary); }
+.logic-connector {
+    width: 28px; display: flex; justify-content: center;
+    padding: 0;
+}
+.logic-connector::after {
+    content: ''; display: block;
+    width: 2px; height: 16px;
+    background: rgba(var(--signal-rgb), 0.3);
+}
+
+/* ─── Footer ────────────────────────────────────────── */
+.dashboard-footer {
+    text-align: center; padding: 2rem;
+    color: var(--text-muted); font-size: 0.8rem;
+    font-family: var(--font-mono);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 1rem;
+}
+
+/* ─── Animations ────────────────────────────────────── */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.section-card { animation: fadeIn 0.4s ease both; }
+.section-card:nth-child(2) { animation-delay: 0.05s; }
+.section-card:nth-child(3) { animation-delay: 0.1s; }
+.section-card:nth-child(4) { animation-delay: 0.15s; }
+.section-card:nth-child(5) { animation-delay: 0.2s; }
+.section-card:nth-child(6) { animation-delay: 0.25s; }
+.section-card:nth-child(7) { animation-delay: 0.3s; }
+.section-card:nth-child(8) { animation-delay: 0.35s; }
+.section-card:nth-child(9) { animation-delay: 0.4s; }
+.section-card:nth-child(10) { animation-delay: 0.45s; }
+
+/* ─── Responsive ────────────────────────────────────── */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; top: var(--header-h);
+        left: 0; right: 0; width: 100%;
+        height: auto; padding: 0.5rem;
+        background: rgba(11, 15, 25, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-subtle);
+        z-index: 90; overflow-x: auto; overflow-y: hidden;
+    }
+    .sidebar-inner {
+        flex-direction: row; gap: 0; min-width: max-content;
+    }
+    .nav-group-label { display: none; }
+    .nav-link {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        padding: 0.4rem 0.75rem; font-size: 0.78rem;
+        white-space: nowrap;
+    }
+    .nav-link.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--accent-gold);
+    }
+    html { scroll-padding-top: calc(var(--header-h) + 3.5rem); }
+    .main-content { padding: 4.5rem 1rem 2rem 1rem; }
+    .hero-ticker { font-size: 1.8rem; }
+    .hero-card { padding: 1.5rem; }
+    .section-card { padding: 1.25rem; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .path-grid { grid-template-columns: 1fr; }
+    .scenario-grid { grid-template-columns: 1fr; }
+    .flow-diagram { gap: 0.25rem; }
+    .flow-node { min-width: 80px; font-size: 0.75rem; padding: 0.4rem 0.6rem; }
+}
+@media (min-width: 769px) {
+    .main-content { padding-top: 1.5rem; }
+}
+
+/* ─── Print ─────────────────────────────────────────── */
+@media print {
+    body { background: #fff; color: #111; }
+    body::before { display: none; }
+    .header-bar { position: relative; background: #fff; border-bottom: 2px solid #111; }
+    .header-inner { color: #111; }
+    .sidebar { display: none; }
+    .layout { display: block; }
+    .main-content { padding: 1rem; }
+    .hero-card, .section-card, .metric-card, .path-card,
+    .scenario-card, .verdict-box { background: #fff; border-color: #ddd; box-shadow: none; break-inside: avoid; }
+    .hero-mesh { display: none; }
+    .hero-ticker { background: none; -webkit-text-fill-color: #111; color: #111; }
+}
+</style>
+</head>
+<body>
+
+<header class="header-bar">
+    <div class="header-inner">
+        DLR — 投資大師思考框架
+        <span class="signal-pill">SELL</span>
+        <span class="header-badge">五層分析</span>
+        <span style="margin-left:auto; font-family:var(--font-mono); font-size:0.82rem; color:var(--text-muted);">2026-03-17</span>
+    </div>
+</header>
+
+<div class="layout">
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-inner">
+            <span class="nav-group-label">總覽</span>
+            <a href="#hero" class="nav-link" data-section="hero">執行摘要</a>
+            <a href="#dashboard-data" class="nav-link" data-section="dashboard-data">數據摘要</a>
+            <span class="nav-group-label">五層框架</span>
+            <a href="#marks" class="nav-link" data-section="marks">① Howard Marks</a>
+            <a href="#munger" class="nav-link" data-section="munger">② Charlie Munger</a>
+            <a href="#dalio" class="nav-link" data-section="dalio">③ Ray Dalio</a>
+            <a href="#soros" class="nav-link" data-section="soros">④ George Soros</a>
+            <a href="#druckenmiller" class="nav-link" data-section="druckenmiller">⑤ Druckenmiller</a>
+            <span class="nav-group-label">結論</span>
+            <a href="#verdict" class="nav-link" data-section="verdict">最終判斷</a>
+            <a href="#checklist" class="nav-link" data-section="checklist">分析 Checklist</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+
+        <!-- ═══ HERO ═══ -->
+        <section id="hero" class="hero-card">
+            <div class="hero-mesh"></div>
+            <div class="hero-content">
+                <div class="hero-header">
+                    <h1 class="hero-ticker">DLR</h1>
+                    <span class="signal-pill">SELL</span>
+                    <span class="risk-badge risk-high">高風險</span>
+                </div>
+                <div class="hero-subtitle">投資大師思考框架 — 五層實戰分析</div>
+                <div class="hero-date">Digital Realty Trust | 2026-03-17</div>
+
+                <div class="confidence-ring">
+                    <svg class="ring-svg" viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="50" class="ring-track"/>
+                        <circle cx="60" cy="60" r="50" class="ring-fill"
+                            stroke="#ef4444"
+                            stroke-dasharray="314.16"
+                            stroke-dashoffset="25.13"
+                            transform="rotate(-90 60 60)"/>
+                        <text x="60" y="56" text-anchor="middle" class="ring-text">92</text>
+                        <text x="60" y="72" text-anchor="middle" class="ring-label">信心分</text>
+                    </svg>
+                    <div class="confidence-details">
+                        <h3>綜合判定：強 SELL</h3>
+                        <p>五位投資大師的框架一致指向賣出。P/E 50x 在 REIT 行業嚴重偏高、D/E 81x 槓桿構成定時炸彈、100% 正面情緒為經典反向指標、贏虧比僅 0.43x 遠低於合理門檻。唯一支撐因素是 AI 數據中心的結構性需求，但「好公司 ≠ 好投資」。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ DASHBOARD DATA ═══ -->
+        <section id="dashboard-data" class="section-card">
+            <h2 class="section-title"><span class="accent-bar" style="background:var(--accent-blue);"></span>Dashboard 數據摘要</h2>
+
+            <div class="metrics-grid">
+                <div class="metric-card neutral">
+                    <div class="metric-label">RSI</div>
+                    <div class="metric-value">63</div>
+                    <div class="metric-status yellow">中性偏高</div>
+                </div>
+                <div class="metric-card yellow">
+                    <div class="metric-label">MACD</div>
+                    <div class="metric-value">3.05</div>
+                    <div class="metric-status yellow">Hist -0.29</div>
+                </div>
+                <div class="metric-card neutral">
+                    <div class="metric-label">ATR</div>
+                    <div class="metric-value">4.23</div>
+                    <div class="metric-status yellow">波動率上升</div>
+                </div>
+                <div class="metric-card green">
+                    <div class="metric-label">EMA10</div>
+                    <div class="metric-value">179.0</div>
+                    <div class="metric-status green">短期趨勢 ↑</div>
+                </div>
+                <div class="metric-card green">
+                    <div class="metric-label">SMA50</div>
+                    <div class="metric-value">168.5</div>
+                    <div class="metric-status green">中期趨勢 ↑</div>
+                </div>
+                <div class="metric-card green">
+                    <div class="metric-label">SMA200</div>
+                    <div class="metric-value">166.3</div>
+                    <div class="metric-status green">長期趨勢 ↑</div>
+                </div>
+                <div class="metric-card red">
+                    <div class="metric-label">P/E (TTM)</div>
+                    <div class="metric-value">50.49x</div>
+                    <div class="metric-status red">嚴重偏高</div>
+                </div>
+                <div class="metric-card red">
+                    <div class="metric-label">Forward P/E</div>
+                    <div class="metric-value">53.20x</div>
+                    <div class="metric-status red">未來更貴</div>
+                </div>
+                <div class="metric-card red">
+                    <div class="metric-label">D/E Ratio</div>
+                    <div class="metric-value">81.65x</div>
+                    <div class="metric-status red">極高槓桿</div>
+                </div>
+                <div class="metric-card yellow">
+                    <div class="metric-label">ROE</div>
+                    <div class="metric-value">5.47%</div>
+                    <div class="metric-status yellow">偏低</div>
+                </div>
+                <div class="metric-card green">
+                    <div class="metric-label">Profit Margin</div>
+                    <div class="metric-value">21.5%</div>
+                    <div class="metric-status green">健康</div>
+                </div>
+                <div class="metric-card yellow">
+                    <div class="metric-label">Div Yield</div>
+                    <div class="metric-value">2.69%</div>
+                    <div class="metric-status yellow">REIT 偏低</div>
+                </div>
+                <div class="metric-card neutral">
+                    <div class="metric-label">Market Cap</div>
+                    <div class="metric-value">$63.4B</div>
+                    <div class="metric-status" style="color:var(--text-muted);">大型 REIT</div>
+                </div>
+                <div class="metric-card neutral">
+                    <div class="metric-label">Revenue</div>
+                    <div class="metric-value">$6.08B</div>
+                    <div class="metric-status" style="color:var(--text-muted);">TTM</div>
+                </div>
+                <div class="metric-card neutral">
+                    <div class="metric-label">FCF</div>
+                    <div class="metric-value">$1.96B</div>
+                    <div class="metric-status" style="color:var(--text-muted);">TTM</div>
+                </div>
+                <div class="metric-card red">
+                    <div class="metric-label">情緒面</div>
+                    <div class="metric-value">5/5</div>
+                    <div class="metric-status red">100% 正面 — 反向指標</div>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; padding:0.75rem 1rem; background:var(--bg-inset); border-radius:var(--radius-sm); display:flex; gap:1.5rem; flex-wrap:wrap; font-family:var(--font-mono); font-size:0.8rem;">
+                <span style="color:var(--text-muted);">紅燈計數：</span>
+                <span style="color:#ef4444;">🔴 ×4</span>
+                <span style="color:#f59e0b;">🟡 ×3</span>
+                <span style="color:#10b981;">🟢 ×4</span>
+                <span style="color:var(--text-muted);">⚪ ×5</span>
+                <span style="color:var(--text-muted); margin-left:auto;">均線排列：EMA10 > SMA50 > SMA200 → 多頭排列</span>
+            </div>
+        </section>
+
+        <!-- ═══ LAYER 1: HOWARD MARKS ═══ -->
+        <section id="marks" class="section-card">
+            <div class="master-header">
+                <div class="master-avatar" style="background:rgba(var(--accent-gold-rgb),0.15); color:var(--accent-gold);">①</div>
+                <div class="master-info">
+                    <h2>Howard Marks — 第二層思考</h2>
+                    <span class="master-method">《投資最重要的事》| 逆向分析</span>
+                </div>
+            </div>
+
+            <div class="master-question" style="border-left-color: var(--accent-gold);">
+                「市場共識是什麼？我的看法為什麼不同？」
+            </div>
+
+            <div class="analysis-block">
+                <h3>第一層思考（市場共識）</h3>
+                <p>AI 驅動的數據中心需求爆發 → DLR 是最大受益者 → 繼續持有/買入。</p>
+                <p>情緒 <span class="highlight-text">5/5 正面</span> 佐證了這個共識——所有人都在講同一個故事。</p>
+            </div>
+
+            <div class="analysis-block">
+                <h3>第二層思考（逆向分析）</h3>
+                <p><strong>AI 說 SELL，但第二層要先問：市場已經 price in 壞消息了嗎？</strong></p>
+                <p>答案是 <span class="danger-text">NO</span>。市場不僅沒有 price in 壞消息，反而處於<strong>極度樂觀</strong>狀態：</p>
+                <ol>
+                    <li><strong>情緒 5/5 正面</strong> + <strong>三月漲幅 18%</strong> → 市場仍在追逐「AI 數據中心」敘事</li>
+                    <li><strong>P/E 50.49x vs REIT 行業平均 ~20-30x</strong> → 股價已包含了極度樂觀的成長預期</li>
+                    <li><strong>Forward P/E 53.20x > 當前 P/E 50.49x</strong> → 分析師預期盈利增長跟不上股價</li>
+                </ol>
+            </div>
+
+            <div class="verdict-box" style="border-left-color: var(--accent-gold);">
+                <h4 style="color: var(--accent-gold);">Marks 結論</h4>
+                <p>當所有人都樂觀時，<span class="highlight-text">SELL 訊號具有「逆向價值」</span>。市場不是在問「DLR 好不好」，而是在問「DLR 好到值 50x 嗎？」以 REIT 的標準，50x 是在為「完美劇本」定價，任何不完美都會導致修正。</p>
+            </div>
+        </section>
+
+        <!-- ═══ LAYER 2: CHARLIE MUNGER ═══ -->
+        <section id="munger" class="section-card">
+            <div class="master-header">
+                <div class="master-avatar" style="background:rgba(239,68,68,0.15); color:#ef4444;">②</div>
+                <div class="master-info">
+                    <h2>Charlie Munger — 反轉思維</h2>
+                    <span class="master-method">Inversion Thinking | 尋找失敗路徑</span>
+                </div>
+            </div>
+
+            <div class="master-question" style="border-left-color: #ef4444;">
+                「什麼情況下持有 DLR 會虧大錢？」
+            </div>
+
+            <div class="path-grid">
+                <div class="path-card">
+                    <h4>路徑 1：D/E 81x + 利率風險</h4>
+                    <ul>
+                        <li>D/E <span class="danger-text">81.65x</span> = 每 $1 股東權益背負 $81.65 債務</li>
+                        <li>利率上升 100bps → 利息支出暴增</li>
+                        <li>壓縮本已微薄的 <span class="highlight-text">5.47% ROE</span></li>
+                        <li><strong>最壞情況：ROE 轉負，股息不保</strong></li>
+                    </ul>
+                </div>
+                <div class="path-card">
+                    <h4>路徑 2：P/E 50x 均值回歸</h4>
+                    <ul>
+                        <li>REIT 行業平均 P/E 約 20-30x</li>
+                        <li>P/E 從 50x 回歸到 30x（盈利不變）</li>
+                        <li>回歸幅度 = (50-30)/50 = <span class="danger-text">40% 下跌空間</span></li>
+                        <li><strong>不需要經營變差，只需情緒正常化</strong></li>
+                    </ul>
+                </div>
+                <div class="path-card">
+                    <h4>路徑 3：AI 敘事破裂</h4>
+                    <ul>
+                        <li>100% 正面情緒建立在 AI 持續擴張前提</li>
+                        <li>任何 AI 支出放緩信號 → 敘事瓦解</li>
+                        <li>科技巨頭縮減資本支出 → 溢價蒸發</li>
+                        <li><strong>敘事股的溢價來得快去得更快</strong></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="analysis-block">
+                <h3>Dashboard 紅燈掃描</h3>
+                <table class="matrix-table">
+                    <thead><tr style="background:rgba(239,68,68,0.1); color:#ef4444;">
+                        <th>指標</th><th>狀態</th><th>意義</th>
+                    </tr></thead>
+                    <tbody>
+                        <tr><td class="dim-name">P/E 50.49x</td><td style="color:#ef4444;">🔴 紅燈</td><td>歷史性高估</td></tr>
+                        <tr><td class="dim-name">Forward P/E 53.20x</td><td style="color:#ef4444;">🔴 紅燈</td><td>預期更差</td></tr>
+                        <tr><td class="dim-name">D/E 81.65x</td><td style="color:#ef4444;">🔴 紅燈</td><td>財務風險極高</td></tr>
+                        <tr><td class="dim-name">ROE 5.47%</td><td style="color:#f59e0b;">🟡 黃燈</td><td>資本效率偏低</td></tr>
+                        <tr><td class="dim-name">Div Yield 2.69%</td><td style="color:#f59e0b;">🟡 黃燈</td><td>REIT 吸引力不足</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="verdict-box" style="border-left-color: #ef4444;">
+                <h4 style="color: #ef4444;">Munger 結論</h4>
+                <p><span class="danger-text">反轉思維結果：虧大錢的路徑太多、太容易發生。</span> 一個 P/E 50x、D/E 81x 的 REIT 在利率環境不確定時，就像在暴風雨中站在最高的避雷針上——你或許沒事，但這不是聰明的賭注。5 個警告中有 3 個是紅燈，光是這個紅燈密度就夠拒絕了。</p>
+            </div>
+        </section>
+
+        <!-- ═══ LAYER 3: RAY DALIO ═══ -->
+        <section id="dalio" class="section-card">
+            <div class="master-header">
+                <div class="master-avatar" style="background:rgba(59,130,246,0.15); color:#3b82f6;">③</div>
+                <div class="master-info">
+                    <h2>Ray Dalio — 多訊號共振</h2>
+                    <span class="master-method">《原則》| 四維度交叉驗證</span>
+                </div>
+            </div>
+
+            <div class="master-question" style="border-left-color: #3b82f6;">
+                「四個維度是否指向同一方向？」
+            </div>
+
+            <table class="matrix-table">
+                <thead><tr style="background:rgba(59,130,246,0.1); color:#3b82f6;">
+                    <th>維度</th><th>多頭信號</th><th>空頭信號</th><th>判定</th>
+                </tr></thead>
+                <tbody>
+                    <tr>
+                        <td class="dim-name">📈 技術面</td>
+                        <td>MA 多頭排列 ✅</td>
+                        <td>MACD Hist -0.29 ⚠️<br>RSI 從高位回落</td>
+                        <td style="color:#f59e0b; font-weight:600;">🟡 混合</td>
+                    </tr>
+                    <tr>
+                        <td class="dim-name">📊 基本面</td>
+                        <td>Profit Margin 21.5% 🟢</td>
+                        <td>P/E 🔴 Fwd P/E 🔴 D/E 🔴</td>
+                        <td style="color:#ef4444; font-weight:600;">🔴 看空</td>
+                    </tr>
+                    <tr>
+                        <td class="dim-name">💬 情緒面</td>
+                        <td>5/5 正面 →</td>
+                        <td><strong>反向指標：過度樂觀</strong></td>
+                        <td style="color:#ef4444; font-weight:600;">🔴 看空</td>
+                    </tr>
+                    <tr>
+                        <td class="dim-name">⚖️ 辯論面</td>
+                        <td>—</td>
+                        <td>裁判 SELL，空頭論點未被反駁</td>
+                        <td style="color:#ef4444; font-weight:600;">🔴 看空</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="background:var(--bg-inset); border-radius:var(--radius-sm); padding:1.25rem; margin:1rem 0; display:flex; gap:1rem; flex-wrap:wrap; align-items:center; justify-content:center;">
+                <div style="text-align:center; padding:0.5rem 1.5rem;">
+                    <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); margin-bottom:0.25rem;">技術面</div>
+                    <div style="font-size:1.5rem;">🟡</div>
+                    <div style="font-family:var(--font-mono); font-size:0.78rem; color:#f59e0b;">中性</div>
+                </div>
+                <div style="text-align:center; padding:0.5rem 1.5rem;">
+                    <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); margin-bottom:0.25rem;">基本面</div>
+                    <div style="font-size:1.5rem;">🔴</div>
+                    <div style="font-family:var(--font-mono); font-size:0.78rem; color:#ef4444;">看空</div>
+                </div>
+                <div style="text-align:center; padding:0.5rem 1.5rem;">
+                    <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); margin-bottom:0.25rem;">情緒面</div>
+                    <div style="font-size:1.5rem;">🔴</div>
+                    <div style="font-family:var(--font-mono); font-size:0.78rem; color:#ef4444;">看空</div>
+                </div>
+                <div style="text-align:center; padding:0.5rem 1.5rem;">
+                    <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); margin-bottom:0.25rem;">辯論面</div>
+                    <div style="font-size:1.5rem;">🔴</div>
+                    <div style="font-family:var(--font-mono); font-size:0.78rem; color:#ef4444;">看空</div>
+                </div>
+                <div style="text-align:center; padding:0.5rem 1.5rem; border-left:1px solid var(--border-subtle);">
+                    <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); margin-bottom:0.25rem;">共振結果</div>
+                    <div style="font-family:var(--font-mono); font-size:1.8rem; font-weight:700; color:#ef4444;">3/4</div>
+                    <div style="font-family:var(--font-mono); font-size:0.78rem; color:#ef4444;">維度看空</div>
+                </div>
+            </div>
+
+            <div class="verdict-box" style="border-left-color: #3b82f6;">
+                <h4 style="color: #3b82f6;">Dalio 結論</h4>
+                <p><span class="danger-text">不符合多訊號共振 BUY 條件。</span> Dalio 的全天候思維要求做多需要多個獨立維度同時確認。目前只有技術面勉強中性，其餘三個維度一致看空。即使技術面的多頭排列也正在被 MACD 負柱狀圖侵蝕——這是趨勢轉弱的早期信號。</p>
+            </div>
+        </section>
+
+        <!-- ═══ LAYER 4: SOROS ═══ -->
+        <section id="soros" class="section-card">
+            <div class="master-header">
+                <div class="master-avatar" style="background:rgba(139,92,246,0.15); color:#8b5cf6;">④</div>
+                <div class="master-info">
+                    <h2>George Soros — 反身性檢查</h2>
+                    <span class="master-method">Reflexivity Theory | 循環階段判斷</span>
+                </div>
+            </div>
+
+            <div class="master-question" style="border-left-color: #8b5cf6;">
+                「價格和基本面之間是否存在自我強化循環？循環在什麼階段？」
+            </div>
+
+            <div class="analysis-block">
+                <h3>反身性正反饋循環（當前狀態）</h3>
+            </div>
+
+            <div class="flow-diagram">
+                <div class="flow-node neutral">AI 需求爆發</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node neutral">DLR 營收成長預期</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node danger">股價上漲 18%</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node danger">媒體正面報導 5/5</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node warning">更多投資者買入</div>
+                <div class="flow-arrow" style="font-size:0.9rem; color:#ef4444;">↻ 回到股價</div>
+            </div>
+
+            <div class="analysis-block">
+                <h3>循環階段判斷</h3>
+                <table class="matrix-table">
+                    <thead><tr style="background:rgba(139,92,246,0.1); color:#8b5cf6;">
+                        <th>信號</th><th>觀察</th><th>階段暗示</th>
+                    </tr></thead>
+                    <tbody>
+                        <tr><td class="dim-name">情緒</td><td>100% 正面，零負面聲音</td><td style="color:#ef4444; font-weight:600;">🔴 狂熱期</td></tr>
+                        <tr><td class="dim-name">RSI</td><td>63，從更高位回落</td><td style="color:#f59e0b;">⚠️ 動能開始流失</td></tr>
+                        <tr><td class="dim-name">MACD Hist</td><td>-0.29，由正轉負</td><td style="color:#f59e0b;">⚠️ 趨勢見頂信號</td></tr>
+                        <tr><td class="dim-name">漲幅</td><td>單月 +18%</td><td style="color:#f59e0b;">⚠️ 加速上漲後期</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="analysis-block">
+                <h3>反轉觸發條件</h3>
+                <p>反身性循環的危險在於：<strong>反轉同樣具有自我強化性質</strong>，而且速度通常比上升時更快。</p>
+                <div style="background:var(--bg-inset); border-radius:var(--radius-sm); padding:1rem 1.25rem; margin-top:0.75rem; font-family:var(--font-mono); font-size:0.82rem; color:var(--text-secondary); line-height:2;">
+                    觸發事件（任何一個即可）：<br>
+                    <span style="color:#ef4444;">├──</span> AI 資本支出指引下調<br>
+                    <span style="color:#ef4444;">├──</span> 利率意外上行<br>
+                    <span style="color:#ef4444;">├──</span> 大型客戶合約延遲<br>
+                    <span style="color:#ef4444;">└──</span> 某分析師下調評級<br>
+                    <br>
+                    <span style="color:#ef4444;">→</span> 股價下跌 → 媒體轉向負面 → 恐慌賣出 → 更多下跌
+                </div>
+            </div>
+
+            <div class="verdict-box" style="border-left-color: #8b5cf6;">
+                <h4 style="color: #8b5cf6;">Soros 結論</h4>
+                <p><span class="danger-text">正反饋循環處於晚期階段，反轉信號已出現。</span> 100% 正面情緒 + RSI 回落 + MACD 見頂 = 經典的「循環即將反轉」組合。「當所有人都站在同一邊時，船就要翻了。」</p>
+            </div>
+        </section>
+
+        <!-- ═══ LAYER 5: DRUCKENMILLER ═══ -->
+        <section id="druckenmiller" class="section-card">
+            <div class="master-header">
+                <div class="master-avatar" style="background:rgba(6,182,212,0.15); color:#06b6d4;">⑤</div>
+                <div class="master-info">
+                    <h2>Stanley Druckenmiller — 不對稱下注</h2>
+                    <span class="master-method">Risk/Reward Asymmetry | 量化贏虧比</span>
+                </div>
+            </div>
+
+            <div class="master-question" style="border-left-color: #06b6d4;">
+                「贏虧比是否對我有利？」
+            </div>
+
+            <div class="scenario-grid">
+                <div class="scenario-card" style="border-top:3px solid #10b981;">
+                    <h4 style="color:#10b981;">📈 情境 A：繼續持有（看多）</h4>
+                    <table>
+                        <tr><td>上行催化劑</td><td>AI 需求超預期、新客戶合約</td></tr>
+                        <tr><td>上行空間</td><td>有限——已漲 18%，動能減弱</td></tr>
+                        <tr><td>上行概率</td><td>中低——Forward P/E 53x 限制空間</td></tr>
+                    </table>
+                </div>
+                <div class="scenario-card" style="border-top:3px solid #ef4444;">
+                    <h4 style="color:#ef4444;">📉 情境 B：執行 SELL（避險）</h4>
+                    <table>
+                        <tr><td>避開的風險</td><td>P/E 回歸 (-40%)、D/E 利率風險</td></tr>
+                        <tr><td>機會成本</td><td>AI 故事繼續時錯過部分上漲</td></tr>
+                        <tr><td>下行保護</td><td>鎖定 18% 漲幅利潤</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="analysis-block">
+                <h3>量化風險框架</h3>
+                <div style="background:var(--bg-inset); border-radius:var(--radius-sm); padding:1.25rem; font-family:var(--font-mono); font-size:0.85rem; color:var(--text-secondary); line-height:2;">
+                    止損距離 = ATR <span class="highlight-text">4.23</span> × 2 = <strong style="color:var(--text-primary);">8.46 點</strong><br>
+                    當前股價 ≈ $179（EMA10）<br>
+                    止損風險 = 8.46 / 179 = <span class="highlight-text">4.7%</span><br>
+                    <br>
+                    上行空間（樂觀）：<span style="color:#10b981;">+10-15%</span>（動能減弱下的合理預期）<br>
+                    下行空間（P/E 回歸）：<span style="color:#ef4444;">-30% 至 -40%</span><br>
+                    <br>
+                    贏虧比 = 上行 15% ÷ 下行 35% ≈ <span class="danger-text">0.43x</span>
+                </div>
+            </div>
+
+            <div class="ratio-visual">
+                <div class="ratio-number">0.43x</div>
+                <div class="ratio-desc">贏虧比 — 每賺 $1 要冒 $2.3 的風險</div>
+                <div class="ratio-bar">
+                    <div class="ratio-up" style="width:30%;"></div>
+                    <div class="ratio-down" style="width:70%;"></div>
+                </div>
+                <div class="ratio-labels">
+                    <span class="up">上行 +15%</span>
+                    <span class="down">下行 -35%</span>
+                </div>
+            </div>
+
+            <div class="verdict-box" style="border-left-color: #06b6d4;">
+                <h4 style="color: #06b6d4;">Druckenmiller 結論</h4>
+                <p><span class="danger-text">風險嚴重不對稱，下行風險遠大於上行空間。</span> 「不是找對的交易，而是找風險回報極度有利的交易。」這筆交易的贏虧比只有 0.43x，遠低於 3:1 最低門檻。更糟的是：你在用 4.7% 的止損去搏一個動能已經衰退的反彈。</p>
+            </div>
+        </section>
+
+        <!-- ═══ FINAL VERDICT ═══ -->
+        <section id="verdict" class="section-card" style="border: 1px solid rgba(239,68,68,0.3);">
+            <h2 class="section-title"><span class="accent-bar" style="background:#ef4444;"></span>最終判斷：五層框架綜合結論</h2>
+
+            <table class="final-grid">
+                <thead><tr>
+                    <th>框架</th><th>大師</th><th>結論</th><th>信心</th>
+                </tr></thead>
+                <tbody>
+                    <tr>
+                        <td class="dim-name">第二層思考</td>
+                        <td>Howard Marks</td>
+                        <td style="color:#ef4444;">SELL — 市場在為完美劇本定價</td>
+                        <td class="stars">★★★★☆</td>
+                    </tr>
+                    <tr>
+                        <td class="dim-name">反轉思維</td>
+                        <td>Charlie Munger</td>
+                        <td style="color:#ef4444;">SELL — 虧大錢路徑太多</td>
+                        <td class="stars">★★★★★</td>
+                    </tr>
+                    <tr>
+                        <td class="dim-name">多訊號共振</td>
+                        <td>Ray Dalio</td>
+                        <td style="color:#ef4444;">SELL — 3/4 維度看空</td>
+                        <td class="stars">★★★★☆</td>
+                    </tr>
+                    <tr>
+                        <td class="dim-name">反身性</td>
+                        <td>George Soros</td>
+                        <td style="color:#ef4444;">SELL — 循環晚期，反轉信號出現</td>
+                        <td class="stars">★★★☆☆</td>
+                    </tr>
+                    <tr>
+                        <td class="dim-name">不對稱下注</td>
+                        <td>Druckenmiller</td>
+                        <td style="color:#ef4444;">SELL — 贏虧比 0.43x 不達標</td>
+                        <td class="stars">★★★★★</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="analysis-block">
+                <h3>核心邏輯鏈</h3>
+                <div class="logic-chain">
+                    <div class="logic-step">
+                        <span class="logic-num">1</span>
+                        <span class="logic-text">估值在 REIT 歷史中處於極端高位（<strong>P/E 50x vs 行業 20-30x</strong>）</span>
+                    </div>
+                    <div class="logic-connector"></div>
+                    <div class="logic-step">
+                        <span class="logic-num">2</span>
+                        <span class="logic-text"><strong>100% 正面情緒</strong> = 反向指標，所有好消息已被定價</span>
+                    </div>
+                    <div class="logic-connector"></div>
+                    <div class="logic-step">
+                        <span class="logic-num">3</span>
+                        <span class="logic-text"><strong>D/E 81x</strong> 在利率不確定環境下是定時炸彈</span>
+                    </div>
+                    <div class="logic-connector"></div>
+                    <div class="logic-step">
+                        <span class="logic-num">4</span>
+                        <span class="logic-text">技術動能正在衰退（<strong>MACD Hist 轉負</strong>）</span>
+                    </div>
+                    <div class="logic-connector"></div>
+                    <div class="logic-step">
+                        <span class="logic-num">5</span>
+                        <span class="logic-text"><strong>贏虧比 0.43x</strong>，不符合任何理性投機者的最低標準</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background:var(--bg-inset); border-radius:var(--radius-sm); padding:1rem 1.25rem; margin-top:1rem; border-left:3px solid var(--accent-gold);">
+                <h4 style="font-family:var(--font-heading); font-size:0.92rem; font-weight:600; color:var(--accent-gold); margin-bottom:0.5rem;">唯一降低信心的因素</h4>
+                <p style="color:var(--text-secondary); font-size:0.88rem; line-height:1.7;">AI 數據中心是真實的結構性需求（非泡沫敘事），長期基本面可能支撐更高估值。但<strong style="color:var(--text-primary);">「好公司」≠「好投資」</strong>——價格決定回報。</p>
+            </div>
+        </section>
+
+        <!-- ═══ CHECKLIST ═══ -->
+        <section id="checklist" class="section-card">
+            <h2 class="section-title"><span class="accent-bar" style="background:var(--accent-gold);"></span>可重複使用：投資大師思考框架 Checklist</h2>
+
+            <div class="checklist-section">
+                <div class="checklist-group">
+                    <h4>Step 1：Howard Marks — 第二層思考</h4>
+                    <label class="checklist-item"><input type="checkbox"> 市場共識是什麼？（看情緒面分數）</label>
+                    <label class="checklist-item"><input type="checkbox"> 這個共識已經反映在價格中了嗎？（看 P/E vs 行業平均）</label>
+                    <label class="checklist-item"><input type="checkbox"> SELL/BUY 訊號是否具有「逆向價值」？</label>
+                </div>
+
+                <div class="checklist-group">
+                    <h4>Step 2：Charlie Munger — 反轉思維</h4>
+                    <label class="checklist-item"><input type="checkbox"> 列出 3 條「虧大錢」的路徑</label>
+                    <label class="checklist-item"><input type="checkbox"> 掃描 Dashboard 紅燈數量（🔴 ≥ 3 = 高風險）</label>
+                    <label class="checklist-item"><input type="checkbox"> 問自己：「這些風險發生的概率有多高？」</label>
+                </div>
+
+                <div class="checklist-group">
+                    <h4>Step 3：Ray Dalio — 多訊號共振</h4>
+                    <label class="checklist-item"><input type="checkbox"> 填寫四維度矩陣（技術 / 基本 / 情緒 / 辯論）</label>
+                    <label class="checklist-item"><input type="checkbox"> 計算共振結果：≥ 3/4 同方向才有信號</label>
+                    <label class="checklist-item"><input type="checkbox"> 如果混合 → 不行動（等待更清晰的信號）</label>
+                </div>
+
+                <div class="checklist-group">
+                    <h4>Step 4：George Soros — 反身性檢查</h4>
+                    <label class="checklist-item"><input type="checkbox"> 畫出當前的正反饋循環</label>
+                    <label class="checklist-item"><input type="checkbox"> 判斷循環階段（早期 / 中期 / 晚期 / 反轉中）</label>
+                    <label class="checklist-item"><input type="checkbox"> 識別反轉觸發條件</label>
+                </div>
+
+                <div class="checklist-group">
+                    <h4>Step 5：Druckenmiller — 不對稱下注</h4>
+                    <label class="checklist-item"><input type="checkbox"> 計算止損距離（ATR × 2）</label>
+                    <label class="checklist-item"><input type="checkbox"> 估算上行 / 下行空間</label>
+                    <label class="checklist-item"><input type="checkbox"> 計算贏虧比（目標 ≥ 3:1）</label>
+                    <label class="checklist-item"><input type="checkbox"> 贏虧比 &lt; 1 = 絕對不做</label>
+                </div>
+
+                <div class="checklist-group">
+                    <h4>最終：綜合判定</h4>
+                    <label class="checklist-item"><input type="checkbox"> 填寫五框架結論表</label>
+                    <label class="checklist-item"><input type="checkbox"> 給出信心評分（0-100）</label>
+                    <label class="checklist-item"><input type="checkbox"> 寫下「核心邏輯鏈」（3-5 句話）</label>
+                </div>
+            </div>
+        </section>
+
+        <footer class="dashboard-footer">
+            投資大師思考框架 · DLR · 2026-03-17<br>
+            Howard Marks · Charlie Munger · Ray Dalio · George Soros · Stanley Druckenmiller<br>
+            <span style="color:var(--accent-gold);">Generated by TradingAgents Dashboard</span>
+        </footer>
+
+    </main>
+</div>
+
+<script>
+/* ─── Sidebar active state ─────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+    const links = document.querySelectorAll('.nav-link');
+    const sections = [...links].map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+
+    const activate = (id) => {
+        links.forEach(l => l.classList.toggle('active', l.dataset.section === id));
+    };
+
+    const observer = new IntersectionObserver(entries => {
+        for (const e of entries) {
+            if (e.isIntersecting) { activate(e.target.id); break; }
+        }
+    }, { rootMargin: '-20% 0px -75% 0px' });
+
+    sections.forEach(s => observer.observe(s));
+
+    /* ─── Checklist persistence (localStorage) ──────── */
+    const checks = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+    const storageKey = 'dlr-framework-checklist';
+    const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+
+    checks.forEach((cb, i) => {
+        if (saved[i]) { cb.checked = true; cb.parentElement.classList.add('checked'); }
+        cb.addEventListener('change', () => {
+            cb.parentElement.classList.toggle('checked', cb.checked);
+            const state = {};
+            checks.forEach((c, j) => { if (c.checked) state[j] = true; });
+            localStorage.setItem(storageKey, JSON.stringify(state));
+        });
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FDS — BUY | 2026-03-18</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* ─── Custom Properties ─────────────────────────────── */
+:root {
+    --bg-primary: #0b0f19;
+    --bg-secondary: #0f1629;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --bg-inset: #0d1117;
+    --border-subtle: #1e293b;
+    --border-medium: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --signal-color: #10b981;
+    --signal-glow: rgba(16, 185, 129, 0.15);
+    --signal-rgb: 16, 185, 129;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --sidebar-w: 220px;
+    --header-h: 56px;
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ─── Noise Texture ─────────────────────────────────── */
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* ─── Header Bar ────────────────────────────────────── */
+.header-bar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 100;
+    display: flex; align-items: center;
+}
+.header-inner {
+    width: 100%; max-width: 1400px;
+    margin: 0 auto; padding: 0 2rem;
+    display: flex; align-items: center;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+}
+
+/* ─── Signal Pill ───────────────────────────────────── */
+.signal-pill {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.85rem;
+    background: rgba(var(--signal-rgb), 0.15);
+    border: 1px solid rgba(var(--signal-rgb), 0.3);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-weight: 500; font-size: 0.8rem;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* ─── Layout ────────────────────────────────────────── */
+.layout {
+    display: flex; max-width: 1400px;
+    margin: 0 auto; padding-top: var(--header-h);
+    min-height: 100vh;
+}
+
+/* ─── Sidebar ───────────────────────────────────────── */
+.sidebar {
+    position: sticky; top: var(--header-h);
+    width: var(--sidebar-w); flex-shrink: 0;
+    height: calc(100vh - var(--header-h));
+    padding: 1.5rem 0 1.5rem 1.5rem;
+    overflow-y: auto;
+}
+.sidebar-inner {
+    display: flex; flex-direction: column; gap: 0.25rem;
+}
+.nav-link {
+    display: block; padding: 0.5rem 1rem;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500;
+    border-radius: var(--radius-sm);
+    border-left: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+.nav-link:hover {
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.03);
+}
+.nav-link.active {
+    color: var(--signal-color);
+    border-left-color: var(--signal-color);
+    background: rgba(var(--signal-rgb), 0.08);
+}
+
+/* ─── Main Content ──────────────────────────────────── */
+.main-content {
+    flex: 1; min-width: 0;
+    padding: 1.5rem 2rem 3rem 1.5rem;
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+
+/* ─── Hero Card ─────────────────────────────────────── */
+.hero-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    overflow: hidden;
+}
+.hero-mesh {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(var(--signal-rgb), 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(var(--signal-rgb), 0.05) 0%, transparent 40%),
+        radial-gradient(ellipse at 60% 80%, rgba(var(--signal-rgb), 0.03) 0%, transparent 60%);
+    pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-header {
+    display: flex; align-items: center; gap: 1rem;
+    flex-wrap: wrap; margin-bottom: 0.5rem;
+}
+.hero-ticker {
+    font-family: var(--font-heading);
+    font-size: 2.5rem; font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text-primary), var(--signal-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-date {
+    font-family: var(--font-mono);
+    font-size: 0.9rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.hero-card .signal-pill { font-size: 0.9rem; padding: 0.35rem 1rem; }
+
+/* Risk Badge */
+.risk-badge {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 20px; letter-spacing: 0.05em;
+}
+.risk-low    { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+.risk-medium { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+.risk-high   { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+
+/* Reasons */
+.reasons-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.reason {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(var(--signal-rgb), 0.05);
+    border: 1px solid rgba(var(--signal-rgb), 0.1);
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;
+}
+.reason-num {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px;
+    background: rgba(var(--signal-rgb), 0.15);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 50%;
+}
+
+/* ─── Metrics Grid ──────────────────────────────────── */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+.metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+    position: relative; overflow: hidden;
+}
+.metric-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--signal-color); opacity: 0.4;
+    transition: opacity 0.25s ease;
+}
+.metric-card:hover {
+    border-color: rgba(var(--signal-rgb), 0.3);
+    box-shadow: 0 0 20px rgba(var(--signal-rgb), 0.08);
+}
+.metric-card:hover::before { opacity: 1; }
+.metric-label {
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+}
+.metric-value {
+    font-family: var(--font-mono);
+    font-size: 1.35rem; font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* ─── Section Cards ─────────────────────────────────── */
+.section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2rem;
+    transition: border-color 0.25s ease;
+}
+.section-card:hover { border-color: var(--border-medium); }
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.section-title::before {
+    content: ''; display: inline-block;
+    width: 4px; height: 20px;
+    background: var(--signal-color); border-radius: 2px;
+}
+.section-body {
+    color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.section-body h1, .section-body h2, .section-body h3 {
+    font-family: var(--font-heading);
+    color: var(--text-primary); margin: 1.5rem 0 0.75rem;
+}
+.section-body h1 { font-size: 1.2rem; }
+.section-body h2 { font-size: 1.1rem; }
+.section-body h3 { font-size: 1rem; }
+.section-body p { margin-bottom: 0.75rem; }
+.section-body ul, .section-body ol { margin: 0.5rem 0 1rem 1.5rem; }
+.section-body li { margin-bottom: 0.3rem; }
+.section-body strong { color: var(--text-primary); }
+.section-body em { color: var(--text-muted); font-style: italic; }
+
+/* Tables in sections */
+.section-body table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0; font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.section-body thead th {
+    background: rgba(var(--signal-rgb), 0.1);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.78rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.section-body tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.section-body tbody tr:hover { background: rgba(255,255,255,0.02); }
+.section-body tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+
+/* ─── Technical Dashboard ──────────────────────────── */
+.tech-dashboard {
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+.gauges-row {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    justify-content: center; padding: 0.5rem 0;
+}
+.gauge-container {
+    width: 200px; text-align: center;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem 0.5rem 0.75rem;
+}
+.gauge-svg { width: 100%; height: auto; }
+.charts-row {
+    display: grid; grid-template-columns: 1fr; gap: 1rem;
+}
+.chart-container {
+    position: relative; height: 220px;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+
+/* ─── MA Comparison Chart ──────────────────────────── */
+.ma-chart {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.ma-bar-row {
+    display: flex; align-items: center; gap: 0.75rem;
+}
+.ma-label {
+    width: 56px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    color: var(--text-muted); text-align: right;
+}
+.ma-bar-track {
+    flex: 1; height: 24px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px; overflow: hidden;
+}
+.ma-bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 1s ease;
+}
+.ma-value {
+    width: 64px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    color: var(--text-primary); text-align: right;
+}
+
+/* ─── KPI Grid ─────────────────────────────────────── */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.kpi-card {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+.kpi-label {
+    font-size: 0.72rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.3rem;
+}
+.kpi-value {
+    font-family: var(--font-mono);
+    font-size: 1.1rem; font-weight: 600;
+}
+
+/* ─── Sentiment Dashboard ──────────────────────────── */
+.sentiment-summary { margin-bottom: 1.5rem; }
+.sentiment-bar {
+    display: flex; height: 28px;
+    border-radius: 14px; overflow: hidden;
+    background: var(--bg-inset);
+}
+.sent-fill { transition: width 0.8s ease; min-width: 2px; }
+.sent-pos { background: #10b981; }
+.sent-neu { background: #475569; }
+.sent-neg { background: #ef4444; }
+.sentiment-counts {
+    display: flex; justify-content: center;
+    gap: 1.5rem; margin-top: 0.75rem;
+}
+.sent-count {
+    font-family: var(--font-mono); font-size: 0.8rem;
+}
+.sent-count-pos { color: #10b981; }
+.sent-count-neu { color: #64748b; }
+.sent-count-neg { color: #ef4444; }
+.sent-tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem; border-radius: 10px;
+    font-size: 0.78rem; font-weight: 500;
+}
+.sent-tag-positive { background: rgba(16,185,129,0.15); color: #10b981; }
+.sent-tag-negative { background: rgba(239,68,68,0.15); color: #ef4444; }
+.sent-tag-neutral { background: rgba(100,116,139,0.15); color: #94a3b8; }
+.sent-row-positive td:first-child { border-left: 3px solid #10b981; }
+.sent-row-negative td:first-child { border-left: 3px solid #ef4444; }
+.sent-row-neutral td:first-child { border-left: 3px solid #475569; }
+
+/* ─── Indicator Table ──────────────────────────────── */
+.indicator-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.indicator-table thead th {
+    background: rgba(var(--signal-rgb), 0.08);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.indicator-table tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.indicator-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.indicator-table tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+.ind-name {
+    font-family: var(--font-mono); font-weight: 500;
+    color: var(--text-primary);
+}
+.ind-value {
+    font-family: var(--font-mono); color: var(--signal-color);
+}
+
+/* ─── Debate Comparison ────────────────────────────── */
+.debate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; margin-bottom: 1rem;
+}
+.debate-panel {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.debate-panel-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.debate-preview {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    max-height: 200px; overflow: hidden;
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+.debate-preview p { margin-bottom: 0.5rem; }
+.debate-preview strong { color: var(--text-primary); }
+.debate-expand { margin-top: 0.75rem; }
+.debate-expand summary {
+    cursor: pointer; color: var(--signal-color);
+    font-size: 0.85rem; font-weight: 500;
+    padding: 0.4rem 0; user-select: none;
+    list-style: none;
+}
+.debate-expand summary::-webkit-details-marker { display: none; }
+.debate-expand summary::before {
+    content: '\25B8 '; font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+.debate-expand[open] summary::before { transform: rotate(90deg); }
+.debate-full {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    margin-top: 0.75rem;
+    max-height: 600px; overflow-y: auto;
+}
+.debate-full p { margin-bottom: 0.5rem; }
+.debate-full strong { color: var(--text-primary); }
+.debate-full ul, .debate-full ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.debate-full li { margin-bottom: 0.3rem; }
+
+/* ─── Judge Decision ───────────────────────────────── */
+.judge-decision {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    border-left: 3px solid var(--signal-color);
+}
+.judge-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    color: var(--signal-color);
+    margin-bottom: 0.75rem;
+}
+.judge-body {
+    color: var(--text-secondary);
+    font-size: 0.9rem; line-height: 1.7;
+}
+.judge-body p { margin-bottom: 0.5rem; }
+.judge-body strong { color: var(--text-primary); }
+.judge-body ul, .judge-body ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.judge-body li { margin-bottom: 0.3rem; }
+
+/* ─── Tabs (legacy fallback) ───────────────────────── */
+.tab-bar {
+    display: flex; gap: 0.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 1.25rem;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tab-btn {
+    padding: 0.6rem 1.25rem; background: none; border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.88rem; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.tab-btn:hover { color: var(--text-secondary); }
+.tab-btn.active {
+    color: var(--signal-color);
+    border-bottom-color: var(--signal-color);
+}
+.tab-panel {
+    display: none; color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
+.tab-panel p { margin-bottom: 0.75rem; }
+.tab-panel strong { color: var(--text-primary); }
+.tab-panel ul, .tab-panel ol { margin: 0.5rem 0 1rem 1.5rem; }
+.tab-panel li { margin-bottom: 0.3rem; }
+.text-muted { color: var(--text-muted); font-style: italic; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Collapsible Debate Rounds ─────────────────────── */
+.debate-round {
+    margin: 0.5rem 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    overflow: hidden; transition: border-color 0.2s ease;
+}
+.debate-round[open] { border-color: rgba(var(--signal-rgb), 0.2); }
+.debate-round summary {
+    padding: 0.7rem 1rem; background: var(--bg-inset);
+    cursor: pointer; font-weight: 600; font-size: 0.88rem;
+    color: var(--text-secondary); list-style: none;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: all 0.2s ease; user-select: none;
+}
+.debate-round summary::-webkit-details-marker { display: none; }
+.debate-round summary::before {
+    content: '\25B8'; font-size: 0.75rem;
+    color: var(--text-muted); transition: transform 0.2s ease;
+}
+.debate-round[open] summary::before { transform: rotate(90deg); }
+.debate-round summary:hover {
+    background: rgba(255,255,255,0.03); color: var(--text-primary);
+}
+.round-content {
+    padding: 1rem; border-top: 1px solid var(--border-subtle);
+    color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7;
+}
+.round-content p { margin-bottom: 0.6rem; }
+.round-content strong { color: var(--text-primary); }
+.round-content ul, .round-content ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+
+/* ─── Footer ────────────────────────────────────────── */
+.dashboard-footer {
+    text-align: center; padding: 2rem;
+    color: var(--text-muted); font-size: 0.8rem;
+    font-family: var(--font-mono);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 1rem;
+}
+
+/* ─── Responsive ────────────────────────────────────── */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; top: var(--header-h);
+        left: 0; right: 0; width: 100%;
+        height: auto; padding: 0.5rem;
+        background: rgba(11, 15, 25, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-subtle);
+        z-index: 90; overflow-x: auto; overflow-y: hidden;
+    }
+    .sidebar-inner {
+        flex-direction: row; gap: 0; min-width: max-content;
+    }
+    .nav-link {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        padding: 0.4rem 0.75rem; font-size: 0.78rem;
+        white-space: nowrap;
+    }
+    .nav-link.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--signal-color);
+    }
+    html { scroll-padding-top: calc(var(--header-h) + 3.5rem); }
+    .main-content { padding: 4.5rem 1rem 2rem 1rem; }
+    .hero-ticker { font-size: 1.8rem; }
+    .hero-card { padding: 1.5rem; }
+    .section-card { padding: 1.25rem; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .tab-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+    .gauges-row { gap: 0.75rem; }
+    .gauge-container { width: 160px; }
+    .debate-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-container { height: 180px; }
+    .ma-label { width: 48px; font-size: 0.72rem; }
+    .ma-value { width: 52px; font-size: 0.78rem; }
+}
+@media (min-width: 769px) {
+    .main-content { padding-top: 1.5rem; }
+}
+
+/* ─── Print ─────────────────────────────────────────── */
+@media print {
+    body { background: #fff; color: #111; }
+    body::before { display: none; }
+    .header-bar { position: relative; background: #fff; border-bottom: 2px solid #111; }
+    .header-inner { color: #111; }
+    .sidebar { display: none; }
+    .layout { display: block; }
+    .main-content { padding: 1rem; }
+    .hero-card, .section-card, .metric-card, .kpi-card, .gauge-container,
+    .debate-panel, .judge-decision {
+        background: #fff; border-color: #ddd;
+        box-shadow: none; break-inside: avoid;
+    }
+    .hero-mesh { display: none; }
+    .hero-ticker {
+        background: none;
+        -webkit-text-fill-color: #111; color: #111;
+    }
+    .signal-pill {
+        background: #eee; border-color: #ccc; color: #333;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .debate-round { break-inside: avoid; }
+    .debate-round .round-content { display: block; }
+    .debate-preview { max-height: none; mask-image: none; -webkit-mask-image: none; }
+    .debate-full { max-height: none; }
+    .tab-panel { display: block !important; margin-bottom: 1rem; }
+    .tab-bar { display: none; }
+    .section-body, .round-content, .tab-panel, .debate-full,
+    .judge-body { color: #333; }
+    .section-title, .debate-panel-title, .judge-title { color: #111; }
+    .metric-label, .kpi-label { color: #666; }
+    .metric-value, .kpi-value, .ind-value, .ma-value { color: #111; }
+    .reason { background: #f9f9f9; border-color: #ddd; color: #333; }
+    .reason-num { background: #eee; color: #333; }
+    .chart-container { display: none; }
+    .sent-tag { border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<header class="header-bar">
+    <div class="header-inner">FDS — BUY | 2026-03-18</div>
+</header>
+
+<div class="layout">
+    <nav class="sidebar" id="sidebar"><div class="sidebar-inner"><a href="#executive-summary" class="nav-link" data-section="executive-summary">Executive Summary</a>
+<a href="#market" class="nav-link" data-section="market">Technical</a>
+<a href="#sentiment" class="nav-link" data-section="sentiment">Sentiment</a>
+<a href="#news" class="nav-link" data-section="news">News</a>
+<a href="#fundamentals" class="nav-link" data-section="fundamentals">Fundamentals</a>
+<a href="#investment-debate" class="nav-link" data-section="investment-debate">Investment Debate</a>
+<a href="#trader-plan" class="nav-link" data-section="trader-plan">Trader Plan</a>
+<a href="#risk-debate" class="nav-link" data-section="risk-debate">Risk Debate</a>
+</div></nav>
+    <main class="main-content">
+        <section id="executive-summary" class="hero-card"><div class="hero-mesh"></div><div class="hero-content"><div class="hero-header"><h1 class="hero-ticker">FDS</h1><span class="signal-pill">BUY</span><span class="risk-badge risk-medium">Medium Risk</span></div><div class="hero-date">2026-03-18</div><div class=reasons-list><div class="reason"><span class="reason-num">1</span><span>FactSet’s evolving AI compliance tools are driving tangible, near-term growth with forward EPS growth near 20%, supported by strong fundamentals and institutional backing.  </span></div>
+<div class="reason"><span class="reason-num">2</span><span>Early technical indicators show improving momentum that historically precedes bottoms, with valuation and dividend yield providing an asymmetric risk/reward profile.  </span></div>
+<div class="reason"><span class="reason-num">3</span><span>The recommended phased entry with strict stop-loss and scaling on confirmed technical breakouts effectively manages risks tied to leverage, competition, and macro uncertainties.</span></div>
+</div></div></section>
+        <section id="market" class="section-card"><h2 class="section-title">Technical Dashboard</h2><div class="tech-dashboard"><div class="gauges-row"><div class="gauge-container"><svg viewBox="0 0 200 130" class="gauge-svg"><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#1e293b" stroke-width="12" stroke-linecap="round"/><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-dasharray="219.9" stroke-dashoffset="125.3" style="transition: stroke-dashoffset 1s ease;"/><text x="100" y="95" text-anchor="middle" fill="#10b981" font-family="'DM Mono', monospace" font-size="28" font-weight="600">43</text><text x="100" y="125" text-anchor="middle" fill="#64748b" font-family="'Outfit', sans-serif" font-size="13">RSI</text></svg></div><div class="gauge-container"><svg viewBox="0 0 200 130" class="gauge-svg"><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#1e293b" stroke-width="12" stroke-linecap="round"/><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#f59e0b" stroke-width="12" stroke-linecap="round" stroke-dasharray="219.9" stroke-dashoffset="131.9" style="transition: stroke-dashoffset 1s ease;"/><text x="100" y="95" text-anchor="middle" fill="#f59e0b" font-family="'DM Mono', monospace" font-size="28" font-weight="600">9.94</text><text x="100" y="125" text-anchor="middle" fill="#64748b" font-family="'Outfit', sans-serif" font-size="13">ATR (Volatility)</text></svg></div></div><div class="charts-row"><div class="chart-container"><canvas id="macdChart"></canvas></div></div><table class="indicator-table"><thead><tr><th>Indicator</th><th>Value</th><th>Signal</th><th>Interpretation</th></tr></thead><tbody><tr><td class="ind-name">50-day SMA</td><td class="ind-value">~237.3</td><td>Medium-term downtrend, price below SMA</td><td>Medium-term downtrend, price below SMA</td></tr><tr><td class="ind-name">200-day SMA</td><td class="ind-value">~315.7</td><td>Long-term downtrend, price well below SMA</td><td>Long-term downtrend, price well below SMA</td></tr><tr><td class="ind-name">10-day EMA</td><td class="ind-value">~210.6</td><td>Short-term momentum near current price</td><td>Short-term momentum near current price</td></tr><tr><td class="ind-name">MACD</td><td class="ind-value">-5.7 (improving)</td><td>Bearish but momentum weakening</td><td>Bearish but momentum weakening</td></tr><tr><td class="ind-name">RSI</td><td class="ind-value">43</td><td>Recovering from oversold but not bullish</td><td>Recovering from oversold but not bullish</td></tr><tr><td class="ind-name">Bollinger Middle</td><td class="ind-value">~209.9</td><td>Price near middle band, side consolidation</td><td>Price near middle band, side consolidation</td></tr><tr><td class="ind-name">Bollinger Upper</td><td class="ind-value">~232.2</td><td>Resistance level, no breakout yet</td><td>Resistance level, no breakout yet</td></tr><tr><td class="ind-name">ATR</td><td class="ind-value">9.94</td><td>Moderate volatility</td><td>Moderate volatility</td></tr></tbody></table></div></section>
+        <section id="sentiment" class="section-card"><h2 class="section-title">Sentiment Dashboard</h2><div class="sentiment-summary"><div class="sentiment-bar"><div class="sent-fill sent-pos" style="width:14.3%"></div><div class="sent-fill sent-neu" style="width:85.7%"></div><div class="sent-fill sent-neg" style="width:0.0%"></div></div><div class="sentiment-counts"><span class="sent-count sent-count-pos">1 Positive</span><span class="sent-count sent-count-neu">6 Neutral</span><span class="sent-count sent-count-neg">0 Negative</span></div></div><table class="indicator-table"><thead><tr><th>Aspect</th><th>Summary</th><th>Implication for Investors</th></tr></thead><tbody><tr class="sent-row-neutral"><td>Price Target Update</td><td>Deutsche Bank lowered target to $275, Hold rating</td><td>Suggests caution, signals limited near-term upside</td></tr><tr class="sent-row-neutral"><td>Institutional Support</td><td>Bamco increased stake to $838 million</td><td>Strong confidence, supports share price stability</td></tr><tr class="sent-row-positive"><td>Product Innovation</td><td>Launched new AI compliance tools</td><td>Positive for competitive positioning and growth</td></tr><tr class="sent-row-neutral"><td>Analyst Sentiment</td><td>Mixed; price targets vary widely</td><td>Reflects uncertainty and risk perception</td></tr><tr class="sent-row-neutral"><td>Stock Performance</td><td>Weak 1-year TSR of -52.5%, recent 90-day return 29.8%</td><td>Signals volatile performance, some recovery signs</td></tr><tr class="sent-row-neutral"><td>Dividend Appeal</td><td>Listed as a safe dividend stock for 2026</td><td>Attractive for income-focused investors</td></tr><tr class="sent-row-neutral"><td>Sentiment Momentum</td><td>Stable to slightly deteriorating</td><td>Watch for further developments in valuation and competitive dynamics</td></tr></tbody></table></section>
+        <section id="news" class="section-card"><h2 class="section-title">News Analysis</h2><div class="section-body"><p>Here is a comprehensive report on the current state of the world relevant for trading and macroeconomics, with a focus on FactSet Research Systems (FDS) and general macro trends from recent news over the past week (March 11 - March 18, 2026).</p>
+<hr />
+<h3>Company Focus: FactSet Research Systems (FDS)</h3>
+<ol>
+<li><strong>Analyst Outlook and Stock Valuation</strong>  </li>
+<li>Deutsche Bank recently lowered its price target for FDS to $275 from $335, maintaining a Hold rating.</li>
+<li>Analyst opinions on FDS are divided, with price targets ranging from low $200s to about $321, reflecting concerns around competitive risks and the impact of AI on FDS’s financial data platform.</li>
+<li>Even with positive moves such as Bamco Inc increasing its stake to $838 million and the rollout of AI-driven financial crime risk tools on FactSet’s platform, the stock has underperformed with a 1-year total shareholder return down by 52.5%.</li>
+<li>
+<p>The fair value estimate has been slightly trimmed from approximately $305 to $300 by some analysts.</p>
+</li>
+<li>
+<p><strong>Business Developments</strong>  </p>
+</li>
+<li>Bamco’s increased stake signals confidence in FDS’s recurring revenue business model which is bolstered by its embedded workflow software for investment professionals.</li>
+<li>New AI tools added to the FactSet workstation aim to address financial crime risk compliance, aligning with market demand for advanced analytics and compliance solutions.</li>
+<li>Despite these innovation initiatives, the stock’s muted price performance reflects a cautious market sentiment.</li>
+</ol>
+<hr />
+<h3>Broader Market and Economic Themes</h3>
+<ol>
+<li><strong>Market Trends</strong>  </li>
+<li>The S&amp;P 500 posted its third consecutive weekly drop, falling 1.6%, amid rising crude oil prices.</li>
+<li>
+<p>Defensive stocks and sectors perceived as safe havens are recommended to hedge against geopolitical risks such as tensions with Iran.</p>
+</li>
+<li>
+<p><strong>Inflation and Federal Reserve Policy</strong>  </p>
+</li>
+<li>Inflation data revealed a slightly hotter trend than expected, with core personal consumption expenditures (PCE) rising 0.4% in January and 3.1% YoY, above analyst forecasts.</li>
+<li>
+<p>The Fed’s preferred inflation gauge suggests persistent inflationary pressure, strengthening views that the Federal Reserve might pause interest rate cuts in upcoming meetings.</p>
+</li>
+<li>
+<p><strong>Sector and Company Highlights</strong>  </p>
+</li>
+<li>Retailers like Dollar Tree and Dollar General showed mixed results; Dollar Tree issued an upbeat outlook, while Dollar General’s stock fell despite earnings beat.</li>
+<li>Ulta Beauty warned of slower growth due to consumer shifts to value-focused shopping.</li>
+<li>
+<p>Technology and software-related companies continue to draw focus, with capital expenditures, memory prices, and software trends expected to feature prominently in upcoming earnings.</p>
+</li>
+<li>
+<p><strong>Global and Macro Insights</strong>  </p>
+</li>
+<li>The NYSE owner is expanding into cryptocurrency, signaling deeper financial market digitization.</li>
+<li>Chinese tech stocks remain appealing to some investors despite global uncertainties.</li>
+<li>Market experts and pros remain cautiously optimistic about the stock market’s 2026 performance but highlight the importance of earnings results and macroeconomic signals.</li>
+</ol>
+<hr />
+<h3>Summary Table of Key Points</h3>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Key Points</th>
+<th>Implication for Traders</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FactSet (FDS)</td>
+<td>Deutsche Bank target cut to $275; mixed analyst views; AI compliance tools rollout; Bamco stake increased</td>
+<td>Indicates cautious optimism; watch AI impact</td>
+</tr>
+<tr>
+<td>Stock Market</td>
+<td>S&amp;P 500 down 1.6% this week; 3rd consecutive decline; crude prices up</td>
+<td>Potential market volatility; energy sector focus</td>
+</tr>
+<tr>
+<td>Inflation &amp; Fed</td>
+<td>Core PCE inflation slightly above forecast; Fed rate cuts likely paused</td>
+<td>Interest rate caution; impacts valuation</td>
+</tr>
+<tr>
+<td>Retail and Consumer</td>
+<td>Dollar Tree upbeat; Dollar General weak guidance; Ulta slowing sales growth</td>
+<td>Consumer value shift; sector rotation</td>
+</tr>
+<tr>
+<td>Tech &amp; Crypto</td>
+<td>NYSE moves into crypto; tech earnings focus on capex and memory prices</td>
+<td>Increased tech sector focus and crypto interest</td>
+</tr>
+<tr>
+<td>Geopolitical Risks</td>
+<td>Iran risk pushes investors to safe-haven stocks</td>
+<td>Defensive stock preference advised</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>This analysis should aid traders and investors in understanding the nuanced sentiment and macro drivers around FDS and the broader market environment as of mid-March 2026.</p>
+<p>If you want a more specific focus on any other companies or sector news, please let me know!</p></div></section>
+        <section id="fundamentals" class="section-card"><h2 class="section-title">Fundamentals Dashboard</h2><div class="kpi-grid"><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Market Cap</div><div class="kpi-value" style="color:#64748b;">$7.85 billion</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">P/E (TTM)</div><div class="kpi-value" style="color:#10b981;">13.33</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Forward P/E</div><div class="kpi-value" style="color:#10b981;">11.06</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EPS</div><div class="kpi-value" style="color:#64748b;">15.73</div></div><div class="kpi-card" style="border-left:3px solid #f59e0b;"><div class="kpi-label">Dividend Yield</div><div class="kpi-value" style="color:#f59e0b;">2.12%</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Revenue</div><div class="kpi-value" style="color:#64748b;">$2.36 billion</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EBITDA</div><div class="kpi-value" style="color:#64748b;">$921.7 million</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Profit Margin</div><div class="kpi-value" style="color:#10b981;">25.4%</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">ROE</div><div class="kpi-value" style="color:#10b981;">28.8%</div></div><div class="kpi-card" style="border-left:3px solid #ef4444;"><div class="kpi-label">Debt/Equity</div><div class="kpi-value" style="color:#ef4444;">~72</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Current Ratio</div><div class="kpi-value" style="color:#10b981;">1.54</div></div></div><table class="indicator-table"><thead><tr><th>Aspect</th><th>Detail/Value</th><th>Notes/Assessment</th></tr></thead><tbody><tr><td>Market Cap</td><td>$7.85 billion</td><td>Significant size</td></tr><tr><td>P/E Ratio (TTM)</td><td>13.33</td><td>Reasonable valuation</td></tr><tr><td>Forward P/E</td><td>11.06</td><td>Earnings growth expected</td></tr><tr><td>EPS (TTM)</td><td>15.73</td><td>Solid earnings</td></tr><tr><td>Forward EPS</td><td>18.96</td><td>Growth expected</td></tr><tr><td>Dividend Yield</td><td>2.12%</td><td>Moderate income</td></tr><tr><td>Revenue (TTM)</td><td>$2.36 billion</td><td>Steady growth</td></tr><tr><td>EBITDA (TTM)</td><td>$921.7 million</td><td>Strong profitability</td></tr><tr><td>Net Income (TTM)</td><td>$599.6 million</td><td>Healthy profit</td></tr><tr><td>Profit Margin</td><td>25.4%</td><td>High margin</td></tr><tr><td>Operating Margin</td><td>32.6%</td><td>Efficient operations</td></tr><tr><td>Return on Equity (ROE)</td><td>28.8%</td><td>High capital efficiency</td></tr><tr><td>Return on Assets (ROA)</td><td>11.4%</td><td>Good asset utilization</td></tr><tr><td>Debt to Equity Ratio</td><td>~72</td><td>Very high due to intangible assets</td></tr><tr><td>Tangible Book Value</td><td>-$1.01 billion</td><td>Negative, flag for leverage caution</td></tr><tr><td>Current Ratio</td><td>1.54</td><td>Adequate liquidity</td></tr><tr><td>Free Cash Flow (Recent)</td><td>$90 million (quarterly)</td><td>Positive cash generation</td></tr><tr><td>Insider Ownership</td><td>0.45%</td><td>Low insider holding</td></tr><tr><td>Institutional Ownership</td><td>102.3%</td><td>High institutional confidence</td></tr><tr><td>Short Interest</td><td>11.18% of float, 2.74 days to cover</td><td>Moderate short interest</td></tr><tr><td>Market Cap vs Book NAV</td><td>+263.3% premium</td><td>Reflects intangible value and market trust</td></tr></tbody></table></section>
+        <section id="investment-debate" class="section-card"><h2 class="section-title">Investment Debate</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #10b981;"><h3 class="debate-panel-title" style="color:#10b981;">Bull Case</h3><div class="debate-preview"><p>Bull Analyst: Great! Let’s jump right into it — I’m confident FactSet (FDS) presents a compelling growth and value opportunity right now, and I’m ready to engage directly with key bear concerns while underscoring the robust bull case.</p>
+<hr />
+<h3>1. <strong>Growth Potential: FactSet’s Expanding Market Opportunities</strong></h3>
+<p>Bear analysts often highlight FactSet’s recent downtrend and valuation uncertainty. While those are valid observations, they miss the bigger picture: FactSet’s market opportunity is evolv...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Bull Analyst: Great! Let’s jump right into it — I’m confident FactSet (FDS) presents a compelling growth and value opportunity right now, and I’m ready to engage directly with key bear concerns while underscoring the robust bull case.</p>
+<hr />
+<h3>1. <strong>Growth Potential: FactSet’s Expanding Market Opportunities</strong></h3>
+<p>Bear analysts often highlight FactSet’s recent downtrend and valuation uncertainty. While those are valid observations, they miss the bigger picture: FactSet’s market opportunity is evolving and expanding with AI integration and compliance analytics — growth engines that can scale significantly.</p>
+<ul>
+<li>
+<p><strong>New AI-Driven Compliance Tools:</strong> FactSet’s rollout of financial crime compliance solutions taps into a multi-billion dollar, rapidly growing fintech niche. Regulatory scrutiny and demand for advanced analytics solutions remain strong drivers in financial services. This is a high-margin, sticky revenue stream, expanding FactSet's product breadth beyond traditional data feeds and analytics.</p>
+</li>
+<li>
+<p><strong>Revenue Trends &amp; Scalability:</strong> FactSet’s recent revenue is $2.36B TTM with steady quarterly growth. Their cloud-based, workflow-embedded platform has inherently scalable economics: the cost to add new users or products grows slower than revenue, enabling higher margins as adoption expands globally.</p>
+</li>
+<li>
+<p><strong>Forward EPS Growth (~20% Increase):</strong> Projected jump from 15.73 to 18.96 EPS reflects tangible earnings growth, showing the company is not just a mature cash cow but poised for sustainable expansion.</p>
+</li>
+</ul>
+<p>In sum, FactSet isn’t stuck in a legacy rut — it’s evolving with technology trends that meet growing compliance and analytics demand, giving it a solid runway.</p>
+<hr />
+<h3>2. <strong>Competitive Advantages &amp; Differentiation</strong></h3>
+<p>Let’s talk moat:</p>
+<ul>
+<li>
+<p><strong>Premier Brand &amp; Workflow Integration:</strong> FactSet is deeply embedded in investment professionals’ daily workflows, making switching costly and complex. This high switching cost builds customer stickiness that competitors struggle to replicate.</p>
+</li>
+<li>
+<p><strong>Strong Institutional Support:</strong> Bamco’s increased $838M stake signals that sophisticated investors see long-term value. This isn’t a speculative buy; it reflects confidence in FactSet’s competitive position and business durability.</p>
+</li>
+<li>
+<p><strong>Innovation Leadership in AI:</strong> While AI is a double-edged sword for many data providers, FactSet is leveraging it as a competitive differentiator — particularly in compliance risk, where real-time AI-driven analytics creates a clear edge.</p>
+</li>
+<li>
+<p><strong>High Operating Margins (32.6%) &amp; RoE (28.8%):</strong> Operational efficiency and capital returns are impressive, reinforcing that FactSet’s competitive strengths translate into real profit economics — not just top-line growth illusions.</p>
+</li>
+</ul>
+<hr />
+<h3>3. <strong>Positive Market &amp; Financial Indicators</strong></h3>
+<p>Yes, the technicals show a medium- and long-term downtrend (50- and 200-day SMAs above price), but short-term momentum paints a cautiously optimistic picture:</p>
+<ul>
+<li>
+<p><strong>MACD Improving from -23 to -5.7:</strong> Bearish momentum is weakening, a classic early sign of potential trend reversal.</p>
+</li>
+<li>
+<p><strong>RSI Recovering from Oversold (22.9 → 43):</strong> Increasing buying pressure — a potential base forming for renewed upward moves once RSI crosses 50.</p>
+</li>
+<li>
+<p><strong>Price Consolidation at 10-day EMA &amp; Bollinger Middle Band:</strong> This sideways price action with moderate volatility (ATR ~9.94) suggests the stock is stabilizing after overselling, not collapsing. Stability often precedes a breakout.</p>
+</li>
+<li>
+<p><strong>Dividend Safety &amp; Income Appeal:</strong> FactSet’s 2.12% yield, supported by strong free cash flow ($90M quarterly), attracts income investors seeking stability amid market volatility, providing a “floor” under the price.</p>
+</li>
+</ul>
+<hr />
+<h3>4. <strong>Addressing &amp; Refuting Bear Points</strong></h3>
+<p><strong>Bear Concern #1:</strong> “High Debt-to-Equity (72) and Negative Tangible Book Value pose solvency risk.”</p>
+<ul>
+<li>
+<p>FactSet’s high leverage is largely due to intangible assets like goodwill from acquisitions, not reckless borrowing. The company carries a solid current ratio (1.54) and meaningful cash flow coverage.</p>
+</li>
+<li>
+<p>Interest expense is well-covered by operating income; debt servicing capacity is strong.</p>
+</li>
+<li>
+<p>This “high leverage” should be viewed in context of business model — it’s typical for tech/data firms with strong intangible assets and predictable cash flows.</p>
+</li>
+<li>
+<p>The positive free cash flows and share repurchase activity ($140M in last quarter) reinforce that leverage is manageable and capital deployment is value-accretive.</p>
+</li>
+</ul>
+<hr />
+<p><strong>Bear Concern #2:</strong> “Analysts are mixed, and Deutsche Bank lowering price target to $275 signals limited near-term upside.”</p>
+<ul>
+<li>
+<p>Deutsche Bank’s Hold rating, coupled with a $275 target on a current price near $210, actually implies ~30% upside potential from here.</p>
+</li>
+<li>
+<p>Analysts’ divergent price targets reflect market uncertainty but also highlight FactSet’s optionality in AI and compliance integration.</p>
+</li>
+<li>
+<p>Institutional insider moves like Bamco increasing stake by hundreds of millions indicate a confident bullish conviction, often a leading indicator before price moves.</p>
+</li>
+</ul>
+<hr />
+<p><strong>Bear Concern #3:</strong> “One-year stock returns down 52%, signaling poor performance.”</p>
+<ul>
+<li>
+<p>True, the 1-year TSR underperformance reflects broader market rotations away from traditional financial data providers and short-term sentiment.</p>
+</li>
+<li>
+<p>However, FDS’s recent 90-day return of +29.8% signals a <strong>meaningful rebound</strong> in buying interest and momentum shift.</p>
+</li>
+<li>
+<p>This fits with technical evidence of short-term momentum improvement and fundamental positives coming into market focus.</p>
+</li>
+<li>
+<p>The market is pricing in near-term pain but FactSet’s underlying business signals durable recovery and growth.</p>
+</li>
+</ul>
+<hr />
+<h3>5. <strong>Learning From Lessons and Reflections</strong></h3>
+<p>We’ve seen in similar situations that companies with strong recurring revenue, embedded workflows, and investments in AI emerge from downtrends stronger. The key for bulls is patience and emphasis on fundamental transformation rather than short-term price noise.</p>
+<p>FactSet’s current valuation (~13 forward P/E) is modest, considering its growth, profitability, and dividend safety. Historical lessons tell us technology/data firms advancing in AI-driven fintech and compliance grow into higher multiples over time.</p>
+<hr />
+<h3><strong>Bottom Line: Why the Bull Case Prevails</strong></h3>
+<ul>
+<li>FactSet operates in a durable, growing niche of financial data and AI-powered compliance.</li>
+<li>It boasts a strong brand moat, operational efficiency, and institutional endorsement.</li>
+<li>Financials demonstrate scalable, profitable growth, supported by healthy cash flow and a safe dividend.</li>
+<li>Technical signals point to a stabilization phase with momentum improving.</li>
+<li>Bear concerns over leverage and valuation are manageable when contextualized against business model and growth outlook.</li>
+</ul>
+<p>Given all this, investors should view the current downtrend as an attractive entry point into a fundamentally sound company with powerful growth catalysts and institutional confidence.</p>
+<hr />
+<p>Happy to dive deeper into any angle or debate specifics further! What bear points would you want me to unpack more or discuss next?</p></div></details></div><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">Bear Case</h3><div class="debate-preview"><p>Bear Analyst: I appreciate your thorough and optimistic overview of FactSet’s prospects, and you’ve laid out some strong points on growth potential, innovation, and institutional support. However, as the bear here, I believe the risks and challenges ahead far outweigh those positives, and I’ll walk through why investors should remain cautious.</p>
+<hr />
+<h3>1. <strong>Persistent Downtrend Signals Deeper Weakness</strong></h3>
+<p>You rightly point out the improving short-term momentum with MACD climbing from -23 to -5....</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Bear Analyst: I appreciate your thorough and optimistic overview of FactSet’s prospects, and you’ve laid out some strong points on growth potential, innovation, and institutional support. However, as the bear here, I believe the risks and challenges ahead far outweigh those positives, and I’ll walk through why investors should remain cautious.</p>
+<hr />
+<h3>1. <strong>Persistent Downtrend Signals Deeper Weakness</strong></h3>
+<p>You rightly point out the improving short-term momentum with MACD climbing from -23 to -5.7 and RSI recovering from oversold lows. Yet, the technical context is still overwhelmingly bearish:</p>
+<ul>
+<li>
+<p>The <strong>50-day SMA (~237.3) and 200-day SMA (~315.7)</strong> remain significantly above the current price (~209.5), highlighting a strong medium- and long-term downtrend that simply hasn’t reversed.</p>
+</li>
+<li>
+<p>Price consolidation near the 10-day EMA and Bollinger middle band without breaking resistance at the upper band (~232.2) implies stalled momentum rather than a breakout start.</p>
+</li>
+<li>
+<p>The recent 90-day +29.8% return looks like a short-covering or technical bounce off oversold territory rather than a structural recovery, especially given the weak prior 1-year TSR of -52.5%.</p>
+</li>
+</ul>
+<p>Fundamentally and technically, until FactSet decisively breaks above those SMAs with confirmed volume and RSI &gt; 50, it remains in a vulnerable position susceptible to renewed selling pressure.</p>
+<hr />
+<h3>2. <strong>Financial Leverage and Intangible Asset Risk Cannot Be Dismissed</strong></h3>
+<p>You mention the high debt-to-equity ratio (~72) as a typical tech/data phenomenon arising from intangible-heavy balance sheets, implying manageable leverage. But this is exactly why FactSet is a red flag:</p>
+<ul>
+<li>
+<p>Debt to equity that extreme — driven by negative tangible book value (~ -$1 billion) — indicates <strong>high reliance on goodwill and intangibles that could face impairment if growth disappoints</strong>.</p>
+</li>
+<li>
+<p>Given economic uncertainties and margin pressures in fintech, any asset impairment could lead to <strong>earnings hits, writedowns, and severe valuation contractions</strong>. Such risks aren’t theoretical but grounded in recent tech-sector trends.</p>
+</li>
+<li>
+<p>While free cash flow is positive, the company’s large debt base restricts financial flexibility, especially if macroeconomic headwinds tighten credit markets or inflation pressures persist.</p>
+</li>
+<li>
+<p>Share repurchases ($140M quarterly) might also concern conservatives since these funds could be better deployed in deleveraging or innovation rather than propping up the stock artificially amid weak business catalysts.</p>
+</li>
+</ul>
+<p>In sum, the capital structure is more fragile than bulls admit, and vulnerability to external shocks and goodwill impairment poses a material risk.</p>
+<hr />
+<h3>3. <strong>Competitive Landscape is Intense and Growing</strong></h3>
+<p>You cite AI-driven compliance tools as a competitive advantage, yet the reality is more nuanced:</p>
+<ul>
+<li>
+<p>The financial data and compliance analytics space is crowded with large incumbents and nimble fintech startups rapidly deploying AI and machine learning. FactSet’s claimed “moat” is increasingly contested.</p>
+</li>
+<li>
+<p>Rivals like Bloomberg, Refinitiv, and new AI-native startups are aggressively investing and innovating, threatening to erode FactSet’s brand power and workflow integration advantage.</p>
+</li>
+<li>
+<p>The market’s skepticism seen in the wide analyst price targets and Deutsche Bank’s recent cut (from $335 to $275) underscores <strong>uncertainty about FactSet’s ability to maintain differentiation and pricing power</strong> amid disruptive AI competition.</p>
+</li>
+<li>
+<p>The low insider ownership (just 0.45%) compared to institutional holdings might signal <strong>less conviction from management compared to external investors</strong>, a subtle warning sign about internal confidence.</p>
+</li>
+</ul>
+<p>FactSet’s innovation pipeline risks lagging competition, impairing its ability to sustain profitability and growth in the medium term.</p>
+<hr />
+<h3>4. <strong>Stock Valuation Risks and Mixed Analyst Sentiment</strong></h3>
+<p>The bull case points to a modest forward P/E (~11) and a 30% upside to Deutsche Bank’s $275 target. However:</p>
+<ul>
+<li>
+<p>The stock’s price already reflects significant optimism on AI integration and compliance product success, yet these remain speculative with no strong revenue trajectory breakout visible yet.</p>
+</li>
+<li>
+<p>The wide disparity in analyst price targets—from low $200s to $320s—signals a <strong>high level of uncertainty and disagreement</strong>, not a clear consensus buy signal.</p>
+</li>
+<li>
+<p>Deutsche Bank’s Hold rating combined with a mid-range price target cut signals investors should temper expectations rather than chase a high-flying recovery.</p>
+</li>
+<li>
+<p>The 2.12% dividend yield is looking less sustainable if growth stalls or financial leverage worsens, limiting FactSet’s appeal to income investors if negative surprises arise.</p>
+</li>
+</ul>
+<hr />
+<h3>5. <strong>Macro and Market Environment Adds More Headwinds</strong></h3>
+<p>External conditions add to my concerns:</p>
+<ul>
+<li>
+<p>The broader market is in a cautious phase, with the S&amp;P 500 dropping 1.6% amid inflation persistence and a possible Fed pause in rate cuts. Defensive plays are favored over financial data providers exposed to cyclical risk.</p>
+</li>
+<li>
+<p>Geopolitical risks and rising crude oil prices increase market volatility and could squeeze corporate tech budgets, slowing demand for FactSet’s higher-cost solutions.</p>
+</li>
+<li>
+<p>The tech and fintech sectors face intense scrutiny on capital spending and valuation reset risks, not an ideal backdrop for FactSet to execute a turnaround.</p>
+</li>
+</ul>
+<hr />
+<h3><strong>Addressing Your Bull Reflections and Lessons Learned</strong></h3>
+<p>Your call for patience and focus on FactSet as a “fundamentally sound company” emerging from a downtrend rests on a few optimistic assumptions that have not borne out here:</p>
+<ul>
+<li>
+<p>Past situations where tech/data firms recovered after oversold signals often involved stronger signs of renewed innovation leadership and financial health than we see now.</p>
+</li>
+<li>
+<p>The persistent and severe 1-year TSR loss (-52.5%) and the stock’s medium-term downtrend suggest this is not a simple pullback but reflects structural and competitive challenges.</p>
+</li>
+<li>
+<p>The risk of goodwill impairment and high leverage disproportionately price in downside losses, so patient bulls must weigh the chance of further multiple compression or dividend cuts.</p>
+</li>
+<li>
+<p>Institutional stake increases like Bamco’s are comforting but can represent a mid-term value play betting on eventual recovery, not short-term certainties.</p>
+</li>
+</ul>
+<hr />
+<h3><strong>Final Thoughts: Why Bears Should Stay Firm</strong></h3>
+<p>FactSet’s downtrend, high leverage, competitive threats, and unclear AI roadmap combine to create a risky investment proposition. The technical “stabilization” is tentative at best, requiring confirmation, and the financial structure limits downside protection.</p>
+<p>While the bull thesis rests on promising AI products and institutional votes of confidence, those are <strong>not yet translating into visible growth or valuation inflection</strong>. The market remains skeptical and rightly so.</p>
+<p>Investors today should prioritize risk management and avoid assuming the company’s challenges are behind it. The path to recovery is uncertain and fraught with meaningful downside risks.</p>
+<hr />
+<p><strong>In short:</strong> FactSet’s bear case is grounded in tangible market realities—persistent downtrend, leverage fragility, growing competitive pressure, and mixed fundamentals—that caution against buying simply on hope and headline AI hype.</p>
+<p>Let’s keep this debate going. Which part of my analysis would you like me to unpack further or clarify?</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">Judge Decision</h3><div class="judge-body"><p>Thanks for this very thorough and well-articulated debate from both sides. Let me walk through the key points and then give a firm, actionable recommendation with a clear rationale and strategic plan.</p>
+<hr />
+<p><strong>Key takeaways from the bull analyst:</strong></p>
+<ul>
+<li>FactSet is evolving with new AI-driven compliance tools, tapping into a fast-growing fintech niche.</li>
+<li>Scalable revenue model and strong forward EPS growth (~20%) indicate sustainable earnings expansion.</li>
+<li>High operating margins and return on equity highlight efficient operations.</li>
+<li>Institutional endorsement from Bamco shows strong investor confidence.</li>
+<li>Technicals indicate weakening bearish momentum, suggesting a potential bottom forming.</li>
+<li>Dividend yield and stable free cash flow provide downside support.</li>
+<li>Debt concerns are overblown given goodwill-heavy assets and strong cash flow coverage.</li>
+</ul>
+<hr />
+<p><strong>Key takeaways from the bear analyst:</strong></p>
+<ul>
+<li>Strong medium- and long-term downtrend remains; technical bounce looks tentative and possibly a short-covering rally.</li>
+<li>Debt-to-equity ratio is extreme (72) with negative tangible book value, breeding risk of goodwill impairment in uncertain economic conditions.</li>
+<li>Competitive landscape intensifies with well-funded rivals; FactSet's AI leadership is uncertain and possibly lagging.</li>
+<li>Mixed analyst sentiment with Deutsche Bank cutting the target and issuing a Hold rating.</li>
+<li>Dividend sustainability and capital allocation questionable given leverage and macro headwinds.</li>
+<li>Market volatility, inflation, and cautious tech spending increase risks.</li>
+<li>Institutional stake increases are a mid-term value play, not a conviction buy signal.</li>
+</ul>
+<hr />
+<p><strong>My recommendation: Buy</strong></p>
+<p>Here's why, despite the compelling bear concerns, the bull case is more persuasive and actionable at this point:</p>
+<ol>
+<li>
+<p><strong>FactSet’s forward earnings growth (~20%)</strong> and expanding product suite in AI-driven compliance represent tangible, scalable catalysts that can drive a valuation re-rate. The bear case overemphasizes uncertainty rather than present fundamental progress and institutional confidence.</p>
+</li>
+<li>
+<p><strong>The technical trends</strong>, while not fully reversed, show critical early signs of stabilization and momentum improvement. Historic downtrends can and do bottom with such indicators activating, especially when aligned with strong fundamentals as here.</p>
+</li>
+<li>
+<p><strong>Debt leverage and goodwill risk</strong>, though real, are mitigated by strong cash flow generation and robust operating margins (32.6%) and RoE (28.8%). FactSet’s ability to cover interest and maintain share repurchases indicates financial prudence, and these metrics differ from tech firms with distressed balance sheets.</p>
+</li>
+<li>
+<p><strong>Institutional support</strong> from a major player like Bamco is rare and a powerful signal that sophisticated investors see value not yet fully priced into the stock.</p>
+</li>
+<li>
+<p><strong>Valuation at 13x forward P/E</strong> is modest given FactSet’s growth profile and dividend safety. This suggests substantial upside remains once AI product executions and compliance revenue streams gain traction.</p>
+</li>
+</ol>
+<p>While the bear's caution about competition, macro risks, and uncertainty is valid, these are largely external and factor into the current price discount; they do not negate FactSet’s evident strengths and positioning.</p>
+<hr />
+<p><strong>Investment plan and implementation:</strong></p>
+<ul>
+<li>
+<p>Initiate a <strong>Buy position</strong> in FactSet at or near current levels (~$210), capitalizing on the discounted price relative to its growth potential and improving technical setup.</p>
+</li>
+<li>
+<p>Establish a <strong>stop-loss around $185 to $190</strong>, protecting against a deeper downside if technical support breaks decisively. This respects the bear’s warnings about lingering downtrend risk.</p>
+</li>
+<li>
+<p><strong>Phase in additional allocations</strong> on confirmed technical breakouts above the 50-day SMA (~$237). If FactSet can clear this resistance with volume and RSI &gt; 50, it would confirm a structural trend reversal supporting more aggressive exposure.</p>
+</li>
+<li>
+<p>Monitor <strong>key growth metrics</strong> quarterly, especially revenue growth in AI/compliance segments, margin trends, and free cash flow. Strong execution here justifies scaling up exposure.</p>
+</li>
+<li>
+<p>Keep an eye on <strong>debt servicing metrics and goodwill impairment risks</strong> via balance sheet reviews each quarter. If credit conditions deteriorate or impairments emerge, re-assess position sizing or exit.</p>
+</li>
+<li>
+<p>Use dividends as <strong>income cushions</strong> while awaiting capital appreciation; consider reinvesting dividends to compound gains.</p>
+</li>
+<li>
+<p>Stay alert to competitor moves, regulatory impacts, and macroeconomic developments to pivot if the fundamental or technical picture deteriorates.</p>
+</li>
+</ul>
+<hr />
+<p><strong>Why a Buy now and not Hold or Sell?</strong></p>
+<p>Given past mistakes, I’ve learned to avoid indecision when one side shows clear evidence of growth drivers supported by institutional conviction, scalable margins, and improving technical momentum. The bear case raises valid risks but largely reflects potential scenarios rather than imminent financial distress or deteriorating fundamentals. The current valuation and multiple signals create a compelling asymmetric risk-reward with an explicit stop-loss buffer to manage downside.</p>
+<p>Simply holding would miss this opportunity to capitalize on FactSet’s evolving AI compliance growth and improving sentiment. Selling would ignore the upside potential embedded in recent earnings guidance, product innovation, and shareholder endorsements.</p>
+<hr />
+<p>So in sum: go for Buy with a disciplined risk management plan. FactSet’s fundamentals, growth runway, and technical signals align now for a meaningful recovery. This is a moment to be patient but proactive, not overly cautious.</p>
+<p>Happy to discuss next steps or any part of this analysis further!</p></div></div></section>
+        <section id="trader-plan" class="section-card"><h2 class="section-title">Trader Investment Plan</h2><div class="section-body"><p>Based on the detailed, balanced analysis provided, the recommendation to BUY FactSet (FDS) is well grounded in fundamentals, technical signals, and institutional sentiment. The bull thesis of strong forward EPS growth (~20%), a growing AI-driven compliance product line, efficient operations, and a reasonable valuation multiple (13x forward P/E) outweighs the bear concerns.</p>
+<p>The bear risks—high leverage, goodwill impairment possibility, competition, and macroeconomic headwinds—are acknowledged but appear to be partially priced in and mitigated by FactSet’s strong cash flow, margins, and institutional backing. The technical setup shows early signs of stabilization, indicating potential bottom formation rather than fresh breakdown.</p>
+<p>The suggested disciplined risk management plan with an initial buy near current levels (~$210), stop-loss in the $185-$190 range, and further scaling on confirmed technical breakouts provides a prudent approach to ride potential upside while limiting downside exposure.</p>
+<p>Incorporating lessons about decisiveness and risk controls, acting with a buy decision here aligns with the asymmetric risk-reward and growth catalysts present. Holding would miss an opportunity to enter at a discount ahead of anticipated growth, while selling neglects evident recovery potential.</p>
+<p>FINAL TRANSACTION PROPOSAL: <strong>BUY</strong></p></div></section>
+        <section id="risk-debate" class="section-card"><h2 class="section-title">Risk Management Debate</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">Aggressive</h3><div class="debate-preview"><p>Aggressive Analyst: Let me jump right into it and answer the hesitations the conservative and neutral analysts might raise, because really, playing it safe here is exactly how you miss the opportunity to ride the emerging upswing with FactSet.</p>
+<p>First, yes, the 50- and 200-day SMAs show a clear downtrend, and that’s often the conservative crowd’s go-to to dismiss upside potential. But focusing on those longer-term averages only locks you into past performance, ignoring that the short-term moment...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Aggressive Analyst: Let me jump right into it and answer the hesitations the conservative and neutral analysts might raise, because really, playing it safe here is exactly how you miss the opportunity to ride the emerging upswing with FactSet.</p>
+<p>First, yes, the 50- and 200-day SMAs show a clear downtrend, and that’s often the conservative crowd’s go-to to dismiss upside potential. But focusing on those longer-term averages only locks you into past performance, ignoring that the short-term momentum indicators are flashing subtle but crucial signs of reversal. The MACD has improved dramatically—from -23 to -5.7—and while still negative, it’s aggressively closing the gap to a bullish crossover. When you combine that with the RSI climbing back from deep oversold near 22 to now 43, you’re staring at a classic base-building phase. This early-stage stabilization isn’t just a minor blip; it’s the primer for a breakout rally. Waiting for a fully confirmed bullish trend misses the chance to accumulate shares at an undervaluation before the crowd jumps in—exactly when you want to be positioned.</p>
+<p>Regarding valuation and fundamentals, the conservative argument might hammer on the sky-high debt-to-equity ratio and negative tangible book value. However, your analysis rightly points out this is largely due to intangible assets and goodwill tied to FactSet’s acquisition and tech investments. Simply put, FactSet isn’t a traditional asset-heavy company; its value lies in its intellectual property, AI tools, recurring subscription revenue, and institutional relationships. The company sports a rock-solid 32.6% operating margin and near-29% ROE, showing they’re squeezing profit efficiently. That’s the kind of lean, high-margin growth engine that justifies elevated leverage. And free cash flow remains positive, supporting debt servicing and share buybacks, a sign of strong capital discipline that conservative analysts often underestimate as a risk mitigator.</p>
+<p>The AI-driven compliance tools are a game changer here. While neutral voices might treat the AI rollout as “promising but unproven,” my perspective is bullish precisely because AI integration in financial services is a hot market segment where early movers can snag outsized gains. FactSet’s embedding of AI into compliance tools offers them a sharp competitive edge, especially as regulatory complexity rises globally. This isn’t just incremental tech; it’s a structural growth lever capable of materially driving top-line expansion and customer stickiness—something the cautious don’t want to risk betting on but which can define future winners.</p>
+<p>Institutional investors like Bamco putting nearly $840 million into FactSet is another crucial indicator that the bear case is already “priced in” to some extent. Sophisticated funds don’t back companies lightly in the face of macro challenges and shifting valuations. Their conviction infers asymmetric upside potential that outweighs headline risks like macroeconomic headwinds or short-term volatility.</p>
+<p>Yes, the wider market is jittery amid inflation pressures, Fed caution, and geopolitical tensions, but FactSet is a defensive-ish tech play with a stable dividend yield of 2.12% in a low-yield world. It offers a rare blend of growth and income – perfect for ambitious yet risk-aware traders who want to capitalize on innovation-driven rebounds.</p>
+<p>To sum up, driving a buy at current levels around $210 with a well-defined stop-loss near $185-$190 is not reckless. It’s tactical. It balances risk control with a bold entry into a fundamentally robust, operationally efficient company on the cusp of transforming its growth story through AI. The conservative viewpoints tend to discount that FactSet’s improving momentum and institutional backing signal the floor is near and that staying out means missing a recovery run propelled by structural innovation and efficient execution.</p>
+<p>In this environment, hesitation is the enemy of gains. FactSet’s risk profile is high, yes—but the reward potential dwarfs what conservative approaches offer. This is precisely the kind of dynamic, asymmetric bet that savvy traders should be embracing, not avoiding.</p></div></details></div><div class="debate-panel" style="border-top:3px solid #3b82f6;"><h3 class="debate-panel-title" style="color:#3b82f6;">Conservative</h3><div class="debate-preview"><p>Conservative Analyst: I appreciate the enthusiasm and detailed perspective brought forward, but as the risk-focused analyst, I must emphasize that the high-risk elements here are more than just “concerns largely priced in” or “misunderstood intangibles.” Let me walk through the key issues that warrant caution, even in light of your bullish arguments.</p>
+<p>First, the technical setup you highlight—yes, the MACD is improving, and RSI is climbing from oversold levels—but these are very early, tentative...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Conservative Analyst: I appreciate the enthusiasm and detailed perspective brought forward, but as the risk-focused analyst, I must emphasize that the high-risk elements here are more than just “concerns largely priced in” or “misunderstood intangibles.” Let me walk through the key issues that warrant caution, even in light of your bullish arguments.</p>
+<p>First, the technical setup you highlight—yes, the MACD is improving, and RSI is climbing from oversold levels—but these are very early, tentative signals within an entrenched medium- to long-term downtrend, as shown clearly by the 50- and 200-day SMAs sitting well above the current price. This divergence tells me FactSet’s current trading price remains under significant pressure, and a genuine reversal confirmation is far from assured. If the stock fails to break and hold above the 10-day EMA and the Bollinger middle band decisively, it risks another leg lower, which could easily trigger stop-losses. Given this, acting aggressively on what amounts to a technical "hope" for a breakout could expose us to unwarranted drawdowns.</p>
+<p>Second, on the fundamental side, the high leverage you seek to downplay is legitimately a red flag. A debt-to-equity ratio north of 70 is staggering, no matter how you slice it, especially with a negative tangible book value near -$1 billion. This means the company’s balance sheet is heavily reliant on intangible assets that could be impaired if earnings or growth take a hit. Goodwill impairments are not hypothetical—there is an explicit risk there that could materially hurt equity value. Debt servicing could become strained in an economic downturn or with rising interest rates, something not unlikely given recent macro data pointing to persistent inflation and the Fed’s cautious stance on cutting rates. Risk management means not leaning into such structural balance-sheet vulnerabilities without a much wider margin of safety.</p>
+<p>Regarding the AI compliance tools, it’s wise to recognize that technological innovation is competitive and execution is never guaranteed. The neutral analysts’ caution around AI is well warranted. FactSet is not the only player racing toward embedding AI in compliance solutions; rivals with more capital or faster execution could erode any potential advantage. Betting large on AI driving top-line lift at this stage feels speculative and inconsistent with a conservative risk posture that prioritizes preserving capital during uncertain times.</p>
+<p>Institutional backing like Bamco’s increased stake is a positive signal but not an infallible shield. Even large investors can be wrong or overloaded on a position. Moreover, the 11% short interest is not trivial—it signals that a meaningful portion of the market is positioned against FactSet, expecting downside or perilous volatility ahead. Balancing that against optimism is prudent, not dismissive.</p>
+<p>Dividend yield and operating margins are attractive, but these are not a cushion against broader market and company-specific risks. The sector faces macro headwinds, inflationary pressures, and geopolitical uncertainties; these could pressure earnings and cause valuation contraction, eroding the “steady” income appeal.</p>
+<p>In summary, the proposal to buy with a stop loss near $185-$190 is definitely more cautious than outright naked exposure but still represents a material risk of capital loss if adverse scenarios materialize. At this price point, the firm’s assets are vulnerable to volatility and structural credit risks along with a technically weak price trend, none of which your bullish case adequately neutralizes.</p>
+<p>A truly conservative strategy would either delay entry until clearer technical signs emerge (such as MACD crossing above signal line and RSI above 50 sustained), or seek partial exposure while maintaining a tighter stop or hedging position. This preserves capital and positions the firm to capitalize on upside while actively managing downside risk rather than embracing a relatively aggressive asymmetric bet in a late-cycle, uncertain market.</p>
+<p>So while I respect the optimism, from a risk analyst standpoint, protection and stability must take precedence over chasing early-stage rebounds or innovation buzz. Let’s prioritize safeguarding the firm’s capital by backing the fundamentals and technicals that confirm durable strength, not just hopeful signals and institutional optimism. That’s the best path to steady, reliable growth.</p></div></details></div><div class="debate-panel" style="border-top:3px solid #f59e0b;"><h3 class="debate-panel-title" style="color:#f59e0b;">Neutral</h3><div class="debate-preview"><p>Neutral Analyst: Both of you bring up important points, and it’s clear this is a nuanced situation. Aggressive Analyst, I agree with your recognition that short-term momentum indicators like the improving MACD and RSI recovering from oversold do hint at some stabilizing price action. Those early technical signals do sometimes presage a turnaround, and institutional backing from Bamco certainly lends credibility to the bull case. Your framing of FactSet’s leverage as a feature rather than a flaw...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Neutral Analyst: Both of you bring up important points, and it’s clear this is a nuanced situation. Aggressive Analyst, I agree with your recognition that short-term momentum indicators like the improving MACD and RSI recovering from oversold do hint at some stabilizing price action. Those early technical signals do sometimes presage a turnaround, and institutional backing from Bamco certainly lends credibility to the bull case. Your framing of FactSet’s leverage as a feature rather than a flaw—given its asset-light model relying on intangible IP and recurring revenue—is a valid perspective rather than a simplistic balance sheet alarm.</p>
+<p>However, I must caution that leaning too heavily on these early momentum signs without respect for the entrenched longer-term downtrend signaled by the 50- and 200-day SMAs risks mistaking a short-lived bounce for a sustained recovery. The price remains considerably below those longer averages, which often act as strong resistance levels. Until the stock meaningfully breaks and holds above these levels and confirms MACD crossovers with RSI breaking neutral territory, the risk of false breakouts remains high. Acting decisively now with sizable exposure—despite the promising AI initiatives—could backfire if broader market weakness or execution risks delay or derail growth.</p>
+<p>Turning to you, Conservative Analyst, your emphasis on the high debt-to-equity ratio and negative tangible book value is crucial from a risk perspective. These ratios reflect real vulnerabilities and potential goodwill impairments if growth expectations falter. Also, the caution on AI execution risk is well placed given competitive pressures and the difficulty of translating new technology into immediate revenue gains. Your point about the significant short interest also deserves respect; it suggests the market isn’t blindly optimistic and highlights a potentially elevated volatility environment.</p>
+<p>Yet, I think your advice to delay entirely until clearer technical confirmation emerges might be too cautious. Markets rarely conform perfectly to textbook signals; waiting for full confirmation can mean missing meaningful parts of a rally or entering at significantly higher prices later, reducing upside reward potential. A wholesale avoidance or overly limited position might stagnate portfolio growth unnecessarily, especially given the company’s healthy operating margins, stable cash flow, and institutional backing.</p>
+<p>So where’s the balanced middle ground? I’d propose a moderate, phased approach that synthesizes these views:</p>
+<p>Start with a partial position at current levels, acknowledging early technical signs of stabilization but setting tighter risk controls—possibly a slightly more conservative stop loss closer than the $185-$190 range suggested, given potential false breakouts. This allows participation in the asymmetric upside driven by AI product rollout and operational efficiency while limiting downside exposure should the longer-term bearish trend assert itself again.</p>
+<p>Next, maintain vigilant monitoring of the 50-day SMA (~237) and the MACD-signal line crossover as well as RSI strength above 50 as confirmatory signals for incrementally adding exposure. This approach respects the longer-term technical contexts and gives capital preservation priority on setbacks.</p>
+<p>On the fundamental front, continue weighing debt servicing capacity and goodwill impairment risk, especially as macro factors like inflation and Fed policy remain uncertain. Maintain readiness to hedge or reduce position size if credit spreads widen or cash flows weaken unexpectedly.</p>
+<p>In essence, a calibrated buy-in framed by stringent risk management, coupled with staged scaling guided by confirmed technical and fundamental improvements, offers a more sustainable strategy that doesn't neglect growth opportunities nor dismisss important structural risks.</p>
+<p>FactSet’s story has upside catalysts, but with elevated leverage, competitive uncertainty, and a long-term downtrend, a tempered and adaptive risk approach is prudent. Neither rushing in blindly nor standing completely on the sidelines provides optimal balance. A disciplined middle path preserves capital and positions for reasonable upside in a volatile environment.</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">Judge Decision</h3><div class="judge-body"><p><strong>Final Recommendation:</strong> <strong>Buy, with phased entry and disciplined risk management</strong></p>
+<hr />
+<h3>1. <strong>Summary of Key Arguments</strong></h3>
+<p><strong>Aggressive Analyst (Bullish)</strong>:<br />
+- Early technical indicators (MACD improving, RSI rising from oversold) show signs of price bottoming despite existing longer downtrends.<br />
+- FactSet’s AI-driven compliance tools target a fast-growing fintech niche with scalable revenue and strong forward EPS (~20% growth).<br />
+- High operating margins (32.6%) and return on equity (28.8%), positive free cash flow, and firm institutional backing (Bamco’s $840M stake) demonstrate operational and financial strength despite high debt.<br />
+- Valuation is attractive (13x forward P/E), and dividend yield (~2.12%) supports downside.<br />
+- Recommended entry near $210, stop loss at $185-$190, and add on confirmed technical breakouts (50-day SMA ~ $237).</p>
+<p><strong>Conservative Analyst (Bearish on timing, cautious)</strong>:<br />
+- Technical setup is still dominated by medium/long-term downtrend; MACD and RSI improvements are very early and unconfirmed.<br />
+- Debt-to-equity ratio is dangerously high (72), negative tangible book value risks goodwill impairments amid uncertain macro conditions.<br />
+- AI initiatives face execution risks amid fierce competition; they are promising but speculative.<br />
+- Institutional buying is not a guarantee; significant short interest (11%) signals substantial market skepticism.<br />
+- Dividend and margins don’t offset macro, credit, and valuation risks sufficiently.<br />
+- Suggests waiting for clearer technical confirmation (MACD crossover, RSI &gt; 50 sustained) or employing tighter stops/hedges.</p>
+<p><strong>Neutral Analyst (Balanced, risk-aware bull)</strong>:<br />
+- Acknowledges partial validity on both sides: early positive momentum and institutional vote of confidence tempered by entrenched downtrend and leverage risks.<br />
+- Suggests phased, moderate buy strategy at current levels with tighter stops (possibly tighter than $185-$190).<br />
+- Calls for scaling exposure only with sustained technical breakout above 50-day SMA and fundamental growth confirmation.<br />
+- Emphasizes ongoing monitoring of debt metrics and competitive developments.<br />
+- Avoids all-in or pure wait stance; recommends adaptive, risk-first phased participation.</p>
+<hr />
+<h3>2. <strong>Rationale for Buy Recommendation</strong></h3>
+<ul>
+<li>
+<p>The <strong>Aggressive Analyst’s case is strongest in fundamentals and momentum</strong>, highlighting FactSet’s evolving AI compliance tools as a clear, scalable growth catalyst, supported by forward EPS growth near 20%. This is tangible and nearer-term, unlike speculative macro concerns cited by bears.</p>
+</li>
+<li>
+<p>Despite the <strong>Conservative Analyst’s valid warnings about leverage and macro risks</strong>, these aspects are <strong>acknowledged and actively mitigated</strong> by the bullish analyst’s proposed risk controls (stop loss in $185-$190 range), reflecting learning from prior missteps of overexposure without effective downside limits.</p>
+</li>
+<li>
+<p>The <strong>Neutral Analyst’s phased and cautious approach</strong> smartly synthesizes both views, balancing upside capture with risk management, which reflects a sensible refinement of the trader's plan.</p>
+</li>
+<li>
+<p>Technical indicators, though not fully reversed, <strong>show marked early improvement that has historically presaged bottoms</strong>, especially when aligned with strong institutional support and robust earnings forecasts.</p>
+</li>
+<li>
+<p>Current valuation at ~13x forward P/E and dividend yield near 2% provide an asymmetric risk/reward profile favorable for initiating exposure with clearly defined stop-loss protection.</p>
+</li>
+<li>
+<p>The <strong>market sentiment embedded in the 11% short interest is factored</strong> into the price, presenting an opportunity to benefit from a potential short squeeze or rally if catalysts materialize.</p>
+</li>
+</ul>
+<hr />
+<h3>3. <strong>Refined Trader’s Plan</strong></h3>
+<p><strong>Action: Initiate a Buy position around current levels (~$210), with the following risk and scaling framework:</strong></p>
+<ul>
+<li>
+<p><strong>Entry:</strong> Begin with a partial position to capture upside from early momentum and fundamental growth signals.</p>
+</li>
+<li>
+<p><strong>Stop-Loss:</strong> Set a tight stop in the $185-$190 range, reflecting the bear case’s acknowledgement of downside risk and protecting capital from a possible breakdown below technical support.</p>
+</li>
+<li>
+<p><strong>Scaling In:</strong> Add to the position only if FactSet breaks and sustains above the 50-day SMA (~$237) with volume confirmation and MACD crossing above the signal line, RSI &gt; 50. This aligns with the neutral analyst’s emphasis on confirmed technical turnaround.</p>
+</li>
+<li>
+<p><strong>Monitoring Fundamentals:</strong> Track quarterly revenue growth, particularly from AI/compliance initiatives, margin trends, free cash flow, and cash interest coverage closely. Watch for evidence of goodwill impairment or deteriorating credit metrics. Be prepared to tighten stops or reduce exposure if these deteriorate.</p>
+</li>
+<li>
+<p><strong>Dividend Strategy:</strong> Use the dividend (~2.12%) as an income buffer and consider reinvestment to maximize compounding in this recovery phase.</p>
+</li>
+<li>
+<p><strong>Macroeconomic Vigilance:</strong> Maintain awareness of macro factors (inflation, Fed policy) and competitor advances in AI tech to reassess position sizing promptly.</p>
+</li>
+</ul>
+<hr />
+<h3>4. <strong>Learning from Past Mistakes</strong></h3>
+<ul>
+<li>Prior errors involved either missing rebounds by waiting too long or overcommitting too early without risk controls.</li>
+<li>This plan avoids those by <strong>combining early tactical entry with strict stop-loss discipline</strong> and clearly defined scaling criteria.</li>
+<li>It respects the legitimate risk signals without freezing the portfolio out of growth opportunities.</li>
+<li>Risk mitigation is proactive, using technical and fundamental triggers rather than passive holding or emotional exits.</li>
+</ul>
+<hr />
+<h3><strong>Conclusion</strong></h3>
+<p><strong>The best course of action is to initiate a Buy at or near current levels on FactSet, using a phased entry with vigilant risk controls (stop-loss at $185-$190) and only scale up on confirmed technical strength above the 50-day SMA.</strong> This approach captures FactSet’s tangible growth catalysts in AI-driven compliance and institutional confidence while prudently managing downside risks from leverage, competition, and macro uncertainty.</p>
+<p><strong>Hold is inappropriate here</strong> because the situation involves an asymmetric risk-reward tilted toward entry now rather than indecision, and <strong>Sell would disregard fundamental and technical early upside signals supported by institutional conviction.</strong></p>
+<hr />
+<p><strong>Recommendation:</strong> <strong>Buy with phased scaling and disciplined risk management</strong></p></div></div></section>
+        <footer class="dashboard-footer"><p>Generated at 2026-03-18 01:44 by TradingAgents</p></footer>
+    </main>
+</div>
+
+<script>
+(function() {
+    // ─── Tab Switching (legacy fallback) ────────────
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var container = btn.closest('.tabs-container');
+            var tabId = btn.getAttribute('data-tab');
+            container.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            container.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+            btn.classList.add('active');
+            var panel = container.querySelector('[data-panel="' + tabId + '"]');
+            if (panel) panel.classList.add('active');
+        });
+    });
+
+    // ─── Smooth Scroll from Nav ─────────────────────
+    document.querySelectorAll('.nav-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var id = link.getAttribute('href').slice(1);
+            var el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // ─── IntersectionObserver for Nav Tracking ──────
+    var navLinks = document.querySelectorAll('.nav-link');
+    var sections = [];
+    navLinks.forEach(function(link) {
+        var id = link.getAttribute('data-section');
+        var el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el });
+    });
+
+    if (sections.length && 'IntersectionObserver' in window) {
+        var currentActive = null;
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    currentActive = entry.target.id;
+                }
+            });
+            if (currentActive) {
+                navLinks.forEach(function(l) {
+                    if (l.getAttribute('data-section') === currentActive) {
+                        l.classList.add('active');
+                    } else {
+                        l.classList.remove('active');
+                    }
+                });
+            }
+        }, {
+            rootMargin: '-80px 0px -60% 0px',
+            threshold: 0
+        });
+        sections.forEach(function(s) { observer.observe(s.el); });
+    }
+})();
+</script>
+
+<script>document.addEventListener("DOMContentLoaded", function() {  if (typeof Chart === "undefined") return;  var ctx = document.getElementById("macdChart");  if (!ctx) return;  new Chart(ctx, {    type: "bar",    data: {      labels: ["MACD", "Signal", "Histogram"],      datasets: [{        data: [-5.7, 0, 0],        backgroundColor: ["#ef4444", "#8b5cf6", "#10b981"],        borderRadius: 4,        barThickness: 40      }]    },    options: {      responsive: true,      maintainAspectRatio: false,      plugins: { legend: { display: false } },      scales: {        y: {          grid: { color: "#1e293b" },          ticks: { color: "#64748b", font: { family: "DM Mono" } }        },        x: {          grid: { display: false },          ticks: { color: "#64748b", font: { family: "DM Mono" } }        }      }    }  });});</script>
+
+</body>
+</html>

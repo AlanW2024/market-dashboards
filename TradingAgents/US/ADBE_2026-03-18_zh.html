@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADBE — BUY | 2026-03-18</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* ─── Custom Properties ─────────────────────────────── */
+:root {
+    --bg-primary: #0b0f19;
+    --bg-secondary: #0f1629;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --bg-inset: #0d1117;
+    --border-subtle: #1e293b;
+    --border-medium: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --signal-color: #10b981;
+    --signal-glow: rgba(16, 185, 129, 0.15);
+    --signal-rgb: 16, 185, 129;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --sidebar-w: 220px;
+    --header-h: 56px;
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ─── Noise Texture ─────────────────────────────────── */
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* ─── Header Bar ────────────────────────────────────── */
+.header-bar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 100;
+    display: flex; align-items: center;
+}
+.header-inner {
+    width: 100%; max-width: 1400px;
+    margin: 0 auto; padding: 0 2rem;
+    display: flex; align-items: center;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+}
+
+/* ─── Signal Pill ───────────────────────────────────── */
+.signal-pill {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.85rem;
+    background: rgba(var(--signal-rgb), 0.15);
+    border: 1px solid rgba(var(--signal-rgb), 0.3);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-weight: 500; font-size: 0.8rem;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* ─── Layout ────────────────────────────────────────── */
+.layout {
+    display: flex; max-width: 1400px;
+    margin: 0 auto; padding-top: var(--header-h);
+    min-height: 100vh;
+}
+
+/* ─── Sidebar ───────────────────────────────────────── */
+.sidebar {
+    position: sticky; top: var(--header-h);
+    width: var(--sidebar-w); flex-shrink: 0;
+    height: calc(100vh - var(--header-h));
+    padding: 1.5rem 0 1.5rem 1.5rem;
+    overflow-y: auto;
+}
+.sidebar-inner {
+    display: flex; flex-direction: column; gap: 0.25rem;
+}
+.nav-link {
+    display: block; padding: 0.5rem 1rem;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500;
+    border-radius: var(--radius-sm);
+    border-left: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+.nav-link:hover {
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.03);
+}
+.nav-link.active {
+    color: var(--signal-color);
+    border-left-color: var(--signal-color);
+    background: rgba(var(--signal-rgb), 0.08);
+}
+
+/* ─── Main Content ──────────────────────────────────── */
+.main-content {
+    flex: 1; min-width: 0;
+    padding: 1.5rem 2rem 3rem 1.5rem;
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+
+/* ─── Hero Card ─────────────────────────────────────── */
+.hero-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    overflow: hidden;
+}
+.hero-mesh {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(var(--signal-rgb), 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(var(--signal-rgb), 0.05) 0%, transparent 40%),
+        radial-gradient(ellipse at 60% 80%, rgba(var(--signal-rgb), 0.03) 0%, transparent 60%);
+    pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-header {
+    display: flex; align-items: center; gap: 1rem;
+    flex-wrap: wrap; margin-bottom: 0.5rem;
+}
+.hero-ticker {
+    font-family: var(--font-heading);
+    font-size: 2.5rem; font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text-primary), var(--signal-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-date {
+    font-family: var(--font-mono);
+    font-size: 0.9rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.hero-card .signal-pill { font-size: 0.9rem; padding: 0.35rem 1rem; }
+
+/* Risk Badge */
+.risk-badge {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 20px; letter-spacing: 0.05em;
+}
+.risk-low    { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+.risk-medium { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+.risk-high   { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+
+/* Reasons */
+.reasons-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.reason {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(var(--signal-rgb), 0.05);
+    border: 1px solid rgba(var(--signal-rgb), 0.1);
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;
+}
+.reason-num {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px;
+    background: rgba(var(--signal-rgb), 0.15);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 50%;
+}
+
+/* ─── Metrics Grid ──────────────────────────────────── */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+.metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+    position: relative; overflow: hidden;
+}
+.metric-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--signal-color); opacity: 0.4;
+    transition: opacity 0.25s ease;
+}
+.metric-card:hover {
+    border-color: rgba(var(--signal-rgb), 0.3);
+    box-shadow: 0 0 20px rgba(var(--signal-rgb), 0.08);
+}
+.metric-card:hover::before { opacity: 1; }
+.metric-label {
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+}
+.metric-value {
+    font-family: var(--font-mono);
+    font-size: 1.35rem; font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* ─── Section Cards ─────────────────────────────────── */
+.section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2rem;
+    transition: border-color 0.25s ease;
+}
+.section-card:hover { border-color: var(--border-medium); }
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.section-title::before {
+    content: ''; display: inline-block;
+    width: 4px; height: 20px;
+    background: var(--signal-color); border-radius: 2px;
+}
+.section-body {
+    color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.section-body h1, .section-body h2, .section-body h3 {
+    font-family: var(--font-heading);
+    color: var(--text-primary); margin: 1.5rem 0 0.75rem;
+}
+.section-body h1 { font-size: 1.2rem; }
+.section-body h2 { font-size: 1.1rem; }
+.section-body h3 { font-size: 1rem; }
+.section-body p { margin-bottom: 0.75rem; }
+.section-body ul, .section-body ol { margin: 0.5rem 0 1rem 1.5rem; }
+.section-body li { margin-bottom: 0.3rem; }
+.section-body strong { color: var(--text-primary); }
+.section-body em { color: var(--text-muted); font-style: italic; }
+
+/* Tables in sections */
+.section-body table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0; font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.section-body thead th {
+    background: rgba(var(--signal-rgb), 0.1);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.78rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.section-body tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.section-body tbody tr:hover { background: rgba(255,255,255,0.02); }
+.section-body tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+
+/* ─── Technical Dashboard ──────────────────────────── */
+.tech-dashboard {
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+.gauges-row {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    justify-content: center; padding: 0.5rem 0;
+}
+.gauge-container {
+    width: 200px; text-align: center;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem 0.5rem 0.75rem;
+}
+.gauge-svg { width: 100%; height: auto; }
+.charts-row {
+    display: grid; grid-template-columns: 1fr; gap: 1rem;
+}
+.chart-container {
+    position: relative; height: 220px;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+
+/* ─── MA Comparison Chart ──────────────────────────── */
+.ma-chart {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.ma-bar-row {
+    display: flex; align-items: center; gap: 0.75rem;
+}
+.ma-label {
+    width: 56px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    color: var(--text-muted); text-align: right;
+}
+.ma-bar-track {
+    flex: 1; height: 24px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px; overflow: hidden;
+}
+.ma-bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 1s ease;
+}
+.ma-value {
+    width: 64px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    color: var(--text-primary); text-align: right;
+}
+
+/* ─── KPI Grid ─────────────────────────────────────── */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.kpi-card {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+.kpi-label {
+    font-size: 0.72rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.3rem;
+}
+.kpi-value {
+    font-family: var(--font-mono);
+    font-size: 1.1rem; font-weight: 600;
+}
+
+/* ─── Sentiment Dashboard ──────────────────────────── */
+.sentiment-summary { margin-bottom: 1.5rem; }
+.sentiment-bar {
+    display: flex; height: 28px;
+    border-radius: 14px; overflow: hidden;
+    background: var(--bg-inset);
+}
+.sent-fill { transition: width 0.8s ease; min-width: 2px; }
+.sent-pos { background: #10b981; }
+.sent-neu { background: #475569; }
+.sent-neg { background: #ef4444; }
+.sentiment-counts {
+    display: flex; justify-content: center;
+    gap: 1.5rem; margin-top: 0.75rem;
+}
+.sent-count {
+    font-family: var(--font-mono); font-size: 0.8rem;
+}
+.sent-count-pos { color: #10b981; }
+.sent-count-neu { color: #64748b; }
+.sent-count-neg { color: #ef4444; }
+.sent-tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem; border-radius: 10px;
+    font-size: 0.78rem; font-weight: 500;
+}
+.sent-tag-positive { background: rgba(16,185,129,0.15); color: #10b981; }
+.sent-tag-negative { background: rgba(239,68,68,0.15); color: #ef4444; }
+.sent-tag-neutral { background: rgba(100,116,139,0.15); color: #94a3b8; }
+.sent-row-positive td:first-child { border-left: 3px solid #10b981; }
+.sent-row-negative td:first-child { border-left: 3px solid #ef4444; }
+.sent-row-neutral td:first-child { border-left: 3px solid #475569; }
+
+/* ─── Indicator Table ──────────────────────────────── */
+.indicator-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.indicator-table thead th {
+    background: rgba(var(--signal-rgb), 0.08);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.indicator-table tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.indicator-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.indicator-table tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+.ind-name {
+    font-family: var(--font-mono); font-weight: 500;
+    color: var(--text-primary);
+}
+.ind-value {
+    font-family: var(--font-mono); color: var(--signal-color);
+}
+
+/* ─── Debate Comparison ────────────────────────────── */
+.debate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; margin-bottom: 1rem;
+}
+.debate-panel {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.debate-panel-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.debate-preview {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    max-height: 200px; overflow: hidden;
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+.debate-preview p { margin-bottom: 0.5rem; }
+.debate-preview strong { color: var(--text-primary); }
+.debate-expand { margin-top: 0.75rem; }
+.debate-expand summary {
+    cursor: pointer; color: var(--signal-color);
+    font-size: 0.85rem; font-weight: 500;
+    padding: 0.4rem 0; user-select: none;
+    list-style: none;
+}
+.debate-expand summary::-webkit-details-marker { display: none; }
+.debate-expand summary::before {
+    content: '\25B8 '; font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+.debate-expand[open] summary::before { transform: rotate(90deg); }
+.debate-full {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    margin-top: 0.75rem;
+    max-height: 600px; overflow-y: auto;
+}
+.debate-full p { margin-bottom: 0.5rem; }
+.debate-full strong { color: var(--text-primary); }
+.debate-full ul, .debate-full ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.debate-full li { margin-bottom: 0.3rem; }
+
+/* ─── Judge Decision ───────────────────────────────── */
+.judge-decision {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    border-left: 3px solid var(--signal-color);
+}
+.judge-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    color: var(--signal-color);
+    margin-bottom: 0.75rem;
+}
+.judge-body {
+    color: var(--text-secondary);
+    font-size: 0.9rem; line-height: 1.7;
+}
+.judge-body p { margin-bottom: 0.5rem; }
+.judge-body strong { color: var(--text-primary); }
+.judge-body ul, .judge-body ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.judge-body li { margin-bottom: 0.3rem; }
+
+/* ─── Tabs (legacy fallback) ───────────────────────── */
+.tab-bar {
+    display: flex; gap: 0.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 1.25rem;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tab-btn {
+    padding: 0.6rem 1.25rem; background: none; border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.88rem; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.tab-btn:hover { color: var(--text-secondary); }
+.tab-btn.active {
+    color: var(--signal-color);
+    border-bottom-color: var(--signal-color);
+}
+.tab-panel {
+    display: none; color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
+.tab-panel p { margin-bottom: 0.75rem; }
+.tab-panel strong { color: var(--text-primary); }
+.tab-panel ul, .tab-panel ol { margin: 0.5rem 0 1rem 1.5rem; }
+.tab-panel li { margin-bottom: 0.3rem; }
+.text-muted { color: var(--text-muted); font-style: italic; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Collapsible Debate Rounds ─────────────────────── */
+.debate-round {
+    margin: 0.5rem 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    overflow: hidden; transition: border-color 0.2s ease;
+}
+.debate-round[open] { border-color: rgba(var(--signal-rgb), 0.2); }
+.debate-round summary {
+    padding: 0.7rem 1rem; background: var(--bg-inset);
+    cursor: pointer; font-weight: 600; font-size: 0.88rem;
+    color: var(--text-secondary); list-style: none;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: all 0.2s ease; user-select: none;
+}
+.debate-round summary::-webkit-details-marker { display: none; }
+.debate-round summary::before {
+    content: '\25B8'; font-size: 0.75rem;
+    color: var(--text-muted); transition: transform 0.2s ease;
+}
+.debate-round[open] summary::before { transform: rotate(90deg); }
+.debate-round summary:hover {
+    background: rgba(255,255,255,0.03); color: var(--text-primary);
+}
+.round-content {
+    padding: 1rem; border-top: 1px solid var(--border-subtle);
+    color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7;
+}
+.round-content p { margin-bottom: 0.6rem; }
+.round-content strong { color: var(--text-primary); }
+.round-content ul, .round-content ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+
+/* ─── Footer ────────────────────────────────────────── */
+.dashboard-footer {
+    text-align: center; padding: 2rem;
+    color: var(--text-muted); font-size: 0.8rem;
+    font-family: var(--font-mono);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 1rem;
+}
+
+/* ─── Responsive ────────────────────────────────────── */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; top: var(--header-h);
+        left: 0; right: 0; width: 100%;
+        height: auto; padding: 0.5rem;
+        background: rgba(11, 15, 25, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-subtle);
+        z-index: 90; overflow-x: auto; overflow-y: hidden;
+    }
+    .sidebar-inner {
+        flex-direction: row; gap: 0; min-width: max-content;
+    }
+    .nav-link {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        padding: 0.4rem 0.75rem; font-size: 0.78rem;
+        white-space: nowrap;
+    }
+    .nav-link.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--signal-color);
+    }
+    html { scroll-padding-top: calc(var(--header-h) + 3.5rem); }
+    .main-content { padding: 4.5rem 1rem 2rem 1rem; }
+    .hero-ticker { font-size: 1.8rem; }
+    .hero-card { padding: 1.5rem; }
+    .section-card { padding: 1.25rem; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .tab-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+    .gauges-row { gap: 0.75rem; }
+    .gauge-container { width: 160px; }
+    .debate-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-container { height: 180px; }
+    .ma-label { width: 48px; font-size: 0.72rem; }
+    .ma-value { width: 52px; font-size: 0.78rem; }
+}
+@media (min-width: 769px) {
+    .main-content { padding-top: 1.5rem; }
+}
+
+/* ─── Print ─────────────────────────────────────────── */
+@media print {
+    body { background: #fff; color: #111; }
+    body::before { display: none; }
+    .header-bar { position: relative; background: #fff; border-bottom: 2px solid #111; }
+    .header-inner { color: #111; }
+    .sidebar { display: none; }
+    .layout { display: block; }
+    .main-content { padding: 1rem; }
+    .hero-card, .section-card, .metric-card, .kpi-card, .gauge-container,
+    .debate-panel, .judge-decision {
+        background: #fff; border-color: #ddd;
+        box-shadow: none; break-inside: avoid;
+    }
+    .hero-mesh { display: none; }
+    .hero-ticker {
+        background: none;
+        -webkit-text-fill-color: #111; color: #111;
+    }
+    .signal-pill {
+        background: #eee; border-color: #ccc; color: #333;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .debate-round { break-inside: avoid; }
+    .debate-round .round-content { display: block; }
+    .debate-preview { max-height: none; mask-image: none; -webkit-mask-image: none; }
+    .debate-full { max-height: none; }
+    .tab-panel { display: block !important; margin-bottom: 1rem; }
+    .tab-bar { display: none; }
+    .section-body, .round-content, .tab-panel, .debate-full,
+    .judge-body { color: #333; }
+    .section-title, .debate-panel-title, .judge-title { color: #111; }
+    .metric-label, .kpi-label { color: #666; }
+    .metric-value, .kpi-value, .ind-value, .ma-value { color: #111; }
+    .reason { background: #f9f9f9; border-color: #ddd; color: #333; }
+    .reason-num { background: #eee; color: #333; }
+    .chart-container { display: none; }
+    .sent-tag { border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<header class="header-bar">
+    <div class="header-inner">ADBE — BUY | 2026-03-18</div>
+</header>
+
+<div class="layout">
+    <nav class="sidebar" id="sidebar"><div class="sidebar-inner"><a href="#executive-summary" class="nav-link" data-section="executive-summary">執行摘要</a>
+<a href="#market" class="nav-link" data-section="market">技術面</a>
+<a href="#sentiment" class="nav-link" data-section="sentiment">情緒</a>
+<a href="#news" class="nav-link" data-section="news">新聞</a>
+<a href="#fundamentals" class="nav-link" data-section="fundamentals">基本面</a>
+<a href="#investment-debate" class="nav-link" data-section="investment-debate">投資辯論</a>
+<a href="#trader-plan" class="nav-link" data-section="trader-plan">交易計劃</a>
+<a href="#risk-debate" class="nav-link" data-section="risk-debate">風險辯論</a>
+</div></nav>
+    <main class="main-content">
+        <section id="executive-summary" class="hero-card"><div class="hero-mesh"></div><div class="hero-content"><div class="hero-header"><h1 class="hero-ticker">ADBE</h1><span class="signal-pill">BUY</span></div><div class="hero-date">2026-03-18</div></div></section>
+        <section id="market" class="section-card"><h2 class="section-title">技術面分析</h2><div class="tech-dashboard"><div class="gauges-row"><div class="gauge-container"><svg viewBox="0 0 200 130" class="gauge-svg"><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#1e293b" stroke-width="12" stroke-linecap="round"/><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-dasharray="219.9" stroke-dashoffset="135.2" style="transition: stroke-dashoffset 1s ease;"/><text x="100" y="95" text-anchor="middle" fill="#10b981" font-family="'DM Mono', monospace" font-size="28" font-weight="600">38.5</text><text x="100" y="125" text-anchor="middle" fill="#64748b" font-family="'Outfit', sans-serif" font-size="13">RSI</text></svg></div><div class="gauge-container"><svg viewBox="0 0 200 130" class="gauge-svg"><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#1e293b" stroke-width="12" stroke-linecap="round"/><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#f59e0b" stroke-width="12" stroke-linecap="round" stroke-dasharray="219.9" stroke-dashoffset="131.9" style="transition: stroke-dashoffset 1s ease;"/><text x="100" y="95" text-anchor="middle" fill="#f59e0b" font-family="'DM Mono', monospace" font-size="28" font-weight="600">10.4</text><text x="100" y="125" text-anchor="middle" fill="#64748b" font-family="'Outfit', sans-serif" font-size="13">ATR (波動率)</text></svg></div></div><div class="charts-row"><div class="chart-container"><canvas id="macdChart"></canvas></div></div><table class="indicator-table"><thead><tr><th>指標</th><th>數值</th><th>訊號</th><th>解讀</th></tr></thead><tbody><tr><td class="ind-name">10日EMA</td><td class="ind-value">約263.4</td><td>短期均線下滑</td><td>短期均線下滑</td></tr><tr><td class="ind-name">50日SMA</td><td class="ind-value">約282.8</td><td>中期趨勢走弱</td><td>中期趨勢走弱</td></tr><tr><td class="ind-name">200日SMA</td><td class="ind-value">約337.9</td><td>長期趨勢仍偏多但有壓力</td><td>長期趨勢仍偏多但有壓力</td></tr><tr><td class="ind-name">MACD</td><td class="ind-value">-5.5</td><td>負值但動能正在改善</td><td>負值但動能正在改善</td></tr><tr><td class="ind-name">RSI</td><td class="ind-value">38.5</td><td>從超賣反彈</td><td>從超賣反彈</td></tr><tr><td class="ind-name">布林帶</td><td class="ind-value">下軌約242.1，上軌約286.8</td><td>價格接近下軌</td><td>價格接近下軌</td></tr><tr><td class="ind-name">ATR</td><td class="ind-value">約10.4</td><td>波動率上升</td><td>波動率上升</td></tr></tbody></table></div></section>
+        <section id="sentiment" class="section-card"><h2 class="section-title">情緒分析</h2><div class="sentiment-summary"><div class="sentiment-bar"><div class="sent-fill sent-pos" style="width:28.6%"></div><div class="sent-fill sent-neu" style="width:14.3%"></div><div class="sent-fill sent-neg" style="width:57.1%"></div></div><div class="sentiment-counts"><span class="sent-count sent-count-pos">2 正面</span><span class="sent-count sent-count-neu">1 中性</span><span class="sent-count sent-count-neg">4 負面</span></div></div><table class="indicator-table"><thead><tr><th>主要觀點</th><th>詳細說明</th><th>情緒</th></tr></thead><tbody><tr class="sent-row-negative"><td>執行長離職</td><td>Shantanu Narayen迅速離職引發繼任與領導不確定性</td><td>負面</td></tr><tr class="sent-row-negative"><td>分析師降評</td><td>CEO消息及成長疑慮後多次目標價下調與降評</td><td>負面</td></tr><tr class="sent-row-positive"><td>Adobe-Nvidia AI夥伴關係</td><td>加速AI創意工作流程合作，被視為長期價值推動力</td><td>正面</td></tr><tr class="sent-row-negative"><td>司法部和解</td><td>1.5億美元和解訂閱取消問題，具潛在財務風險</td><td>負面</td></tr><tr class="sent-row-negative"><td>股價走勢</td><td>股價因降評及領導層消息波動並走跌</td><td>負面</td></tr><tr class="sent-row-positive"><td>市場/產業趨勢</td><td>AI熱潮吸引目光，基本面樂觀中帶謹慎</td><td>中立／正面</td></tr><tr class="sent-row-neutral"><td>投資人情緒</td><td>領導及監管風險疑慮與AI成長期望間搖擺，整體情緒趨惡</td><td>混合但總體趨惡</td></tr></tbody></table></section>
+        <section id="news" class="section-card"><h2 class="section-title">新聞分析</h2><div class="section-body"><p>以下是關於當前全球與交易及宏觀經濟相關狀況的綜合報告，重點關注 Adobe（代號：ADBE），以及更廣泛的市場與科技產業洞見：</p>
+<hr />
+<p><strong>Adobe Inc. (ADBE) - 主要企業與市場發展動態：</strong></p>
+<ol>
+<li>
+<p><strong>領導層交替疑慮</strong>：Adobe 長期執行長 Shantanu Narayen 宣布將迅速離任，引發對接班規劃與董事會責任的疑問。此舉導致市場不確定性升高，分析師針對 Adobe 股價下調評級，擔心領導延續性及在 AI 造成變革的競爭技術環境中成長前景。</p>
+</li>
+<li>
+<p><strong>股價表現與市場情緒</strong>：Adobe 股價今年表現不佳，在執行長公告及分析師降評後承受壓力，包括目標價調降。投資者對於此次回落是否為買入良機仍存爭議，需謹慎評估領導層及執行相關風險。</p>
+</li>
+<li>
+<p><strong>AI 與戰略合作</strong>：儘管面臨逆風，Adobe 積極投入 AI，特別是與 Nvidia 建立策略聯盟，加速 AI 驅動的創意與行銷流程。此合作強化 Adobe 在生成式 AI 技術領域的地位，支撐其核心創意軟體平台。</p>
+</li>
+<li>
+<p><strong>法規與法律事項</strong>：Adobe 同意與美國司法部達成 1.5 億美元和解，涉及訂閱取消條款問題，增加一定的法規風險。</p>
+</li>
+<li>
+<p><strong>產業及投資者情緒</strong>：軟體股包括 Adobe 在內波動加劇，短暫反彈後迅速消退。投資者要求在 AI 融入及經濟不確定下展現可持續成長證據。</p>
+</li>
+</ol>
+<hr />
+<p><strong>更廣泛市場與宏觀經濟背景：</strong></p>
+<ol>
+<li>
+<p><strong>全球通膨與經濟指標</strong>：美國通膨指標持續黏性，通膨雖然緩和但仍高於目標，增加聯準會降息預期的不確定性。此一變數導致交易環境謹慎，對成長導向的科技股影響尤甚。</p>
+</li>
+<li>
+<p><strong>科技產業趨勢</strong>：AI 領域持續熱絡且波動劇烈，Nvidia 發表樂觀長期展望，並積極拓展如太空資料中心等新市場。Nvidia 的技術實力為依賴 AI 的企業（如 Adobe）帶來順風。</p>
+</li>
+<li>
+<p><strong>股市展望</strong>：市場參與者情緒分歧，一方面部分投資人對科技財報及 AI 帶來的變革潛力樂觀，另一方面對軟體公司證明營收成長及有效 AI 應用的耐心有限。</p>
+</li>
+<li>
+<p><strong>全球地緣政治與貿易因素</strong>：關稅爭論與原油等大宗商品價格波動影響整體風險偏好。華爾街面對地緣政治及法規變動保持謹慎。</p>
+</li>
+</ol>
+<hr />
+<p><strong>交易員與宏觀經濟學家的關鍵洞察：</strong></p>
+<ul>
+<li>
+<p>Adobe 領導層變動是近期股價波動的重要因素；成功管理接替過程並有效推進 AI 創新將是恢復投資人信心的關鍵。</p>
+</li>
+<li>
+<p>Nvidia 與 Adobe 的 AI 合作突顯策略聯盟在維繫 AI 強化軟體與數位創意競爭優勢中的日益重要性，表明短期風險下的長期成長潛力。</p>
+</li>
+<li>
+<p>宏觀因素如持續通膨與聯準會謹慎政策，以及全球貿易動態，共同構築混合經濟環境，使科技股表現高度依賴財報表現與 AI 進展的驗證。</p>
+</li>
+<li>
+<p>軟體股高波動性提醒應謹慎控管持倉規模，密切關注收益成長可持續性及領導層或執行層面疑慮帶來的下行風險。</p>
+</li>
+</ul>
+<hr />
+<table>
+<thead>
+<tr>
+<th>類別</th>
+<th>主要觀點</th>
+<th>含意</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Adobe 執行長交接</td>
+<td>突然離任引發接班與成長前景疑慮</td>
+<td>股價波動，分析師降評，未來策略不確定性</td>
+</tr>
+<tr>
+<td>Adobe 股價表現</td>
+<td>股價疲弱，回落交易，投資者情緒分歧</td>
+<td>可能買入點，但因領導風險需謹慎</td>
+</tr>
+<tr>
+<td>AI 與策略聯盟</td>
+<td>與 Nvidia 合作推動 AI 工作流程與創新</td>
+<td>長期價值潛力，支持成長敘事</td>
+</tr>
+<tr>
+<td>法規議題</td>
+<td>與司法部訂閱取消相關支付 1.5 億美元和解</td>
+<td>顯示法規監管風險</td>
+</tr>
+<tr>
+<td>科技產業與 AI 展望</td>
+<td>Nvidia 對 AI 樂觀；科技財報受密切關注</td>
+<td>AI 被視為成長驅動，但投資人耐心有限</td>
+</tr>
+<tr>
+<td>通膨與聯準會政策</td>
+<td>通膨緩和但仍高於目標；降息路徑不明確</td>
+<td>市場謹慎，成長股對經濟數據敏感</td>
+</tr>
+<tr>
+<td>宏觀貿易與地緣政治</td>
+<td>關稅議題與石油高價；地緣政治影響風險偏好</td>
+<td>增加市場風險因素</td>
+</tr>
+<tr>
+<td>市場情緒</td>
+<td>軟體股波動，要求成長證明</td>
+<td>鼓勵選擇性投資及密切關注科技業最新動態</td>
+</tr>
+</tbody>
+</table>
+<p>若您需要，我可以針對任何特定主題或公司提供更詳細的分析，或探索更多市場產業。</p>
+<p>您希望我進行此類深度洞察分析嗎？</p></div></section>
+        <section id="fundamentals" class="section-card"><h2 class="section-title">基本面分析</h2><div class="kpi-grid"><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Market Cap</div><div class="kpi-value" style="color:#64748b;">1046億美元</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Revenue</div><div class="kpi-value" style="color:#64748b;">244.5億美元</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EPS</div><div class="kpi-value" style="color:#64748b;">17.15美元</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">P/E (TTM)</div><div class="kpi-value" style="color:#10b981;">14.86</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Profit Margin</div><div class="kpi-value" style="color:#10b981;">29.5%</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">ROE</div><div class="kpi-value" style="color:#10b981;">58.8%</div></div><div class="kpi-card" style="border-left:3px solid #ef4444;"><div class="kpi-label">Current Ratio</div><div class="kpi-value" style="color:#ef4444;">0.91（低於1，流動性緊縮）</div></div></div><table class="indicator-table"><thead><tr><th>方面</th><th>詳細資料</th></tr></thead><tbody><tr><td>市值</td><td>1046億美元</td></tr><tr><td>營收（過去12個月）</td><td>244.5億美元</td></tr><tr><td>淨利（過去12個月）</td><td>72.1億美元</td></tr><tr><td>每股盈餘（過去12個月）</td><td>17.15美元</td></tr><tr><td>預期每股盈餘</td><td>26.36美元</td></tr><tr><td>過去市盈率</td><td>14.86</td></tr><tr><td>預期市盈率</td><td>9.67</td></tr><tr><td>利潤率</td><td>29.5%</td></tr><tr><td>營業利潤率</td><td>37.8%</td></tr><tr><td>股東權益報酬率</td><td>58.8%</td></tr><tr><td>負債對股東權益比</td><td>58.2（非常高，槓桿風險）</td></tr><tr><td>淨現金位置</td><td>+2.34億美元</td></tr><tr><td>流動比率</td><td>0.91（低於1，流動性緊縮）</td></tr><tr><td>機構持股比例</td><td>87.8%</td></tr><tr><td>內部人持股比例</td><td>0.25%</td></tr><tr><td>空頭持股比例</td><td>流通股3.9%，空頭比率2.34天</td></tr><tr><td>自由現金流（過去12個月）</td><td>92.9億美元</td></tr><tr><td>近期庫藏股回購</td><td>每季超過20億美元</td></tr></tbody></table></section>
+        <section id="investment-debate" class="section-card"><h2 class="section-title">投資辯論</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #10b981;"><h3 class="debate-panel-title" style="color:#10b981;">多頭觀點</h3><div class="debate-preview"><p>Bull Analyst: 絕對沒錯！讓我們深入探討為什麼 Adobe Inc. (ADBE) 現在是一個非常吸引人的投資機會，尤其是當你將近期的挑戰放在背景中，並以長期價值創造的視角來看待。</p>
+<hr />
+<p><strong>先回應空頭的疑慮</strong></p>
+<p>我理解——近期的 CEO 離職、分析師下調評級、法律和解以及技術指標顯示短中期的疲弱，這些的確動搖了投資者信心，促使他們謹慎行事。但事實是：每個偉大的機會往往都伴隨著短期的動盪。關鍵是要將市場噪音與基本面實力和戰略定位區分開來。</p>
+<ul>
+<li>
+<p><strong>領導層變動：</strong> 是的，Shantanu Narayen 的快速離職震驚市場並引發評級下調，但 Adobe 是公認的強大企業，擁有雄厚的領導人才儲備和深厚、驅動創新的企業文化。歷史證明，像 Adobe 這樣擁有紮實品牌和產品組合的公司能夠度過並蓬勃發展於管理層交接期。市場通常會先「過度反應」，但最終會獎勵持續的營運成果和明確的戰略方向。</p>
+</li>
+<li>
+<p><strong>法律和解：</strong> 1.5 億美元的司法部和解是一筆一次性的負擔，佔 Adobe 約 72 億美元年淨收入的一小部分，相較於其龐大的自由現金流（約 93 億美元過去十二個月）更是微...</p>
+</li>
+</ul></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>Bull Analyst: 絕對沒錯！讓我們深入探討為什麼 Adobe Inc. (ADBE) 現在是一個非常吸引人的投資機會，尤其是當你將近期的挑戰放在背景中，並以長期價值創造的視角來看待。</p>
+<hr />
+<p><strong>先回應空頭的疑慮</strong></p>
+<p>我理解——近期的 CEO 離職、分析師下調評級、法律和解以及技術指標顯示短中期的疲弱，這些的確動搖了投資者信心，促使他們謹慎行事。但事實是：每個偉大的機會往往都伴隨著短期的動盪。關鍵是要將市場噪音與基本面實力和戰略定位區分開來。</p>
+<ul>
+<li>
+<p><strong>領導層變動：</strong> 是的，Shantanu Narayen 的快速離職震驚市場並引發評級下調，但 Adobe 是公認的強大企業，擁有雄厚的領導人才儲備和深厚、驅動創新的企業文化。歷史證明，像 Adobe 這樣擁有紮實品牌和產品組合的公司能夠度過並蓬勃發展於管理層交接期。市場通常會先「過度反應」，但最終會獎勵持續的營運成果和明確的戰略方向。</p>
+</li>
+<li>
+<p><strong>法律和解：</strong> 1.5 億美元的司法部和解是一筆一次性的負擔，佔 Adobe 約 72 億美元年淨收入的一小部分，相較於其龐大的自由現金流（約 93 億美元過去十二個月）更是微不足道。這是一個警示，但並非致命打擊。</p>
+</li>
+<li>
+<p><strong>技術性弱勢：</strong> 技術圖表確實顯示修正階段，但也有見底跡象：MACD 改善、RSI 從超賣狀態回升、價格在下方布林帶反彈，成交量和平均真實波幅（ATR）增加，這些波動通常出現在拋售告一段落及可能反轉區域。中期下跌趨勢有效，但長期的 200 日簡單移動平均線（SMA）穩固看多，約在 338 美元附近——這顯示儘管近期回撤，股價的核心上升趨勢依然完好。</p>
+</li>
+</ul>
+<hr />
+<p><strong>難以忽視的成長潛力</strong></p>
+<p>現在，讓我們談談令人振奮的部分：Adobe 未來的成長故事遠未脫軌。</p>
+<ol>
+<li>
+<p><strong>人工智慧與戰略夥伴關係</strong>：Adobe 與 Nvidia 的聯盟是一個遊戲規則改變者。Adobe 利用 Nvidia 的 AI 技術，將生成式 AI 深度整合進其業界領先的創意與行銷軟體套件中。AI 對 Adobe 不再是理論，而是實際推動產品增強和吸引新客戶的催化劑。Nvidia 在 AI 硬體領域的領先地位及其看好未來數兆美元市場的樂觀預測，與 Adobe 的軟體優勢相輔相成，創造出少有競爭對手能匹敵的共生成長路線。</p>
+</li>
+<li>
+<p><strong>財務動能與可擴展性</strong>：ADBE 前瞻 EPS 約 26 美元，相較於過去 EPS 17.15 美元，展現約 54% 的成長預期，這由營收（過去十二個月 244.5 億美元）持續增長和卓越的營運利潤率（37.8%）所驅動。公司的商業模式以高度可擴展的 SaaS 為主，具備卓越的營運槓桿，因此成長直接轉化為利潤擴大。</p>
+</li>
+<li>
+<p><strong>市場機會</strong>：Adobe 的可服務市場持續擴展，不僅限於創意工具，還包括數位體驗和行銷自動化，這兩大高成長領域正迎來 AI 轉型。公司紮實的企業客戶基底、全球版圖及訂閱制模式，促成穩定且可預測的收入流。</p>
+</li>
+<li>
+<p><strong>現金流實力與股東回報</strong>：Adobe 產生驚人的自由現金流，支撐每季度超過 20 億美元積極的庫藏股回購，這不僅結構性提升 EPS，也彰顯管理層對業務的信心。</p>
+</li>
+</ol>
+<hr />
+<p><strong>堅若磐石的競爭護城河</strong></p>
+<p>Adobe 在創意軟體領域的主導地位無可匹敵——Photoshop、Illustrator、Premiere Pro、Acrobat 以及數字媒體與體驗雲均為業界標準。這個強固生態系極難被顛覆。即便面對新興 AI 競爭者，Adobe 的資料護城河、品牌勢能和客戶整合帶來持續性的競爭優勢：</p>
+<ul>
+<li>與全球創作者經濟高度契合的獨特產品</li>
+<li>透過訂閱模式建立的強勁經常性收入基礎</li>
+<li>AI 強化工具提升用戶黏著度與價值</li>
+<li>庞大的安裝用戶群因工作流程複雜而不輕易轉換</li>
+</ul>
+<hr />
+<p><strong>將市場與宏觀因素置於背景</strong></p>
+<p>當然，通膨和聯準會的不確定性為科技成長股帶來風險，但 Adobe 以強大的現金流和定價能力的商業模式，使其在波動的宏觀環境中具備韌性。同時，Adobe 從 Nvidia 的 AI 創新週期中受惠，而這仍是關鍵的產業順風。</p>
+<hr />
+<p><strong>從過往經驗中學習</strong></p>
+<p>當我思考類似故事——面臨領導層變動或監管挫折但具結構性成長動能的公司時，教訓很明確：耐心加上有紀律的風險管理通常會獲得回報。技術信號和市場情緒可能短期內保持波動，但 Adobe 的基本面、策略舉措及長期市場定位強有力地支持多頭論述。</p>
+<p>風險管理是關鍵：等待短期動能確認——MACD 黃金交叉、RSI 超過 50 且股價穩定於短期移動平均線附近，同時意識到目前的下跌相較於先前高估值，提供了更有吸引力的介入點。</p>
+<hr />
+<p><strong>結論：為什麼多頭論述更強</strong></p>
+<ul>
+<li>長期上升趨勢未改，依靠市場領先的產品組合及絕對競爭地位支撐</li>
+<li>強健的財務狀況，高利潤率、強勁的盈利增長及充足自由現金流支持股東回報</li>
+<li>與 Nvidia 的戰略 AI 夥伴關係，將 Adobe 推向創意與行銷軟體創新的最前沿</li>
+<li>CEO 交接和法律和解是短期雜音，非 Adobe 基本面成長軌跡的轉折點</li>
+<li>技術指標顯示修正接近尾聲，提供潛在的「逢低買進」機會，配合風險控管</li>
+</ul>
+<p>Adobe 不僅是一檔科技股——它是利用 AI 驅動成長策略，有能力持續領先市場的龍頭企業。當前的回調是一個積累優質股票的良機，助您把握可持續反彈與長期增值。</p>
+<hr />
+<p>如果您願意，我也可以帶您探討具體的進場點、倉位配置策略，或進一步的指標，來微調這個看多論述。讓我們繼續這場對話吧！</p></div></details></div><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">空頭觀點</h3><div class="debate-preview"><p>Bear Analyst: 絕對的，我很感謝你詳細的多頭論點與對 Adobe 長期品牌實力及策略性 AI 舉措的樂觀看法。但讓我們轉換視角，剖析為何 Adobe (ADBE) 現在看起來危機重重——這不僅僅是一次「逢低買進」的機會，而是一檔正面臨多重結構性與週期性逆風的股票。</p>
+<hr />
+<h3>1. 領導層交接：不可忽視的巨大問題</h3>
+<p>你主張 Adobe 強大的團隊配置和企業文化能吸收執行長 Shantanu Narayen 突然離任的衝擊——但歷史與市場反應卻顯示相反的訊號：</p>
+<ul>
+<li>主要科技公司執行長的突然離職通常會<em>加劇</em>不確定性、打亂策略執行，且在新領導者證明自身能力前，創新會暫停。此次離職的<em>速度</em>與<em>意外性</em>是警訊，而非只是「市場反應過度」。</li>
+<li>分析師下調評級與大量負面評論凸顯華爾街視領導缺失與潛在策略偏離為重大風險。這不僅是雜音，而是 Adobe 必須面對並渡過的核心問題，可能持續數季甚至數年。</li>
+<li>歷來領導層不穩定與業績表現不佳高度相關，尤其是在企業須執行複雜策略轉型期——例如在競爭激烈的軟體環境內徹底植入 AI 時。別小看管理層變動帶來的惰性。</li>
+</ul>
+<hr />
+<h3>2...</h3></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>Bear Analyst: 絕對的，我很感謝你詳細的多頭論點與對 Adobe 長期品牌實力及策略性 AI 舉措的樂觀看法。但讓我們轉換視角，剖析為何 Adobe (ADBE) 現在看起來危機重重——這不僅僅是一次「逢低買進」的機會，而是一檔正面臨多重結構性與週期性逆風的股票。</p>
+<hr />
+<h3>1. 領導層交接：不可忽視的巨大問題</h3>
+<p>你主張 Adobe 強大的團隊配置和企業文化能吸收執行長 Shantanu Narayen 突然離任的衝擊——但歷史與市場反應卻顯示相反的訊號：</p>
+<ul>
+<li>主要科技公司執行長的突然離職通常會<em>加劇</em>不確定性、打亂策略執行，且在新領導者證明自身能力前，創新會暫停。此次離職的<em>速度</em>與<em>意外性</em>是警訊，而非只是「市場反應過度」。</li>
+<li>分析師下調評級與大量負面評論凸顯華爾街視領導缺失與潛在策略偏離為重大風險。這不僅是雜音，而是 Adobe 必須面對並渡過的核心問題，可能持續數季甚至數年。</li>
+<li>歷來領導層不穩定與業績表現不佳高度相關，尤其是在企業須執行複雜策略轉型期——例如在競爭激烈的軟體環境內徹底植入 AI 時。別小看管理層變動帶來的惰性。</li>
+</ul>
+<hr />
+<h3>2. 技術線圖與價格動作是在警告，非底部確認</h3>
+<p>沒錯，MACD <em>有所改善</em>，RSI 從超賣區反彈——但兩者仍處於疲弱區域。以下說明為何這種技術「改善」不足以說服我應該有人急著進場：</p>
+<ul>
+<li>10 日 EMA 及尤其是 50 日 SMA 已<em>被決斷性跌破</em>。50 日 SMA 是非常重要的中期趨勢線；價格固執未能重回該線，顯示真實的賣壓存在。</li>
+<li>200 日 SMA 雖仍高於價格，但趨勢趨於平緩，且與價格的落差擴大——這是長期動能減弱的經典訊號。</li>
+<li>成交量在下跌日激增顯示<em>籌碼分配</em>，而非吸納。聰明資金很可能在反彈時賣出。</li>
+<li>ATR 上升顯示波動性加劇——這種環境容易放大損失，並使風險管理更加複雜。</li>
+<li>整體而言，這些是修正階段仍在進行的典型標誌，而非「見底」。</li>
+</ul>
+<hr />
+<h3>3. 財務結構疑慮與市場逆風</h3>
+<p>你強調獲利性和自由現金流合理，但讓我們正視基本面藏著的風險：</p>
+<ul>
+<li><strong>58.2 的負債權益比令人警戒。</strong> 若考慮會計實際狀況（不僅是資產負債表上的現金與負債），Adobe 構成高度槓桿。淨現金位置極薄弱（2.34 億美元）掩蓋了槓桿風險，因股東權益因非有形資產而被壓低。這表示 Adobe 在經濟下滑或科技股賣壓時更缺乏彈性。</li>
+<li><strong>流動比率低於 1（0.91）</strong> 是另一警訊：流動性緊繃代表若成長放緩或宏觀條件惡化，Adobe 可能面臨營運壓力。</li>
+<li>積極的庫藏股回購（每季超過 20 億美元）愈顯雙刃劍特質：雖短期支撐每股盈餘，但耗費現金，這筆現金原本或許能更好用於創新或強化資產負債表，在經濟不確定升溫時更加重要。</li>
+<li>預期未來盈餘成長（遠期 EPS / 過去 EPS）顯示<em>高達 54%</em>的暴增幅度——在產業挑戰、領導風險和競爭壓力漸增的情況下，這幾乎過於樂觀。如此高估值容忍度使得任何盈餘不及預期都易造成巨大震盪。</li>
+</ul>
+<hr />
+<h3>4. 法規與競爭格局：不只是一次性的法律成本</h3>
+<ul>
+<li>1.5 億美元的司法部和解金額相對 Adobe 利潤可能看似「小」，但它揭示了監管關注正升溫。訂閱制商業模式受到整個行業嚴格審查；更大且昂貴的合規風險隱憂蔓延。</li>
+<li>談競爭時，別忘了 Adobe 正面臨靈活的 AI 原生新創公司和大型雲端巨頭對創意及行銷軟體領域的加強攻勢。既有優勢並非永恆保障——尤其是 Adobe 在管理層變動之際，創新步伐放緩的話。</li>
+<li>與 Nvidia 的合作有潛力，但仍屬投機階段。Adobe 平台內 AI 應用將面臨採用延遲，且其他軟體廠商（如 Microsoft、Google 等）擁有強大生態系統支持，積極推出 AI 創意工具，競爭極為激烈。</li>
+</ul>
+<hr />
+<h3>5. 宏觀與市場環境放大風險</h3>
+<ul>
+<li>通膨持續頑固，聯準會降息前景不明朗，科技產業受到嚴密審視。歷史經驗顯示，高貝他（Adobe 貝他值 1.53）股票在科技下跌期受損更嚴重。</li>
+<li>整體軟體類股未能維持近期反彈——投資人對 AI 熱潮的耐心正在消退，必須等基本面跟上。</li>
+<li>地緣政治緊張與貿易不確定性為全球科技股增加了風險溢價。</li>
+</ul>
+<hr />
+<h3>6. 類似情況的教訓：耐心<em>不一定</em>帶來報酬</h3>
+<p>你提到耐心與風險管理是美德，我完全同意。但我們已看過類似劇本：</p>
+<ul>
+<li>有強勢品牌與 AI 敘事但面臨領導層不穩定的公司（如 IBM 執行長交替期、Oracle 面臨科技轉型時），往往經歷漫長的盤整甚至負報酬期，才有反彈。</li>
+<li>指望最終管理層穩定與創新突破，往往會被市場週期及競爭破壞風險擊潰。</li>
+<li>技術訊號與市場情緒有時反映的是嚴重基本面惡化，而非雜訊。</li>
+</ul>
+<hr />
+<h3><strong>結論：為何 Adobe 現在看來更具風險，非機會</strong></h3>
+<ul>
+<li>嚴重的領導層不確定性籠罩近期與中期執行；分析師降評與股價疲軟反映投資人謹慎是合理的。</li>
+<li>技術面顯示修正仍在進行，非已確認反轉；價格在關鍵支撐下方且波動加劇。</li>
+<li>財務結構風險高，極端槓桿與流動性壓力限制了成長放緩時的調整空間。</li>
+<li>法規問題與競爭威脅疊加本已波動的宏觀環境，增添不確定性。</li>
+<li>前瞻性盈餘假設過於樂觀，面對這些逆風難以支撐。</li>
+<li>AI 與 Nvidia 夥伴關係雖有潛力，但作為唯一投資論點仍為時過早。</li>
+</ul>
+<hr />
+<p><strong>所以對多頭來說：是的，Adobe <em>有可能</em>最終復甦，但沒有確認的動能轉折與領導清晰度，耐心可能只會眼見價值進一步流失。對於謹慎的投資人，明智之道是保持戒心，等待穩定的明確證據，並嚴格控管風險。</strong></p>
+<hr />
+<p>若你願意，我很樂意繼續討論或分析具體的風險緩解策略。但從空頭角度來看，Adobe 目前情勢大聲疾呼：<em>請小心前進，勿輕舉妄動。</em></p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">裁判決定</h3><div class="judge-body"><p>好，讓我們務實地分析並決定對 Adobe (ADBE) 最佳的可行操作立場。</p>
+<p>從多頭角度看，Adobe 的基本面優勢十分堅實：在創意和數位行銷軟體中有深厚的市場領導地位，強勁的自由現金流與獲利能力，最重要的是通過與 Nvidia 合作整合 AI，帶來加速成長的潛力。多頭分析師認為這次回調主要是由暫時的領導層震盪和小規模法律和解帶來的噪音影響——鑒於 Adobe 的財務規模與產品護城河，這些都在可控範圍內。技術分析也暗示底部接近且動能有所提升——這描繪出典型的「弱勢買進」布局，適合長期投資者。</p>
+<p>反之，空頭論點則偏向謹慎——強調突然的 CEO 離職帶來的領導層不確定性，尤其是當 Adobe 需要穩定執行以有效圍繞 AI 進行轉型時。空頭指出整體技術面仍偏弱，尚未確認底部，且下跌日伴隨交易量激增，賣壓持續。他們合理地擔憂 Adobe 的財務結構——槓桿與流動性壓力，並警告激進的股票回購可能損及靈活性。此外，監管風險、來自 Microsoft 與 Google 等巨頭在軟體及 AI 領域的競爭加劇，加上複雜的宏觀前景，都帶來紅旗。最重要的是，空頭質疑當前價格中過於樂觀的未來每股盈餘成長預期，認為應耐心等待 Adobe 在反彈前可能的表現停滯甚至進一步下挫。</p>
+<p>以我的經驗來看，科技股的動能陷阱往往痛苦且耐心可能適得其反，若忽視基本面運作風險及整體市場環境。然則，直接賣出一個以 AI 為核心且擁有廣泛產品護城河的市場領導者顯得過於倉促。領導層交接確實重要，但不應低估 Adobe 的深厚實力。</p>
+<p><strong>那結論是什麼？</strong> 我們看到領導層風險和技術面弱勢被點出，但伴隨龐大的基本面優勢、AI 驅動的成長潛力以及強勁現金流，可以支撐動能穩定後的反彈。這看起來更像是戰術性的回調，而非結構性崩盤。</p>
+<p><strong>建議：採取謹慎分批建倉，並嚴格風險管理的買入策略。</strong></p>
+<p>原因在於：多頭論點由穩健的長期基本面與可信的成長路徑支持——尤其是在 AI 及訂閱續約強勁的背景下。空頭的警示合理，但主要是短期因素，而目前價格弱勢似乎已包含多數風險。技術面雖未完全確認底部，但跡象顯示可能接近，若等待過久則恐錯過這家有結構優勢科技股的反彈。更重要的是，估值相較過去更具吸引力，降低了新進者的下行風險。</p>
+<hr />
+<h3>交易者投資計畫：</h3>
+<p><strong>1. 建倉入場：</strong><br />
+初期小幅進場，約為目標持倉的 40-50%。使用限價單下單於近期技術支撐位附近（約 200 日均線附近，約 $338 美元，若波動持續可稍微更低）。此舉可對抗短期可能的進一步下跌。</p>
+<p><strong>2. 監控技術指標與領導層消息：</strong><br />
+尋求技術確認訊號，如 MACD 黃金交叉、RSI 回升至 50 以上、成交量支持上漲趨勢，然後分批加碼。並密切跟蹤 CEO 繼任消息、管理層評論及法律相關發展。</p>
+<p><strong>3. 風險控管：</strong><br />
+設置停損點於近期低點下方（例如初始買入價下方 5-7%）以保護資金，避免空頭觀點完全成真。股價企穩後可考慮採用移動停損鎖定收益。</p>
+<p><strong>4. 持有時間與耐心：</strong><br />
+中長期持有（12-24 個月），利用 Adobe 的 AI 轉型及產品護城河。避免追逐短期炒作，保持紀律性分批建倉。</p>
+<p><strong>5. 分散投資與平衡：</strong><br />
+鑒於槓桿及宏觀不確定性，確保 Adobe 持倉比例不過重。可搭配其他波動較小或風險特性不同的科技股或產業。</p>
+<hr />
+<p>從過去教訓學習，我不會因為「市場領導者」而盲目買入跌勢，但此案例在謹慎樂觀和合理短期風險間取得平衡。多頭對結構性成長與 AI 協同效應的基本面論點足以支持策略性買入，而空頭的警告則透過分批入場與積極風險管理予以回應。</p>
+<p>所以，我們自信下決心：現在就分階段謹慎買入 Adobe，抓住機會同時妥善控管空頭風險。</p></div></div></section>
+        <section id="trader-plan" class="section-card"><h2 class="section-title">交易者投資計劃</h2><div class="section-body"><p>該分析提供了對Adobe當前狀況的全面觀點，強調了基於AI整合和訂閱模式韌性的強勁基本面增長前景，同時也指出了圍繞領導層、技術趨勢及外部風險的短期不確定性。</p>
+<p>主要利好：<br />
+- Adobe穩固的市場地位及與Nvidia等AI合作夥伴關係預示著未來高成長。<br />
+- 價格疲軟似乎反映了許多短期風險已被消化。<br />
+- 技術指標顯示可能已形成底部，適合分階段進場。</p>
+<p>需注意：<br />
+- 執行長交接在關鍵轉型期帶來執行不確定性。<br />
+- 技術面尚未完全看多，波動性可能持續。<br />
+- 財務槓桿及監管/競爭壓力存在風險。</p>
+<p>綜合考量，建議於關鍵支撐位附近（約$338）建立部分頭寸，此策略符合謹慎風險管理，同時利用長期看多案例。在進一步加碼前監控技術確認及領導層消息，有助於降低過早全面進場的風險。設定入場價下方5-7%的停損點，能保護資金免受下跌意外影響。</p>
+<p>此平衡且具戰術性的買入策略兼顧多空雙方觀點，並利用Adobe核心優勢，同時不忽視有效的短期風險。</p>
+<p>最終交易建議：<strong>BUY</strong>（採取謹慎分階段入場並嚴格風險控制，詳情如上述）</p></div></section>
+        <section id="risk-debate" class="section-card"><h2 class="section-title">風險管理辯論</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">進取觀點</h3><div class="debate-preview"><p>積極分析師：讓我直接回應謹慎和中立的觀點，並解釋為什麼交易者在不確定因素下選擇部分買入Adobe的決定，是更聰明、更具機會主義的操作。</p>
+<p>首先，關於領導層的擔憂：是的，CEO的突然離職確實帶來短期不確定性。但這正是可能引發市場過度反應的事件，為基本面強健的公司提供難得的折扣。保守派觀點將這種領導層變動視為障礙，可能因等待過久而錯失良機。歷史上，像Adobe這種擁有穩固AI合作夥伴和主導市場地位的公司，往往能度過這類過渡期並變得更強，特別是當其研發支出（仍約每季度10億美元）持續推動創新時。市場已經反映了大部分風險，從股價在重要技術支撐區附近下跌可見一斑——那為何不現在逐步進場？階段性布局既能捕捉上行潛力，也能控制下行風險。</p>
+<p>中立分析師強調要等確認技術轉折——MACD出現多頭交叉，RSI大幅高於目前的38.5，並站穩50日均線。作為謹慎的檢查清單，這是合理的，但這種觀點忽略了價格行為的不對稱性。股票目前位於布林帶下軌附近約242美元，波動率升高（ATR為10.4），且動能下跌趨勢減弱（MACD從-15.98回升至-5.5），風險/報酬比偏向即將反彈。等完整技術訊號可能錯過地板價位入場。...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>積極分析師：讓我直接回應謹慎和中立的觀點，並解釋為什麼交易者在不確定因素下選擇部分買入Adobe的決定，是更聰明、更具機會主義的操作。</p>
+<p>首先，關於領導層的擔憂：是的，CEO的突然離職確實帶來短期不確定性。但這正是可能引發市場過度反應的事件，為基本面強健的公司提供難得的折扣。保守派觀點將這種領導層變動視為障礙，可能因等待過久而錯失良機。歷史上，像Adobe這種擁有穩固AI合作夥伴和主導市場地位的公司，往往能度過這類過渡期並變得更強，特別是當其研發支出（仍約每季度10億美元）持續推動創新時。市場已經反映了大部分風險，從股價在重要技術支撐區附近下跌可見一斑——那為何不現在逐步進場？階段性布局既能捕捉上行潛力，也能控制下行風險。</p>
+<p>中立分析師強調要等確認技術轉折——MACD出現多頭交叉，RSI大幅高於目前的38.5，並站穩50日均線。作為謹慎的檢查清單，這是合理的，但這種觀點忽略了價格行為的不對稱性。股票目前位於布林帶下軌附近約242美元，波動率升高（ATR為10.4），且動能下跌趨勢減弱（MACD從-15.98回升至-5.5），風險/報酬比偏向即將反彈。等完整技術訊號可能錯過地板價位入場。同時，長期趨勢依舊穩健，200日均線遠高於當前價格（約338美元），反映機構持續信心和對AI增長的樂觀看法。</p>
+<p>關於監管和槓桿風險：的確，Adobe報告的58.2債務股本比率顯示槓桿顯著，但這主要是其以無形資產和商譽主導的資本結構特性。重要的是，Adobe是淨現金正面且年產生超過90億美元自由現金流，公司營運利潤率高達約38%，ROE近59%。這意味著其有能力且盈利充足以有效管理負債。另一方面，司法部1.5億美元的和解金雖引起關注，但相較於淨利72.1億美元來說屬於小額，且看來已被近期拋售反映。保守觀點誇大了這些風險，忽視了公司基本的現金產生能力與韌性。</p>
+<p>最後，與Nvidia的AI合作是遊戲規則改變者。這個聯盟不僅帶來增量成長，更將Adobe置於生成式AI創新的最前線，該領域正在重塑創意軟體產業。Nvidia兆美元的未來展望及積極拓展新AI領域，形成強大順風。此多頭布局與主要產業及宏觀主題相符，而謹慎派可能低估此趨勢。AI正是巨大上行空間所在，Adobe早早定位於此生態系統內，帶來巨大競爭優勢及市場份額的提升。</p>
+<p>總結來說，「持觀望態度」的聲音忽視Adobe股票已經內含多少風險，也低估AI整合的策略催化效應與分階段建倉的耐心。忽略這點是過度謹慎帶來的經典機會成本。交易者計劃接近關鍵支撐開始部分建倉，並嚴格設置止損，是積極捕捉上行空間與風險控管的最佳平衡。此策略在管理固有不確定性的同時，抓住了獨特的高報酬時機——這正是當今波動劇烈的科技環境中能勝出市場的果敢策略。</p></div></details></div><div class="debate-panel" style="border-top:3px solid #3b82f6;"><h3 class="debate-panel-title" style="color:#3b82f6;">保守觀點</h3><div class="debate-preview"><p>保守派分析師：我欣賞激進派和中立派分析師的觀點，也理解搶抓Adobe看似「折扣」機會的吸引力。然而，從保守風險立場來看，有幾個關鍵問題突出，促使我們必須謹慎行事，甚至比提議的策略性分步進場更需審慎。</p>
+<p>首先，關於領導層交接：確實，CEO突然離職會引發過度反應，但對Adobe而言，像Shantanu Narayen這樣長期且具遠見的領導者迅速退出，不僅僅是市場噪音—這是重大的公司治理風險。這是一個關鍵時刻，帶來顯著的執行不確定性。市場動盪的反應以及分析師降評清楚表明投資人信心動搖。擁有根深蒂固領導層的公司可能較能應對變動，但並非所有公司都能，特別是創新密集型企業在面對快速變化的AI競爭時更是如此。在當前股價附近急於以「分步進場」方式介入，若新管理層表現不佳或策略優先順序改變，風險猶如接住「跌刀」。謹慎的做法是等待更明確的領導信號及執行確認，再投入資金。</p>
+<p>技術面方面，中立分析師指出股價接近超賣並觸及下布林帶，顯示反彈可能。然而，短中期的主要趨勢指標仍然偏弱—10日EMA及50日SMA均下行，且最近股價已跌破50日SMA重要支撐。MACD仍為負但略有改善，RSI停留在約38.5，顯示持續疲...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>保守派分析師：我欣賞激進派和中立派分析師的觀點，也理解搶抓Adobe看似「折扣」機會的吸引力。然而，從保守風險立場來看，有幾個關鍵問題突出，促使我們必須謹慎行事，甚至比提議的策略性分步進場更需審慎。</p>
+<p>首先，關於領導層交接：確實，CEO突然離職會引發過度反應，但對Adobe而言，像Shantanu Narayen這樣長期且具遠見的領導者迅速退出，不僅僅是市場噪音—這是重大的公司治理風險。這是一個關鍵時刻，帶來顯著的執行不確定性。市場動盪的反應以及分析師降評清楚表明投資人信心動搖。擁有根深蒂固領導層的公司可能較能應對變動，但並非所有公司都能，特別是創新密集型企業在面對快速變化的AI競爭時更是如此。在當前股價附近急於以「分步進場」方式介入，若新管理層表現不佳或策略優先順序改變，風險猶如接住「跌刀」。謹慎的做法是等待更明確的領導信號及執行確認，再投入資金。</p>
+<p>技術面方面，中立分析師指出股價接近超賣並觸及下布林帶，顯示反彈可能。然而，短中期的主要趨勢指標仍然偏弱—10日EMA及50日SMA均下行，且最近股價已跌破50日SMA重要支撐。MACD仍為負但略有改善，RSI停留在約38.5，顯示持續疲弱而非確定轉折。波動率升高（ATR 10.4）加上拋售量增加，使得未有明顯動能轉折前介入變得複雜。等待股價持續站穩於50日SMA之上並伴隨MACD黃金交叉，才是更安全的切入時機，而非嘗試時間點尚未技術驗證的低點。</p>
+<p>談及槓桿與監管風險，雖然Adobe淨現金為正且自由現金流強勁，但58.2的極高負債股本比率不能輕易視為「怪異現象」。這反映結構性槓桿，受到無形資產及低帳面股本放大影響，對現金流中斷極為敏感。流動比率低於1顯示流動性受限，若遇市場或營運壓力，財務彈性恐比預期更緊縮。司法部1.5億美元和解金雖相較淨利不高，但增加監管不確定性與潛在法律風險—在已屬波動市場中又添逆風。這些嚴重訊號支持謹慎減碼或觀望，而非提前加倉。</p>
+<p>最後，雖然與Nvidia的合作無疑是長期利多推手，但正因如此，它只是長期催化劑。今年AI樂觀情緒已被高度反映於科技股中，而其經歷了劇烈波動及修正。AI對Adobe財務的最終影響仍取決於執行、擴展與市場接受度，短期仍存高度不確定性。提前大量下注可能導致代價高昂的策略失誤。更廣泛的宏觀環境也不甚理想—持續的通膨疑慮、聯準會謹慎政策與地緣政治風險，使產業特定挑戰更為棘手。</p>
+<p>總結來說，儘管上行空間誘人，但領導層動盪、技術反彈未明、高槓桿、監管風險與宏觀不確定性等風險，讓低風險、觀望待變的策略更為合適。保護資本與穩健風險控管的成長仍應為首要。若於支撐位附近啟動部分持倉，且僅是一小部分配置並設嚴格停損倒還合理，但現在全面或積極加碼會無謂增加波動與下行風險。我們的角色是守護資產，避免未經確認的反彈前盲目追漲，而不只是追求上漲。</p>
+<p>因此，儘管交易者計劃透過階段性買進與停損表現出一定的風險意識，我仍主張更保守的態度：密切觀察發展，等待決定性的領導層明確訊號、技術動能確認及監管情況更趨明朗後，再有意義地擴大投入。這才是保本並確保長期可持續表現的最安全路徑。</p></div></details></div><div class="debate-panel" style="border-top:3px solid #f59e0b;"><h3 class="debate-panel-title" style="color:#f59e0b;">中立觀點</h3><div class="debate-preview"><p>中立分析師：積極與保守的分析師皆提出了合理的觀點，但各自傾向於風險承受度的極端，忽略了中間立場的微妙平衡，而中立風險策略恰好擁抱這個中間地帶。</p>
+<p>先從積極觀點開始：現在進場以利用市場對CEO交接及短期波動的過度反應，理論上是有其道理的。與Nvidia的AI合作無疑是一項策略優勢，Adobe的基本面依然強勁，擁有穩健的獲利能力與現金流。但積極立場多少低估了突然領導層變動的實際營運風險，尤其是新任CEO的願景與執行能力尚未明朗。雖然歷史模式顯示既有公司能夠承受此類轉型，但這並無保證——特別是在AI推動下快速變革的產業中。此外，積極策略假設領導風險與監管和解已被「完全反映」於股價，但持續的負面情緒和調降評級顯示市場仍存在不確定性。58.2的負債對權益比及低於1的現流比率，雖部分來自會計結構，但反映槓桿與流動性考量，若遇市場或營運衝擊，將帶來實質風險。</p>
+<p>轉向保守論調，等待技術面明確突破——例如價格持續站穩50日均線且MACD出現多頭交叉——從風險規避角度看相當謹慎。強調領導層明晰性很重要，因為管理層轉換歷來可能引發策略調整或失誤，令投資人不安。保守觀點正確指出短期及中期均線走跌、波動率（AT...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>中立分析師：積極與保守的分析師皆提出了合理的觀點，但各自傾向於風險承受度的極端，忽略了中間立場的微妙平衡，而中立風險策略恰好擁抱這個中間地帶。</p>
+<p>先從積極觀點開始：現在進場以利用市場對CEO交接及短期波動的過度反應，理論上是有其道理的。與Nvidia的AI合作無疑是一項策略優勢，Adobe的基本面依然強勁，擁有穩健的獲利能力與現金流。但積極立場多少低估了突然領導層變動的實際營運風險，尤其是新任CEO的願景與執行能力尚未明朗。雖然歷史模式顯示既有公司能夠承受此類轉型，但這並無保證——特別是在AI推動下快速變革的產業中。此外，積極策略假設領導風險與監管和解已被「完全反映」於股價，但持續的負面情緒和調降評級顯示市場仍存在不確定性。58.2的負債對權益比及低於1的現流比率，雖部分來自會計結構，但反映槓桿與流動性考量，若遇市場或營運衝擊，將帶來實質風險。</p>
+<p>轉向保守論調，等待技術面明確突破——例如價格持續站穩50日均線且MACD出現多頭交叉——從風險規避角度看相當謹慎。強調領導層明晰性很重要，因為管理層轉換歷來可能引發策略調整或失誤，令投資人不安。保守觀點正確指出短期及中期均線走跌、波動率（ATR）升高與高賣壓量是警示信號，暗示不宜冒然進場。然而，這種謹慎態度可能錯失機會成本。等待完美技術確認，尤其是在急劇下跌後，可能導致若反彈發生時必須以大幅更高價格買入，潛在損失上行空間並造成不理想的成本點。</p>
+<p>採取平衡視角，交易者策略在關鍵支撐位（約$338）附近分批建倉，並設置5-7%止損，恰當地在風險與收益間取得平衡。該策略承認AI合作的上行潛力、基本面優勢及歷史經驗中領導層更替的韌性，另一方面不會在技術訊號改善或領導層明朗前過度承擔風險。該方案尊重中期技術謹慎，即10日EMA與50日SMA的趨勢，同時透過逐步調整持倉以降低錯過反彈的風險。此策略亦考量波動率及賣壓上升，控制持倉規模與保存資本於下跌延續時發揮作用。</p>
+<p>廣泛的市場和宏觀經濟因素也支持這條中間路線。持續的通膨壓力與模糊的聯準會政策維持了謹慎的交易環境，對成長股尤為影響深遠。科技業的AI題材雖看漲，仍屬投機性催化因素。監管與地緣政治風險增添不確定性，警示現階段不宜過度暴露於風險。與此同時，完全忽視AI的策略優勢與Adobe穩健的營運現金流，則可能過於保守。</p>
+<p>總結而言，積極分析師或許對風險「完全反映」過於樂觀，同時輕忽了槓桿與流動性風險。保守分析師雖然謹慎妥當，卻可能過度擔憂完美訊號與領導確定性，承擔了機會成本。交易者透過於支撐位附近分批買入並嚴控風險的策略，良好平衡了上述觀點。此審慎方式能明智捕捉AI驅動創新及Adobe核心優勢的成長潛力，同時在領導層變動、技術面及宏觀不確定性下有效管理下行風險。這是一條務實且風險校準的路徑，長期來看較任何極端立場更可能達成目標。</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">裁判決定</h3><div class="judge-body"><h2>Adobe (ADBE) 風險管理決策與建議</h2>
+<hr />
+<h3>1. 主要分析師觀點摘要</h3>
+<table>
+<thead>
+<tr>
+<th>面向</th>
+<th>積極觀點</th>
+<th>中立觀點</th>
+<th>保守觀點</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>領導風險</strong></td>
+<td>CEO 離職為市場過度反應；Adobe 實力深厚且研發投入持續支撐成長。</td>
+<td>領導層變動帶來不確定性；繼任者未知，但公司歷史上具韌性。</td>
+<td>CEO 離職為重大治理風險；執行面不確定性高。</td>
+</tr>
+<tr>
+<td><strong>技術面</strong></td>
+<td>逼近底部；超賣條件暗示逢弱買入；風險報酬有利介入。</td>
+<td>技術面走弱但改善中；待部分確認後可開始部分買入並控風險。</td>
+<td>趨勢仍偏空；尚無底部確認；技術面建議等待。</td>
+</tr>
+<tr>
+<td><strong>財務健康與槓桿</strong></td>
+<td>槓桿多為無形會計因素；穩健現金流與營運利潤率支持債務管理。</td>
+<td>槓桿與流動性緊繃但在現金流支持下可控；增加部分風險。</td>
+<td>高負債/股本比率與低流動性構成實質財務風險。</td>
+</tr>
+<tr>
+<td><strong>監管與法律風險</strong></td>
+<td>1.5 億美元司法部和解金額相較於收入微不足道；已價格反映。</td>
+<td>和解增加不確定性；屬於既有負面情緒部分。</td>
+<td>和解加上監管環境增加下行風險。</td>
+</tr>
+<tr>
+<td><strong>AI 合作與成長</strong></td>
+<td>Nvidia 合作具變革性，提供強勁長期成長與市場優勢。</td>
+<td>AI 夥伴關係為主要催化劑，但執行仍不確定；成長潛力與近期風險相互平衡。</td>
+<td>AI 成長屬長期且投機性；價格已反映但短期營收不確定。</td>
+</tr>
+<tr>
+<td><strong>市場與宏觀因素</strong></td>
+<td>宏觀風險存在，但公司基本面與 AI 成長前景更具優勢。</td>
+<td>聯準會、通膨、地緣政治風險適中；對市場環境保持平衡看法。</td>
+<td>宏觀不確定性與競爭需謹慎且延後布局。</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3>2. 建議理由說明</h3>
+<ul>
+<li>
+<p><strong>交易者原始計劃</strong>—於技術支撐位（約 $338）附近謹慎分批買入，搭配嚴謹停損並監控領導層及技術訊號，與<strong>中立分析師的綜合中間立場</strong>高度契合。</p>
+</li>
+<li>
+<p><strong>積極分析師</strong>主張市場對 Adobe 領導層動盪和相對較小的法律和解反應過度，強調 Adobe 研發預算充裕、約 90 億美元年現金流以及具變革性的 Nvidia AI 合作，認為 Adobe 為結構性主導玩家，有反彈潛力。此觀點支持提前策略性布局，以捕捉上漲機會並避免錯失。</p>
+</li>
+<li>
+<p><strong>保守分析師</strong>則正確強調領導不確定性、近期技術走弱與槓桿結構疑慮，主張等待更明確的確認訊號，防止過早全倉入場而遭遇「接刀子」風險。他們提醒，AI 成長仍具投機性，尚未完全證實營運能力。</p>
+</li>
+<li>
+<p><strong>中立分析師</strong>則良好整合上述觀點，看好 AI 與基本面潛力，同時平衡技術與領導層不確定風險，支持交易者分批於支撐位進場並堅持停損及分批加碼原則，既審慎又具風控。</p>
+</li>
+<li>
+<p>過往經驗教訓顯示，<strong>避免走極端非常重要</strong>：  </p>
+</li>
+<li><strong>在領導動盪與技術弱勢時過於激進買入，常造成可避免的資金回撤。</strong>  </li>
+<li>
+<p><strong>過度保守等待可能錯失結構強健具大護城河及創新催化劑的科技股成長機會。</strong>  </p>
+</li>
+<li>
+<p>關鍵在於<strong>平衡機會與風險，利用分批配置搭配積極風控管理。</strong></p>
+</li>
+</ul>
+<hr />
+<h3>3. 精煉且可操作的建議</h3>
+<p><strong>明確行動方案：謹慎分階段買入 Adobe (ADBE)。</strong></p>
+<ul>
+<li><strong>持倉介入：</strong> 於約 $338（200 日均線）附近或若波動持續則略低，先布局 40-50% 預定資金，避免全額單次進場。  </li>
+<li><strong>技術監控：</strong> 僅於 MACD 多頭交叉、RSI 超過 50 及成交量支持趨勢反轉時，追加部位。  </li>
+<li><strong>領導與消息面：</strong> 持續追蹤 CEO 繼任發展與管理層評論，待策略更明朗後再加碼。  </li>
+<li><strong>風險管理：</strong> 設置入場價下方 5-7% 停損限制，控管下行風險。  </li>
+<li><strong>時間視野：</strong> 以中長期（12-24 個月）為目標，捕捉 AI 驅動成長及核心業務韌性。  </li>
+<li><strong>組合理財：</strong> 保持適當多元分散，以減緩宏觀及產業風險。</li>
+</ul>
+<hr />
+<h3>4. 綜合判斷</h3>
+<ul>
+<li>
+<p><strong>最強論點傾向謹慎買入：</strong>  </p>
+<blockquote>
+<p>「長期趨勢仍穩定，200 日均線顯示於現價約 $338 之上，反映機構信心及對 AI 成長的樂觀。」— 積極分析師<br />
+「交易員在支撐位附近謹慎分批買入並嚴控風險，平衡了領導、技術與宏觀不確定性之上行潛力與下行風險。」— 中立分析師  </p>
+</blockquote>
+</li>
+<li>
+<p><strong>風險控管為關鍵，需確認訊號：</strong>  </p>
+<blockquote>
+<p>「謹慎要求等待明確領導與執行信號後才投入資金。」— 保守分析師<br />
+「動能信號正改善但尚未確認，風控不可或缺。」— 中立分析師  </p>
+</blockquote>
+</li>
+<li>
+<p><strong>中立立場避免極端行為：</strong> 無限期等待恐錯失反彈機會；完全激進買入則忽略近期實際風險。</p>
+</li>
+</ul>
+<hr />
+<h3>最終結論：依上述細節，採取謹慎分階段方式買入 Adobe (ADBE)。</h3>
+<p>此決策最有效結合各方觀點、汲取過往錯誤教訓，並提出兼顧成長機會與風險控管的清晰可行方案。</p>
+<hr />
+<p>若交易者嚴格執行此計劃，定期評估技術訊號與領導層動態，達成正向風險調整報酬的可能性極高。</p></div></div></section>
+        <footer class="dashboard-footer"><p>由 TradingAgents 於 2026-03-18 01:31 產生</p></footer>
+    </main>
+</div>
+
+<script>
+(function() {
+    // ─── Tab Switching (legacy fallback) ────────────
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var container = btn.closest('.tabs-container');
+            var tabId = btn.getAttribute('data-tab');
+            container.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            container.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+            btn.classList.add('active');
+            var panel = container.querySelector('[data-panel="' + tabId + '"]');
+            if (panel) panel.classList.add('active');
+        });
+    });
+
+    // ─── Smooth Scroll from Nav ─────────────────────
+    document.querySelectorAll('.nav-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var id = link.getAttribute('href').slice(1);
+            var el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // ─── IntersectionObserver for Nav Tracking ──────
+    var navLinks = document.querySelectorAll('.nav-link');
+    var sections = [];
+    navLinks.forEach(function(link) {
+        var id = link.getAttribute('data-section');
+        var el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el });
+    });
+
+    if (sections.length && 'IntersectionObserver' in window) {
+        var currentActive = null;
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    currentActive = entry.target.id;
+                }
+            });
+            if (currentActive) {
+                navLinks.forEach(function(l) {
+                    if (l.getAttribute('data-section') === currentActive) {
+                        l.classList.add('active');
+                    } else {
+                        l.classList.remove('active');
+                    }
+                });
+            }
+        }, {
+            rootMargin: '-80px 0px -60% 0px',
+            threshold: 0
+        });
+        sections.forEach(function(s) { observer.observe(s.el); });
+    }
+})();
+</script>
+
+<script>document.addEventListener("DOMContentLoaded", function() {  if (typeof Chart === "undefined") return;  var ctx = document.getElementById("macdChart");  if (!ctx) return;  new Chart(ctx, {    type: "bar",    data: {      labels: ["MACD", "Signal", "Histogram"],      datasets: [{        data: [-5.5, 0, 0],        backgroundColor: ["#ef4444", "#8b5cf6", "#10b981"],        borderRadius: 4,        barThickness: 40      }]    },    options: {      responsive: true,      maintainAspectRatio: false,      plugins: { legend: { display: false } },      scales: {        y: {          grid: { color: "#1e293b" },          ticks: { color: "#64748b", font: { family: "DM Mono" } }        },        x: {          grid: { display: false },          ticks: { color: "#64748b", font: { family: "DM Mono" } }        }      }    }  });});</script>
+
+</body>
+</html>

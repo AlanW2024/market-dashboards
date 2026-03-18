@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>盤前日報 — 2026-03-17</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg-deep:#0a0e1a;
+--bg-card:#111827;
+--bg-card-hover:#1a2235;
+--gold:#d4a853;
+--gold-dim:#b8943f;
+--green:#34d399;
+--green-dim:#22c55e;
+--red:#f87171;
+--red-dim:#ef4444;
+--blue:#60a5fa;
+--orange:#fb923c;
+--text-primary:#e8e6e1;
+--text-secondary:#9ca3af;
+--text-muted:#6b7280;
+--border-subtle:rgba(212,168,83,0.12);
+--border-gold:rgba(212,168,83,0.35);
+--card-shadow:0 4px 24px rgba(0,0,0,0.4);
+--card-shadow-hover:0 8px 32px rgba(0,0,0,0.6);
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+font-family:'Crimson Pro','Noto Sans TC',serif;
+background:var(--bg-deep);
+color:var(--text-primary);
+line-height:1.6;
+min-height:100vh;
+position:relative;
+overflow-x:hidden;
+}
+body::before{
+content:'';
+position:fixed;
+top:0;left:0;right:0;bottom:0;
+background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+background-repeat:repeat;
+pointer-events:none;
+z-index:9999;
+opacity:0.5;
+}
+.container{
+max-width:1200px;
+margin:0 auto;
+padding:2rem 1.5rem 3rem;
+position:relative;
+z-index:1;
+}
+
+/* ── Header ── */
+.header{
+text-align:center;
+padding:3rem 0 2.5rem;
+border-bottom:1px solid var(--border-subtle);
+margin-bottom:2.5rem;
+}
+.header-date{
+font-family:'JetBrains Mono','Noto Sans TC',monospace;
+font-size:0.8rem;
+letter-spacing:0.25em;
+text-transform:uppercase;
+color:var(--text-secondary);
+margin-bottom:0.75rem;
+}
+.header-title{
+font-family:'DM Serif Display',serif;
+font-size:3.2rem;
+color:var(--text-primary);
+letter-spacing:0.02em;
+margin-bottom:0.5rem;
+}
+.header-subtitle{
+font-family:'Crimson Pro',serif;
+font-style:italic;
+font-size:1.15rem;
+color:var(--text-secondary);
+max-width:700px;
+margin:0 auto 1.25rem;
+line-height:1.5;
+}
+.market-tone{
+display:inline-block;
+font-family:'JetBrains Mono','Noto Sans TC',monospace;
+font-size:0.85rem;
+font-weight:700;
+color:var(--gold);
+border:1.5px solid var(--border-gold);
+border-radius:4px;
+padding:0.35rem 1.2rem;
+letter-spacing:0.15em;
+text-transform:uppercase;
+background:rgba(212,168,83,0.06);
+}
+
+/* ── Section titles ── */
+.section-title{
+font-family:'JetBrains Mono','Noto Sans TC',monospace;
+font-size:0.82rem;
+font-weight:700;
+letter-spacing:0.2em;
+text-transform:uppercase;
+color:var(--gold);
+margin-bottom:1.5rem;
+display:flex;
+align-items:center;
+gap:1rem;
+}
+.section-title::after{
+content:'';
+flex:1;
+height:1px;
+background:linear-gradient(90deg,var(--border-gold),transparent);
+}
+section{margin-bottom:3rem;}
+
+/* ── Cards base ── */
+.card{
+background:var(--bg-card);
+border:1px solid var(--border-subtle);
+border-radius:8px;
+padding:1.25rem 1.5rem;
+transition:all 0.3s ease;
+box-shadow:var(--card-shadow);
+}
+.card:hover{
+background:var(--bg-card-hover);
+box-shadow:var(--card-shadow-hover);
+border-color:var(--border-gold);
+transform:translateY(-2px);
+}
+
+/* ── Grid layouts ── */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;}
+
+/* ── Futures cards ── */
+.futures-card{text-align:center;padding:1.5rem 1rem;}
+.futures-card .label{
+font-family:'JetBrains Mono',monospace;
+font-size:0.72rem;
+letter-spacing:0.12em;
+text-transform:uppercase;
+color:var(--text-secondary);
+margin-bottom:0.5rem;
+}
+.futures-card .ticker{
+font-family:'JetBrains Mono',monospace;
+font-size:0.65rem;
+color:var(--text-muted);
+margin-bottom:0.75rem;
+}
+.futures-card .price{
+font-family:'JetBrains Mono',monospace;
+font-size:1.65rem;
+font-weight:700;
+margin-bottom:0.25rem;
+}
+.futures-card .change{
+font-family:'JetBrains Mono',monospace;
+font-size:1rem;
+font-weight:500;
+margin-bottom:0.6rem;
+}
+.futures-card .note{
+font-family:'Noto Sans TC',sans-serif;
+font-size:0.72rem;
+color:var(--text-muted);
+}
+.val-red{color:var(--red);}
+.val-green{color:var(--green);}
+.val-neutral{color:var(--text-secondary);}
+.val-gold{color:var(--gold);}
+
+/* ── Asia-Europe compact cards ── */
+.asia-card{text-align:center;padding:1rem 0.6rem;}
+.asia-card .region{
+font-family:'Noto Sans TC',sans-serif;
+font-size:0.78rem;
+font-weight:500;
+color:var(--text-secondary);
+margin-bottom:0.15rem;
+}
+.asia-card .etf{
+font-family:'JetBrains Mono',monospace;
+font-size:0.62rem;
+color:var(--text-muted);
+letter-spacing:0.08em;
+margin-bottom:0.6rem;
+}
+.asia-card .price{
+font-family:'JetBrains Mono',monospace;
+font-size:1.15rem;
+font-weight:700;
+margin-bottom:0.2rem;
+}
+.asia-card .change{
+font-family:'JetBrains Mono',monospace;
+font-size:0.9rem;
+font-weight:500;
+}
+.asia-card.leader{
+border-color:rgba(52,211,153,0.3);
+background:linear-gradient(180deg,rgba(52,211,153,0.05),var(--bg-card));
+}
+.asia-card.dim .change{opacity:0.6;}
+
+/* ── Risk cards ── */
+.risk-card{padding:1.25rem 1.3rem;}
+.risk-card .top-row{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+margin-bottom:0.6rem;
+}
+.risk-card .metric-name{
+font-family:'JetBrains Mono',monospace;
+font-size:0.72rem;
+letter-spacing:0.12em;
+text-transform:uppercase;
+color:var(--text-secondary);
+}
+.risk-card .metric-value{
+font-family:'JetBrains Mono',monospace;
+font-size:1.5rem;
+font-weight:700;
+margin-bottom:0.15rem;
+}
+.risk-card .metric-change{
+font-family:'JetBrains Mono',monospace;
+font-size:0.85rem;
+font-weight:500;
+margin-bottom:0.5rem;
+}
+.risk-card .metric-note{
+font-family:'Noto Sans TC',sans-serif;
+font-size:0.72rem;
+color:var(--text-muted);
+line-height:1.4;
+}
+.risk-card.warning{
+border-color:rgba(248,113,113,0.3);
+background:linear-gradient(180deg,rgba(248,113,113,0.04),var(--bg-card));
+}
+
+/* ── News feed ── */
+.news-feed{display:flex;flex-direction:column;gap:0.6rem;}
+.news-item{
+display:flex;
+align-items:flex-start;
+gap:0.85rem;
+padding:1rem 1.25rem;
+}
+.news-item .news-tag{
+font-family:'JetBrains Mono',monospace;
+font-size:0.62rem;
+font-weight:700;
+letter-spacing:0.1em;
+text-transform:uppercase;
+padding:0.2rem 0.55rem;
+border-radius:3px;
+white-space:nowrap;
+flex-shrink:0;
+margin-top:0.15rem;
+}
+.tag-energy{background:rgba(248,113,113,0.12);color:var(--red);border:1px solid rgba(248,113,113,0.25);}
+.tag-politics{background:rgba(251,146,60,0.12);color:var(--orange);border:1px solid rgba(251,146,60,0.25);}
+.tag-central-bank{background:rgba(96,165,250,0.12);color:var(--blue);border:1px solid rgba(96,165,250,0.25);}
+.tag-war{background:rgba(248,113,113,0.12);color:var(--red);border:1px solid rgba(248,113,113,0.25);}
+.tag-fed{background:rgba(96,165,250,0.12);color:var(--blue);border:1px solid rgba(96,165,250,0.25);}
+.tag-earnings{background:rgba(52,211,153,0.12);color:var(--green);border:1px solid rgba(52,211,153,0.25);}
+.news-item .news-text{
+font-family:'Noto Sans TC','Crimson Pro',sans-serif;
+font-size:0.92rem;
+color:var(--text-primary);
+line-height:1.55;
+}
+
+/* ── FOMC Banner ── */
+.fomc-banner{
+background:var(--bg-card);
+border:2px solid var(--border-gold);
+border-radius:10px;
+padding:2rem 2.5rem;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:2rem;
+box-shadow:0 0 40px rgba(212,168,83,0.06),var(--card-shadow);
+position:relative;
+overflow:hidden;
+}
+.fomc-banner::before{
+content:'';
+position:absolute;
+top:0;left:0;right:0;
+height:2px;
+background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.fomc-left{flex:1;}
+.fomc-icon{font-size:2.2rem;margin-bottom:0.6rem;}
+.fomc-title{
+font-family:'DM Serif Display',serif;
+font-size:1.5rem;
+color:var(--gold);
+margin-bottom:0.5rem;
+}
+.fomc-details{
+font-family:'Noto Sans TC','Crimson Pro',sans-serif;
+font-size:0.95rem;
+color:var(--text-primary);
+margin-bottom:0.4rem;
+line-height:1.5;
+}
+.fomc-sub{
+font-family:'Noto Sans TC','Crimson Pro',sans-serif;
+font-size:0.82rem;
+color:var(--text-secondary);
+line-height:1.5;
+}
+.fomc-right{
+text-align:center;
+flex-shrink:0;
+padding:1rem 1.5rem;
+border-left:1px solid var(--border-subtle);
+}
+.fomc-pct{
+font-family:'JetBrains Mono',monospace;
+font-size:2.8rem;
+font-weight:700;
+color:var(--gold);
+line-height:1;
+margin-bottom:0.3rem;
+}
+.fomc-hold{
+font-family:'JetBrains Mono',monospace;
+font-size:0.7rem;
+letter-spacing:0.2em;
+text-transform:uppercase;
+color:var(--text-secondary);
+}
+
+/* ── Focus cards ── */
+.focus-card{padding:1.5rem;}
+.focus-number{
+font-family:'DM Serif Display',serif;
+font-size:2.5rem;
+color:var(--gold);
+opacity:0.3;
+line-height:1;
+margin-bottom:0.5rem;
+}
+.focus-title{
+font-family:'Noto Sans TC',sans-serif;
+font-size:1rem;
+font-weight:700;
+color:var(--text-primary);
+margin-bottom:0.5rem;
+}
+.focus-desc{
+font-family:'Noto Sans TC','Crimson Pro',sans-serif;
+font-size:0.85rem;
+color:var(--text-secondary);
+line-height:1.55;
+}
+
+/* ── Footer ── */
+.footer{
+text-align:center;
+padding:2rem 0 1rem;
+border-top:1px solid var(--border-subtle);
+margin-top:1rem;
+}
+.footer-sources{
+font-family:'JetBrains Mono',monospace;
+font-size:0.65rem;
+letter-spacing:0.1em;
+color:var(--text-muted);
+margin-bottom:0.4rem;
+}
+.footer-gen{
+font-family:'JetBrains Mono',monospace;
+font-size:0.6rem;
+color:var(--text-muted);
+opacity:0.6;
+}
+
+/* ── Animations ── */
+.reveal{
+opacity:0;
+transform:translateY(28px);
+transition:opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
+}
+.reveal.visible{
+opacity:1;
+transform:translateY(0);
+}
+
+/* ── Responsive ── */
+@media(max-width:1024px){
+.grid-5{grid-template-columns:repeat(3,1fr);}
+.grid-4{grid-template-columns:repeat(2,1fr);}
+.fomc-banner{flex-direction:column;text-align:center;padding:1.5rem;}
+.fomc-right{border-left:none;border-top:1px solid var(--border-subtle);padding-top:1rem;width:100%;}
+}
+@media(max-width:768px){
+html{font-size:15px;}
+.container{padding:1rem 1rem 2rem;}
+.header{padding:2rem 0 1.5rem;}
+.header-title{font-size:2.4rem;}
+.header-subtitle{font-size:1rem;}
+.grid-3{grid-template-columns:1fr;}
+.grid-4{grid-template-columns:1fr 1fr;}
+.grid-5{grid-template-columns:repeat(3,1fr);}
+.futures-card .price{font-size:1.35rem;}
+.fomc-pct{font-size:2.2rem;}
+}
+@media(max-width:520px){
+.grid-5{grid-template-columns:repeat(2,1fr);}
+.grid-4{grid-template-columns:1fr;}
+.grid-3{grid-template-columns:1fr;}
+.header-title{font-size:2rem;}
+.news-item{flex-direction:column;gap:0.4rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="header reveal">
+    <div class="header-date">Tuesday &middot; March 17, 2026 &middot; Pre-Market</div>
+    <h1 class="header-title">盤前日報</h1>
+    <p class="header-subtitle">FOMC Day 1 &mdash; Oil rebounds to $97.5, Asia-Europe rally, all eyes on Wednesday dot plot</p>
+    <span class="market-tone">觀望</span>
+  </header>
+
+  <!-- ═══ SECTION 1: 期指方向 ═══ -->
+  <section>
+    <div class="section-title reveal">期指方向</div>
+    <div class="grid-3">
+      <div class="card futures-card reveal">
+        <div class="label">S&amp;P 500</div>
+        <div class="ticker">ES</div>
+        <div class="price val-red">6,723.25</div>
+        <div class="change val-red">-0.22%</div>
+        <div class="note">期指微跌，FOMC 觀望</div>
+      </div>
+      <div class="card futures-card reveal">
+        <div class="label">Nasdaq 100</div>
+        <div class="ticker">NQ</div>
+        <div class="price val-red">24,764.75</div>
+        <div class="change val-red">-0.21%</div>
+        <div class="note">期指微跌，FOMC 觀望</div>
+      </div>
+      <div class="card futures-card reveal">
+        <div class="label">Dow Jones</div>
+        <div class="ticker">YM</div>
+        <div class="price val-red">47,058</div>
+        <div class="change val-red">-0.30%</div>
+        <div class="note">期指微跌，FOMC 觀望</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 2: 隔夜亞歐市場 ═══ -->
+  <section>
+    <div class="section-title reveal">隔夜亞歐市場</div>
+    <div class="grid-5">
+      <div class="card asia-card reveal">
+        <div class="region">日本</div>
+        <div class="etf">EWJ</div>
+        <div class="price val-green">85.07</div>
+        <div class="change val-green">+1.58%</div>
+      </div>
+      <div class="card asia-card leader reveal">
+        <div class="region">中國</div>
+        <div class="etf">FXI</div>
+        <div class="price val-green">36.88</div>
+        <div class="change val-green" style="font-weight:700;font-size:1rem;">+2.27%</div>
+      </div>
+      <div class="card asia-card reveal">
+        <div class="region">德國</div>
+        <div class="etf">EWG</div>
+        <div class="price val-green">40.52</div>
+        <div class="change val-green">+1.68%</div>
+      </div>
+      <div class="card asia-card reveal">
+        <div class="region">英國</div>
+        <div class="etf">EWU</div>
+        <div class="price val-green">46.11</div>
+        <div class="change val-green">+1.99%</div>
+      </div>
+      <div class="card asia-card dim reveal">
+        <div class="region">恒生</div>
+        <div class="etf">EWH</div>
+        <div class="price val-green" style="opacity:0.7;">26.16</div>
+        <div class="change val-green">+0.15%</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 3: 風險指標 ═══ -->
+  <section>
+    <div class="section-title reveal">風險指標</div>
+    <div class="grid-4">
+      <div class="card risk-card reveal">
+        <div class="top-row">
+          <span class="metric-name">VIX</span>
+        </div>
+        <div class="metric-value val-green">23.51</div>
+        <div class="metric-change val-green">-13.60%<span style="font-size:0.65rem;color:var(--text-muted);margin-left:0.4rem;">昨日</span></div>
+        <div class="metric-note">恐慌回落但仍偏高</div>
+      </div>
+      <div class="card risk-card reveal">
+        <div class="top-row">
+          <span class="metric-name">10Y Yield</span>
+        </div>
+        <div class="metric-value val-green">4.22%</div>
+        <div class="metric-change val-green">-1.52%</div>
+        <div class="metric-note">殖利率回落，債市避險需求穩定</div>
+      </div>
+      <div class="card risk-card warning reveal">
+        <div class="top-row">
+          <span class="metric-name">Oil WTI</span>
+          <span style="font-size:0.6rem;font-family:'JetBrains Mono',monospace;color:var(--red);border:1px solid rgba(248,113,113,0.3);padding:0.1rem 0.4rem;border-radius:3px;">WARNING</span>
+        </div>
+        <div class="metric-value val-red">$97.50</div>
+        <div class="metric-change val-red">+1.57%</div>
+        <div class="metric-note">盤前回升，逆轉昨日跌勢</div>
+      </div>
+      <div class="card risk-card reveal">
+        <div class="top-row">
+          <span class="metric-name">Gold</span>
+        </div>
+        <div class="metric-value val-neutral">$5,019</div>
+        <div class="metric-change val-neutral">-0.23%</div>
+        <div class="metric-note">高位盤整，避險情緒維持</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 4: 重大新聞 ═══ -->
+  <section>
+    <div class="section-title reveal">重大新聞</div>
+    <div class="news-feed">
+      <div class="card news-item reveal">
+        <span class="news-tag tag-energy">能源</span>
+        <span class="news-text">油價盤前回升 +1.57% 至 $97.5，Brent 突破 $105。中東海灣原油出口按週暴跌 60%</span>
+      </div>
+      <div class="card news-item reveal">
+        <span class="news-tag tag-politics">政治</span>
+        <span class="news-text">Trump 施壓 NATO 及中國派戰艦重開霍爾木茲，目前無國家承諾</span>
+      </div>
+      <div class="card news-item reveal">
+        <span class="news-tag tag-central-bank">央行</span>
+        <span class="news-text">澳洲央行因戰爭通脹風險加息，全球首個因戰爭直接加息的央行</span>
+      </div>
+      <div class="card news-item reveal">
+        <span class="news-tag tag-war">戰爭</span>
+        <span class="news-text">以色列對黎巴嫩南部展開有限地面行動，打擊真主黨據點</span>
+      </div>
+      <div class="card news-item reveal">
+        <span class="news-tag tag-fed">聯儲</span>
+        <span class="news-text">FOMC 會議今日開始，92-96% 維持利率不變。週三 Dot Plot 成焦點</span>
+      </div>
+      <div class="card news-item reveal">
+        <span class="news-tag tag-earnings">企業</span>
+        <span class="news-text">今日業績：lululemon、DocuSign 盤後公佈</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 5: FOMC 焦點 Banner ═══ -->
+  <section>
+    <div class="section-title reveal">FOMC 焦點</div>
+    <div class="fomc-banner reveal">
+      <div class="fomc-left">
+        <div class="fomc-icon">&#127963;</div>
+        <div class="fomc-title">FOMC 倒數 &mdash; 明日 2:00PM ET</div>
+        <div class="fomc-details">利率決定 + 季度 Dot Plot + Powell 記者會</div>
+        <div class="fomc-sub">首次納入伊朗衝突 + 油價飆升 + 15% 全球關稅的影響</div>
+      </div>
+      <div class="fomc-right">
+        <div class="fomc-pct">92-96%</div>
+        <div class="fomc-hold">Hold Rates</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 6: 今日三大焦點 ═══ -->
+  <section>
+    <div class="section-title reveal">今日三大焦點</div>
+    <div class="grid-3">
+      <div class="card focus-card reveal">
+        <div class="focus-number">01</div>
+        <div class="focus-title">油價方向</div>
+        <div class="focus-desc">昨日回落帶動反彈，今日回升至 $97.5。重返 $100+ 將逆轉 risk-on</div>
+      </div>
+      <div class="card focus-card reveal">
+        <div class="focus-number">02</div>
+        <div class="focus-title">FOMC 觀望</div>
+        <div class="focus-desc">決定前一日通常波動壓縮，等週三放大</div>
+      </div>
+      <div class="card focus-card reveal">
+        <div class="focus-number">03</div>
+        <div class="focus-title">亞歐分歧</div>
+        <div class="focus-desc">亞歐全線漲但美期指微跌，開盤方向待確認</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 7: 大師框架分析 ═══ -->
+  <section>
+    <div class="section-title reveal">大師框架分析</div>
+
+    <!-- Price-in 判斷 -->
+    <div class="card reveal" style="padding:1.5rem 2rem;margin-bottom:1rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+        <span style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--gold);">Howard Marks</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);border:1px solid var(--border-subtle);padding:0.15rem 0.5rem;border-radius:3px;">Price-in 判斷</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:0.6rem;">✓ 已消化</div>
+          <div style="font-family:'Noto Sans TC',sans-serif;font-size:0.85rem;color:var(--text-secondary);line-height:1.8;">
+            • FOMC hold rates（96%）<br>
+            • 伊朗戰爭持續（VIX 已回落）<br>
+            • 油價 $90-100 區間
+          </div>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--red);margin-bottom:0.6rem;">✗ 未消化</div>
+          <div style="font-family:'Noto Sans TC',sans-serif;font-size:0.85rem;color:var(--text-secondary);line-height:1.8;">
+            • Dot plot 鷹派風險（0次減息）<br>
+            • 霍爾木茲全面封鎖升級<br>
+            • 澳洲加息 → 其他央行跟隨？
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 周期定位 -->
+    <div class="card reveal" style="padding:1.5rem 2rem;margin-bottom:1rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+        <span style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--gold);">Ray Dalio</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);border:1px solid var(--border-subtle);padding:0.15rem 0.5rem;border-radius:3px;">周期定位</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:2rem;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-muted);line-height:2.2;white-space:pre;">           通脹上升
+              │
+  <span style="color:var(--red);font-weight:700;">Stagflation</span> │  Overheating
+   <span style="color:var(--gold);">← 你在這裡</span> │
+ ─────────────┼─────────────
+  Deflation   │  <span style="color:var(--green);">Goldilocks</span>
+              │
+           通脹下降</div>
+        <div style="flex:1;">
+          <div style="font-family:'Noto Sans TC',sans-serif;font-size:0.85rem;color:var(--text-secondary);line-height:1.8;">
+            <span style="color:var(--red);">•</span> 失業率 4.4%↑ + CPI +0.87 + 油價 $97.5<br>
+            <span style="color:var(--red);">•</span> = <strong style="color:var(--red);">Stagflation 風險區</strong><br>
+            <span style="color:var(--gold);">•</span> Fed 兩難：壓通脹傷增長 vs 救增長助通脹<br>
+            <span style="color:var(--text-muted);">•</span> 最難投資嘅象限——股債組合兩邊都會輸
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 場景分析 -->
+    <div class="card reveal" style="padding:1.5rem 2rem;margin-bottom:1rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+        <span style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--gold);">Druckenmiller</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);border:1px solid var(--border-subtle);padding:0.15rem 0.5rem;border-radius:3px;">非對稱押注</span>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-family:'Noto Sans TC',sans-serif;font-size:0.85rem;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border-subtle);">
+            <th style="text-align:left;padding:0.5rem 0;font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-weight:400;">場景</th>
+            <th style="text-align:center;padding:0.5rem 0;font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-weight:400;">機率</th>
+            <th style="text-align:center;padding:0.5rem 0;font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-weight:400;">SPY</th>
+            <th style="text-align:left;padding:0.5rem 0;font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);font-weight:400;">觸發</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border-subtle);">
+            <td style="padding:0.6rem 0;color:var(--green);">A：Dot plot 鴿派</td>
+            <td style="text-align:center;font-family:'JetBrains Mono',monospace;font-weight:600;">25%</td>
+            <td style="text-align:center;font-family:'JetBrains Mono',monospace;color:var(--green);">680-686</td>
+            <td style="color:var(--text-secondary);">Powell 強調就業優先</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle);">
+            <td style="padding:0.6rem 0;color:var(--text-secondary);">B：Dot plot 中性</td>
+            <td style="text-align:center;font-family:'JetBrains Mono',monospace;font-weight:600;">45%</td>
+            <td style="text-align:center;font-family:'JetBrains Mono',monospace;color:var(--text-secondary);">660-675</td>
+            <td style="color:var(--text-secondary);">符合預期，冇意外</td>
+          </tr>
+          <tr>
+            <td style="padding:0.6rem 0;color:var(--red);">C：Dot plot 鷹派</td>
+            <td style="text-align:center;font-family:'JetBrains Mono',monospace;font-weight:600;">30%</td>
+            <td style="text-align:center;font-family:'JetBrains Mono',monospace;color:var(--red);">≤657</td>
+            <td style="color:var(--text-secondary);">Fed 上修通脹預測</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:1rem;padding:0.75rem 1rem;background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.15);border-radius:6px;display:flex;align-items:center;gap:1rem;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted);">期望值</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--red);">-0.53%</div>
+        <div style="font-family:'Noto Sans TC',sans-serif;font-size:0.8rem;color:var(--red);">風險回報唔對稱 → 唔係建倉時機</div>
+      </div>
+    </div>
+
+    <!-- 敘事主導 -->
+    <div class="card reveal" style="padding:1.5rem 2rem;margin-bottom:1rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+        <span style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--gold);">George Soros</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);border:1px solid var(--border-subtle);padding:0.15rem 0.5rem;border-radius:3px;">敘事主導</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div style="padding:1rem;background:rgba(52,211,153,0.04);border:1px solid rgba(52,211,153,0.15);border-radius:6px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:0.5rem;">敘事 1：戰爭見頂</div>
+          <div style="font-family:'Noto Sans TC',sans-serif;font-size:0.82rem;color:var(--text-secondary);line-height:1.7;">
+            VIX 暴跌 · 油價回落<br>
+            印度/土耳其/沙特獲准通行<br>
+            市場 price in 談判可能
+          </div>
+        </div>
+        <div style="padding:1rem;background:rgba(248,113,113,0.04);border:1px solid rgba(248,113,113,0.15);border-radius:6px;">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--red);margin-bottom:0.5rem;">敘事 2：Stagflation 來臨</div>
+          <div style="font-family:'Noto Sans TC',sans-serif;font-size:0.82rem;color:var(--text-secondary);line-height:1.7;">
+            油價盤前又回升 $97.5<br>
+            澳洲被迫加息 · 柴油破 $5<br>
+            FOMC 首次面對戰爭通脹
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:1rem;font-family:'Noto Sans TC',sans-serif;font-size:0.85rem;color:var(--gold);text-align:center;padding:0.6rem;border-top:1px solid var(--border-subtle);">
+        轉折點：週三 FOMC — Powell 站邊一邊將定義未來 2-4 週方向
+      </div>
+    </div>
+
+    <!-- Checklist -->
+    <div class="card reveal" style="padding:1.5rem 2rem;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;">Checklist 總結</div>
+      <table style="width:100%;border-collapse:collapse;font-family:'Noto Sans TC',sans-serif;font-size:0.85rem;">
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border-subtle);">
+            <td style="padding:0.5rem 0;color:var(--text-muted);width:30%;font-size:0.8rem;">① Price-in</td>
+            <td style="padding:0.5rem 0;color:var(--text-secondary);">Hold 完全消化，dot plot 鷹派未消化</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle);">
+            <td style="padding:0.5rem 0;color:var(--text-muted);font-size:0.8rem;">② 周期位置</td>
+            <td style="padding:0.5rem 0;color:var(--red);">Stagflation 邊緣</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle);">
+            <td style="padding:0.5rem 0;color:var(--text-muted);font-size:0.8rem;">③ 風險回報</td>
+            <td style="padding:0.5rem 0;color:var(--red);">期望值 -0.53%，偏下行 → 唔做</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle);">
+            <td style="padding:0.5rem 0;color:var(--text-muted);font-size:0.8rem;">④ 敘事主導</td>
+            <td style="padding:0.5rem 0;color:var(--text-secondary);">「戰爭見頂」vs「Stagflation」拉鋸</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border-subtle);">
+            <td style="padding:0.5rem 0;color:var(--text-muted);font-size:0.8rem;">⑤ 了解標的</td>
+            <td style="padding:0.5rem 0;color:var(--text-secondary);">FOMC 前唔應該買任何嘢</td>
+          </tr>
+          <tr>
+            <td style="padding:0.5rem 0;color:var(--text-muted);font-size:0.8rem;">⑥ 最壞情況</td>
+            <td style="padding:0.5rem 0;color:var(--red);">Dot plot 0次減息 + 油價$100+ = SPY -3~5%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer reveal">
+    <div class="footer-sources">Sources: yfinance &middot; Alpha Vantage &middot; Finnhub &middot; FRED &middot; Frankfurter &middot; Web Search</div>
+    <div class="footer-gen">Generated 2026-03-17 &middot; Market Analyst Skill v1.0</div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  // Intersection Observer for reveal animations
+  var els = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry, i) {
+        if (entry.isIntersecting) {
+          // Stagger sibling cards
+          var parent = entry.target.parentElement;
+          var siblings = parent ? parent.querySelectorAll('.reveal') : [];
+          var idx = Array.prototype.indexOf.call(siblings, entry.target);
+          var delay = idx >= 0 ? idx * 80 : 0;
+          setTimeout(function() {
+            entry.target.classList.add('visible');
+          }, delay);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    els.forEach(function(el) { observer.observe(el); });
+  } else {
+    // Fallback: show all
+    els.forEach(function(el) { el.classList.add('visible'); });
+  }
+})();
+</script>
+
+</body>
+</html>

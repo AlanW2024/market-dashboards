@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Dashboards</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+    background: #0a0a0f;
+    color: #e0e0e0;
+    min-height: 100vh;
+    padding: 1.5rem;
+  }
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #fff;
+  }
+  .subtitle { color: #888; font-size: 0.85rem; margin-bottom: 1.5rem; }
+  .section { margin-bottom: 1.5rem; }
+  .section-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #666;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid #1a1a2e;
+  }
+  .card {
+    display: block;
+    background: #12121a;
+    border: 1px solid #1a1a2e;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    text-decoration: none;
+    color: #e0e0e0;
+    transition: all 0.2s;
+  }
+  .card:hover, .card:active {
+    background: #1a1a2e;
+    border-color: #333;
+    transform: translateY(-1px);
+  }
+  .card-title { font-weight: 500; font-size: 0.95rem; }
+  .card-meta { font-size: 0.75rem; color: #666; margin-top: 0.15rem; }
+  .badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    margin-right: 0.25rem;
+  }
+  .badge-us { background: #1a2744; color: #5b9cf6; }
+  .badge-hk { background: #2a1a1a; color: #f67b5b; }
+  .badge-stock { background: #1a2a1a; color: #5bf68a; }
+  .empty { color: #444; font-size: 0.85rem; padding: 1rem; text-align: center; }
+  #file-list { margin-top: 1rem; }
+</style>
+</head>
+<body>
+
+<h1>📊 Market Dashboards</h1>
+<p class="subtitle">手機瀏覽器打開即可查看互動版報告</p>
+
+<div id="file-list"></div>
+
+<script src="files.js"></script>
+<script>
+const container = document.getElementById('file-list');
+
+if (typeof FILES !== 'undefined' && Object.keys(FILES).length > 0) {
+  for (const [section, items] of Object.entries(FILES)) {
+    if (items.length === 0) continue;
+    const div = document.createElement('div');
+    div.className = 'section';
+    div.innerHTML = `<div class="section-title">${section}</div>`;
+    items.sort((a, b) => b.name.localeCompare(a.name));
+    for (const item of items) {
+      const a = document.createElement('a');
+      a.className = 'card';
+      a.href = item.path;
+      const badge = item.path.includes('美股') ? '<span class="badge badge-us">US</span>' :
+                    item.path.includes('港股') ? '<span class="badge badge-hk">HK</span>' :
+                    '<span class="badge badge-stock">Stock</span>';
+      a.innerHTML = `<div class="card-title">${badge} ${item.name.replace('.html','')}</div>
+                     <div class="card-meta">${item.dir}</div>`;
+      div.appendChild(a);
+    }
+    container.appendChild(div);
+  }
+} else {
+  container.innerHTML = '<p class="empty">No dashboards found</p>';
+}
+</script>
+
+</body>
+</html>

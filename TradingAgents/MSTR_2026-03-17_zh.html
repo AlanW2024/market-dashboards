@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSTR — SELL | 2026-03-17</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* ─── Custom Properties ─────────────────────────────── */
+:root {
+    --bg-primary: #0b0f19;
+    --bg-secondary: #0f1629;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --bg-inset: #0d1117;
+    --border-subtle: #1e293b;
+    --border-medium: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --signal-color: #ef4444;
+    --signal-glow: rgba(239, 68, 68, 0.15);
+    --signal-rgb: 239, 68, 68;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --sidebar-w: 220px;
+    --header-h: 56px;
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ─── Noise Texture ─────────────────────────────────── */
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* ─── Header Bar ────────────────────────────────────── */
+.header-bar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 100;
+    display: flex; align-items: center;
+}
+.header-inner {
+    width: 100%; max-width: 1400px;
+    margin: 0 auto; padding: 0 2rem;
+    display: flex; align-items: center;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+}
+
+/* ─── Signal Pill ───────────────────────────────────── */
+.signal-pill {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.85rem;
+    background: rgba(var(--signal-rgb), 0.15);
+    border: 1px solid rgba(var(--signal-rgb), 0.3);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-weight: 500; font-size: 0.8rem;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* ─── Layout ────────────────────────────────────────── */
+.layout {
+    display: flex; max-width: 1400px;
+    margin: 0 auto; padding-top: var(--header-h);
+    min-height: 100vh;
+}
+
+/* ─── Sidebar ───────────────────────────────────────── */
+.sidebar {
+    position: sticky; top: var(--header-h);
+    width: var(--sidebar-w); flex-shrink: 0;
+    height: calc(100vh - var(--header-h));
+    padding: 1.5rem 0 1.5rem 1.5rem;
+    overflow-y: auto;
+}
+.sidebar-inner {
+    display: flex; flex-direction: column; gap: 0.25rem;
+}
+.nav-link {
+    display: block; padding: 0.5rem 1rem;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500;
+    border-radius: var(--radius-sm);
+    border-left: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+.nav-link:hover {
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.03);
+}
+.nav-link.active {
+    color: var(--signal-color);
+    border-left-color: var(--signal-color);
+    background: rgba(var(--signal-rgb), 0.08);
+}
+
+/* ─── Main Content ──────────────────────────────────── */
+.main-content {
+    flex: 1; min-width: 0;
+    padding: 1.5rem 2rem 3rem 1.5rem;
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+
+/* ─── Hero Card ─────────────────────────────────────── */
+.hero-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    overflow: hidden;
+}
+.hero-mesh {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(var(--signal-rgb), 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(var(--signal-rgb), 0.05) 0%, transparent 40%),
+        radial-gradient(ellipse at 60% 80%, rgba(var(--signal-rgb), 0.03) 0%, transparent 60%);
+    pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-header {
+    display: flex; align-items: center; gap: 1rem;
+    flex-wrap: wrap; margin-bottom: 0.5rem;
+}
+.hero-ticker {
+    font-family: var(--font-heading);
+    font-size: 2.5rem; font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text-primary), var(--signal-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-date {
+    font-family: var(--font-mono);
+    font-size: 0.9rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.hero-card .signal-pill { font-size: 0.9rem; padding: 0.35rem 1rem; }
+
+/* Risk Badge */
+.risk-badge {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 20px; letter-spacing: 0.05em;
+}
+.risk-low    { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+.risk-medium { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+.risk-high   { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+
+/* Reasons */
+.reasons-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.reason {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(var(--signal-rgb), 0.05);
+    border: 1px solid rgba(var(--signal-rgb), 0.1);
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;
+}
+.reason-num {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px;
+    background: rgba(var(--signal-rgb), 0.15);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 50%;
+}
+
+/* ─── Metrics Grid ──────────────────────────────────── */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+.metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+    position: relative; overflow: hidden;
+}
+.metric-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--signal-color); opacity: 0.4;
+    transition: opacity 0.25s ease;
+}
+.metric-card:hover {
+    border-color: rgba(var(--signal-rgb), 0.3);
+    box-shadow: 0 0 20px rgba(var(--signal-rgb), 0.08);
+}
+.metric-card:hover::before { opacity: 1; }
+.metric-label {
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+}
+.metric-value {
+    font-family: var(--font-mono);
+    font-size: 1.35rem; font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* ─── Section Cards ─────────────────────────────────── */
+.section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2rem;
+    transition: border-color 0.25s ease;
+}
+.section-card:hover { border-color: var(--border-medium); }
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.section-title::before {
+    content: ''; display: inline-block;
+    width: 4px; height: 20px;
+    background: var(--signal-color); border-radius: 2px;
+}
+.section-body {
+    color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.section-body h1, .section-body h2, .section-body h3 {
+    font-family: var(--font-heading);
+    color: var(--text-primary); margin: 1.5rem 0 0.75rem;
+}
+.section-body h1 { font-size: 1.2rem; }
+.section-body h2 { font-size: 1.1rem; }
+.section-body h3 { font-size: 1rem; }
+.section-body p { margin-bottom: 0.75rem; }
+.section-body ul, .section-body ol { margin: 0.5rem 0 1rem 1.5rem; }
+.section-body li { margin-bottom: 0.3rem; }
+.section-body strong { color: var(--text-primary); }
+.section-body em { color: var(--text-muted); font-style: italic; }
+
+/* Tables in sections */
+.section-body table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0; font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.section-body thead th {
+    background: rgba(var(--signal-rgb), 0.1);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.78rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.section-body tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.section-body tbody tr:hover { background: rgba(255,255,255,0.02); }
+.section-body tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+
+/* ─── Technical Dashboard ──────────────────────────── */
+.tech-dashboard {
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+.gauges-row {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    justify-content: center; padding: 0.5rem 0;
+}
+.gauge-container {
+    width: 200px; text-align: center;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem 0.5rem 0.75rem;
+}
+.gauge-svg { width: 100%; height: auto; }
+.charts-row {
+    display: grid; grid-template-columns: 1fr; gap: 1rem;
+}
+.chart-container {
+    position: relative; height: 220px;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+
+/* ─── MA Comparison Chart ──────────────────────────── */
+.ma-chart {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.ma-bar-row {
+    display: flex; align-items: center; gap: 0.75rem;
+}
+.ma-label {
+    width: 56px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    color: var(--text-muted); text-align: right;
+}
+.ma-bar-track {
+    flex: 1; height: 24px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px; overflow: hidden;
+}
+.ma-bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 1s ease;
+}
+.ma-value {
+    width: 64px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    color: var(--text-primary); text-align: right;
+}
+
+/* ─── KPI Grid ─────────────────────────────────────── */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.kpi-card {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+.kpi-label {
+    font-size: 0.72rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.3rem;
+}
+.kpi-value {
+    font-family: var(--font-mono);
+    font-size: 1.1rem; font-weight: 600;
+}
+
+/* ─── Sentiment Dashboard ──────────────────────────── */
+.sentiment-summary { margin-bottom: 1.5rem; }
+.sentiment-bar {
+    display: flex; height: 28px;
+    border-radius: 14px; overflow: hidden;
+    background: var(--bg-inset);
+}
+.sent-fill { transition: width 0.8s ease; min-width: 2px; }
+.sent-pos { background: #10b981; }
+.sent-neu { background: #475569; }
+.sent-neg { background: #ef4444; }
+.sentiment-counts {
+    display: flex; justify-content: center;
+    gap: 1.5rem; margin-top: 0.75rem;
+}
+.sent-count {
+    font-family: var(--font-mono); font-size: 0.8rem;
+}
+.sent-count-pos { color: #10b981; }
+.sent-count-neu { color: #64748b; }
+.sent-count-neg { color: #ef4444; }
+.sent-tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem; border-radius: 10px;
+    font-size: 0.78rem; font-weight: 500;
+}
+.sent-tag-positive { background: rgba(16,185,129,0.15); color: #10b981; }
+.sent-tag-negative { background: rgba(239,68,68,0.15); color: #ef4444; }
+.sent-tag-neutral { background: rgba(100,116,139,0.15); color: #94a3b8; }
+.sent-row-positive td:first-child { border-left: 3px solid #10b981; }
+.sent-row-negative td:first-child { border-left: 3px solid #ef4444; }
+.sent-row-neutral td:first-child { border-left: 3px solid #475569; }
+
+/* ─── Indicator Table ──────────────────────────────── */
+.indicator-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.indicator-table thead th {
+    background: rgba(var(--signal-rgb), 0.08);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.indicator-table tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.indicator-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.indicator-table tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+.ind-name {
+    font-family: var(--font-mono); font-weight: 500;
+    color: var(--text-primary);
+}
+.ind-value {
+    font-family: var(--font-mono); color: var(--signal-color);
+}
+
+/* ─── Debate Comparison ────────────────────────────── */
+.debate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; margin-bottom: 1rem;
+}
+.debate-panel {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.debate-panel-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.debate-preview {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    max-height: 200px; overflow: hidden;
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+.debate-preview p { margin-bottom: 0.5rem; }
+.debate-preview strong { color: var(--text-primary); }
+.debate-expand { margin-top: 0.75rem; }
+.debate-expand summary {
+    cursor: pointer; color: var(--signal-color);
+    font-size: 0.85rem; font-weight: 500;
+    padding: 0.4rem 0; user-select: none;
+    list-style: none;
+}
+.debate-expand summary::-webkit-details-marker { display: none; }
+.debate-expand summary::before {
+    content: '\25B8 '; font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+.debate-expand[open] summary::before { transform: rotate(90deg); }
+.debate-full {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    margin-top: 0.75rem;
+    max-height: 600px; overflow-y: auto;
+}
+.debate-full p { margin-bottom: 0.5rem; }
+.debate-full strong { color: var(--text-primary); }
+.debate-full ul, .debate-full ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.debate-full li { margin-bottom: 0.3rem; }
+
+/* ─── Judge Decision ───────────────────────────────── */
+.judge-decision {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    border-left: 3px solid var(--signal-color);
+}
+.judge-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    color: var(--signal-color);
+    margin-bottom: 0.75rem;
+}
+.judge-body {
+    color: var(--text-secondary);
+    font-size: 0.9rem; line-height: 1.7;
+}
+.judge-body p { margin-bottom: 0.5rem; }
+.judge-body strong { color: var(--text-primary); }
+.judge-body ul, .judge-body ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.judge-body li { margin-bottom: 0.3rem; }
+
+/* ─── Tabs (legacy fallback) ───────────────────────── */
+.tab-bar {
+    display: flex; gap: 0.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 1.25rem;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tab-btn {
+    padding: 0.6rem 1.25rem; background: none; border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.88rem; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.tab-btn:hover { color: var(--text-secondary); }
+.tab-btn.active {
+    color: var(--signal-color);
+    border-bottom-color: var(--signal-color);
+}
+.tab-panel {
+    display: none; color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
+.tab-panel p { margin-bottom: 0.75rem; }
+.tab-panel strong { color: var(--text-primary); }
+.tab-panel ul, .tab-panel ol { margin: 0.5rem 0 1rem 1.5rem; }
+.tab-panel li { margin-bottom: 0.3rem; }
+.text-muted { color: var(--text-muted); font-style: italic; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Collapsible Debate Rounds ─────────────────────── */
+.debate-round {
+    margin: 0.5rem 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    overflow: hidden; transition: border-color 0.2s ease;
+}
+.debate-round[open] { border-color: rgba(var(--signal-rgb), 0.2); }
+.debate-round summary {
+    padding: 0.7rem 1rem; background: var(--bg-inset);
+    cursor: pointer; font-weight: 600; font-size: 0.88rem;
+    color: var(--text-secondary); list-style: none;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: all 0.2s ease; user-select: none;
+}
+.debate-round summary::-webkit-details-marker { display: none; }
+.debate-round summary::before {
+    content: '\25B8'; font-size: 0.75rem;
+    color: var(--text-muted); transition: transform 0.2s ease;
+}
+.debate-round[open] summary::before { transform: rotate(90deg); }
+.debate-round summary:hover {
+    background: rgba(255,255,255,0.03); color: var(--text-primary);
+}
+.round-content {
+    padding: 1rem; border-top: 1px solid var(--border-subtle);
+    color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7;
+}
+.round-content p { margin-bottom: 0.6rem; }
+.round-content strong { color: var(--text-primary); }
+.round-content ul, .round-content ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+
+/* ─── Footer ────────────────────────────────────────── */
+.dashboard-footer {
+    text-align: center; padding: 2rem;
+    color: var(--text-muted); font-size: 0.8rem;
+    font-family: var(--font-mono);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 1rem;
+}
+
+/* ─── Responsive ────────────────────────────────────── */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; top: var(--header-h);
+        left: 0; right: 0; width: 100%;
+        height: auto; padding: 0.5rem;
+        background: rgba(11, 15, 25, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-subtle);
+        z-index: 90; overflow-x: auto; overflow-y: hidden;
+    }
+    .sidebar-inner {
+        flex-direction: row; gap: 0; min-width: max-content;
+    }
+    .nav-link {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        padding: 0.4rem 0.75rem; font-size: 0.78rem;
+        white-space: nowrap;
+    }
+    .nav-link.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--signal-color);
+    }
+    html { scroll-padding-top: calc(var(--header-h) + 3.5rem); }
+    .main-content { padding: 4.5rem 1rem 2rem 1rem; }
+    .hero-ticker { font-size: 1.8rem; }
+    .hero-card { padding: 1.5rem; }
+    .section-card { padding: 1.25rem; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .tab-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+    .gauges-row { gap: 0.75rem; }
+    .gauge-container { width: 160px; }
+    .debate-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-container { height: 180px; }
+    .ma-label { width: 48px; font-size: 0.72rem; }
+    .ma-value { width: 52px; font-size: 0.78rem; }
+}
+@media (min-width: 769px) {
+    .main-content { padding-top: 1.5rem; }
+}
+
+/* ─── Print ─────────────────────────────────────────── */
+@media print {
+    body { background: #fff; color: #111; }
+    body::before { display: none; }
+    .header-bar { position: relative; background: #fff; border-bottom: 2px solid #111; }
+    .header-inner { color: #111; }
+    .sidebar { display: none; }
+    .layout { display: block; }
+    .main-content { padding: 1rem; }
+    .hero-card, .section-card, .metric-card, .kpi-card, .gauge-container,
+    .debate-panel, .judge-decision {
+        background: #fff; border-color: #ddd;
+        box-shadow: none; break-inside: avoid;
+    }
+    .hero-mesh { display: none; }
+    .hero-ticker {
+        background: none;
+        -webkit-text-fill-color: #111; color: #111;
+    }
+    .signal-pill {
+        background: #eee; border-color: #ccc; color: #333;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .debate-round { break-inside: avoid; }
+    .debate-round .round-content { display: block; }
+    .debate-preview { max-height: none; mask-image: none; -webkit-mask-image: none; }
+    .debate-full { max-height: none; }
+    .tab-panel { display: block !important; margin-bottom: 1rem; }
+    .tab-bar { display: none; }
+    .section-body, .round-content, .tab-panel, .debate-full,
+    .judge-body { color: #333; }
+    .section-title, .debate-panel-title, .judge-title { color: #111; }
+    .metric-label, .kpi-label { color: #666; }
+    .metric-value, .kpi-value, .ind-value, .ma-value { color: #111; }
+    .reason { background: #f9f9f9; border-color: #ddd; color: #333; }
+    .reason-num { background: #eee; color: #333; }
+    .chart-container { display: none; }
+    .sent-tag { border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<header class="header-bar">
+    <div class="header-inner">MSTR — SELL | 2026-03-17</div>
+</header>
+
+<div class="layout">
+    <nav class="sidebar" id="sidebar"><div class="sidebar-inner"><a href="#executive-summary" class="nav-link" data-section="executive-summary">執行摘要</a>
+<a href="#market" class="nav-link" data-section="market">技術面</a>
+<a href="#sentiment" class="nav-link" data-section="sentiment">情緒</a>
+<a href="#news" class="nav-link" data-section="news">新聞</a>
+<a href="#fundamentals" class="nav-link" data-section="fundamentals">基本面</a>
+<a href="#investment-debate" class="nav-link" data-section="investment-debate">投資辯論</a>
+<a href="#trader-plan" class="nav-link" data-section="trader-plan">交易計劃</a>
+<a href="#risk-debate" class="nav-link" data-section="risk-debate">風險辯論</a>
+</div></nav>
+    <main class="main-content">
+        <section id="executive-summary" class="hero-card"><div class="hero-mesh"></div><div class="hero-content"><div class="hero-header"><h1 class="hero-ticker">MSTR</h1><span class="signal-pill">SELL</span></div><div class="hero-date">2026-03-17</div></div></section>
+        <section id="market" class="section-card"><h2 class="section-title">技術面分析</h2><div class="tech-dashboard"><div class="gauges-row"><div class="gauge-container"><svg viewBox="0 0 200 130" class="gauge-svg"><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#1e293b" stroke-width="12" stroke-linecap="round"/><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-dasharray="219.9" stroke-dashoffset="96.8" style="transition: stroke-dashoffset 1s ease;"/><text x="100" y="95" text-anchor="middle" fill="#10b981" font-family="'DM Mono', monospace" font-size="28" font-weight="600">56</text><text x="100" y="125" text-anchor="middle" fill="#64748b" font-family="'Outfit', sans-serif" font-size="13">RSI</text></svg></div><div class="gauge-container"><svg viewBox="0 0 200 130" class="gauge-svg"><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#1e293b" stroke-width="12" stroke-linecap="round"/><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#f59e0b" stroke-width="12" stroke-linecap="round" stroke-dasharray="219.9" stroke-dashoffset="131.9" style="transition: stroke-dashoffset 1s ease;"/><text x="100" y="95" text-anchor="middle" fill="#f59e0b" font-family="'DM Mono', monospace" font-size="28" font-weight="600">9.50</text><text x="100" y="125" text-anchor="middle" fill="#64748b" font-family="'Outfit', sans-serif" font-size="13">ATR (波動率)</text></svg></div></div><div class="charts-row"><div class="chart-container"><canvas id="macdChart"></canvas></div></div><div class="ma-chart"><div class="ma-bar-row"><span class="ma-label">EMA 10</span><div class="ma-bar-track"><div class="ma-bar-fill" style="width:49.0%;background:#8b5cf6;"></div></div><span class="ma-value">139.2</span></div><div class="ma-bar-row"><span class="ma-label">SMA 50</span><div class="ma-bar-track"><div class="ma-bar-fill" style="width:51.0%;background:#3b82f6;"></div></div><span class="ma-value">144.7</span></div><div class="ma-bar-row"><span class="ma-label">SMA 200</span><div class="ma-bar-track"><div class="ma-bar-fill" style="width:95.2%;background:#06b6d4;"></div></div><span class="ma-value">270.4</span></div></div><table class="indicator-table"><thead><tr><th>指標</th><th>數值</th><th>訊號</th><th>解讀</th></tr></thead><tbody><tr><td class="ind-name">close_50_sma</td><td class="ind-value">144.7</td><td>中期阻力位</td><td>中期阻力位</td></tr><tr><td class="ind-name">close_200_sma</td><td class="ind-value">270.4</td><td>確認長期空頭趨勢</td><td>確認長期空頭趨勢</td></tr><tr><td class="ind-name">close_10_ema</td><td class="ind-value">139.2</td><td>短期動能指標</td><td>短期動能指標</td></tr><tr><td class="ind-name">MACD</td><td class="ind-value">-0.03</td><td>動能改善，潛在趨勢反轉</td><td>動能改善，潛在趨勢反轉</td></tr><tr><td class="ind-name">MACD Signal</td><td class="ind-value">-2.1</td><td>慢速動能訊號，待確認</td><td>慢速動能訊號，待確認</td></tr><tr><td class="ind-name">MACD Histogram</td><td class="ind-value">2.08</td><td>動能強度增強</td><td>動能強度增強</td></tr><tr><td class="ind-name">RSI</td><td class="ind-value">56</td><td>動能中性，無超買/超賣狀態</td><td>動能中性，無超買/超賣狀態</td></tr><tr><td class="ind-name">ATR</td><td class="ind-value">9.5</td><td>中等波動率，適用於風險管理</td><td>中等波動率，適用於風險管理</td></tr></tbody></table></div></section>
+        <section id="sentiment" class="section-card"><h2 class="section-title">情緒分析</h2><div class="sentiment-summary"><div class="sentiment-bar"><div class="sent-fill sent-pos" style="width:71.4%"></div><div class="sent-fill sent-neu" style="width:0.0%"></div><div class="sent-fill sent-neg" style="width:28.6%"></div></div><div class="sentiment-counts"><span class="sent-count sent-count-pos">5 正面</span><span class="sent-count sent-count-neu">0 中性</span><span class="sent-count sent-count-neg">2 負面</span></div></div><table class="indicator-table"><thead><tr><th>關鍵點</th><th>描述</th><th>情緒</th></tr></thead><tbody><tr class="sent-row-positive"><td>比特幣累積</td><td>MicroStrategy過去一週創紀錄的比特幣購買，總額達15.7億美元</td><td>正面</td></tr><tr class="sent-row-negative"><td>股權融資</td><td>發行優先股和普通股用於資助比特幣買入</td><td>中立/負面（因稀釋疑慮）</td></tr><tr class="sent-row-positive"><td>股價變動</td><td>MSTR股價在比特幣價格上漲期間上升5%</td><td>正面</td></tr><tr class="sent-row-positive"><td>分析師評論</td><td>MicroStrategy被描述為比特幣機構持有中的核心角色</td><td>正面</td></tr><tr class="sent-row-positive"><td>地緣政治影響</td><td>伊朗衝突提升加密市場的興趣</td><td>正面</td></tr><tr class="sent-row-negative"><td>市場批評</td><td>投資者對稀釋效應及比特幣效用部分持懷疑態度</td><td>負面</td></tr><tr class="sent-row-positive"><td>STRC優先股表現</td><td>強調其提供優越的風險調整後回報</td><td>正面</td></tr></tbody></table></section>
+        <section id="news" class="section-card"><h2 class="section-title">新聞分析</h2><div class="section-body"><p>以下是針對交易和宏觀經濟相關的全球現狀的綜合報告，重點關注MicroStrategy（MSTR）公司以及基於過去一週新聞的更廣泛市場趨勢：</p>
+<p>MicroStrategy（MSTR）與比特幣相關趨勢：<br />
+- MicroStrategy近期大規模購入比特幣，購得22,337 BTC，花費約15.7億美元，平均約每枚70,194美元。這波購買熱潮是過去兩週總計近28.45億美元累積計畫的一部分。這種積極的比特幣持有增長，似乎推動了MSTR股價與比特幣價格的正相關，過去一週中MSTR股價約上漲5%，比特幣則上漲6%。<br />
+- 公司通過股票發行融資購買比特幣，包括發行1,180萬股優先股和280萬股普通股。這一資本結構的變動引發部分投資者對普通股攤薄和股息成本的擔憂。<br />
+- Bernstein及其他市場研究機構分析師指出，MicroStrategy正逐步成為企業比特幣擁有的「中央銀行」，並強調機構資本支持加強比特幣持有的韌性。<br />
+- 一些著名對沖基金及加密評論人士批評比特幣的實用性，但MicroStrategy仍是企業比特幣累積的重要角色，提升其作為機構投資信心指標的地位。<br />
+- MicroStrategy的交易估值看似偏高（如市銷率高達94倍），但由於其龐大的比特幣持倉、日益壯大的數字信貸業務及穩定的软件營收流，估值有其合理性。<br />
+- 比特幣價格達到一個多月新高，持續抗衡傳統市場走勢和地緣政治風險，機構大額累積，包括MicroStrategy持續的融資行動，是支撐價格的關鍵。<br />
+- 公司近期發行優先股，並受到Strive等機構投資者強烈需求，這不僅支持比特幣買入，也推升優先股估值。麥可·賽勒（Michael Saylor）等領軍人物也推廣其優先股相較熱門科技股的優越風險調整回報。<br />
+- 更廣泛的加密貨幣股如Robinhood和Coinbase也因為地緣政治緊張（例如伊朗衝突）激起的市場新興興趣而呈現上升動能，這為與加密資產及交易平台相關的公司帶來利好。</p>
+<p>宏觀與市場環境：<br />
+- 从更宏觀角度看，全球市場受油價波動、霍爾木茲海峽周邊地緣政治發展、以及企業新聞（如Nvidia擴張與科技行業資本支出）等因素影響。<br />
+- 紐約證券交易所控股公司加碼加密領域版圖，顯示機構對數字資產的採納趨勢加快。<br />
+- 市場參與者持續關注關税動態、就業數據及企業盈餘表現，這些因素形塑了今年迄今的回報及進入2026年的投資信心。<br />
+- 分析師持續看好特定板塊，包括科技和消費必需品類股如Walmart和Costco，同時多樣配置到人工智能、記憶體半導體與軟件等成長主題。</p>
+<p>摘要表：</p>
+<table>
+<thead>
+<tr>
+<th>主題</th>
+<th>核心見解</th>
+<th>對交易者與投資者的意涵</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MicroStrategy比特幣購買</td>
+<td>近期購買約15.7億美元；兩週內總計約28.45億美元；以股權銷售融資；股價與BTC價格相關</td>
+<td>MSTR股價與BTC同步；注意攤薄風險及強勁機構支持</td>
+</tr>
+<tr>
+<td>比特幣價格動能</td>
+<td>BTC漲幅超6%，全球風險偏好下降期間反彈；月度新高；不受油價衝擊影響</td>
+<td>BTC與相關股票（MSTR、COIN）提供非相關的交易機會</td>
+</tr>
+<tr>
+<td>機構參與</td>
+<td>優先股需求快速增長；STRC受青睞；擔當機構「中央銀行」角色</td>
+<td>優先股可能帶來上行空間；機構信心可穩定BTC持有</td>
+</tr>
+<tr>
+<td>加密監管與市場情緒</td>
+<td>觀點分歧：對比特幣實用性有批評，但業內反擊負面敘事</td>
+<td>波動性可能加劇；密切關注監管及公眾情緒</td>
+</tr>
+<tr>
+<td>科技與宏觀驅動因素</td>
+<td>Nvidia擴張；油價影響市場；關税與就業數據影響股市方向</td>
+<td>科技營收為關鍵；油價趨勢影響風險偏好</td>
+</tr>
+<tr>
+<td>廣泛市場情緒</td>
+<td>紐交所加碼加密曝光；地緣政治衝突刺激加密資產興趣</td>
+<td>加密規模增加；地緣政治緊張創造市場波動性</td>
+</tr>
+</tbody>
+</table>
+<p>本分析顯示MSTR仍是企業比特幣機構投資的重要代表，其近期購買和股權策略支撐股價走勢。優先股需求強勁及比特幣持續累積，顯露市場對加密貨幣長期角色的信心，儘管存在市場風險。宏觀市場方面，科技與地緣政治因素持續影響投資者行為，而加密貨幣作為分散資產類別，在全球不確定性中提供新的配置機會。</p>
+<p>如果您需要，我也可以提供關於MSTR、比特幣價格或當前宏觀市場主題的更詳細最新資訊。</p></div></section>
+        <section id="fundamentals" class="section-card"><h2 class="section-title">基本面分析</h2><div class="kpi-grid"><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Market Cap</div><div class="kpi-value" style="color:#64748b;">492億美元</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EPS</div><div class="kpi-value" style="color:#64748b;">-15.22</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Revenue</div><div class="kpi-value" style="color:#64748b;">4.77億美元</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EBITDA</div><div class="kpi-value" style="color:#64748b;">-54.4億美元</div></div><div class="kpi-card" style="border-left:3px solid #ef4444;"><div class="kpi-label">Profit Margin</div><div class="kpi-value" style="color:#ef4444;">-44.0%</div></div></div><table class="indicator-table"><thead><tr><th>項目</th><th>詳細資訊</th></tr></thead><tbody><tr><td>市值</td><td>492億美元</td></tr><tr><td>產業/行業</td><td>科技 / 應用軟體</td></tr><tr><td>過去12個月EPS</td><td>-15.22</td></tr><tr><td>預期EPS</td><td>68.88</td></tr><tr><td>預期本益比</td><td>2.14</td></tr><tr><td>市淨率</td><td>1.04</td></tr><tr><td>營收（TTM）</td><td>4.77億美元</td></tr><tr><td>EBITDA</td><td>-54.4億美元</td></tr><tr><td>淨利</td><td>-42.3億美元</td></tr><tr><td>營業利潤率</td><td>-44.0%</td></tr><tr><td>負債股東權益比</td><td>16.16</td></tr><tr><td>現金持有量</td><td>23億美元</td></tr><tr><td>機構持股比例</td><td>62.7%</td></tr><tr><td>內部人持股比例</td><td>0.18%</td></tr><tr><td>空頭比率（佔流通股）</td><td>11.5%</td></tr><tr><td>主要風險</td><td>高槓桿，負獲利</td></tr><tr><td>主要機會</td><td>預期盈餘轉機，數位資產曝險</td></tr><tr><td>淨資產價值溢價（%）</td><td>+10.9%</td></tr><tr><td>發現異常</td><td>預期EPS與過去EPS極度落差；負債高；EBITDA負且市值大；營收成長但負利潤率</td></tr></tbody></table></section>
+        <section id="investment-debate" class="section-card"><h2 class="section-title">投資辯論</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #10b981;"><h3 class="debate-panel-title" style="color:#10b981;">多頭觀點</h3><div class="debate-preview"><p>多頭分析師：當然，我理解空頭提出的謹慎觀點，但讓我們來談談為什麼MicroStrategy (MSTR) 的多頭論點不僅合情合理——而且在現在尤其令人信服。</p>
+<h3>增長潛力：</h3>
+<p>是的，目前的基本面複雜，過去 EPS 深度負值且負債杠杆明顯。但明顯突出的是<em>68.88 的前瞻 EPS 預估</em>和約<em>2.14 的前瞻市盈率</em>。這表示分析師預期 MSTR 將有大幅且近期的盈餘回升，主要來源於其不斷演化的商業模式，尤其是巨量比特幣庫藏與日益成長的數字信用及軟體業務。</p>
+<p>想想看：MSTR 不再僅是單純的科技應用公司。它正將自我定位為企業比特幣的<strong>“央行”</strong>，僅過去兩周便持有接近 28.45 億美元的比特幣，增加了龐大的數字資產庫存，直接支持其資產負債表和估值。比特幣最近價格走強（上週上漲超過 6%）同時拉抬了 MSTR 股價，顯示出明顯且強烈的相關性，投資者能夠加以利用。</p>
+<h3>競爭優勢：</h3>
+<p>MicroStrategy 擁有<strong>主導的機構比特幣持倉地位</strong>，構築了獨特的戰略護城河。很少有上市公司有規模、聲譽和財務實力如此積極地累積比特幣，尤其是透過偏好股和普通股混合融資，吸引尋求差異化風險...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>多頭分析師：當然，我理解空頭提出的謹慎觀點，但讓我們來談談為什麼MicroStrategy (MSTR) 的多頭論點不僅合情合理——而且在現在尤其令人信服。</p>
+<h3>增長潛力：</h3>
+<p>是的，目前的基本面複雜，過去 EPS 深度負值且負債杠杆明顯。但明顯突出的是<em>68.88 的前瞻 EPS 預估</em>和約<em>2.14 的前瞻市盈率</em>。這表示分析師預期 MSTR 將有大幅且近期的盈餘回升，主要來源於其不斷演化的商業模式，尤其是巨量比特幣庫藏與日益成長的數字信用及軟體業務。</p>
+<p>想想看：MSTR 不再僅是單純的科技應用公司。它正將自我定位為企業比特幣的<strong>“央行”</strong>，僅過去兩周便持有接近 28.45 億美元的比特幣，增加了龐大的數字資產庫存，直接支持其資產負債表和估值。比特幣最近價格走強（上週上漲超過 6%）同時拉抬了 MSTR 股價，顯示出明顯且強烈的相關性，投資者能夠加以利用。</p>
+<h3>競爭優勢：</h3>
+<p>MicroStrategy 擁有<strong>主導的機構比特幣持倉地位</strong>，構築了獨特的戰略護城河。很少有上市公司有規模、聲譽和財務實力如此積極地累積比特幣，尤其是透過偏好股和普通股混合融資，吸引尋求差異化風險調整報酬的機構投資者。相關的優先股發行（如 STRC）已吸引 Strive 和貝萊德等主要機構，提供強大的流動性和需求支持。</p>
+<p>此外，他們作為<strong>首席比特幣公司</strong>的品牌形象，由遠見領袖 Michael Saylor 領導，使其獲得超越典型科技基本面的聲譽。此市場信心非空穴來風，近期正面媒體敘述將 MSTR 塑造為地緣政治不確定時期的加密基石，進而推動對比特幣及MSTR股票的需求。</p>
+<h3>正面市場指標及技術面：</h3>
+<p>讓我們談談空頭提到的圖表和動能指標——MSTR 股價接近 50 日簡單移動平均線阻力位（約 144.7），MACD 與 RSI 指向動能改善。MACD 柱狀圖擴張及 MACD 線上升至中性區域強烈暗示潛在趨勢反轉正在醞釀。RSI 處於中間（約 56），意謂尚有上升空間且未過熱。</p>
+<p>波動率適中（ATR 約 9.5-11），表明這場上漲非劇烈震盪，而是穩健復甦，若比特幣及機構加密需求持續增長，具備顯著上行潛力。這為動能投資者提供了<em>策略性的入場點</em>。</p>
+<h3>反駁空頭對杠杆與稀釋的疑慮：</h3>
+<p>負債股本比確實高達 16.16，引發對杠杆風險的擔憂。但請記得，許多債務是策略性用於在比特幣價格增值時放大數字資產投資報酬。MicroStrategy 的<em>現金儲備強勁，達 23 億美元</em>，提供流動性緩衝和靈活性。</p>
+<p>關於股票發行帶來的稀釋憂慮表面上合理，但<em>近期籌資的 15.7 億美元已策略性投入增值的比特幣資產</em>，反過來提升了淨資產價值和整體股東價值。該股現僅以淨資產價值溢價約 10.9% 交易，儘管市值龐大，顯示市場尚未完全反映這部分數字資產的上行潛力。隨著比特幣持倉成長和機構需求維持，潛在上漲空間巨大。</p>
+<h3>從過去經驗學習：</h3>
+<p>過去，部分投資者曾在過度投機的加密貨幣或被熱潮掩蓋基本面的公司中受傷。但 MicroStrategy 則不同，憑藉其<strong>透明的累積策略、日益增強的機構支持、以及雙重價值驅動來源：軟體業務 + 比特幣資產</strong>。公司沒有單純倚賴加密價格，而是積極打造可持續的資本架構，包括吸引專業投資者偏好的優先股工具。</p>
+<p>我們學到，透過上市公司接觸加密貨幣需謹慎審視，也要保持靈活，認識到若透過財務紀律和良好市場時機執行，創新和資產累積可帶來超額報酬——MicroStrategy 正在展示領導力。</p>
+<hr />
+<h3>簡而言之：</h3>
+<p><strong>當前 MSTR 即是一家機構級、科技支持的比特幣銀行，也是邁向獲利門檻的軟體公司——一個包裹著獨特地緣政治與宏觀經濟順風的指數成長投資機會。</strong> 技術面改善、龐大比特幣資庫、機構支持參與以及分析師預期的大幅盈餘反轉，共同編織出引人注目的增長故事。</p>
+<p>我歡迎任何具體的空頭觀點來進一步辯論，但依目前情勢，多頭理由明顯超越風險，基於 MicroStrategy 的<strong>規模擴張力、競爭定位及現階段市場動態。</strong>若你需要，我也可以根據均線與動能指標建議風險控制入場點，以期最大化收益並控制下跌風險。想讓我接著說明嗎？</p></div></details></div><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">空頭觀點</h3><div class="debate-preview"><p>空頭分析師：感謝你詳盡且充滿熱情地闡述多頭觀點。我尊重對 MicroStrategy 比特幣累積和未來盈利的樂觀看法，但讓我們剖析一些關鍵現實，這些現實應該讓人保持慎重——並重新考慮 MSTR 現在是否真的是資金安全或合理的停泊處。</p>
+<hr />
+<h3>1. 增長潛力？前瞻盈餘估計極度投機，未必兌現</h3>
+<p>多頭強調驚人的前瞻 EPS 68.88 和前瞻 P/E 2.14，表面上顯示盈餘復甦。但別忘了現實是：<em>過去 EPS 為 -15.22，且 EBITDA 高達負 54.4 億美元。</em>這個過往虧損和未來樂觀間的巨大落差不僅驚人，更反映深層不確定。</p>
+<ul>
+<li>這種近期轉機從何而來？主要依賴<em>對比特幣未來價格的假設</em>和對軟體業務恢復的期望，均極具投機性。</li>
+<li>比特幣價格劇烈波動；MSTR 將超 80 億美元的負債放在手中，任何比特幣價格突跌均將對財報造成強烈反響。</li>
+<li>投資人應記住加密鏈接股的先例：「基於敘事的暴漲常會急速反轉」，而MSTR歷史上劇烈波動與虧損的現實令其面臨同樣風險。</li>
+</ul>
+<p>因此投注於前瞻 EPS 實質上是在賭一場加密價格升值和商業執行的完美風暴。這種過度樂觀遮掩了公司實際面臨的財務壓...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>空頭分析師：感謝你詳盡且充滿熱情地闡述多頭觀點。我尊重對 MicroStrategy 比特幣累積和未來盈利的樂觀看法，但讓我們剖析一些關鍵現實，這些現實應該讓人保持慎重——並重新考慮 MSTR 現在是否真的是資金安全或合理的停泊處。</p>
+<hr />
+<h3>1. 增長潛力？前瞻盈餘估計極度投機，未必兌現</h3>
+<p>多頭強調驚人的前瞻 EPS 68.88 和前瞻 P/E 2.14，表面上顯示盈餘復甦。但別忘了現實是：<em>過去 EPS 為 -15.22，且 EBITDA 高達負 54.4 億美元。</em>這個過往虧損和未來樂觀間的巨大落差不僅驚人，更反映深層不確定。</p>
+<ul>
+<li>這種近期轉機從何而來？主要依賴<em>對比特幣未來價格的假設</em>和對軟體業務恢復的期望，均極具投機性。</li>
+<li>比特幣價格劇烈波動；MSTR 將超 80 億美元的負債放在手中，任何比特幣價格突跌均將對財報造成強烈反響。</li>
+<li>投資人應記住加密鏈接股的先例：「基於敘事的暴漲常會急速反轉」，而MSTR歷史上劇烈波動與虧損的現實令其面臨同樣風險。</li>
+</ul>
+<p>因此投注於前瞻 EPS 實質上是在賭一場加密價格升值和商業執行的完美風暴。這種過度樂觀遮掩了公司實際面臨的財務壓力。</p>
+<hr />
+<h3>2. 杠杆與資本結構風險是嚴重威脅，非小事一樁</h3>
+<p>16.16 的負債股本比非「策略性」，而是<em>極度危險</em>。公司負債總額達 82.5 億美元，現金僅 23 億美元，淨負債超過 59 億美元。再加上目前 -44% 的營運利潤率與負自由現金流，整體是個燒錢且負債累累的企業。</p>
+<ul>
+<li>這看起來不像一張支持多頭增長的健康資產負債表；反倒是高度脆弱，易受利率上升、信貸緊縮或比特幣價格急跌的衝擊。</li>
+<li>無論債務多「策略性」，在連續虧損和市場波動下的償債壓力依然沉重。若加密市況下降，MSTR 的再融資管道可能迅速枯竭。</li>
+<li>優先股發行雖為購買比特幣提供資金，卻使普通股股東稀釋，且須支付股息，增加財務負擔。</li>
+</ul>
+<p>多頭輕描淡寫稀釋影響，但實際上這一資金籌措會稀釋持股，若比特幣表現不佳，可能長期壓抑股價。</p>
+<hr />
+<h3>3. 市場與技術指標示警，非信心訊號</h3>
+<p>雖然 MACD 與 RSI 顯示些微動能回升，但 MSTR 股價仍受限於約 144.7 的 50 日 SMA，<em>遠低於約 270 的 200 日 SMA</em>，明顯標記長期空頭趨勢。</p>
+<ul>
+<li>MACD 為負，僅略向零靠近，尚未形成確立的多頭交叉。若比特幣或軟體營收受挫，柱狀圖漲幅恐快速回撤。</li>
+<li>RSI 56 處於中性，並非力度指標，更像是整理盤整，而非突破。</li>
+<li>ATR 顯示波動不大，但基本面疲弱，意味若市場情緒轉差，下跌風險不容忽視。</li>
+</ul>
+<p>投資者不應誤將短期動能視為持續反彈，尤其對易因加密市場劇烈波動的股票更應謹慎。</p>
+<hr />
+<h3>4. 競爭定位與商業模式風險被低估</h3>
+<p>是的，MSTR 標榜企業比特幣「央行」角色，但此定位<em>極具利基與風險</em>，實質成為高杠杆比特幣代理，而非傳統成長中的軟體企業。</p>
+<ul>
+<li>軟體業務收益相對有限（過去 12 個月約 4.77 億美元）且虧損，公司並非更廣泛軟體領域的主導者。</li>
+<li>軟體與加密採礦／經紀競爭對手快速前進，收入流更分散且杠杆風險更低。</li>
+<li>比特幣累積不構成護城河；它是一項價格動能賭注，受制監管風險及市場波動，這些都可能迅速侵蝕 MSTR 所謂的「競爭優勢」。</li>
+<li>機構投資者若比特幣價格下跌或市場波動加劇，可能撤資或減持優先股，使普通股股東面臨劇烈下跌風險。</li>
+</ul>
+<p>視「品牌與領導力」為持久競爭優勢，忽略了即使有遠見的 CEO 也無法完全屏蔽宏觀經濟衝擊、監管風暴或技術顛覆。</p>
+<hr />
+<h3>5. 稀釋與股東價值是真實顧慮，非「微不足道」</h3>
+<p>近期透過優先股與普通股募資 15.7 億美元用於買入比特幣，但此舉伴隨股東稀釋及優先股股息支出。</p>
+<ul>
+<li>雖可能短暫推升數字資產，但若比特幣未持續升值或市場快速調整，普通股股東股權價值將縮水——實質為槓桿化虧損。</li>
+<li>市場並非落後於淨資產價值，約 10.9% 的溢價已反映大部分比特幣正面預期。</li>
+<li>若比特幣停滯或下跌，或 MSTR 軟體業務無顯著回升，該溢價恐快速蒸發甚至大幅倒退。</li>
+</ul>
+<hr />
+<h3>6. 多頭需吸取教訓：勿過度迷信敘事驅動投資</h3>
+<p>過去幾年，加密驅動的商業故事曾盛開又劇烈崩盤。基於投機資產的高預期若沒有多元且穩健的營收模式與穩定現金流，罕有成功。MSTR 目前戰略嚴重依賴比特幣價格上升及持續投資者加槓桿熱情。</p>
+<ul>
+<li>過去錯誤包括忽略過度杠杆風險、低估稀釋影響、誤將炒作視為基本面。</li>
+<li>本次故事亦無異：盈利回升十分脆弱、財務壓力大，且長期技術面狀況偏空。</li>
+<li>「比特幣央行」稱號或有市場行銷作用，但無法對抗比特幣本身波動與公司營運虧損和負債風險。</li>
+</ul>
+<hr />
+<h3>最終思考</h3>
+<p>MicroStrategy <em>不是</em>純粹的科技成長股，也非防禦性資產。它是高度槓桿的比特幣價格及機構加密風險的投機押注。此舉暴露投資者於若假設破裂時的巨大下跌風險。</p>
+<p>對風險偏好較低或更重基本面的投資人而言：</p>
+<ul>
+<li>高杠杆且盈利受損  </li>
+<li>優先股與普通股發行帶來的稀釋風險  </li>
+<li>技術面長期偏空趨勢  </li>
+<li>對波動激烈比特幣價格的高度集中曝險  </li>
+<li>軟體業務表現不確定  </li>
+</ul>
+<p>……令 MSTR 僅適合具有風險承受能力和嚴格風控的投機交易者。</p>
+<hr />
+<p>所以，儘管多頭描述了誘人的上行敘事，但這建立在<em>脆弱且過度樂觀的假設</em>，掩蓋了實質可能帶來重大損失的風險。投資者應抵制炒作，並在追隨潮流前仔細評估真實風險。</p>
+<p>若需要，我可提出可能的下跌情境與風險管理步驟，說明潛在的錯誤風險——請告知。</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">裁判決定</h3><div class="judge-body"><p>Hello there. Let's walk through this debate on MicroStrategy and figure out the smartest move for your portfolio. </p>
+<p>Listening to both sides, the bull analyst paints an incredibly enticing picture. They center their argument on MicroStrategy acting as a corporate central bank for Bitcoin, citing a massive upcoming earnings turnaround based on optimistic forward estimates. The bull believes that the company's aggressive strategy of raising capital to buy Bitcoin represents a unique competitive moat, bolstered by institutional backing and improving short-term technical indicators. They see the strategic use of debt as a brilliant way to multiply returns in a rising crypto market, while claiming the core software business provides a necessary foundation.</p>
+<p>However, the bear analyst counters with some sobering financial realities that we simply cannot ignore. They point out that MicroStrategy is sitting on over eight billion dollars in debt with deeply negative trailing earnings and massive operating cash burn. The bear effectively argues that the company is no longer a fundamentally sound software business, but rather a highly leveraged, speculative proxy for Bitcoin. Furthermore, they highlight that the constant issuing of new shares to buy more Bitcoin heavily dilutes common shareholders, and the long-term stock chart actually remains decidedly bearish since the price is capped well below its two hundred-day moving average. </p>
+<p>After critically evaluating both sides, my definitive recommendation is to Sell. </p>
+<p>The rationale here leans heavily on the bear's undeniable evidence regarding the company's financial vulnerability. The bull's entire thesis relies on a perfect scenario where Bitcoin continues to climb indefinitely, masking the extreme operational deficits. A debt-to-equity ratio over sixteen combined with awful trailing earnings is a ticking time bomb. By holding this stock, you are taking on all the extreme volatility of Bitcoin, compounded by severe corporate debt risk, operational cash burn, and ongoing shareholder dilution. If the crypto market turns, or if credit markets tighten, the leverage that the bull praises will violently accelerate their financial distress. It is far too dangerous to bet on speculative forward earnings when the current balance sheet is this stressed.</p>
+<p>Reflecting on my own past mistakes in similar situations, I have sometimes let the allure of an innovative narrative or explosive forward growth estimates blind me to deteriorating fundamentals and massive debt loads. I have learned the hard way that when a company pivots from its core operations to act as a leveraged holding company for a volatile asset, the structural risks are almost always underpriced by retail investors. I will not make the mistake of recommending a Hold here just to see how the story plays out. Holding a stock with a potentially toxic balance sheet is a decision to risk your capital on hope rather than sound investing principles, and I am committed to keeping us grounded in reality.</p>
+<p>Here is your detailed investment plan. First, liquidate any long positions in MicroStrategy common stock immediately to protect your capital from downside debt risks and ongoing dilution. Second, if your primary investment goal is to capture the upside of digital assets, reallocate those proceeds directly into spot Bitcoin ETFs. This strategy gives you the pure crypto exposure you are looking for without the corporate leverage, cash burn, and dilution baggage attached to MicroStrategy. Finally, given the stock's historical tendency for wild, narrative-driven price spikes, I strongly advise against outright shorting the stock. If you want to aggressively play the downside, do so strictly through defined-risk instruments. Consider buying longer-dated out-of-the-money put options. This way, you strictly cap your maximum loss if another crypto hype cycle temporarily drives the price higher, while remaining perfectly positioned for the structural valuation correction the bear outlined. Let's execute this plan and move your capital to fundamentally safer and more efficient vehicles.</p></div></div></section>
+        <section id="trader-plan" class="section-card"><h2 class="section-title">交易者投資計劃</h2><div class="section-body"><p>綜合分析提供了對 MicroStrategy (MSTR) 非常平衡且全面的看法。多頭觀點強調透過比特幣升值及公司作為企業比特幣持有者的獨特定位帶來的潛在上漲空間。然而，空頭觀點則強調與極端槓桿、持續營運虧損、激進的稀釋以及看跌的技術背景相關的重大風險。</p>
+<p>重點摘要：<br />
+- 債務：超過 80 億美元的債務是一個關鍵的紅旗，尤其是在負債對股本比超過十六倍的情況下，無法忽視。<br />
+- 盈利與現金流：深度負數的近期盈餘和大量現金消耗增加了財務脆弱性。<br />
+- 商業模式轉變：從軟體公司轉型為實質上是槓桿比特幣持有實體，代表了一項根本且具風險的轉捩點。<br />
+- 技術面：股票交易價格遠低於 200 日移動平均線，顯示出看跌動能。<br />
+- 稀釋：持續透過發行新股進行股東稀釋，削弱股東價值。<br />
+- 風險與報酬：極高風險與比特幣價格波動相結合，再加上企業財務壓力。</p>
+<p>建議採取賣出行動與穩健投資原則一致——優先保護資本，而非基於前瞻性假設的投機性上漲。</p>
+<p>依據我的觀點及過往教訓，強調在基本面和資產負債表疲弱時不應被敘事或前瞻預測左右，我同意賣出 MicroStrategy 股票。同時，將資金重新配置至現貨比特幣 ETF，以捕捉加密貨幣上行機會但避免企業資產負債表風險是明智之舉。對於直接空頭 MSTR 持謹慎態度，而選擇使用定義風險的期權進行下跌策略操作則更為審慎。</p>
+<p>因此，基於分析及類似案例的經驗，最佳方案是儘速清倉 MSTR 持倉，以免債務與稀釋風險帶來進一步下跌。</p>
+<p>最終交易建議：<strong>SELL</strong></p></div></section>
+        <section id="risk-debate" class="section-card"><h2 class="section-title">風險管理辯論</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">進取觀點</h3><div class="debate-preview"><p>Aggressive Analyst: Let’s tackle the conservative take first: Yes, the debt is sky-high and earnings historically ugly, but that perspective misses the transformational power MicroStrategy is wielding here. The company isn’t just a software firm anymore—it’s becoming an institutional Bitcoin powerhouse. Holders of huge BTC reserves in a bullish macro crypto cycle? That alone is a game changer with explosive upside, potentially dwarfing traditional fundamentals. The heavy leverage magnifies retu...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>Aggressive Analyst: Let’s tackle the conservative take first: Yes, the debt is sky-high and earnings historically ugly, but that perspective misses the transformational power MicroStrategy is wielding here. The company isn’t just a software firm anymore—it’s becoming an institutional Bitcoin powerhouse. Holders of huge BTC reserves in a bullish macro crypto cycle? That alone is a game changer with explosive upside, potentially dwarfing traditional fundamentals. The heavy leverage magnifies returns when Bitcoin prices continue their uptrend, and given the recent massive $1.57 billion Bitcoin buy, plus total acquisition nearing $2.845 billion in just weeks, we’re seeing a bold bet that could disrupt the institutional space. It’s high risk, yes, but the reward is unparalleled if Bitcoin extends its bull run.</p>
+<p>About the caution on ongoing losses and dilution — these fiscal moves are precisely the aggressive capital raises fueling rapid Bitcoin accumulation. This isn’t random dilution; it’s strategic financial engineering to build a unique “corporate treasury reserve” whose value could grow multiple folds in tandem with Bitcoin’s increasing institutional adoption. The preferred stock issuance, for example, is attracting major institutional investors and offers superior risk-adjusted returns compared to traditional tech stocks. That underpins confidence on the demand side. Dismissing these moves as simply harmful dilution ignores the strength of investor interest and the potential growth in shareholder value through BTC price appreciation.</p>
+<p>Regarding the technicals, yes, MSTR is beneath its 200-day SMA, a longer-term bear trait, but this is a stale perspective that misses short- to medium-term momentum breakthroughs. The MACD is improving sharply, moving from deep negative towards zero, signaling a potential trend reversal. RSI neutrality doesn’t signal oversold doom but rather that the stock is consolidating before a fresh leg up. The 50 SMA and 10 EMA resistance levels offer clear tactical trade points to capitalize on rebounds. Moderate volatility measured by the ATR is perfect for agile risk-managed entries. So technicals are evidencing a brewing breakout rather than an unquestionable downtrend.</p>
+<p>Shifting from the neutral stance, which supports selling to fund direct Bitcoin ETF exposure — that’s a safe play but lacks the extraordinary leverage and upside MSTR uniquely delivers. While direct Bitcoin investment eliminates corporate balance sheet risk, it also deprives investors of the embedded leverage and strategic financial platforms MicroStrategy builds. MSTR isn’t just a Bitcoin proxy — it’s a hybrid asset exposing investors simultaneously to corporate growth in digital credit business and BTC upside. The forward EPS of 68.88 with a forward P/E near 2 illustrates razor-sharp valuation upside baked into analyst forecasts, far from speculative hype. Such a turnaround embedded in one stock is rare.</p>
+<p>Furthermore, the soaring institutional ownership (62.7%) and growing popularity of MSTR’s STRC preferred stock underscore strong market conviction in MicroStrategy’s strategic pivot. This isn’t a blind gamble; it’s backed by data showing investors increasingly view MicroStrategy as a "central bank" for corporate Bitcoin ownership, a unique positioning with significant moat development potential in the evolving crypto economy. Importantly, geopolitical tensions are driving renewed crypto interest, creating a market environment ripe to support a bold risk-on strategy.</p>
+<p>In summary, cautious selling may protect capital but foregoes potentially market-beating gains with MSTR’s aggressive Bitcoin accumulation and institutional financial engineering. The improved technical indicators, combined with massive Bitcoin purchases and growing institutional validation, point to an emerging high-reward setup. The key is defined risk management, not wholesale abandonment. This is where agile traders can reap outsized benefits while mitigating risks with options or staged entries. The narrative is clear: You lean into MicroStrategy’s brave pivot, you access rocket fuel potential few other equity plays offer today. Playing it safe here is a missed opportunity; embracing the volatility and capitalizing on Bitcoin’s institutional rise through MSTR is the path to truly outperforming rivals and the broader market.</p></div></details></div><div class="debate-panel" style="border-top:3px solid #3b82f6;"><h3 class="debate-panel-title" style="color:#3b82f6;">保守觀點</h3><div class="debate-preview"><p>保守分析師：我理解激進及中立觀點的熱情，但我們必須清醒評估實際風險所存，及其對資本保值的潛在威脅——這是我們作為保守型風險分析師的首要職責。</p>
+<p>從激進論點開始：是的，MicroStrategy轉而成為比特幣機構持有者看似「轉型」，但這乃是一場高賭注的賭博，建立於本已脆弱的財務基礎上。超過80億美元的負債及超過16倍的負債對股本比率，這不僅是「槓桿高企」——而是重大結構性風險。此負債條件無論比特幣價格走勢如何，都需承擔過重的債務服務成本，若加密市場下滑或遭受監管壓力——這些場景完全可能──公司財務靈活性將急劇受限。槓桿有利有弊：它能放大收益，也會成倍擴大損失，危及流動性及公司存續。</p>
+<p>你讚揚激進籌資與攤薄為「策略性金融工程」，但從保守角度看，頻繁發行股權尤其是優先股，意味著股東價值被攤薄及股息負擔增加，侵蝕未來每股盈利。稱這些行動「非隨意攤薄」卻忽略攤薄加劇，若基本面未快速改善，會對股價施加下行壓力風險。同時，優先股機構需求雖令人鼓舞，也展現公司依賴持續外部融資來支持營運及比特幣收購，是高度結構性市場風險。</p>
+<p>關於技術分析——是的，MACD線從負值走高，RSI處於中性，或暗示短期動量稍有...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>保守分析師：我理解激進及中立觀點的熱情，但我們必須清醒評估實際風險所存，及其對資本保值的潛在威脅——這是我們作為保守型風險分析師的首要職責。</p>
+<p>從激進論點開始：是的，MicroStrategy轉而成為比特幣機構持有者看似「轉型」，但這乃是一場高賭注的賭博，建立於本已脆弱的財務基礎上。超過80億美元的負債及超過16倍的負債對股本比率，這不僅是「槓桿高企」——而是重大結構性風險。此負債條件無論比特幣價格走勢如何，都需承擔過重的債務服務成本，若加密市場下滑或遭受監管壓力——這些場景完全可能──公司財務靈活性將急劇受限。槓桿有利有弊：它能放大收益，也會成倍擴大損失，危及流動性及公司存續。</p>
+<p>你讚揚激進籌資與攤薄為「策略性金融工程」，但從保守角度看，頻繁發行股權尤其是優先股，意味著股東價值被攤薄及股息負擔增加，侵蝕未來每股盈利。稱這些行動「非隨意攤薄」卻忽略攤薄加劇，若基本面未快速改善，會對股價施加下行壓力風險。同時，優先股機構需求雖令人鼓舞，也展現公司依賴持續外部融資來支持營運及比特幣收購，是高度結構性市場風險。</p>
+<p>關於技術分析——是的，MACD線從負值走高，RSI處於中性，或暗示短期動量稍有改善，但這絕非保證。股票仍遠低於200日長期均線，且經常在50日均線遇阻。中期整固或反彈並不等同於擺脫長期熊市趨勢。適度的ATR與動量改善提供戰術交易機會，但無法消弭基本面帶來的巨大風險。倚賴技術指標而無堅實財務基礎頂多算投機。</p>
+<p>對於直接購買比特幣ETF「缺少MSTR提供的槓桿與戰略平台」一說──誠然MSTR結合比特幣曝險與業務營運，但這種「混合」本質即為風險所在。公司持續經營虧損、數十億負EBITDA以及不確定的盈餘轉折（追蹤EPS為-15，但遠期EPS幾乎不可置信地為+68）暗示市場對轉盈抱持不切實際的樂觀。揹負如此高槓桿及持續虧損押注劇烈轉折，與保守的資本保護策略背道而馳。</p>
+<p>聲稱強機構持股代表穩定，忽略了這些機構或更多受投機動量及加密熱情驅動，而非紮實的信用分析。地緣政治緊張和加密宏觀風向雖有正面可能，卻同時帶來更大不確定性與波動。這些因素可能引發迅速的反轉，我們的責任是確保公司曝險能減少此類衝擊的負面影響。</p>
+<p>針對中立分析師建議從MSTR轉向直接比特幣ETF的主張——我完全支持該謹慎調整。此舉消除企業槓桿與經營風險，獨立出加密貨幣盈利潛力。此舉為防範MSTR資產負債表風險提供多元化。</p>
+<p>總結，儘管超額收益誘人，但脆弱的資產負債表、高杠杆、負現金流、持續攤薄及技術阻力，令樂觀論調難以成立。作為受托人，我們必須優先保護資本和穩健回報，而非賭博式躍進，尤其面對波動且快速演進的資產類別。現階段沽出並轉向風險較低的比特幣ETF，加上明確風險控制的期權策略，為應對不確定情勢保護資產提供穩健路線。這非錯過機會，而是審慎管理風險，確保長期穩健增長。</p></div></details></div><div class="debate-panel" style="border-top:3px solid #f59e0b;"><h3 class="debate-panel-title" style="color:#f59e0b;">中立觀點</h3><div class="debate-preview"><p>中立分析師：激進和保守分析師都提出了有力觀點，但兩者皆偏向極端，可能掩蓋更細緻可持續的策略。</p>
+<p>對激進面：你強調MicroStrategy作為企業比特幣保管人的獨特定位正確。龐大的比特幣積累和機構優先股需求確實帶來轉型潛力和重大上行，特別是若比特幣持續反彈。MACD向零靠近及RSI中性暗示熊勢可能短期緩解。然而，你略微忽視了公司資本結構中隱藏的根本風險。16倍以上的負債對股本比以及80億美元債務，不僅代表「高槓桿」，且構成結構性風險。波動來襲或比特幣價格走弱，公司的債務服務壓力及持續虧損可能迅速崩潰。優先與普通股頻繁增發帶動比特幣購入，同時增加踩踏及估值風險，股東務必警惕。另外，遠期EPS 68.88雖然具吸引力，但和負向EPS的落差巨大，暗藏運營改善及比特幣價格上漲的激進假設。</p>
+<p>再看保守方：你強調資本保護的必要性，考慮負債和負現金流真實威脅，且對攤薄及樂觀盈餘持懷疑態度，這很合理。賣出改投比特幣ETF是較為乾淨的選擇，有效消除MicroStrategy特有的資產負債表風險。然而，保守做法可能忽略了MicroStrategy在此加密週期中的槓桿嵌入效應和企業創新。股價技術指標向好及機...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>中立分析師：激進和保守分析師都提出了有力觀點，但兩者皆偏向極端，可能掩蓋更細緻可持續的策略。</p>
+<p>對激進面：你強調MicroStrategy作為企業比特幣保管人的獨特定位正確。龐大的比特幣積累和機構優先股需求確實帶來轉型潛力和重大上行，特別是若比特幣持續反彈。MACD向零靠近及RSI中性暗示熊勢可能短期緩解。然而，你略微忽視了公司資本結構中隱藏的根本風險。16倍以上的負債對股本比以及80億美元債務，不僅代表「高槓桿」，且構成結構性風險。波動來襲或比特幣價格走弱，公司的債務服務壓力及持續虧損可能迅速崩潰。優先與普通股頻繁增發帶動比特幣購入，同時增加踩踏及估值風險，股東務必警惕。另外，遠期EPS 68.88雖然具吸引力，但和負向EPS的落差巨大，暗藏運營改善及比特幣價格上漲的激進假設。</p>
+<p>再看保守方：你強調資本保護的必要性，考慮負債和負現金流真實威脅，且對攤薄及樂觀盈餘持懷疑態度，這很合理。賣出改投比特幣ETF是較為乾淨的選擇，有效消除MicroStrategy特有的資產負債表風險。然而，保守做法可能忽略了MicroStrategy在此加密週期中的槓桿嵌入效應和企業創新。股價技術指標向好及機構支持顯示仍可能擁有抓住中短期反彈或選擇風險暴露的機會。全面清倉或錯過比特幣牛市持續的超額收益。</p>
+<p>那麼，結論是？建議不宜一次性全部出清，而是採取分階段減持MSTR倉位，同時逐步配置於直接比特幣曝險，去除公司層面財務風險。這種漸進式策略在技術動能確認進一步漲勢時，可保持部分MSTR混合資產上行曝險，但嚴格以公司基本面脆弱性為風控底線。</p>
+<p>並且建議使用帶明確風險控制的期權策略，捕捉潛在反彈同時限制下行風險，而非單純做空或大規模裸倉。配合ATR測量的中等波動率，平衡靈活性與風險控制。</p>
+<p>最後，支持加密的宏觀與地緣政治因素依然重要，但內含高度波動與難以預測性。維持多元化與明確退出策略有助緩解突變風險，以防破壞多頭敘事。</p>
+<p>總之，最佳策略在於折衷兩派觀點：一方面肯定MicroStrategy的成長潛力及機構信譽，另一方面尊重不容忽視的財務與經營風險。如此方能建構兼具彈性且穩健的投資組合，隨比特幣周期調整，同時穩紮穩打風險管理與漸進調倉。這種中庸路線比全面賣出或激進加碼更有望實現可持續成果。</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">裁判決定</h3><div class="judge-body"><p><strong>決策：SELL</strong></p>
+<h3>1. 主要論點總結</h3>
+<ul>
+<li><strong>激進分析師</strong>：主張MicroStrategy（MSTR）已超越其起源，成為比特幣的「企業央行」。將80億美元負債及股本攤薄視為取得升值資產的「策略性金融工程」。強調遠期68.88的EPS及上漲的MACD等短期技術指標，是不可否認的爆炸性上漲動力信號。</li>
+<li><strong>保守分析師</strong>：警告MSTR是「建立在脆弱財務基礎上的高賭注賭博」。強調超過80億美元負債及16倍以上負債股本比的沉重現實。指出持續發行股權稀釋股東價值，股價技術面受壓制於200日均線下方，且比特幣一旦下跌將引發流動性危機。</li>
+<li><strong>中立分析師</strong>：承認激進企業比特幣策略的巨大上行潛力，但認可保守派對「結構性風險加劇」的擔憂。建議採取「分階段減持」MSTR倉位，同時利用明確風險期權策略應對中期技術波動、避免裸倉風險。</li>
+</ul>
+<h3>2. 理由說明</h3>
+<p>明確建議為<strong>賣出</strong>。</p>
+<p>激進派論點幾乎完全仰賴理想的未來宏觀環境及推測。其宣稱重槓桿「放大回報」，但保守派有力反駁，指出槓桿雙刃劍：「此債務負擔無論比特幣走勢如何都要求沉重償債成本。」</p>
+<p>中立派認為，追求遠期EPS 68.88（當目前EPS是深度負值-15）極度樂觀。激進方所說的「策略性金融工程」忽視了通過持續攤薄造成的股東價值實質毀損。由於無法預測地緣政治風險及加密市場波動，持有巨額逾80億美元結構性負債的公司，是在以極度冒險的方式暴露比特幣風險。正如保守分析師建議，轉向現貨比特幣ETF則「消除了企業槓桿及經營風險，隔離了加密上行。」此舉保留了上漲潛力，卻剔除了不穩定結構風險。</p>
+<h3>3. 檢討過往錯誤</h3>
+<p>以往曾被革新敘事或爆炸性遠期增長估值所迷惑，忽略基本面惡化。我學得教訓是：當公司拋棄核心營運成為對波動資產的高槓桿持股公司，結構性風險——尤其是龐大債務及不斷攤薄——往往被市場低估。在此種情況下堅持持有，是期待敘事勝過資產負債表的風險行為。如今選擇Sell，主動避免忽視象徵極端風險（如16倍負債股本比）的現實，遠勝任由故事主導的暫時樂觀。</p>
+<h3>4. 精煉交易計劃</h3>
+<p><strong>您好，讓我們來探討這場有關MicroStrategy的辯論，找出對您組合最明智的行動方案。</strong></p>
+<p><strong>兩方觀點中，牛市分析師描繪了極具吸引力的圖景。他們以MicroStrategy成為比特幣的「企業央行」為核心，引用遠期68.88的EPS轉虧為盈及近2倍的遠期本益比。牛市認為企業積極籌集資金購入比特幣，屬於精妙的「策略性金融工程」，並由62.7%的機構持股及上揚的MACD等技術指標支撐。該方認為槓桿使用是在加密市場上升期內乘數回報的精算手段。</strong></p>
+<p><strong>然而，熊市分析師則指出我們無法忽視的嚴峻財務現實。他們強調MicroStrategy負債超過80億美元，負債對股本比超16倍，淒慘的-15 EPS，及巨額經營現金流燃燒。熊市方斷言公司已不再具基本面健康，是「高賭注蓋於本已脆弱財務基礎上的賭博」。並且藉持續發行普通與優先股購買比特幣，嚴重稀釋股東利益並增添股息負擔。長期技術走勢呈現熊市，股價被壓制於200日移動平均線以下。</strong></p>
+<p><strong>綜合多方意見後，我的明確建議是賣出。</strong></p>
+<p><strong>理由在於熊方不可否認的財務脆弱證據與中立分析師對「結構風險加劇」的警告。牛市論點完全依賴比特幣無限上漲的前提，掩蓋極端經營赤字。龐大債務及惡劣盈餘是定時炸彈。持有該股即承受比特幣波動性加倍的企業負債風險及現金流燒盡與攤薄風險。如市場轉弱或信用緊縮，牛方讚頌的槓桿將劇烈加速公司財務惡化。現有資產負債表如此壓力之下，押注遠期盈餘估值極端樂觀太過危險。</strong></p>
+<p><strong>我也反思以往類似情況犯的錯，曾因創新敘事與爆炸性遠期增長估值而忽視基本面惡化和債務龐大。痛定思痛：當公司由核心營運轉向波動資產的高槓桿控股公司，市場往往嚴重低估結構性風險。我不打算重蹈覆轍，入場持有等故事開花。持股潛藏潛在的資本巨大風險，非理性的賭博行為，我將秉持實事求是態度。</strong></p>
+<p><strong>以下是您的具體投資計劃。雖中立分析師建議「分階段減持」以把握短期反彈，但結構債務風險過高不宜拖延。請立即清空MicroStrategy普通股多頭頭寸，以保護資本免受債務風險和持續攤薄侵蝕。其次，因您的核心目標是捕捉數字資產的上行動力，將資金直接轉投現貨比特幣ETF。此策略提供純粹加密曝險，隔離了MicroStrategy所帶來的企業槓桿、現金燒盡及攤薄包袱。最後，鑑於該股歷史上的劇烈波動及敘事驅動的價格飆升，以及中短期RSI中性等技術特徵，我強烈建議避免直接做空該股。如欲積極做空請嚴格採用明確風險的期權工具，考虑購買較長期的價外認沽期權，以嚴格限定最大損失。此舉可抵禦偶發的加密熱潮短線推高股價，同時準備好迎接熊市場情境下的結構性估值修正。讓我們立刻執行此計劃，將資金轉入基礎更穩固與效率更高的投資標的。</strong></p>
+<blockquote>
+<p>[!tip] HTML Dashboard<br />
+用瀏覽器打開互動版 Dashboard：<br />
+<a href="MSTR_2026-03-17_zh.html">打開 Dashboard</a></p>
+</blockquote>
+<hr />
+<p><em>Generated at 2026-03-17 14:37 by TradingAgents</em></p></div></div></section>
+        <footer class="dashboard-footer"><p>由 TradingAgents 於 2026-03-17 17:23 產生</p></footer>
+    </main>
+</div>
+
+<script>
+(function() {
+    // ─── Tab Switching (legacy fallback) ────────────
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var container = btn.closest('.tabs-container');
+            var tabId = btn.getAttribute('data-tab');
+            container.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            container.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+            btn.classList.add('active');
+            var panel = container.querySelector('[data-panel="' + tabId + '"]');
+            if (panel) panel.classList.add('active');
+        });
+    });
+
+    // ─── Smooth Scroll from Nav ─────────────────────
+    document.querySelectorAll('.nav-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var id = link.getAttribute('href').slice(1);
+            var el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // ─── IntersectionObserver for Nav Tracking ──────
+    var navLinks = document.querySelectorAll('.nav-link');
+    var sections = [];
+    navLinks.forEach(function(link) {
+        var id = link.getAttribute('data-section');
+        var el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el });
+    });
+
+    if (sections.length && 'IntersectionObserver' in window) {
+        var currentActive = null;
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    currentActive = entry.target.id;
+                }
+            });
+            if (currentActive) {
+                navLinks.forEach(function(l) {
+                    if (l.getAttribute('data-section') === currentActive) {
+                        l.classList.add('active');
+                    } else {
+                        l.classList.remove('active');
+                    }
+                });
+            }
+        }, {
+            rootMargin: '-80px 0px -60% 0px',
+            threshold: 0
+        });
+        sections.forEach(function(s) { observer.observe(s.el); });
+    }
+})();
+</script>
+
+<script>document.addEventListener("DOMContentLoaded", function() {  if (typeof Chart === "undefined") return;  var ctx = document.getElementById("macdChart");  if (!ctx) return;  new Chart(ctx, {    type: "bar",    data: {      labels: ["MACD", "Signal", "Histogram"],      datasets: [{        data: [-0.03, -2.1, 2.08],        backgroundColor: ["#ef4444", "#ef4444", "#10b981"],        borderRadius: 4,        barThickness: 40      }]    },    options: {      responsive: true,      maintainAspectRatio: false,      plugins: { legend: { display: false } },      scales: {        y: {          grid: { color: "#1e293b" },          ticks: { color: "#64748b", font: { family: "DM Mono" } }        },        x: {          grid: { display: false },          ticks: { color: "#64748b", font: { family: "DM Mono" } }        }      }    }  });});</script>
+
+</body>
+</html>

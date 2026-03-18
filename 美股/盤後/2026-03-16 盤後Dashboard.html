@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>盤後日報 — 2026-03-16</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Crimson+Pro:wght@400;600&family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0a0e1a;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2237;
+    --bg-surface: #0f1525;
+    --gold: #d4a853;
+    --gold-dim: #a07d3a;
+    --gold-glow: rgba(212, 168, 83, 0.15);
+    --green: #34d399;
+    --green-dim: rgba(52, 211, 153, 0.12);
+    --red: #f87171;
+    --red-dim: rgba(248, 113, 113, 0.12);
+    --blue: #60a5fa;
+    --blue-dim: rgba(96, 165, 250, 0.12);
+    --text-primary: #e5e7eb;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    --border: rgba(255, 255, 255, 0.06);
+    --border-gold: rgba(212, 168, 83, 0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: 'Noto Sans TC', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem 2.5rem 4rem;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 3rem 0 2.5rem;
+    border-bottom: 1px solid var(--border-gold);
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 120px;
+    height: 3px;
+    background: var(--gold);
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+  }
+
+  .header-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3.2rem;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: #fff;
+  }
+
+  .header-subtitle {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    margin-top: 0.75rem;
+    font-style: italic;
+  }
+
+  .market-verdict {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .verdict-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .verdict-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--green);
+  }
+
+  .verdict-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+
+  /* ── SECTION TITLES ── */
+  .section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section { margin-bottom: 3rem; }
+
+  /* ── INDEX CARDS ── */
+  .index-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .index-card {
+    background: var(--bg-card);
+    padding: 1.5rem 1.75rem;
+    transition: background 0.3s;
+    position: relative;
+    animation: cardReveal 0.6s ease-out both;
+  }
+
+  .index-card:hover { background: var(--bg-card-hover); }
+
+  .index-card:nth-child(1) { animation-delay: 0.1s; }
+  .index-card:nth-child(2) { animation-delay: 0.15s; }
+  .index-card:nth-child(3) { animation-delay: 0.2s; }
+  .index-card:nth-child(4) { animation-delay: 0.25s; }
+
+  .index-name {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.15rem;
+  }
+
+  .index-ticker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+  }
+
+  .index-price {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .index-change {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .index-week {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+
+  .positive { color: var(--green); }
+  .negative { color: var(--red); }
+  .neutral { color: var(--gold); }
+
+  /* ── RISK INDICATORS ── */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+  }
+
+  .risk-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+    animation: cardReveal 0.6s ease-out both;
+  }
+
+  .risk-card:nth-child(1) { animation-delay: 0.3s; }
+  .risk-card:nth-child(2) { animation-delay: 0.35s; }
+  .risk-card:nth-child(3) { animation-delay: 0.4s; }
+  .risk-card:nth-child(4) { animation-delay: 0.45s; }
+
+  .risk-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+  }
+
+  .risk-card.is-green::before { background: var(--green); }
+  .risk-card.is-gold::before { background: var(--gold); }
+
+  .risk-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .risk-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.35rem;
+  }
+
+  .risk-change {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .risk-note {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+
+  /* ── TWO COLUMN LAYOUT ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  /* ── SECTOR BARS ── */
+  .sector-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .sector-row {
+    display: grid;
+    grid-template-columns: 110px 1fr 65px 80px;
+    align-items: center;
+    gap: 0.75rem;
+    animation: slideRight 0.5s ease-out both;
+  }
+
+  .sector-row:nth-child(1) { animation-delay: 0.4s; }
+  .sector-row:nth-child(2) { animation-delay: 0.45s; }
+  .sector-row:nth-child(3) { animation-delay: 0.5s; }
+  .sector-row:nth-child(4) { animation-delay: 0.55s; }
+  .sector-row:nth-child(5) { animation-delay: 0.6s; }
+  .sector-row:nth-child(6) { animation-delay: 0.65s; }
+  .sector-row:nth-child(7) { animation-delay: 0.7s; }
+  .sector-row:nth-child(8) { animation-delay: 0.75s; }
+  .sector-row:nth-child(9) { animation-delay: 0.8s; }
+  .sector-row:nth-child(10) { animation-delay: 0.85s; }
+  .sector-row:nth-child(11) { animation-delay: 0.9s; }
+
+  .sector-name {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .sector-name span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-left: 0.35rem;
+  }
+
+  .sector-bar-track {
+    height: 20px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .sector-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+  }
+
+  .sector-daily {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--green);
+    text-align: right;
+  }
+
+  .sector-weekly {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    text-align: right;
+  }
+
+  /* ── SPY TECHNICAL GAUGE ── */
+  .tech-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    animation: cardReveal 0.6s ease-out 0.5s both;
+  }
+
+  .gauge-container {
+    display: flex;
+    gap: 2rem;
+    align-items: stretch;
+    min-height: 320px;
+  }
+
+  .gauge-track {
+    width: 32px;
+    background: linear-gradient(to bottom, var(--green-dim), var(--bg-surface), var(--red-dim));
+    border-radius: 16px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .gauge-marker {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid;
+  }
+
+  .gauge-marker.current {
+    width: 22px;
+    height: 22px;
+    background: var(--gold);
+    border-color: var(--gold);
+    box-shadow: 0 0 20px var(--gold-glow), 0 0 40px var(--gold-glow);
+    z-index: 2;
+  }
+
+  .gauge-marker.sma50 {
+    background: transparent;
+    border-color: var(--red);
+  }
+
+  .gauge-marker.sma200 {
+    background: transparent;
+    border-color: var(--green);
+  }
+
+  .gauge-marker.high, .gauge-marker.low {
+    width: 10px;
+    height: 10px;
+    background: var(--text-muted);
+    border-color: var(--text-muted);
+  }
+
+  .gauge-levels {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .level-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .level-line {
+    width: 24px;
+    height: 1px;
+    flex-shrink: 0;
+  }
+
+  .level-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    min-width: 60px;
+  }
+
+  .level-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .level-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    margin-left: 0.5rem;
+  }
+
+  .level-item.is-current {
+    padding: 0.6rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .level-item.is-current .level-value {
+    font-size: 1.2rem;
+    color: var(--gold);
+  }
+
+  .tech-signals {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+  }
+
+  .signal {
+    font-size: 0.72rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .signal-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .signal.bearish { background: var(--red-dim); color: var(--red); }
+  .signal.bearish .signal-dot { background: var(--red); }
+  .signal.bullish { background: var(--green-dim); color: var(--green); }
+  .signal.bullish .signal-dot { background: var(--green); }
+  .signal.neutral-sig { background: rgba(212,168,83,0.1); color: var(--gold); }
+  .signal.neutral-sig .signal-dot { background: var(--gold); }
+
+  /* ── NEWS ── */
+  .news-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  .news-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: border-color 0.3s, background 0.3s;
+    animation: cardReveal 0.5s ease-out both;
+  }
+
+  .news-item:nth-child(1) { animation-delay: 0.5s; }
+  .news-item:nth-child(2) { animation-delay: 0.55s; }
+  .news-item:nth-child(3) { animation-delay: 0.6s; }
+  .news-item:nth-child(4) { animation-delay: 0.65s; }
+  .news-item:nth-child(5) { animation-delay: 0.7s; }
+
+  .news-item:hover {
+    border-color: var(--border-gold);
+    background: var(--bg-card-hover);
+  }
+
+  .news-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    white-space: nowrap;
+    align-self: flex-start;
+    margin-top: 0.15rem;
+    flex-shrink: 0;
+  }
+
+  .tag-war { background: var(--red-dim); color: var(--red); }
+  .tag-fed { background: var(--blue-dim); color: var(--blue); }
+  .tag-tech { background: var(--green-dim); color: var(--green); }
+  .tag-politics { background: rgba(251, 146, 60, 0.12); color: #fb923c; }
+  .tag-military { background: rgba(168, 85, 247, 0.12); color: #a855f7; }
+
+  .news-text {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+  }
+
+  /* ── MACRO TABLE ── */
+  .macro-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .macro-table th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 0 0 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .macro-table th:nth-child(2),
+  .macro-table th:nth-child(3) { text-align: right; }
+
+  .macro-table td {
+    padding: 0.65rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+
+  .macro-table td:first-child { color: var(--text-secondary); }
+
+  .macro-table td:nth-child(2) {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    text-align: right;
+    color: #fff;
+  }
+
+  .macro-table td:nth-child(3) {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    text-align: right;
+  }
+
+  /* ── FOMC BANNER ── */
+  .fomc-banner {
+    background: linear-gradient(135deg, rgba(212,168,83,0.08), rgba(212,168,83,0.02));
+    border: 1px solid var(--border-gold);
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    animation: cardReveal 0.6s ease-out 1s both;
+  }
+
+  .fomc-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gold-glow);
+    border-radius: 50%;
+    border: 1px solid var(--border-gold);
+  }
+
+  .fomc-content { flex: 1; }
+
+  .fomc-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin-bottom: 0.25rem;
+  }
+
+  .fomc-detail {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .fomc-prob {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold);
+    text-align: center;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .fomc-prob-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-sources {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .footer-stamp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes cardReveal {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideRight {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    .two-col { grid-template-columns: 1fr; }
+    .index-grid { grid-template-columns: repeat(2, 1fr); }
+    .risk-grid { grid-template-columns: repeat(2, 1fr); }
+    h1 { font-size: 2.4rem; }
+  }
+
+  @media (max-width: 640px) {
+    .container { padding: 1rem 1.25rem 2rem; }
+    .index-grid { grid-template-columns: 1fr; }
+    .risk-grid { grid-template-columns: 1fr; }
+    h1 { font-size: 1.8rem; }
+    .header-top { flex-direction: column; align-items: flex-start; }
+    .market-verdict { text-align: left; }
+    .sector-row { grid-template-columns: 90px 1fr 55px; }
+    .sector-weekly { display: none; }
+    .fomc-banner { flex-direction: column; text-align: center; }
+    footer { flex-direction: column; gap: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-top">
+      <div>
+        <div class="header-date">Monday · March 16, 2026 · Post-Market</div>
+        <h1>盤後日報</h1>
+        <div class="header-subtitle">Iran War Day 17 — VIX crushed, oil retreats, all eyes on FOMC Wednesday</div>
+      </div>
+      <div class="market-verdict">
+        <div class="verdict-label">Market Tone</div>
+        <div class="verdict-value">Risk-On</div>
+        <div class="verdict-note">VIX -13.6% · All sectors green</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- INDICES -->
+  <div class="section">
+    <div class="section-title">主要指數</div>
+    <div class="index-grid">
+      <div class="index-card">
+        <div class="index-name">S&P 500</div>
+        <div class="index-ticker">SPY</div>
+        <div class="index-price">669.03</div>
+        <div class="index-change positive">+5.98 (+0.90%)</div>
+        <div class="index-week negative">週 -1.20%</div>
+      </div>
+      <div class="index-card">
+        <div class="index-name">Nasdaq 100</div>
+        <div class="index-ticker">QQQ</div>
+        <div class="index-price">600.38</div>
+        <div class="index-change positive">+6.93 (+1.17%)</div>
+        <div class="index-week negative">週 -1.22%</div>
+      </div>
+      <div class="index-card">
+        <div class="index-name">道瓊斯</div>
+        <div class="index-ticker">DIA</div>
+        <div class="index-price">470.30</div>
+        <div class="index-change positive">+4.02 (+0.86%)</div>
+        <div class="index-week negative">週 -1.55%</div>
+      </div>
+      <div class="index-card">
+        <div class="index-name">Russell 2000</div>
+        <div class="index-ticker">IWM</div>
+        <div class="index-price">248.92</div>
+        <div class="index-change positive">+2.02 (+0.82%)</div>
+        <div class="index-week negative">週 -1.75%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RISK -->
+  <div class="section">
+    <div class="section-title">風險指標</div>
+    <div class="risk-grid">
+      <div class="risk-card is-green">
+        <div class="risk-label">VIX 恐慌指數</div>
+        <div class="risk-value">23.51</div>
+        <div class="risk-change positive">-13.60%</div>
+        <div class="risk-note">恐慌大幅回落</div>
+      </div>
+      <div class="risk-card is-green">
+        <div class="risk-label">10Y 孳息率</div>
+        <div class="risk-value">4.22%</div>
+        <div class="risk-change positive">-1.52%</div>
+        <div class="risk-note">債券買盤湧入</div>
+      </div>
+      <div class="risk-card is-green">
+        <div class="risk-label">原油 WTI</div>
+        <div class="risk-value">$96.12</div>
+        <div class="risk-change positive">-3.13%</div>
+        <div class="risk-note">從$100+回撤</div>
+      </div>
+      <div class="risk-card is-gold">
+        <div class="risk-label">黃金</div>
+        <div class="risk-value">$5,030</div>
+        <div class="risk-change neutral">+0.15%</div>
+        <div class="risk-note">高位盤整</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTORS + TECHNICAL -->
+  <div class="section">
+    <div class="two-col">
+
+      <!-- SECTORS -->
+      <div>
+        <div class="section-title">板塊表現</div>
+        <div class="sector-list" id="sectorList"></div>
+      </div>
+
+      <!-- SPY TECHNICAL -->
+      <div>
+        <div class="section-title">SPY 技術面</div>
+        <div class="tech-panel">
+          <div class="gauge-container">
+            <div class="gauge-track">
+              <div class="gauge-marker high" style="top: 2%"></div>
+              <div class="gauge-marker sma50" style="top: 18%"></div>
+              <div class="gauge-marker current" style="top: 38%"></div>
+              <div class="gauge-marker sma200" style="top: 52%"></div>
+              <div class="gauge-marker low" style="top: 97%"></div>
+            </div>
+            <div class="gauge-levels">
+              <div class="level-item">
+                <div class="level-line" style="background: var(--text-muted)"></div>
+                <div class="level-label">52W High</div>
+                <div class="level-value" style="color: var(--text-muted)">697.84</div>
+              </div>
+              <div class="level-item">
+                <div class="level-line" style="background: var(--red)"></div>
+                <div class="level-label">SMA(50)</div>
+                <div class="level-value" style="color: var(--red)">686.12</div>
+                <span class="level-tag" style="background: var(--red-dim); color: var(--red)">-2.5%</span>
+              </div>
+              <div class="level-item is-current">
+                <div class="level-line" style="background: var(--gold); height: 2px"></div>
+                <div class="level-label" style="color: var(--gold)">現價</div>
+                <div class="level-value">669.03</div>
+                <span class="level-tag" style="background: var(--gold-glow); color: var(--gold)">RSI 40.6</span>
+              </div>
+              <div class="level-item">
+                <div class="level-line" style="background: var(--green)"></div>
+                <div class="level-label">SMA(200)</div>
+                <div class="level-value" style="color: var(--green)">656.86</div>
+                <span class="level-tag" style="background: var(--green-dim); color: var(--green)">+1.9%</span>
+              </div>
+              <div class="level-item">
+                <div class="level-line" style="background: var(--text-muted)"></div>
+                <div class="level-label">52W Low</div>
+                <div class="level-value" style="color: var(--text-muted)">477.64</div>
+              </div>
+            </div>
+          </div>
+          <div class="tech-signals">
+            <div class="signal neutral-sig"><span class="signal-dot"></span>RSI 40.6 接近超賣</div>
+            <div class="signal bearish"><span class="signal-dot"></span>50MA 之下：短線偏弱</div>
+            <div class="signal bullish"><span class="signal-dot"></span>200MA 之上：長線未破</div>
+            <div class="signal bullish"><span class="signal-dot"></span>牛市排列：50 &gt; 200</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- NEWS + MACRO -->
+  <div class="section">
+    <div class="two-col">
+
+      <!-- NEWS -->
+      <div>
+        <div class="section-title">重大新聞</div>
+        <div class="news-list">
+          <div class="news-item">
+            <span class="news-tag tag-war">戰爭</span>
+            <span class="news-text">霍爾木茲海峽約 1,000 艘油輪滯留，伊朗宣佈僅封鎖西方盟國船隻，印度油輪獲准通行</span>
+          </div>
+          <div class="news-item">
+            <span class="news-tag tag-politics">政治</span>
+            <span class="news-text">Trump 護航請求遭 EU 外長拒絕，公開批評盟友「缺乏熱情」；約 200 名美軍在 7 國受傷</span>
+          </div>
+          <div class="news-item">
+            <span class="news-tag tag-tech">科技</span>
+            <span class="news-text">Nvidia GTC：Jensen Huang 預計 Blackwell + Vera Rubin 系統至 2027 年訂單達 $1 Trillion</span>
+          </div>
+          <div class="news-item">
+            <span class="news-tag tag-fed">聯儲</span>
+            <span class="news-text">FOMC 會議今日開始（3/17-18），週三公佈利率決定 + Dot Plot；96% 機率維持不變</span>
+          </div>
+          <div class="news-item">
+            <span class="news-tag tag-war">能源</span>
+            <span class="news-text">美國柴油價格突破 $5/加侖，半導體面臨氦氣供應風險——海峽封鎖威脅 TSMC 製造</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MACRO -->
+      <div>
+        <div class="section-title">宏觀經濟</div>
+        <table class="macro-table">
+          <thead>
+            <tr>
+              <th>指標</th>
+              <th>數值</th>
+              <th>變化</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>聯邦基金利率</td>
+              <td>3.64%</td>
+              <td style="color: var(--text-muted)">持平</td>
+            </tr>
+            <tr>
+              <td>CPI</td>
+              <td>327.46</td>
+              <td class="negative">+0.87</td>
+            </tr>
+            <tr>
+              <td>Core CPI</td>
+              <td>333.51</td>
+              <td class="negative">+0.72</td>
+            </tr>
+            <tr>
+              <td>失業率</td>
+              <td>4.4%</td>
+              <td class="negative">+0.1%</td>
+            </tr>
+            <tr>
+              <td>10Y-2Y 利差</td>
+              <td>0.55%</td>
+              <td style="color: var(--green)">正常</td>
+            </tr>
+            <tr>
+              <td>消費者信心</td>
+              <td>56.4</td>
+              <td style="color: var(--green)">+3.5</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="fomc-banner">
+          <div class="fomc-icon">🏛</div>
+          <div class="fomc-content">
+            <div class="fomc-title">FOMC 焦點 — 3月18日（週三）</div>
+            <div class="fomc-detail">利率決定 + 季度 Dot Plot + Powell 記者會<br>關鍵：委員是否因油價上修通脹預測</div>
+          </div>
+          <div style="text-align: center; flex-shrink: 0;">
+            <div class="fomc-prob">96%</div>
+            <div class="fomc-prob-label">Hold Rates</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-sources">Sources: yfinance · Alpha Vantage · Finnhub · FRED · Frankfurter · Web Search</div>
+    <div class="footer-stamp">Generated 2026-03-17 · Market Analyst Skill v1.0</div>
+  </footer>
+
+</div>
+
+<script>
+const sectors = [
+  { name: '科技', ticker: 'XLK', daily: 1.42, weekly: -0.70 },
+  { name: '非必需消費', ticker: 'XLY', daily: 1.04, weekly: -1.96 },
+  { name: '工業', ticker: 'XLI', daily: 0.94, weekly: -2.33 },
+  { name: '金融', ticker: 'XLF', daily: 0.92, weekly: -1.52 },
+  { name: '醫療', ticker: 'XLV', daily: 0.81, weekly: -1.40 },
+  { name: '通訊', ticker: 'XLC', daily: 0.81, weekly: -1.75 },
+  { name: '房地產', ticker: 'XLRE', daily: 0.78, weekly: -0.79 },
+  { name: '原材料', ticker: 'XLB', daily: 0.59, weekly: -0.96 },
+  { name: '公用事業', ticker: 'XLU', daily: 0.57, weekly: 1.50 },
+  { name: '必需消費', ticker: 'XLP', daily: 0.45, weekly: -0.86 },
+  { name: '能源', ticker: 'XLE', daily: 0.20, weekly: 4.14 },
+];
+
+const maxDaily = Math.max(...sectors.map(s => s.daily));
+const list = document.getElementById('sectorList');
+
+sectors.forEach((s, i) => {
+  const pct = (s.daily / maxDaily) * 100;
+  const hue = 145 - (i / sectors.length) * 40;
+  const sat = 70 - (i / sectors.length) * 20;
+  const light = 45 - (i / sectors.length) * 10;
+  const barColor = `hsl(${hue}, ${sat}%, ${light}%)`;
+
+  const weekColor = s.weekly >= 0 ? 'var(--green)' : 'var(--red)';
+  const weekSign = s.weekly >= 0 ? '+' : '';
+
+  const row = document.createElement('div');
+  row.className = 'sector-row';
+  row.style.animationDelay = `${0.4 + i * 0.05}s`;
+  row.innerHTML = `
+    <div class="sector-name">${s.name} <span>${s.ticker}</span></div>
+    <div class="sector-bar-track">
+      <div class="sector-bar-fill" style="width: 0%; background: ${barColor};" data-width="${pct}%"></div>
+    </div>
+    <div class="sector-daily">+${s.daily.toFixed(2)}%</div>
+    <div class="sector-weekly" style="color: ${weekColor}">週 ${weekSign}${s.weekly.toFixed(2)}%</div>
+  `;
+  list.appendChild(row);
+});
+
+// Animate bars
+setTimeout(() => {
+  document.querySelectorAll('.sector-bar-fill').forEach(bar => {
+    bar.style.width = bar.dataset.width;
+  });
+}, 600);
+</script>
+</body>
+</html>

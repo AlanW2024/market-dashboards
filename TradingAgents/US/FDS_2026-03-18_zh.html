@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FDS — BUY | 2026-03-18</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* ─── Custom Properties ─────────────────────────────── */
+:root {
+    --bg-primary: #0b0f19;
+    --bg-secondary: #0f1629;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --bg-inset: #0d1117;
+    --border-subtle: #1e293b;
+    --border-medium: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --signal-color: #10b981;
+    --signal-glow: rgba(16, 185, 129, 0.15);
+    --signal-rgb: 16, 185, 129;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --sidebar-w: 220px;
+    --header-h: 56px;
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ─── Noise Texture ─────────────────────────────────── */
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* ─── Header Bar ────────────────────────────────────── */
+.header-bar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 100;
+    display: flex; align-items: center;
+}
+.header-inner {
+    width: 100%; max-width: 1400px;
+    margin: 0 auto; padding: 0 2rem;
+    display: flex; align-items: center;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+}
+
+/* ─── Signal Pill ───────────────────────────────────── */
+.signal-pill {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.85rem;
+    background: rgba(var(--signal-rgb), 0.15);
+    border: 1px solid rgba(var(--signal-rgb), 0.3);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-weight: 500; font-size: 0.8rem;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* ─── Layout ────────────────────────────────────────── */
+.layout {
+    display: flex; max-width: 1400px;
+    margin: 0 auto; padding-top: var(--header-h);
+    min-height: 100vh;
+}
+
+/* ─── Sidebar ───────────────────────────────────────── */
+.sidebar {
+    position: sticky; top: var(--header-h);
+    width: var(--sidebar-w); flex-shrink: 0;
+    height: calc(100vh - var(--header-h));
+    padding: 1.5rem 0 1.5rem 1.5rem;
+    overflow-y: auto;
+}
+.sidebar-inner {
+    display: flex; flex-direction: column; gap: 0.25rem;
+}
+.nav-link {
+    display: block; padding: 0.5rem 1rem;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500;
+    border-radius: var(--radius-sm);
+    border-left: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+.nav-link:hover {
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.03);
+}
+.nav-link.active {
+    color: var(--signal-color);
+    border-left-color: var(--signal-color);
+    background: rgba(var(--signal-rgb), 0.08);
+}
+
+/* ─── Main Content ──────────────────────────────────── */
+.main-content {
+    flex: 1; min-width: 0;
+    padding: 1.5rem 2rem 3rem 1.5rem;
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+
+/* ─── Hero Card ─────────────────────────────────────── */
+.hero-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    overflow: hidden;
+}
+.hero-mesh {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(var(--signal-rgb), 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(var(--signal-rgb), 0.05) 0%, transparent 40%),
+        radial-gradient(ellipse at 60% 80%, rgba(var(--signal-rgb), 0.03) 0%, transparent 60%);
+    pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-header {
+    display: flex; align-items: center; gap: 1rem;
+    flex-wrap: wrap; margin-bottom: 0.5rem;
+}
+.hero-ticker {
+    font-family: var(--font-heading);
+    font-size: 2.5rem; font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text-primary), var(--signal-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-date {
+    font-family: var(--font-mono);
+    font-size: 0.9rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.hero-card .signal-pill { font-size: 0.9rem; padding: 0.35rem 1rem; }
+
+/* Risk Badge */
+.risk-badge {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 20px; letter-spacing: 0.05em;
+}
+.risk-low    { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+.risk-medium { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+.risk-high   { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+
+/* Reasons */
+.reasons-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.reason {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(var(--signal-rgb), 0.05);
+    border: 1px solid rgba(var(--signal-rgb), 0.1);
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;
+}
+.reason-num {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px;
+    background: rgba(var(--signal-rgb), 0.15);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 50%;
+}
+
+/* ─── Metrics Grid ──────────────────────────────────── */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+.metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+    position: relative; overflow: hidden;
+}
+.metric-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--signal-color); opacity: 0.4;
+    transition: opacity 0.25s ease;
+}
+.metric-card:hover {
+    border-color: rgba(var(--signal-rgb), 0.3);
+    box-shadow: 0 0 20px rgba(var(--signal-rgb), 0.08);
+}
+.metric-card:hover::before { opacity: 1; }
+.metric-label {
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+}
+.metric-value {
+    font-family: var(--font-mono);
+    font-size: 1.35rem; font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* ─── Section Cards ─────────────────────────────────── */
+.section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2rem;
+    transition: border-color 0.25s ease;
+}
+.section-card:hover { border-color: var(--border-medium); }
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.section-title::before {
+    content: ''; display: inline-block;
+    width: 4px; height: 20px;
+    background: var(--signal-color); border-radius: 2px;
+}
+.section-body {
+    color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.section-body h1, .section-body h2, .section-body h3 {
+    font-family: var(--font-heading);
+    color: var(--text-primary); margin: 1.5rem 0 0.75rem;
+}
+.section-body h1 { font-size: 1.2rem; }
+.section-body h2 { font-size: 1.1rem; }
+.section-body h3 { font-size: 1rem; }
+.section-body p { margin-bottom: 0.75rem; }
+.section-body ul, .section-body ol { margin: 0.5rem 0 1rem 1.5rem; }
+.section-body li { margin-bottom: 0.3rem; }
+.section-body strong { color: var(--text-primary); }
+.section-body em { color: var(--text-muted); font-style: italic; }
+
+/* Tables in sections */
+.section-body table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0; font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.section-body thead th {
+    background: rgba(var(--signal-rgb), 0.1);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.78rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.section-body tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.section-body tbody tr:hover { background: rgba(255,255,255,0.02); }
+.section-body tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+
+/* ─── Technical Dashboard ──────────────────────────── */
+.tech-dashboard {
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+.gauges-row {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    justify-content: center; padding: 0.5rem 0;
+}
+.gauge-container {
+    width: 200px; text-align: center;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem 0.5rem 0.75rem;
+}
+.gauge-svg { width: 100%; height: auto; }
+.charts-row {
+    display: grid; grid-template-columns: 1fr; gap: 1rem;
+}
+.chart-container {
+    position: relative; height: 220px;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+
+/* ─── MA Comparison Chart ──────────────────────────── */
+.ma-chart {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.ma-bar-row {
+    display: flex; align-items: center; gap: 0.75rem;
+}
+.ma-label {
+    width: 56px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    color: var(--text-muted); text-align: right;
+}
+.ma-bar-track {
+    flex: 1; height: 24px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px; overflow: hidden;
+}
+.ma-bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 1s ease;
+}
+.ma-value {
+    width: 64px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    color: var(--text-primary); text-align: right;
+}
+
+/* ─── KPI Grid ─────────────────────────────────────── */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.kpi-card {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+.kpi-label {
+    font-size: 0.72rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.3rem;
+}
+.kpi-value {
+    font-family: var(--font-mono);
+    font-size: 1.1rem; font-weight: 600;
+}
+
+/* ─── Sentiment Dashboard ──────────────────────────── */
+.sentiment-summary { margin-bottom: 1.5rem; }
+.sentiment-bar {
+    display: flex; height: 28px;
+    border-radius: 14px; overflow: hidden;
+    background: var(--bg-inset);
+}
+.sent-fill { transition: width 0.8s ease; min-width: 2px; }
+.sent-pos { background: #10b981; }
+.sent-neu { background: #475569; }
+.sent-neg { background: #ef4444; }
+.sentiment-counts {
+    display: flex; justify-content: center;
+    gap: 1.5rem; margin-top: 0.75rem;
+}
+.sent-count {
+    font-family: var(--font-mono); font-size: 0.8rem;
+}
+.sent-count-pos { color: #10b981; }
+.sent-count-neu { color: #64748b; }
+.sent-count-neg { color: #ef4444; }
+.sent-tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem; border-radius: 10px;
+    font-size: 0.78rem; font-weight: 500;
+}
+.sent-tag-positive { background: rgba(16,185,129,0.15); color: #10b981; }
+.sent-tag-negative { background: rgba(239,68,68,0.15); color: #ef4444; }
+.sent-tag-neutral { background: rgba(100,116,139,0.15); color: #94a3b8; }
+.sent-row-positive td:first-child { border-left: 3px solid #10b981; }
+.sent-row-negative td:first-child { border-left: 3px solid #ef4444; }
+.sent-row-neutral td:first-child { border-left: 3px solid #475569; }
+
+/* ─── Indicator Table ──────────────────────────────── */
+.indicator-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.indicator-table thead th {
+    background: rgba(var(--signal-rgb), 0.08);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.indicator-table tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.indicator-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.indicator-table tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+.ind-name {
+    font-family: var(--font-mono); font-weight: 500;
+    color: var(--text-primary);
+}
+.ind-value {
+    font-family: var(--font-mono); color: var(--signal-color);
+}
+
+/* ─── Debate Comparison ────────────────────────────── */
+.debate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; margin-bottom: 1rem;
+}
+.debate-panel {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.debate-panel-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.debate-preview {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    max-height: 200px; overflow: hidden;
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+.debate-preview p { margin-bottom: 0.5rem; }
+.debate-preview strong { color: var(--text-primary); }
+.debate-expand { margin-top: 0.75rem; }
+.debate-expand summary {
+    cursor: pointer; color: var(--signal-color);
+    font-size: 0.85rem; font-weight: 500;
+    padding: 0.4rem 0; user-select: none;
+    list-style: none;
+}
+.debate-expand summary::-webkit-details-marker { display: none; }
+.debate-expand summary::before {
+    content: '\25B8 '; font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+.debate-expand[open] summary::before { transform: rotate(90deg); }
+.debate-full {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    margin-top: 0.75rem;
+    max-height: 600px; overflow-y: auto;
+}
+.debate-full p { margin-bottom: 0.5rem; }
+.debate-full strong { color: var(--text-primary); }
+.debate-full ul, .debate-full ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.debate-full li { margin-bottom: 0.3rem; }
+
+/* ─── Judge Decision ───────────────────────────────── */
+.judge-decision {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    border-left: 3px solid var(--signal-color);
+}
+.judge-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    color: var(--signal-color);
+    margin-bottom: 0.75rem;
+}
+.judge-body {
+    color: var(--text-secondary);
+    font-size: 0.9rem; line-height: 1.7;
+}
+.judge-body p { margin-bottom: 0.5rem; }
+.judge-body strong { color: var(--text-primary); }
+.judge-body ul, .judge-body ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.judge-body li { margin-bottom: 0.3rem; }
+
+/* ─── Tabs (legacy fallback) ───────────────────────── */
+.tab-bar {
+    display: flex; gap: 0.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 1.25rem;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tab-btn {
+    padding: 0.6rem 1.25rem; background: none; border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.88rem; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.tab-btn:hover { color: var(--text-secondary); }
+.tab-btn.active {
+    color: var(--signal-color);
+    border-bottom-color: var(--signal-color);
+}
+.tab-panel {
+    display: none; color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
+.tab-panel p { margin-bottom: 0.75rem; }
+.tab-panel strong { color: var(--text-primary); }
+.tab-panel ul, .tab-panel ol { margin: 0.5rem 0 1rem 1.5rem; }
+.tab-panel li { margin-bottom: 0.3rem; }
+.text-muted { color: var(--text-muted); font-style: italic; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Collapsible Debate Rounds ─────────────────────── */
+.debate-round {
+    margin: 0.5rem 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    overflow: hidden; transition: border-color 0.2s ease;
+}
+.debate-round[open] { border-color: rgba(var(--signal-rgb), 0.2); }
+.debate-round summary {
+    padding: 0.7rem 1rem; background: var(--bg-inset);
+    cursor: pointer; font-weight: 600; font-size: 0.88rem;
+    color: var(--text-secondary); list-style: none;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: all 0.2s ease; user-select: none;
+}
+.debate-round summary::-webkit-details-marker { display: none; }
+.debate-round summary::before {
+    content: '\25B8'; font-size: 0.75rem;
+    color: var(--text-muted); transition: transform 0.2s ease;
+}
+.debate-round[open] summary::before { transform: rotate(90deg); }
+.debate-round summary:hover {
+    background: rgba(255,255,255,0.03); color: var(--text-primary);
+}
+.round-content {
+    padding: 1rem; border-top: 1px solid var(--border-subtle);
+    color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7;
+}
+.round-content p { margin-bottom: 0.6rem; }
+.round-content strong { color: var(--text-primary); }
+.round-content ul, .round-content ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+
+/* ─── Footer ────────────────────────────────────────── */
+.dashboard-footer {
+    text-align: center; padding: 2rem;
+    color: var(--text-muted); font-size: 0.8rem;
+    font-family: var(--font-mono);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 1rem;
+}
+
+/* ─── Responsive ────────────────────────────────────── */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; top: var(--header-h);
+        left: 0; right: 0; width: 100%;
+        height: auto; padding: 0.5rem;
+        background: rgba(11, 15, 25, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-subtle);
+        z-index: 90; overflow-x: auto; overflow-y: hidden;
+    }
+    .sidebar-inner {
+        flex-direction: row; gap: 0; min-width: max-content;
+    }
+    .nav-link {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        padding: 0.4rem 0.75rem; font-size: 0.78rem;
+        white-space: nowrap;
+    }
+    .nav-link.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--signal-color);
+    }
+    html { scroll-padding-top: calc(var(--header-h) + 3.5rem); }
+    .main-content { padding: 4.5rem 1rem 2rem 1rem; }
+    .hero-ticker { font-size: 1.8rem; }
+    .hero-card { padding: 1.5rem; }
+    .section-card { padding: 1.25rem; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .tab-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+    .gauges-row { gap: 0.75rem; }
+    .gauge-container { width: 160px; }
+    .debate-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-container { height: 180px; }
+    .ma-label { width: 48px; font-size: 0.72rem; }
+    .ma-value { width: 52px; font-size: 0.78rem; }
+}
+@media (min-width: 769px) {
+    .main-content { padding-top: 1.5rem; }
+}
+
+/* ─── Print ─────────────────────────────────────────── */
+@media print {
+    body { background: #fff; color: #111; }
+    body::before { display: none; }
+    .header-bar { position: relative; background: #fff; border-bottom: 2px solid #111; }
+    .header-inner { color: #111; }
+    .sidebar { display: none; }
+    .layout { display: block; }
+    .main-content { padding: 1rem; }
+    .hero-card, .section-card, .metric-card, .kpi-card, .gauge-container,
+    .debate-panel, .judge-decision {
+        background: #fff; border-color: #ddd;
+        box-shadow: none; break-inside: avoid;
+    }
+    .hero-mesh { display: none; }
+    .hero-ticker {
+        background: none;
+        -webkit-text-fill-color: #111; color: #111;
+    }
+    .signal-pill {
+        background: #eee; border-color: #ccc; color: #333;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .debate-round { break-inside: avoid; }
+    .debate-round .round-content { display: block; }
+    .debate-preview { max-height: none; mask-image: none; -webkit-mask-image: none; }
+    .debate-full { max-height: none; }
+    .tab-panel { display: block !important; margin-bottom: 1rem; }
+    .tab-bar { display: none; }
+    .section-body, .round-content, .tab-panel, .debate-full,
+    .judge-body { color: #333; }
+    .section-title, .debate-panel-title, .judge-title { color: #111; }
+    .metric-label, .kpi-label { color: #666; }
+    .metric-value, .kpi-value, .ind-value, .ma-value { color: #111; }
+    .reason { background: #f9f9f9; border-color: #ddd; color: #333; }
+    .reason-num { background: #eee; color: #333; }
+    .chart-container { display: none; }
+    .sent-tag { border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<header class="header-bar">
+    <div class="header-inner">FDS — BUY | 2026-03-18</div>
+</header>
+
+<div class="layout">
+    <nav class="sidebar" id="sidebar"><div class="sidebar-inner"><a href="#executive-summary" class="nav-link" data-section="executive-summary">執行摘要</a>
+<a href="#market" class="nav-link" data-section="market">技術面</a>
+<a href="#sentiment" class="nav-link" data-section="sentiment">情緒</a>
+<a href="#news" class="nav-link" data-section="news">新聞</a>
+<a href="#fundamentals" class="nav-link" data-section="fundamentals">基本面</a>
+<a href="#investment-debate" class="nav-link" data-section="investment-debate">投資辯論</a>
+<a href="#trader-plan" class="nav-link" data-section="trader-plan">交易計劃</a>
+<a href="#risk-debate" class="nav-link" data-section="risk-debate">風險辯論</a>
+</div></nav>
+    <main class="main-content">
+        <section id="executive-summary" class="hero-card"><div class="hero-mesh"></div><div class="hero-content"><div class="hero-header"><h1 class="hero-ticker">FDS</h1><span class="signal-pill">BUY</span></div><div class="hero-date">2026-03-18</div></div></section>
+        <section id="market" class="section-card"><h2 class="section-title">技術面分析</h2><div class="tech-dashboard"><div class="gauges-row"><div class="gauge-container"><svg viewBox="0 0 200 130" class="gauge-svg"><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#1e293b" stroke-width="12" stroke-linecap="round"/><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-dasharray="219.9" stroke-dashoffset="125.3" style="transition: stroke-dashoffset 1s ease;"/><text x="100" y="95" text-anchor="middle" fill="#10b981" font-family="'DM Mono', monospace" font-size="28" font-weight="600">43</text><text x="100" y="125" text-anchor="middle" fill="#64748b" font-family="'Outfit', sans-serif" font-size="13">RSI</text></svg></div><div class="gauge-container"><svg viewBox="0 0 200 130" class="gauge-svg"><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#1e293b" stroke-width="12" stroke-linecap="round"/><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#f59e0b" stroke-width="12" stroke-linecap="round" stroke-dasharray="219.9" stroke-dashoffset="131.9" style="transition: stroke-dashoffset 1s ease;"/><text x="100" y="95" text-anchor="middle" fill="#f59e0b" font-family="'DM Mono', monospace" font-size="28" font-weight="600">9.94</text><text x="100" y="125" text-anchor="middle" fill="#64748b" font-family="'Outfit', sans-serif" font-size="13">ATR (波動率)</text></svg></div></div><div class="charts-row"><div class="chart-container"><canvas id="macdChart"></canvas></div></div><table class="indicator-table"><thead><tr><th>指標</th><th>數值</th><th>訊號</th><th>解讀</th></tr></thead><tbody><tr><td class="ind-name">50 日 SMA</td><td class="ind-value">~237.3</td><td>中期下跌趨勢，價格低於 SMA</td><td>中期下跌趨勢，價格低於 SMA</td></tr><tr><td class="ind-name">200 日 SMA</td><td class="ind-value">~315.7</td><td>長期下跌趨勢，價格遠低於 SMA</td><td>長期下跌趨勢，價格遠低於 SMA</td></tr><tr><td class="ind-name">10 日 EMA</td><td class="ind-value">~210.6</td><td>短期動能接近現價</td><td>短期動能接近現價</td></tr><tr><td class="ind-name">MACD</td><td class="ind-value">-5.7（改善中）</td><td>空頭但動能減弱</td><td>空頭但動能減弱</td></tr><tr><td class="ind-name">RSI</td><td class="ind-value">43</td><td>超賣後回升但未轉多</td><td>超賣後回升但未轉多</td></tr><tr><td class="ind-name">布林帶中軌</td><td class="ind-value">~209.9</td><td>價格靠近中軌，盤整中</td><td>價格靠近中軌，盤整中</td></tr><tr><td class="ind-name">布林帶上軌</td><td class="ind-value">~232.2</td><td>阻力位，尚無突破</td><td>阻力位，尚無突破</td></tr><tr><td class="ind-name">ATR</td><td class="ind-value">9.94</td><td>波動性中等</td><td>波動性中等</td></tr></tbody></table></div></section>
+        <section id="sentiment" class="section-card"><h2 class="section-title">情緒分析</h2><div class="sentiment-summary"><div class="sentiment-bar"><div class="sent-fill sent-pos" style="width:0.0%"></div><div class="sent-fill sent-neu" style="width:100.0%"></div><div class="sent-fill sent-neg" style="width:0.0%"></div></div><div class="sentiment-counts"><span class="sent-count sent-count-pos">0 正面</span><span class="sent-count sent-count-neu">7 中性</span><span class="sent-count sent-count-neg">0 負面</span></div></div><table class="indicator-table"><thead><tr><th>方面</th><th>摘要</th><th>投資人含義</th></tr></thead><tbody><tr class="sent-row-neutral"><td>目標價更新</td><td>德意志銀行將目標價下調至275美元，持有評級</td><td>表示謹慎，暗示近期上行空間有限</td></tr><tr class="sent-row-neutral"><td>機構支持</td><td>Bamco持股提升至8.38億美元</td><td>強烈信心，支撐股價穩定</td></tr><tr class="sent-row-neutral"><td>產品創新</td><td>推出新AI合規工具</td><td>有利於競爭定位及成長</td></tr><tr class="sent-row-neutral"><td>分析師情緒</td><td>意見分歧，目標價波動大</td><td>反映不確定性及風險認知</td></tr><tr class="sent-row-neutral"><td>股價表現</td><td>一年總報酬率-52.5%，最近90天回報29.8%</td><td>顯示表現波動，有部分回升跡象</td></tr><tr class="sent-row-neutral"><td>股息吸引力</td><td>被列為2026年安全股息股票</td><td>吸引偏好收益的投資者</td></tr><tr class="sent-row-neutral"><td>情緒動能</td><td>穩定至略微惡化</td><td>持續關注估值及競爭格局發展</td></tr></tbody></table></section>
+        <section id="news" class="section-card"><h2 class="section-title">新聞分析</h2><div class="section-body"><p>以下是關於目前全球與交易及宏觀經濟相關狀況的綜合報告，重點聚焦於FactSet Research Systems（FDS）以及過去一週（2026年3月11日至3月18日）最新新聞中的一般宏觀趨勢。</p>
+<hr />
+<h3>公司聚焦：FactSet Research Systems（FDS）</h3>
+<ol>
+<li><strong>分析師展望與股票估值</strong>  </li>
+<li>德意志銀行近期將FDS的目標價從335美元下調至275美元，維持持有評級。  </li>
+<li>對FDS的分析師意見分歧，目標價介於低200美元到約321美元之間，反映出競爭風險與AI對FDS金融數據平台影響的疑慮。  </li>
+<li>即使Bamco Inc將持股增至8.38億美元，以及FactSet平台推出AI驅動的金融犯罪風險工具，該股過去一年總股東報酬仍下跌52.5%。  </li>
+<li>
+<p>部分分析師將公允價值估計略微下調，從約305美元降至300美元。</p>
+</li>
+<li>
+<p><strong>業務發展</strong>  </p>
+</li>
+<li>Bamco的持股增加顯示對FDS經常性收入商業模式的信心，該模式受益於其為投資專業人士內嵌的工作流程軟體。  </li>
+<li>FactSet工作站新增的AI工具旨在應對金融犯罪風險合規問題，符合市場對先進分析與合規解決方案的需求。  </li>
+<li>儘管有創新措施，股票價格表現平淡反映出市場審慎的情緒。</li>
+</ol>
+<hr />
+<h3>更廣泛的市場與經濟主題</h3>
+<ol>
+<li><strong>市場趨勢</strong>  </li>
+<li>標普500連續第三周下跌，本週下跌1.6%，油價上漲成為背景。  </li>
+<li>
+<p>建議投資防禦性股票與被視為避險的部門，以對沖如與伊朗的地緣政治風險。</p>
+</li>
+<li>
+<p><strong>通膨與聯準會政策</strong>  </p>
+</li>
+<li>通膨數據略高預期，核心個人消費支出（PCE）1月份上升0.4%，年增率3.1%，高過分析師預測。  </li>
+<li>
+<p>聯準會喜愛的通膨指標顯示通膨壓力持續，強化了市場認為聯準會可能在未來會議暫停降息的看法。</p>
+</li>
+<li>
+<p><strong>產業與公司亮點</strong>  </p>
+</li>
+<li>零售商Dollar Tree和Dollar General表現分歧；Dollar Tree發出樂觀展望，而Dollar General儘管盈餘超預期卻股價下跌。  </li>
+<li>Ulta Beauty警告成長放緩，因消費者轉向重視價值的購物模式。  </li>
+<li>
+<p>科技及軟體相關公司持續吸引關注，資本支出、記憶體價格與軟體趨勢預計將成為未來財報的焦點。</p>
+</li>
+<li>
+<p><strong>全球與宏觀洞察</strong>  </p>
+</li>
+<li>紐約證券交易所母公司正擴展進入加密貨幣領域，顯示金融市場數位化趨勢加深。  </li>
+<li>儘管全球局勢不明確，中國科技股仍對部分投資人具吸引力。  </li>
+<li>市場專家對2026年股市表現仍持謹慎樂觀態度，並強調財報結果與宏觀經濟訊號的重要性。</li>
+</ol>
+<hr />
+<h3>主要要點摘要表</h3>
+<table>
+<thead>
+<tr>
+<th>領域</th>
+<th>主要要點</th>
+<th>對交易者的啟示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FactSet（FDS）</td>
+<td>德意志銀行目標價下調至275美元；分析師觀點分歧；AI合規工具推出；Bamco持股增加</td>
+<td>表示審慎樂觀；關注AI影響</td>
+</tr>
+<tr>
+<td>股票市場</td>
+<td>標普500本週下跌1.6%；連三週下滑；油價上升</td>
+<td>可能出現市場波動；關注能源部門</td>
+</tr>
+<tr>
+<td>通膨與聯準會</td>
+<td>核心PCE通膨略高預期；聯準會降息可能暫停</td>
+<td>利率審慎；影響估值</td>
+</tr>
+<tr>
+<td>零售與消費</td>
+<td>Dollar Tree樂觀看待；Dollar General指引疲弱；Ulta增長放緩</td>
+<td>消費者更注重價值；產業輪動</td>
+</tr>
+<tr>
+<td>科技與加密貨幣</td>
+<td>紐交所進入加密貨幣領域；科技業財報關注資本支出及記憶體價格</td>
+<td>加強對科技行業及加密貨幣的關注</td>
+</tr>
+<tr>
+<td>地緣政治風險</td>
+<td>伊朗風險推動投資人買避險股票</td>
+<td>建議持有防禦性股票</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>本分析有助於交易者與投資人理解截至2026年3月中旬，圍繞FDS及更廣泛市場環境的微妙情緒與宏觀趨勢驅動因素。</p>
+<p>如需針對其他公司或產業新聞有更具體的聚焦，歡迎隨時告知！</p></div></section>
+        <section id="fundamentals" class="section-card"><h2 class="section-title">基本面分析</h2><div class="kpi-grid"><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Market Cap</div><div class="kpi-value" style="color:#64748b;">$7.85 billion</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">P/E (TTM)</div><div class="kpi-value" style="color:#10b981;">13.33</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EPS</div><div class="kpi-value" style="color:#64748b;">15.73</div></div><div class="kpi-card" style="border-left:3px solid #f59e0b;"><div class="kpi-label">Dividend Yield</div><div class="kpi-value" style="color:#f59e0b;">2.12%</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Revenue</div><div class="kpi-value" style="color:#64748b;">$2.36 billion</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EBITDA</div><div class="kpi-value" style="color:#64748b;">$921.7 million</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Profit Margin</div><div class="kpi-value" style="color:#10b981;">25.4%</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">ROE</div><div class="kpi-value" style="color:#10b981;">28.8%</div></div><div class="kpi-card" style="border-left:3px solid #ef4444;"><div class="kpi-label">Debt/Equity</div><div class="kpi-value" style="color:#ef4444;">~72</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Current Ratio</div><div class="kpi-value" style="color:#10b981;">1.54</div></div></div><table class="indicator-table"><thead><tr><th>面向</th><th>詳細數值</th><th>備註／評估</th></tr></thead><tbody><tr><td>市值</td><td>$7.85 billion</td><td>顯著規模</td></tr><tr><td>市盈率（TTM）</td><td>13.33</td><td>合理估值</td></tr><tr><td>前瞻市盈率</td><td>11.06</td><td>盈利預期增長</td></tr><tr><td>每股盈餘（TTM）</td><td>15.73</td><td>穩健盈利</td></tr><tr><td>前瞻每股盈餘</td><td>18.96</td><td>預期增長</td></tr><tr><td>股息殖利率</td><td>2.12%</td><td>中等收益</td></tr><tr><td>營收（TTM）</td><td>$2.36 billion</td><td>穩定增長</td></tr><tr><td>EBITDA（TTM）</td><td>$921.7 million</td><td>強勁盈利</td></tr><tr><td>淨利潤（TTM）</td><td>$599.6 million</td><td>健康利潤</td></tr><tr><td>利潤率</td><td>25.4%</td><td>高利潤率</td></tr><tr><td>營業利潤率</td><td>32.6%</td><td>營運效率高</td></tr><tr><td>股東權益報酬率（ROE）</td><td>28.8%</td><td>高資本效率</td></tr><tr><td>資產報酬率（ROA）</td><td>11.4%</td><td>良好資產利用</td></tr><tr><td>負債對權益比率</td><td>~72</td><td>因無形資產高而極高</td></tr><tr><td>有形帳面價值</td><td>-$1.01 billion</td><td>負值，槓桿風險警示</td></tr><tr><td>流動比率</td><td>1.54</td><td>流動性充足</td></tr><tr><td>自由現金流（近期季度）</td><td>$90 million</td><td>正向現金產生</td></tr><tr><td>內部人持股</td><td>0.45%</td><td>內部持股低</td></tr><tr><td>機構持股</td><td>102.3%</td><td>高機構信心</td></tr><tr><td>空頭持股</td><td>11.18%流通股，2.74賣空天數</td><td>中度空頭興趣</td></tr><tr><td>市值與帳面淨資產價值比</td><td>+263.3%溢價</td><td>反映無形價值及市場信心</td></tr></tbody></table></section>
+        <section id="investment-debate" class="section-card"><h2 class="section-title">投資辯論</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #10b981;"><h3 class="debate-panel-title" style="color:#10b981;">多頭觀點</h3><div class="debate-preview"><p>Bull Analyst: 太好了！讓我們直接切入主題 — 我有信心 FactSet (FDS) 目前提供了一個極具吸引力的成長與價值機會，我也準備好了針對主要的空頭疑慮進行直接回應，同時強調多頭的堅實論點。</p>
+<hr />
+<h3>1. <strong>成長潛力：FactSet 不斷擴大的市場機會</strong></h3>
+<p>空頭分析師經常強調 FactSet 最近的下跌趨勢及估值不確定性。雖然這些觀察有其合理性，但他們忽略了更大的圖景：FactSet 的市場機會正隨著 AI 整合和合規分析不斷演變和擴大——這些成長引擎具備大幅擴展的潛力。</p>
+<ul>
+<li>
+<p><strong>新推出的 AI 驅動合規工具：</strong> FactSet 推出的金融犯罪合規解決方案切入一個數十億美元且高速成長的金融科技利基市場。監管審查與對高級分析解決方案的需求仍是金融服務業強勁的驅動力。這是一個高利潤且黏著性的收入來源，擴展了 FactSet 在傳統數據供應和分析之外的產品廣度。</p>
+</li>
+<li>
+<p><strong>營收趨勢與可擴展性：</strong> FactSet 最近的營收為 23.6 億美元（環比十二個月），季度持續穩定成長。他們基於雲端且嵌入工作流程的平台天生具備可擴展經濟模型：新增用戶或產品的...</p>
+</li>
+</ul></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>Bull Analyst: 太好了！讓我們直接切入主題 — 我有信心 FactSet (FDS) 目前提供了一個極具吸引力的成長與價值機會，我也準備好了針對主要的空頭疑慮進行直接回應，同時強調多頭的堅實論點。</p>
+<hr />
+<h3>1. <strong>成長潛力：FactSet 不斷擴大的市場機會</strong></h3>
+<p>空頭分析師經常強調 FactSet 最近的下跌趨勢及估值不確定性。雖然這些觀察有其合理性，但他們忽略了更大的圖景：FactSet 的市場機會正隨著 AI 整合和合規分析不斷演變和擴大——這些成長引擎具備大幅擴展的潛力。</p>
+<ul>
+<li>
+<p><strong>新推出的 AI 驅動合規工具：</strong> FactSet 推出的金融犯罪合規解決方案切入一個數十億美元且高速成長的金融科技利基市場。監管審查與對高級分析解決方案的需求仍是金融服務業強勁的驅動力。這是一個高利潤且黏著性的收入來源，擴展了 FactSet 在傳統數據供應和分析之外的產品廣度。</p>
+</li>
+<li>
+<p><strong>營收趨勢與可擴展性：</strong> FactSet 最近的營收為 23.6 億美元（環比十二個月），季度持續穩定成長。他們基於雲端且嵌入工作流程的平台天生具備可擴展經濟模型：新增用戶或產品的成本成長速度慢於營收增長，隨著全球採用擴大可實現更高利潤率。</p>
+</li>
+<li>
+<p><strong>預期每股盈餘成長（約20%增加）：</strong> EPS 從 15.73 增長到 18.96，反映實質的盈利成長，顯示公司不僅是成熟的現金奶牛，更準備好持續擴張。</p>
+</li>
+</ul>
+<p>總結來說，FactSet 並非陷入傳統窠臼，而是在隨著科技趨勢演進，迎合日益增長的合規與分析需求，擁有堅實的成長跑道。</p>
+<hr />
+<h3>2. <strong>競爭優勢與差異化</strong></h3>
+<p>談談護城河：</p>
+<ul>
+<li>
+<p><strong>頂尖品牌與工作流程整合：</strong> FactSet 深度融入投資專業人士的日常工作流程，切換成本高且複雜。這種高切換成本建立了客戶黏著度，競爭對手難以複製。</p>
+</li>
+<li>
+<p><strong>堅強的機構支持：</strong> Bamco 增持 8.38 億美元股份顯示，精明的投資人看到長期價值。這不是投機買入，而是對 FactSet 競爭地位與業務耐久性的信心體現。</p>
+</li>
+<li>
+<p><strong>AI 創新領導地位：</strong> AI 對許多數據供應商來說是雙面刃，FactSet 則善用 AI 成為競爭差異化，特別是在合規風險領域，藉由即時 AI 驅動分析創造明顯優勢。</p>
+</li>
+<li>
+<p><strong>高營運利潤率（32.6%）與權益報酬率（28.8%）：</strong> 營運效率與資本回報率均令人印象深刻，強化 FactSet 的競爭優勢真實轉化為獲利經濟，而非純粹營收增長幻象。</p>
+</li>
+</ul>
+<hr />
+<h3>3. <strong>正面市場與財務指標</strong></h3>
+<p>是的，技術面呈現中長期下跌趨勢（50日與200日移動平均線在價格之上），但短期動能帶來謹慎樂觀的畫面：</p>
+<ul>
+<li>
+<p><strong>MACD 改善從 -23 到 -5.7：</strong> 空頭動能減弱，是潛在趨勢反轉的經典早期訊號。</p>
+</li>
+<li>
+<p><strong>RSI 從超賣區反彈（22.9 → 43）：</strong> 買壓增強 — 當 RSI 超過 50 後可能形成底部並展開反彈。</p>
+</li>
+<li>
+<p><strong>價格在 10 日EMA 與布林帶中軸整理：</strong> 這種波動中等的盤整走勢（平均真實區間約 9.94）表明股價在超賣後正在穩定，而非崩跌。穩定往往是突破的前兆。</p>
+</li>
+<li>
+<p><strong>股息安全與收益吸引力：</strong> FactSet 2.12% 的股息率，搭配穩健的自由現金流（每季 9000 萬美元），吸引尋求穩定的收益型投資人，為股價提供「支撐底」。</p>
+</li>
+</ul>
+<hr />
+<h3>4. <strong>回應與駁斥空頭觀點</strong></h3>
+<p><strong>空頭疑慮 #1：</strong>「高負債權益比（72）與負有形淨值帶來償債風險。」</p>
+<ul>
+<li>
+<p>FactSet 的高槓桿主要源自收購產生的無形資產如商譽，而非魯莽借貸。公司擁有穩健的流動比率（1.54）及意義深遠的現金流覆蓋能力。</p>
+</li>
+<li>
+<p>利息費用由營業收入良好覆蓋，償債能力強。</p>
+</li>
+<li>
+<p>這種「高槓桿」需置於商業模式背景中看待 — 對於具有強大無形資產與可預測現金流的科技/數據公司來說屬常態。</p>
+</li>
+<li>
+<p>正向自由現金流及股票回購行動（上一季 1.4 億美元）強化槓桿在可控範圍內，且資本部署有助於創造價值。</p>
+</li>
+</ul>
+<hr />
+<p><strong>空頭疑慮 #2：</strong>「分析師意見分歧，德銀調降目標價至 275，顯示近期上漲空間有限。」</p>
+<ul>
+<li>
+<p>德銀持有評等，目標價 275 美元，現價約 210 美元，其實蘊含約 30% 的上漲空間。</p>
+</li>
+<li>
+<p>分析師目標價分歧反映市場不確定性，但也凸顯 FactSet 在 AI 與合規整合方面的選擇性機會。</p>
+</li>
+<li>
+<p>Bamco 等機構內部增持數億美元股份顯示出信心強烈的多頭看法，常為價格變動前的領先指標。</p>
+</li>
+</ul>
+<hr />
+<p><strong>空頭疑慮 #3：</strong>「一年股價報酬率下跌 52%，表現不佳。」</p>
+<ul>
+<li>
+<p>確實，一年總報酬率不佳部分反映了市場由傳統金融數據供應商轉向及短期情緒波動。</p>
+</li>
+<li>
+<p>然而，FDS 最近 90 天報酬率達 +29.8% 表明了買入興趣的 <strong>明顯回升</strong> 及動能轉強。</p>
+</li>
+<li>
+<p>與技術面短期動能改善及基本面利多進入焦點相符。</p>
+</li>
+<li>
+<p>市場定價反映短期痛點，但 FactSet 底層業務信號展現持久的復甦與成長力。</p>
+</li>
+</ul>
+<hr />
+<h3>5. <strong>借鏡經驗與反思</strong></h3>
+<p>在類似情況下，有強健經常性收入、嵌入式工作流程與 AI 投資的公司，通常能從下跌趨勢中強勢反彈。多頭的關鍵是耐心，著重基本面轉型，而非短期股價雜音。</p>
+<p>FactSet 目前估值（約 13 倍前瞻本益比）相當謙虛，考量成長性、獲利能力及股息安全。過去經驗顯示，科技/數據公司在 AI 驅動金融科技與合規領域取得進展後，估值倍數會隨時間增長。</p>
+<hr />
+<h3><strong>結論：多頭論點勝出原因</strong></h3>
+<ul>
+<li>FactSet 在金融數據及 AI 驅動合規這個持久且成長中的利基市場經營。</li>
+<li>擁有強大的品牌護城河、營運效率與機構認同。</li>
+<li>財務數據展現具可擴展且獲利的成長，由健康現金流與安全股息支持。</li>
+<li>技術面訊號指向股價穩定階段，動能逐漸改善。</li>
+<li>針對槓桿與估值的空頭疑慮，在業務模式與成長前景背景下均可掌控。</li>
+</ul>
+<p>綜上所述，投資人應視當前下跌趨勢為切入這家基本面穩健、擁有強大成長推動力和機構信心公司的有利點。</p>
+<hr />
+<p>樂意就任何角度深入探討或進一步辯論！你還想我針對哪些空頭論點做更詳細的剖析或討論？</p></div></details></div><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">空頭觀點</h3><div class="debate-preview"><p>Bear Analyst: 感謝您對 FactSet 前景的詳細且樂觀的概述，您提出了關於成長潛力、創新和機構支持的一些強有力論點。不過，作為此處的空頭，我認為未來的風險和挑戰遠遠超過這些正面因素，接下來我將說明為什麼投資者應該保持謹慎。</p>
+<hr />
+<h3>1. <strong>持續的下跌趨勢顯示更深層的疲弱</strong></h3>
+<p>您正確指出短期動能改善，MACD 從 -23 上升至 -5.7，RSI 自超賣低點回升。然而，技術面背景仍然極為看跌：</p>
+<ul>
+<li>
+<p><strong>50 日均線（約 237.3）及 200 日均線（約 315.7）</strong> 仍遠高於現價（約 209.5），突顯中長期下跌趨勢尚未反轉。</p>
+</li>
+<li>
+<p>股價在 10 日指數移動平均線與布林帶中軸附近整固，尚未突破上軌阻力（約 232.2），意味動能停滯，尚非突破啟動。</p>
+</li>
+<li>
+<p>最近 90 天 +29.8% 的回報更像是超賣區的空頭回補或技術反彈，而非結構性復甦，尤其在先前 1 年 52.5% 的弱勢總報酬率（TSR）背景下更是如此。</p>
+</li>
+</ul>
+<p>無論基本面還是技術面，只要 FactSet 無法確定突破這些均線且成交量及 RSI &gt; 50，該股仍處於易被賣壓重新打壓的脆弱位置。</p>
+<p>...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>Bear Analyst: 感謝您對 FactSet 前景的詳細且樂觀的概述，您提出了關於成長潛力、創新和機構支持的一些強有力論點。不過，作為此處的空頭，我認為未來的風險和挑戰遠遠超過這些正面因素，接下來我將說明為什麼投資者應該保持謹慎。</p>
+<hr />
+<h3>1. <strong>持續的下跌趨勢顯示更深層的疲弱</strong></h3>
+<p>您正確指出短期動能改善，MACD 從 -23 上升至 -5.7，RSI 自超賣低點回升。然而，技術面背景仍然極為看跌：</p>
+<ul>
+<li>
+<p><strong>50 日均線（約 237.3）及 200 日均線（約 315.7）</strong> 仍遠高於現價（約 209.5），突顯中長期下跌趨勢尚未反轉。</p>
+</li>
+<li>
+<p>股價在 10 日指數移動平均線與布林帶中軸附近整固，尚未突破上軌阻力（約 232.2），意味動能停滯，尚非突破啟動。</p>
+</li>
+<li>
+<p>最近 90 天 +29.8% 的回報更像是超賣區的空頭回補或技術反彈，而非結構性復甦，尤其在先前 1 年 52.5% 的弱勢總報酬率（TSR）背景下更是如此。</p>
+</li>
+</ul>
+<p>無論基本面還是技術面，只要 FactSet 無法確定突破這些均線且成交量及 RSI &gt; 50，該股仍處於易被賣壓重新打壓的脆弱位置。</p>
+<hr />
+<h3>2. <strong>財務槓桿與無形資產風險不得輕忽</strong></h3>
+<p>您提到高達約 72 的負債權益比是科技/數據公司因無形資產較重而典型現象，暗示槓桿可控。但這正是 FactSet 的警訊：</p>
+<ul>
+<li>
+<p>極端的負債權益比——由於有負的實體帳面價值（約 -10 億美元）——說明其<strong>高度依賴商譽及無形資產，這些資產若成長失望可能遭遇減值</strong>。</p>
+</li>
+<li>
+<p>考慮到經濟不確定性及金融科技利潤率壓力，資產減值恐導致<strong>盈餘衝擊、資產減記及估值大幅收縮</strong>，此類風險並非理論，而是近期科技產業的真實趨勢。</p>
+</li>
+<li>
+<p>雖然自由現金流為正，但龐大負債限制了財務彈性，尤其宏觀逆風收緊信貸或通膨壓力持續時。</p>
+</li>
+<li>
+<p>每季 1.4 億美元的股票回購也可能令保守派擔憂，因這筆資金若用於降低槓桿或創新會更合適，而非弱勢業務催化劑期間人工支撐股價。</p>
+</li>
+</ul>
+<p>總之，資本結構比多頭想像的更脆弱，對外部衝擊及商譽減值存在實質風險。</p>
+<hr />
+<h3>3. <strong>競爭格局激烈且日益加劇</strong></h3>
+<p>您提到 AI 驅動的合規工具是競爭優勢，但現實更複雜：</p>
+<ul>
+<li>
+<p>金融數據與合規分析領域競爭者眾多，大型既有企業和靈活的金融科技新創公司正迅速部署 AI 及機器學習。FactSet 所稱的「護城河」正日益受到挑戰。</p>
+</li>
+<li>
+<p>競爭對手如 Bloomberg、Refinitiv 及新興 AI 原生創企正積極投資創新，威脅 FactSet 的品牌力與工作流程整合優勢。</p>
+</li>
+<li>
+<p>分析師目標價區間寬廣，加上德意志銀行近期調降目標價（由 335 美元降至 275 美元），凸顯 <strong>市場對 FactSet 能否維持差異化及定價能力抱持疑慮</strong>，面臨破壞性 AI 競爭。</p>
+</li>
+<li>
+<p>內部持股率僅 0.45%，遠低於機構持股，可能暗示管理層信心不若外部投資人，屬於隱性的警示信號。</p>
+</li>
+</ul>
+<p>FactSet 的創新管線有落後競爭者的風險，將影響其中期獲利與成長。</p>
+<hr />
+<h3>4. <strong>股價估值風險與分析師看法分歧</strong></h3>
+<p>多頭論點指出 ~11 倍的適度前瞻本益比與德銀 275 美元目標價還有約 30% 上漲空間。但：</p>
+<ul>
+<li>
+<p>股價已反映對 AI 整合及合規產品成功的高度樂觀，但這些仍屬推測，尚無明顯營收成長突破跡象。</p>
+</li>
+<li>
+<p>分析師目標價從 200 多美元到 320 多美元不等，顯示 <strong>高度不確定及分歧</strong>，非明確買入共識訊號。</p>
+</li>
+<li>
+<p>德銀持有評級與中段目標價下調，暗示投資人應降低預期，而非追逐高飛的反彈。</p>
+</li>
+<li>
+<p>2.12% 的股息殖利率在成長停滯或槓桿加劇情況下難以持續，若出現負面意外，FactSet 對收益型投資者吸引力將受限。</p>
+</li>
+</ul>
+<hr />
+<h3>5. <strong>宏觀與市場環境增添逆風</strong></h3>
+<p>外部條件增強我的疑慮：</p>
+<ul>
+<li>
+<p>大盤氛圍偏向謹慎，標普 500 在通膨持續及聯準會可能暫停降息背景下下跌 1.6%。防禦型資產受青睞，相較之下金融數據供應商面臨景氣循環風險。</p>
+</li>
+<li>
+<p>地緣政治風險及油價上漲增加市場波動，可能壓縮企業科技預算，放緩對 FactSet 較高成本方案的需求。</p>
+</li>
+<li>
+<p>科技及金融科技產業面臨資本支出嚴格審查及估值重置風險，非 FactSet 執行轉型的理想外部環境。</p>
+</li>
+</ul>
+<hr />
+<h3><strong>回應您多頭觀點與心得</strong></h3>
+<p>您呼籲耐心並聚焦 FactSet 作為「基本面健全的公司」走出下跌的觀點，建立在幾項未具體驗證的樂觀假設上：</p>
+<ul>
+<li>
+<p>過去科技/數據公司於超賣訊號後反彈，通常伴隨更強的創新領導及財務健康訊號，而目前並未見到。</p>
+</li>
+<li>
+<p>持續且嚴重的 1 年 TSR 虧損（-52.5%）與中期下跌趨勢表明非單純拉回，而是結構性與競爭性問題。</p>
+</li>
+<li>
+<p>商譽減值及高槓桿風險將不成比例地反映下行損失，耐心多頭須考慮進一步倍數壓縮或股息削減的機會。</p>
+</li>
+<li>
+<p>Bamco 等機構持股增加固然令人欣慰，但更可能是中期價值投資行為，而非短期確定性。</p>
+</li>
+</ul>
+<hr />
+<h3><strong>最後想法：為什麼空頭應堅守立場</strong></h3>
+<p>FactSet 的下跌趨勢、高槓桿、競爭威脅與模糊的 AI 路線圖共同構成風險投資標的。技術面「企穩」最多只是初步，需要確認，且財務結構限制下行保護。</p>
+<p>多頭論點依賴有前景的 AI 產品與機構信心投票，但這些 <strong>尚未轉化為可見的成長或估值反轉</strong>。市場態度仍存懷疑，而且理應如此。</p>
+<p>投資人當務之急是風險控管，不宜假設公司問題已在背後。復甦路徑充滿不確定和重大下行風險。</p>
+<hr />
+<p><strong>簡言之：</strong> FactSet 的空頭理由根植於具體的市場現實——持續下跌走勢、槓桿脆弱、日益激烈的競爭壓力及基本面不一——警示不可輕信希望與 AI 頭條炒作。</p>
+<p>讓我們繼續討論。您希望我針對哪部分分析做更深入拆解或說明？</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">裁判決定</h3><div class="judge-body"><p>感謝雙方提供如此詳盡且表達清晰的辯論。讓我回顧關鍵要點，並給出明確且可執行的建議，附上清晰的理由與策略規劃。</p>
+<hr />
+<p><strong>多頭分析師的主要結論：</strong></p>
+<ul>
+<li>FactSet 正在透過新推出的 AI 驅動合規工具進化，切入增長迅速的金融科技利基市場。</li>
+<li>可擴展的營收模式與約 20% 的強勁前瞻每股盈餘增長，顯示可持續的盈利擴張。</li>
+<li>高營業利潤率與股東權益報酬率凸顯高效營運。</li>
+<li>Bamco 等機構的支持顯示投資人對其深具信心。</li>
+<li>技術面顯示空頭動能減弱，暗示可能正在形成底部。</li>
+<li>股息收益率與穩定的自由現金流提供下檔支撐。</li>
+<li>鑑於資產以商譽為主且現金流強勁，負債疑慮被誇大。</li>
+</ul>
+<hr />
+<p><strong>空頭分析師的主要結論：</strong></p>
+<ul>
+<li>中長期仍維持強烈下跌趨勢，技術反彈看似不穩，可能只是回補空單行情。</li>
+<li>負債比率極高（72），有負有形淨值，經濟不確定性下存在商譽減損風險。</li>
+<li>競爭環境加劇，多家資金雄厚競爭者；FactSet 在 AI 領導地位不明確且可能落後。</li>
+<li>分析師態度混合，德意志銀行調低目標價並給出持有評級。</li>
+<li>股息持續性與資本分配令人質疑，尤其在槓桿率高及宏觀逆風下。</li>
+<li>市場波動、通膨及謹慎的科技支出增加風險。</li>
+<li>機構持股增加是中期價值操作，非確信性買進訊號。</li>
+</ul>
+<hr />
+<p><strong>我的建議：買入</strong></p>
+<p>儘管空頭顧慮具說服力，但當前多頭論點更具吸引力且可執行，理由如下：</p>
+<ol>
+<li>
+<p><strong>FactSet 預期約 20% 的盈餘成長</strong>與 AI 驅動合規相關產品線擴張，提供具體且具擴展性的成長催化劑，有望推動股價估值重評。空頭過度強調不確定性，忽視現有基本面推進與機構信心。</p>
+</li>
+<li>
+<p><strong>技術趨勢</strong>雖未完全逆轉，但顯示重要初期穩定與動能改善訊號。歷史上的下跌趨勢往往會在此類指標啟動時築底，尤其當基本面同時強勁。</p>
+</li>
+<li>
+<p><strong>負債槓桿與商譽風險</strong>雖存在，但被強大現金流、32.6% 的營業利潤率及 28.8% 的股東權益報酬率所緩解。FactSet 支付利息與回購股票的能力展現財務審慎，與財務狀況困難的科技公司不同。</p>
+</li>
+<li>
+<p><strong>來自像 Bamco 這類主要機構的支持</strong>罕見且具強烈信號意味，表明高階投資者看見尚未反映在股價中的價值。</p>
+</li>
+<li>
+<p><strong>以 13 倍前瞻本益比計價</strong>，基於 FactSet 的成長特性與股息安全性來看相當合理。一旦 AI 產品執行與合規收入增長明朗，潛在上行空間可觀。</p>
+</li>
+</ol>
+<p>空頭對競爭、宏觀風險及不確定性的警示有效，但多為外部因素並已在當前價格折價中反映，並不抹殺 FactSet 明顯的優勢與定位。</p>
+<hr />
+<p><strong>投資計劃與執行：</strong></p>
+<ul>
+<li>
+<p>在現價附近 (~$210) 建立 <strong>買入部位</strong>，利用相對於成長潛力與技術面改善的折價。</p>
+</li>
+<li>
+<p>設置 <strong>停損點在 $185 至 $190</strong> 區間，防範若技術支撐位明確跌破時的更深幅下跌。尊重空頭對持續下跌趨勢風險的提醒。</p>
+</li>
+<li>
+<p>在 50 日簡單移動平均線附近 (~$237) <strong>確認技術突破後分批加碼</strong>。若伴隨成交量擴大與相對強弱指標（RSI）超過 50，將證實結構性趨勢反轉，有利增加部位。</p>
+</li>
+<li>
+<p>持續每季監控關鍵成長指標，特別是 AI/合規業務的營收增長、利潤率趨勢與自由現金流。優異執行將支持加碼。</p>
+</li>
+<li>
+<p>每季審視 <strong>負債服務能力與商譽減損風險</strong>，如信用條件惡化或產生減損，重新評估持倉規模或考慮退出。</p>
+</li>
+<li>
+<p>利用股息作為 <strong>收入緩衝</strong> 等待資本增值；可考慮股息再投資以複利增長。</p>
+</li>
+<li>
+<p>持續關注競爭對手動向、監管影響及宏觀經濟變化，必要時靈活調整策略，以防基本面或技術面惡化。</p>
+</li>
+</ul>
+<hr />
+<p><strong>為何現在選擇買入，而非持有或賣出？</strong></p>
+<p>基於過往經驗，當一方呈現有機構信心、可擴展的利潤率及技術動能改善等清晰成長驅動跡象時，我避免猶豫不決。空頭確實提出風險，但多屬潛在情境，非即將來臨的財務困境或基本面退化。現有估值與多重信號構建良好非對稱風險報酬，且配合明確停損，能有效控管下行風險。</p>
+<p>單純持有將錯失抓住 FactSet AI 合規增長與情緒好轉利基的機會；賣出則完全忽略近期盈餘指引、產品創新與股東支持所蘊含的潛在上行。</p>
+<hr />
+<p>總結：採取買入行動，並結合嚴謹的風險管理策略。FactSet 的基本面、成長路徑與技術訊號現階段齊聚，有望促成顯著回升。此刻宜耐心卻積極，不宜過於保守。</p>
+<p>若需要進一步討論下一步或分析細節，樂意隨時交流！</p></div></div></section>
+        <section id="trader-plan" class="section-card"><h2 class="section-title">交易者投資計劃</h2><div class="section-body"><p>基於詳細且均衡的分析，建議買入 FactSet (FDS) 是建立在基本面、技術信號及機構情緒的堅實基礎上。多頭論點包括強勁的未來每股盈餘成長（約 20%）、日益增長的 AI 驅動合規產品線、高效運營，以及合理的估值倍數（13 倍遠期市盈率），均超越了空頭的顧慮。</p>
+<p>空頭風險——高槓桿、商譽減值可能性、競爭以及宏觀經濟逆風——雖然被認可，但似乎部分反映在價格中，並且被 FactSet 強大的現金流、利潤率及機構支持所緩解。技術面顯示有早期穩定跡象，暗示可能出現底部形成，而非新一輪下跌。</p>
+<p>建議的嚴格風險管理計劃包括於現價附近（約 210 美元）初次買入，在 185-190 美元區間設置止損，並在確認技術突破時進一步加碼，這提供了在限制下行風險的同時，捕捉潛在上行空間的審慎策略。</p>
+<p>結合決斷力與風險控制的經驗教訓，此時做出買入決策，符合非對稱風險回報與成長催化劑的情境。持有將錯失在預期成長前以折扣價進場的機會，而賣出則忽視了明顯的復甦潛力。</p>
+<p>最終交易建議：<strong>BUY</strong></p></div></section>
+        <section id="risk-debate" class="section-card"><h2 class="section-title">風險管理辯論</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">進取觀點</h3><div class="debate-preview"><p>激進分析師：讓我直接切入正題，回答保守派和中立分析師可能提出的疑慮，因為真的，在這裡採取保守做法正是錯失搭乘FactSet新興上升趨勢的機會。</p>
+<p>首先，是的，50日和200日簡單移動平均線顯示明顯的下跌趨勢，這通常是保守派用來否定上漲潛力的依據。但僅聚焦於這些長期均線，只會讓你被過去的表現鎖住，而忽略了短期動能指標正閃現細微但關鍵的反轉信號。MACD已大幅改善——從-23升至-5.7——雖然仍為負，但正積極逼近多頭交叉點。再加上RSI從深度超賣區域接近22反彈回43，這正是一個經典的基底建構階段。這種早期的穩定並非小幅波動；它是突破反彈的前奏。等到多頭趨勢完全確認時，就錯過了在股價低估階段累積籌碼的時機——而這正是你希望能站穩腳步的時刻。</p>
+<p>關於估值和基本面，保守派可能會大肆批評其異常高的負債對股東權益比率和負有形淨值。然而，你的分析正確指出這主要是因為FactSet在併購和科技投資中產生的無形資產與商譽。簡單來說，FactSet不是一個傳統資產密集型公司；其價值在於智慧財產權、AI工具、經常性訂閱收入和機構客戶關係。公司擁有堅若磐石的32.6%營業利潤率和近29%的股本報酬率，顯示它...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>激進分析師：讓我直接切入正題，回答保守派和中立分析師可能提出的疑慮，因為真的，在這裡採取保守做法正是錯失搭乘FactSet新興上升趨勢的機會。</p>
+<p>首先，是的，50日和200日簡單移動平均線顯示明顯的下跌趨勢，這通常是保守派用來否定上漲潛力的依據。但僅聚焦於這些長期均線，只會讓你被過去的表現鎖住，而忽略了短期動能指標正閃現細微但關鍵的反轉信號。MACD已大幅改善——從-23升至-5.7——雖然仍為負，但正積極逼近多頭交叉點。再加上RSI從深度超賣區域接近22反彈回43，這正是一個經典的基底建構階段。這種早期的穩定並非小幅波動；它是突破反彈的前奏。等到多頭趨勢完全確認時，就錯過了在股價低估階段累積籌碼的時機——而這正是你希望能站穩腳步的時刻。</p>
+<p>關於估值和基本面，保守派可能會大肆批評其異常高的負債對股東權益比率和負有形淨值。然而，你的分析正確指出這主要是因為FactSet在併購和科技投資中產生的無形資產與商譽。簡單來說，FactSet不是一個傳統資產密集型公司；其價值在於智慧財產權、AI工具、經常性訂閱收入和機構客戶關係。公司擁有堅若磐石的32.6%營業利潤率和近29%的股本報酬率，顯示它們在獲利效益上做得非常有效率。這正是那種精實、高利潤率的成長引擎，足以合理化其較高槓桿。自由現金流仍為正值，支持負債償還和股份回購，這是嚴謹資本紀律的象徵，也是保守派分析師常低估但有效的風險緩解因素。</p>
+<p>以AI驅動的合規工具是此處的變局推手。儘管中立聲音可能將AI推廣視為「有潛力但尚未證明」，我看法則相當看好，正因為金融服務中AI整合是個熱絡市場區塊，先進者能搶得超額收益。FactSet將AI嵌入合規工具，讓其在全球監管複雜度提升時擁有銳利的競爭優勢。這不僅是技術的小幅升級，而是一個結構性成長槓桿，有能力實質推動營收擴張及客戶黏著度——這正是謹慎者不願押注卻會定義未來勝者的關鍵。</p>
+<p>像Bamco這樣的機構投資者投入近8.4億美元於FactSet，更是另一個重要指標，顯示空頭論點某種程度已被市場反映。成熟的基金不會在宏觀挑戰和估值波動下輕易支持一家公司。他們的決心意味著，該股具有非對稱性上行潛力，遠大於宏觀逆風或短期波動的表面風險。</p>
+<p>沒錯，在通膨壓力、美聯儲謹慎態度和地緣政治緊張下，整體市場情緒緊張，但FactSet是一隻防禦型的科技股票，在低利率環境中提供穩定的2.12%股息率。它稀有地結合了成長與收益——對於想在創新驅動反彈中獲利且具有風險意識的進取交易者來說，恰到好處。</p>
+<p>總結來說，在現價約210美元附近買入，且設有明確的停損點在185-190美元附近，並不魯莽，而是策略性的。它在風險控制與勇敢進場間取得平衡，押注於一間基本面穩健、營運效率佳、且即將藉由AI轉變成長故事的公司。保守觀點往往忽視FactSet的動能改善和機構背書，顯示底部已現，錯過意味著錯過由結構性創新與執行效率推動的復甦行情。</p>
+<p>在這環境下，猶豫即是獲利的大敵。FactSet的風險確實高，但回報潛力遠勝保守策略可提供的價值。這正是聰明交易者應該積極擁抱而非避開的動態非對稱性押注。</p></div></details></div><div class="debate-panel" style="border-top:3px solid #3b82f6;"><h3 class="debate-panel-title" style="color:#3b82f6;">保守觀點</h3><div class="debate-preview"><p>保守型分析師：我欣賞提出的熱情和詳盡觀點，但作為風險導向的分析師，我必須強調，這裡的高風險因素絕非僅是「風險大多已被市場消化」或「被誤解的無形資產」。讓我逐一說明，即使考量到你的樂觀論點，仍需保持謹慎的關鍵問題。</p>
+<p>首先，您強調的技術面設定——是的，MACD有所改善，RSI也正從超賣區上升——但這些都是中長期下跌趨勢中非常早期且謹慎的訊號，如 50 日與 200 日簡單移動平均線(SMA)明顯高於現價所示。此背離顯示 FactSet 的現行交易價格仍承受重大壓力，且真正的反轉確認尚未可期。若股票未能明確突破並守穩於 10 日指數移動平均線(EMA)及布林帶中軸線之上，可能面臨進一步下跌，輕易引發停損單。基於此，基於技術上的「突破希望」採取激進行動，可能讓我們暴露於不必要的回撤風險。</p>
+<p>其次，基本面方面，你試圖淡化的高槓桿率確實是一個紅旗。無論怎麼看，負債股本比率超過70%都令人震驚，尤其是近十億美元的負有形淨值。這意味著公司資產負債表嚴重依賴無形資產，如盈利或成長受挫，這些無形資產可能遭受減損。商譽減損並非假設，它實際存在風險，可能大幅侵蝕股權價值。在經濟衰退或利率上升的情況下，債務償...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>保守型分析師：我欣賞提出的熱情和詳盡觀點，但作為風險導向的分析師，我必須強調，這裡的高風險因素絕非僅是「風險大多已被市場消化」或「被誤解的無形資產」。讓我逐一說明，即使考量到你的樂觀論點，仍需保持謹慎的關鍵問題。</p>
+<p>首先，您強調的技術面設定——是的，MACD有所改善，RSI也正從超賣區上升——但這些都是中長期下跌趨勢中非常早期且謹慎的訊號，如 50 日與 200 日簡單移動平均線(SMA)明顯高於現價所示。此背離顯示 FactSet 的現行交易價格仍承受重大壓力，且真正的反轉確認尚未可期。若股票未能明確突破並守穩於 10 日指數移動平均線(EMA)及布林帶中軸線之上，可能面臨進一步下跌，輕易引發停損單。基於此，基於技術上的「突破希望」採取激進行動，可能讓我們暴露於不必要的回撤風險。</p>
+<p>其次，基本面方面，你試圖淡化的高槓桿率確實是一個紅旗。無論怎麼看，負債股本比率超過70%都令人震驚，尤其是近十億美元的負有形淨值。這意味著公司資產負債表嚴重依賴無形資產，如盈利或成長受挫，這些無形資產可能遭受減損。商譽減損並非假設，它實際存在風險，可能大幅侵蝕股權價值。在經濟衰退或利率上升的情況下，債務償還壓力可能加大，而近期宏觀數據顯示通膨持續，聯準會對降息持謹慎態度，這種情況並非不可能。風險管理意味著，在沒有更大安全邊際下，不能輕易承擔此類結構性資產負債表的脆弱性。</p>
+<p>關於 AI 合規工具，須認識到技術創新競爭激烈，執行力永遠不保證。中立分析師對 AI 的謹慎態度非常合理。FactSet 並非唯一一個致力將 AI 嵌入合規解決方案的玩家；擁有更多資本或更快執行力的競爭對手可能侵蝕任何潛在優勢。在這階段大規模押注 AI 將帶動營收增長，感覺帶有投機性，也與注重保本的保守風險立場不符。</p>
+<p>像 Bamco 增持股份這類機構支持當然是正面信號，但並非萬無一失的保障。即使大型投資者也可能判斷錯誤或持倉過重。另外，11% 的融券比例不容小覷——它顯示市場中有相當一部分投資者看空 FactSet，預期後續會有下跌或劇烈波動。權衡這與樂觀情緒，是謹慎而非忽視的態度。</p>
+<p>股息收益率和營業利潤率雖具吸引力，但這些並不能抵禦更廣泛市場及公司特有風險。該產業面臨宏觀逆風、通膨壓力及地緣政治不確定因素，這些可能壓縮盈利並引起估值收縮，削弱「穩定」收益的吸引力。</p>
+<p>總結而言，以約 $185-$190 設置停損買入的方案，雖比完全裸露持倉更謹慎，但若不利情境發生，仍面臨實質的資本損失風險。在此價格水準，公司資產仍易遭遇波動及結構性信用風險，加上技術趨勢疲弱，這些都未被你的多頭論點充分化解。</p>
+<p>真正保守的策略，應是等待更明確技術信號出現（如 MACD 穿越訊號線且 RSI 持續高於 50）後再入場，或選擇部分曝險並維持更嚴格的停損或對沖策略。這樣方能保全資本，並同時準備捕捉上行潛力，積極管理下行風險，而非在後期週期及不確定的市場中承擔相對激進且不對稱的押注。</p>
+<p>因此，雖敬重樂觀，但以風險分析觀點，保護與穩定必須優先於追逐早期反彈或創新熱潮。讓我們優先保障公司的資本，依據堅實的基本面和技術面確證持續的強勁，而非僅抓住希望訊號和機構樂觀情緒。這是邁向穩健可靠成長的最佳路徑。</p></div></details></div><div class="debate-panel" style="border-top:3px solid #f59e0b;"><h3 class="debate-panel-title" style="color:#f59e0b;">中立觀點</h3><div class="debate-preview"><p>中立分析師：你們兩位提出了重要觀點，很明顯這是一個細微複雜的情況。激進分析師，我同意你認為短期動能指標如改善中的 MACD 及 RSI 從超賣區反彈暗示價格可能趨於穩定的看法。這些早期技術信號有時確實預示反轉的出現，而 Bamco 的機構支持也確實為多頭論點增添了可信度。你將 FactSet 的槓桿率視為其資產輕量化模型依賴無形資產與經常性收入的特徵，而非簡單地視為財務報表的警訊，這是一種合理的觀點。</p>
+<p>然而，我必須提醒過度依賴這些早期動能跡象，而忽略了 50 日和 200 日簡單移動平均線所顯示的根深蒂固的長期下跌趨勢，可能會誤將短暫反彈當成持續復甦。股價仍顯著低於這些長期均線，這些均線往往構成強大的阻力位。除非股價能有意義地突破並站穩於這些水準之上，並確認 MACD 的黃金交叉及 RSI 打破中性區域，否則假突破的風險仍然很高。儘管 AI 項目有可期的前景，現在如果過於果斷大幅加倉，若遇上更廣泛市場疲弱或執行風險導致成長受阻，可能會適得其反。</p>
+<p>再看保守分析師，您強調的高負債股東權益比率及負的有形淨資產價值，從風險角度來看非常關鍵。這些比率反映了實質脆弱性及若成長預期落空可能面臨的...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>中立分析師：你們兩位提出了重要觀點，很明顯這是一個細微複雜的情況。激進分析師，我同意你認為短期動能指標如改善中的 MACD 及 RSI 從超賣區反彈暗示價格可能趨於穩定的看法。這些早期技術信號有時確實預示反轉的出現，而 Bamco 的機構支持也確實為多頭論點增添了可信度。你將 FactSet 的槓桿率視為其資產輕量化模型依賴無形資產與經常性收入的特徵，而非簡單地視為財務報表的警訊，這是一種合理的觀點。</p>
+<p>然而，我必須提醒過度依賴這些早期動能跡象，而忽略了 50 日和 200 日簡單移動平均線所顯示的根深蒂固的長期下跌趨勢，可能會誤將短暫反彈當成持續復甦。股價仍顯著低於這些長期均線，這些均線往往構成強大的阻力位。除非股價能有意義地突破並站穩於這些水準之上，並確認 MACD 的黃金交叉及 RSI 打破中性區域，否則假突破的風險仍然很高。儘管 AI 項目有可期的前景，現在如果過於果斷大幅加倉，若遇上更廣泛市場疲弱或執行風險導致成長受阻，可能會適得其反。</p>
+<p>再看保守分析師，您強調的高負債股東權益比率及負的有形淨資產價值，從風險角度來看非常關鍵。這些比率反映了實質脆弱性及若成長預期落空可能面臨的商譽減損。此外，您對 AI 執行風險的謹慎態度十分恰當，因為競爭壓力大且將新技術迅速轉化為收益確實不易。您提出的大量空頭持倉也值得重視，這表明市場並非盲目樂觀，而是凸顯了潛在的高波動環境。</p>
+<p>不過，我認為您建議完全等待更明確的技術確認再行動，可能過於保守。市場很少完全符合教科書式信號，等到完全確認往往意味錯過重要的漲幅，或是日後以明顯更高價格進場，降低了上漲的報酬潛力。徹底避開或持倉過少可能無謂地阻礙投資組合成長，尤其考慮到該公司有健康的營運利潤率、穩定的現金流與機構支持。</p>
+<p>那麼，什麼是折衷的中間路線呢？我建議采取一種適度且分階段的策略，綜合上述觀點：</p>
+<p>首先，在當前價位建立部分持倉，承認早期技術穩定信號存在，但設置更嚴格的風險控制——例如比建議的 $185-$190 停損區間更保守且更貼近現價的止損點，以防假突破。這樣既能參與 AI 產品推廣與營運效率提升帶來的非對稱收益，同時限制若長期看跌趨勢重新發威的下行風險。</p>
+<p>接著，密切監控 50 日 SMA（約 237 美元）、MACD 與訊號線交叉以及 RSI 超過 50 的強勢信號，作為逐步加碼的確認指標。此舉尊重長期技術格局，使資本保護在股價回調時優先。</p>
+<p>在基本面方面，持續評估負債償付能力與商譽減損風險，特別是通膨與聯準會政策仍具不確定性的宏觀環境下。若信用利差擴大或現金流意外減弱，需準備對沖或減倉。</p>
+<p>總之，以嚴謹的風險管理為框架的分階段買入策略，結合技術與基本面確認的逐步加碼，提供一個更可持續的策略，不會忽視成長機會，也不輕忽重要的結構性風險。</p>
+<p>FactSet 的故事中有上行催化劑，但由於槓桿偏高、競爭不確定性及長期下行趨勢，採取一種節制且靈活的風險策略是明智之舉。既不盲目衝入，也不完全置身事外，堅持紀律中道能保護資金並為波動市場中的合理上漲做好準備。</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">裁判決定</h3><div class="judge-body"><p><strong>最終建議：</strong> <strong>買入，採取分階段進場並嚴格風險管理</strong></p>
+<hr />
+<h3>1. <strong>主要論點摘要</strong></h3>
+<p><strong>激進分析師（看多）</strong>：<br />
+- 早期技術指標（MACD改善，RSI從超賣回升）顯示價格底部跡象，儘管存在較長期的下跌趨勢。<br />
+- FactSet 的 AI 驅動合規工具瞄準快速成長的金融科技利基市場，收入具可擴展性且預期每股盈餘強勁（約20%增長）。<br />
+- 高營運利潤率（32.6%）與股東權益報酬率（28.8%）、正向自由現金流及堅實機構支持（Bamco 持有8.4億美元股權）顯示營運及財務實力，儘管負債較高。<br />
+- 估值具吸引力（前瞻市盈率13倍），股息收益率約2.12%，有助於支撐下行風險。<br />
+- 建議在約210美元附近進場，停損設在185~190美元，並在技術面確認突破（50日均線約237美元）時加碼。</p>
+<p><strong>保守分析師（對時機看空，持謹慎態度）</strong>：<br />
+- 技術布局仍受中長期下行趨勢主導；MACD和RSI的改善尚屬早期且未獲確認。<br />
+- 負債與權益比率極高（72%），負有形淨值為負，風險商譽減損，宏觀環境不確定。<br />
+- AI項目執行風險高，面臨激烈競爭，雖具前景但偏屬投機。<br />
+- 機構買盤未必保證，11%大比例空單顯示市場懷疑。<br />
+- 股息與利潤率不足以抵銷宏觀、信用和估值風險。<br />
+- 建議等待更明確技術確認（MACD金叉，RSI穩定高於50）或採用更嚴格停損／對沖策略。</p>
+<p><strong>中立分析師（平衡、風險意識的看多）</strong>：<br />
+- 認可雙方部分觀點：初期正面動能與機構投票信心，兼顧根深蒂固的下跌趨勢及槓桿風險。<br />
+- 建議在現價以分批且適度買入策略，且設較嚴格停損（可能比185~190美元更緊）。<br />
+- 強調只有在突破50日均線並獲基本面成長確認後才擴大部署。<br />
+- 持續監控負債指標及競爭態勢發展。<br />
+- 避免全倉押注或完全觀望，建議採用靈活風險優先的分階段參與方式。</p>
+<hr />
+<h3>2. <strong>買入建議的理由</strong></h3>
+<ul>
+<li>
+<p><strong>激進分析師的基本面與動能論據最為強勁</strong>，強調FactSet持續推進的AI合規工具為明確且具可擴展性的成長催化劑，搭配預期20%左右的EPS成長，具體且較接近現實，非空頭指稱的宏觀疑慮。</p>
+</li>
+<li>
+<p>儘管<strong>保守分析師對槓桿和宏觀風險提出有效警告</strong>，但這些風險被看多方所承認並透過停損建議（185~190美元）積極控管，反映過往無有效下行限制而過度暴露的教訓。</p>
+</li>
+<li>
+<p><strong>中立分析師的分階段謹慎策略</strong>巧妙整合雙方觀點，兼顧上行機會與風險管理，體現交易規劃的合理調整。</p>
+</li>
+<li>
+<p>技術指標雖未全面反轉，但顯示明顯早期改善，歷史上這往往是見底先兆，尤其配合強機構支持及穩健盈利預期。</p>
+</li>
+<li>
+<p>現估值約13倍前瞻市盈率及近2%的股息收益率，構成不對稱風險收益，比較適合介入並設明確停損。</p>
+</li>
+<li>
+<p><strong>嵌入11%空單的市場情緒已反映進股價中</strong>，若催化事件出現，有機會借助空頭回補或反彈受益。</p>
+</li>
+</ul>
+<hr />
+<h3>3. <strong>交易者精細計畫</strong></h3>
+<p><strong>操作：於當前價格附近（約210美元）啟動買入部位，並採以下風險與加碼框架：</strong></p>
+<ul>
+<li>
+<p><strong>入場：</strong> 初期建倉以捕捉早期動能及基本面增長信號。</p>
+</li>
+<li>
+<p><strong>停損：</strong> 設在185~190美元區間的嚴格止損，反映空頭承認的下行風險，並保護資金免於跌破技術支撐。</p>
+</li>
+<li>
+<p><strong>加碼：</strong> 僅當FactSet突破且穩定站上50日均線（約237美元），且有成交量確認，MACD形成金叉且RSI &gt; 50時，才逐步增加持倉。符合中立分析師對確認技術轉折的強調。</p>
+</li>
+<li>
+<p><strong>基本面監控：</strong> 密切追蹤季度營收特別是AI與合規相關業務、利潤率趨勢、自由現金流及現金利息負擔能力，注意商譽減損跡象或信用惡化，若惡化則考慮緊縮停損或減碼。</p>
+</li>
+<li>
+<p><strong>股息策略：</strong> 利用約2.12%的股息作為收入緩衝，並考慮再投資以最大化復利效應於此復甦階段。</p>
+</li>
+<li>
+<p><strong>宏觀經濟警戒：</strong> 持續關注通膨、聯準會政策與AI科技競爭者動向，適時重新評估持倉規模。</p>
+</li>
+</ul>
+<hr />
+<h3>4. <strong>從過去錯誤中學習</strong></h3>
+<ul>
+<li>先前錯誤包括等待過久錯失反彈，或過早全力投入卻無有效風控。</li>
+<li>本計畫透過<strong>早期策略性入場結合嚴謹停損紀律</strong>與明確加碼條件避免前述問題。</li>
+<li>尊重合理風險警訊，同時不因恐懼完全退出成長機會。</li>
+<li>主動風險管理，透過技術與基本面觸發點設定停損，而非消極持有或情緒性出場。</li>
+</ul>
+<hr />
+<h3><strong>結論</strong></h3>
+<p><strong>最適合的做法是在FactSet當前價位或附近啟動買入，採用分階段進場策略並嚴格執行風控（停損設於185~190美元），僅於確認50日均線上方技術強勢時加碼。</strong>此策略既捕捉FactSet人工智能合規及機構信心的實質成長催化劑，同時審慎管理槓桿、競爭及宏觀不確定帶來的下行風險。</p>
+<p><strong>持有（HOLD）在此情況下不宜，因為風險收益偏向立即介入勝過猶豫，而</strong>出售（SELL）則忽略了基本面與技術面早期的向上訊號及機構信念。</p>
+<hr />
+<p><strong>建議：</strong> <strong>買入，採分階段加碼和嚴格風險管理</strong></p></div></div></section>
+        <footer class="dashboard-footer"><p>由 TradingAgents 於 2026-03-18 01:51 產生</p></footer>
+    </main>
+</div>
+
+<script>
+(function() {
+    // ─── Tab Switching (legacy fallback) ────────────
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var container = btn.closest('.tabs-container');
+            var tabId = btn.getAttribute('data-tab');
+            container.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            container.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+            btn.classList.add('active');
+            var panel = container.querySelector('[data-panel="' + tabId + '"]');
+            if (panel) panel.classList.add('active');
+        });
+    });
+
+    // ─── Smooth Scroll from Nav ─────────────────────
+    document.querySelectorAll('.nav-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var id = link.getAttribute('href').slice(1);
+            var el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // ─── IntersectionObserver for Nav Tracking ──────
+    var navLinks = document.querySelectorAll('.nav-link');
+    var sections = [];
+    navLinks.forEach(function(link) {
+        var id = link.getAttribute('data-section');
+        var el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el });
+    });
+
+    if (sections.length && 'IntersectionObserver' in window) {
+        var currentActive = null;
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    currentActive = entry.target.id;
+                }
+            });
+            if (currentActive) {
+                navLinks.forEach(function(l) {
+                    if (l.getAttribute('data-section') === currentActive) {
+                        l.classList.add('active');
+                    } else {
+                        l.classList.remove('active');
+                    }
+                });
+            }
+        }, {
+            rootMargin: '-80px 0px -60% 0px',
+            threshold: 0
+        });
+        sections.forEach(function(s) { observer.observe(s.el); });
+    }
+})();
+</script>
+
+<script>document.addEventListener("DOMContentLoaded", function() {  if (typeof Chart === "undefined") return;  var ctx = document.getElementById("macdChart");  if (!ctx) return;  new Chart(ctx, {    type: "bar",    data: {      labels: ["MACD", "Signal", "Histogram"],      datasets: [{        data: [-5.7, 0, 0],        backgroundColor: ["#ef4444", "#8b5cf6", "#10b981"],        borderRadius: 4,        barThickness: 40      }]    },    options: {      responsive: true,      maintainAspectRatio: false,      plugins: { legend: { display: false } },      scales: {        y: {          grid: { color: "#1e293b" },          ticks: { color: "#64748b", font: { family: "DM Mono" } }        },        x: {          grid: { display: false },          ticks: { color: "#64748b", font: { family: "DM Mono" } }        }      }    }  });});</script>
+
+</body>
+</html>
