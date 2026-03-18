@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FOXA 投資分析框架</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-soft: #1e293b;
+      --border: rgba(148, 163, 184, 0.18);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #f59e0b;
+      --glow: rgba(245,158,11,0.18);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 36%),
+        radial-gradient(circle at top right, var(--glow), transparent 30%),
+        linear-gradient(180deg, #020617 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+    .hero {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.32);
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    h1 {
+      margin: 10px 0 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .metric {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .metric-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .metric-value {
+      margin-top: 6px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .summary-card {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+      margin-bottom: 24px;
+    }
+    .summary-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .summary-title::before {
+      content: '';
+      width: 4px;
+      height: 22px;
+      background: var(--accent);
+      border-radius: 999px;
+    }
+    .summary-list {
+      display: grid;
+      gap: 14px;
+    }
+    .summary-item {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      align-items: center;
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 18px;
+      padding: 16px 18px;
+    }
+    .summary-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .summary-text {
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+    .content {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+    }
+    .content h1, .content h2, .content h3 {
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.25;
+    }
+    .content h1 { font-size: 2rem; margin-top: 0; }
+    .content h2 {
+      font-size: 1.35rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .content h3 { font-size: 1.1rem; margin-top: 1.4rem; }
+    .content p, .content li { color: var(--text); }
+    .content strong { color: #f8fafc; }
+    .content code {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 0.15em 0.45em;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.92em;
+    }
+    .content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.7);
+    }
+    .content th, .content td {
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .content th {
+      background: rgba(30, 41, 59, 0.95);
+      color: #f8fafc;
+    }
+    .content blockquote {
+      margin: 16px 0;
+      padding: 14px 18px;
+      border-left: 4px solid var(--accent);
+      background: rgba(15, 23, 42, 0.75);
+      border-radius: 0 14px 14px 0;
+    }
+    a { color: #7dd3fc; }
+    .footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="eyebrow">Tier 3 Final Verdict</div>
+      <h1>FOXA 投資分析框架</h1>
+      <div class="hero-grid">
+        <div class="metric">
+          <div class="metric-label">最終行動</div>
+          <div class="metric-value">HOLD</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">信心分數</div>
+          <div class="metric-value">60.0</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">裁決模式</div>
+          <div class="metric-value">cheap</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">交易日</div>
+          <div class="metric-value">2026-03-18</div>
+        </div>
+      </div>
+    </section>
+    <section class="summary-card">
+      <div class="summary-title">執行摘要</div>
+      <div class="summary-list">
+        <div class="summary-item"><div class="summary-number">1</div><div class="summary-text">FOXA具備成長與估值吸引力，惟高槓桿與技術阻力需謹慎操作並漸進式介入。</div></div><div class="summary-item"><div class="summary-number">2</div><div class="summary-text">持續技術阻力及高槓桿、負現金流帶來風險，缺乏明確趨勢突破且不可確知現金流改善時間點，仍需要更多確認訊號。</div></div><div class="summary-item"><div class="summary-number">3</div><div class="summary-text">建議部分部位入場，設置嚴格停損點於200日均線下方，持續每月追蹤技術和基本面指標，待突破均線及現金流明顯改善後逐步加碼。</div></div>
+      </div>
+    </section>
+    <section class="content">
+      <h2>快速結論</h2>
+<ul>
+<li><strong>最終行動：</strong> HOLD</li>
+<li><strong>信心分數：</strong> 60.0/100</li>
+<li><strong>TradingAgents 初步判斷：</strong> BUY</li>
+<li><strong>裁決模式：</strong> cheap</li>
+<li><strong>需要人工複核：</strong> 是</li>
+<li><strong>下一步執行：</strong> 建議部分部位入場，設置嚴格停損點於200日均線下方，持續每月追蹤技術和基本面指標，待突破均線及現金流明顯改善後逐步加碼。</li>
+</ul>
+<h2>為什麼現在做</h2>
+<p>技術指標顯示看跌動能減弱且有反彈跡象，基本面增長前景與估值具吸引力，適宜謹慎介入以觀察後續發展。</p>
+<h2>為什麼現在不做</h2>
+<p>持續技術阻力及高槓桿、負現金流帶來風險，缺乏明確趨勢突破且不可確知現金流改善時間點，仍需要更多確認訊號。</p>
+<h2>最終行動計畫</h2>
+<p><strong>決策理由：</strong> TradingAgents 初判為 BUY，但 framework 多數票為 HOLD，且綜合裁決傾向 HOLD，因此下調為保守處理。</p>
+<p><strong>進場或執行計畫：</strong> 建議部分部位入場，設置嚴格停損點於200日均線下方，持續每月追蹤技術和基本面指標，待突破均線及現金流明顯改善後逐步加碼。</p>
+<p><strong>風險控制計畫：</strong> 採用嚴格止損策略，密切監控槓桿及現金流變化，控制持倉規模避免財務風險擴大。</p>
+<p><strong>重新檢查觸發點：</strong><br />
+- 價格持續且穩定突破50日與200日均線<br />
+- 自由現金流變為正且負債明顯下降<br />
+- 主要技術指標如MACD與RSI明確轉強</p>
+<h2>TradingAgents 摘要</h2>
+<ul>
+<li><strong>Tier 1 分數：</strong> 0</li>
+<li><strong>Tier 2 綜合分：</strong> 0</li>
+<li><strong>板塊：</strong> N/A</li>
+<li><strong>風險標記：</strong> Medium</li>
+<li><strong>Structured log：</strong> <code>/Users/yeehowong/Desktop/Project/sp500_pipeline/eval_results/FOXA/TradingAgentsStrategy_logs/full_states_log_2026-03-18.json</code></li>
+</ul>
+<h2>投資框架投票</h2>
+<table>
+<thead>
+<tr>
+<th>框架</th>
+<th>票向</th>
+<th>信心</th>
+<th>核心論點</th>
+<th>建議動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Howard Marks + Ray Dalio</td>
+<td>HOLD</td>
+<td>75</td>
+<td>FOXA presents improving momentum and attractive valuation amid operational growth but is constrained by high leverage, technical resistance, and cash flow volatility, recommending cautious partial exposure with close monitoring.</td>
+<td>Initiate a partial position with strict risk controls such as stop-loss just below the 200-day SMA; monitor monthly the developments in cash flow, leverage reduction, and technical breakout; scale exposure gradually upon confirmation of fundamental and technical improvements.</td>
+</tr>
+<tr>
+<td>George Soros + Stanley Druckenmiller</td>
+<td>HOLD</td>
+<td>75</td>
+<td>FOXA exhibits improving momentum and growth potential but remains in a technical downtrend with significant financial leverage and cash flow risks, warranting cautious exposure rather than full commitment.</td>
+<td>Consider initiating a partial position with tight stop losses below the 200-day SMA; closely monitor momentum indicators and fundamental cash flow trends before scaling up exposure.</td>
+</tr>
+</tbody>
+</table>
+<h2>投資框架觀點</h2>
+<h3>Howard Marks + Ray Dalio</h3>
+<ul>
+<li><strong>票向：</strong> HOLD</li>
+<li><strong>信心：</strong> 75.0/100</li>
+<li><strong>核心論點：</strong> FOXA presents improving momentum and attractive valuation amid operational growth but is constrained by high leverage, technical resistance, and cash flow volatility, recommending cautious partial exposure with close monitoring.</li>
+<li><strong>建議動作：</strong> Initiate a partial position with strict risk controls such as stop-loss just below the 200-day SMA; monitor monthly the developments in cash flow, leverage reduction, and technical breakout; scale exposure gradually upon confirmation of fundamental and technical improvements.</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- Technical indicators show bearish trend still intact with price below 50- and 200-day SMAs but MACD and RSI signal weakening bearish momentum and possible short-term recovery.<br />
+- Fundamentals indicate solid earnings growth projections (24% forward EPS growth), strong ROE (16.82%), and attractive forward P/E (11.31), balanced against high debt-to-equity (67.39) and recent negative free cash flows.<br />
+- Sentiment and news highlight operational strength in streaming (Tubi), digital platforms (FOX One), advertising, and sports betting revenue growth, although some analyst caution persists on sports rights costs and capital allocation prudence.</p>
+<p><strong>主要風險：</strong><br />
+- High leverage with substantial interest expenses threatens financial flexibility and may limit investment or buyback effectiveness.<br />
+- Technical resistance near moving averages and prevailing downtrend could prolong price weakness or cause further declines.</p>
+<p><strong>失效條件：</strong><br />
+- Sustained technical breakout above the 50-day and 200-day SMAs confirming trend reversal and upward momentum.<br />
+- Significant improvement in free cash flow turning positive and reduction in net debt through operational cash generation.</p>
+<h3>George Soros + Stanley Druckenmiller</h3>
+<ul>
+<li><strong>票向：</strong> HOLD</li>
+<li><strong>信心：</strong> 75.0/100</li>
+<li><strong>核心論點：</strong> FOXA exhibits improving momentum and growth potential but remains in a technical downtrend with significant financial leverage and cash flow risks, warranting cautious exposure rather than full commitment.</li>
+<li><strong>建議動作：</strong> Consider initiating a partial position with tight stop losses below the 200-day SMA; closely monitor momentum indicators and fundamental cash flow trends before scaling up exposure.</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- Momentum indicators (MACD, RSI) show bearish momentum weakening and signs of a possible bounce.<br />
+- Operational growth drivers in FOX One, Tubi, advertising, and sports betting demonstrate multi-platform strength and positive sentiment.<br />
+- Valuation metrics (forward P/E ~11.31 with 24% EPS growth) suggest attractive upside potential relative to price.</p>
+<p><strong>主要風險：</strong><br />
+- High debt-to-equity ratio (~67) and recent negative free cash flow increase financial and liquidity risk.<br />
+- Price remains below 50- and 200-day SMAs, indicating a persistent technical downtrend and strong resistance ahead.</p>
+<p><strong>失效條件：</strong><br />
+- Price decisively breaks above and sustains above 50- and 200-day SMAs confirming technical reversal.<br />
+- Fundamental improvements: consistent positive free cash flow, debt reduction, and stabilization of capital allocation away from aggressive buybacks.</p>
+<h2>最終裁決摘要</h2>
+<ul>
+<li><strong>主論點：</strong> FOXA具備成長與估值吸引力，惟高槓桿與技術阻力需謹慎操作並漸進式介入。</li>
+<li><strong>framework 多數票：</strong> HOLD</li>
+<li><strong>一致度：</strong> 2/2</li>
+</ul>
+<p><strong>主要風險：</strong><br />
+- 高槓桿增加財務壓力與流動性風險<br />
+- 技術面下跌趨勢及均線阻力可能延續價格疲弱</p>
+<hr />
+<p><em>由 SP500 Pipeline Tier 3 產生 — 2026-03-18 21:44</em></p>
+      <div class="footer">Generated at 2026-03-18 21:44</div>
+    </section>
+  </div>
+</body>
+</html>
