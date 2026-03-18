@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CF 投資分析框架</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-soft: #1e293b;
+      --border: rgba(148, 163, 184, 0.18);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #10b981;
+      --glow: rgba(16,185,129,0.18);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 36%),
+        radial-gradient(circle at top right, var(--glow), transparent 30%),
+        linear-gradient(180deg, #020617 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+    .hero {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.32);
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    h1 {
+      margin: 10px 0 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .metric {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .metric-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .metric-value {
+      margin-top: 6px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .summary-card {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+      margin-bottom: 24px;
+    }
+    .summary-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .summary-title::before {
+      content: '';
+      width: 4px;
+      height: 22px;
+      background: var(--accent);
+      border-radius: 999px;
+    }
+    .summary-list {
+      display: grid;
+      gap: 14px;
+    }
+    .summary-item {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      align-items: center;
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 18px;
+      padding: 16px 18px;
+    }
+    .summary-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .summary-text {
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+    .content {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+    }
+    .content h1, .content h2, .content h3 {
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.25;
+    }
+    .content h1 { font-size: 2rem; margin-top: 0; }
+    .content h2 {
+      font-size: 1.35rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .content h3 { font-size: 1.1rem; margin-top: 1.4rem; }
+    .content p, .content li { color: var(--text); }
+    .content strong { color: #f8fafc; }
+    .content code {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 0.15em 0.45em;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.92em;
+    }
+    .content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.7);
+    }
+    .content th, .content td {
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .content th {
+      background: rgba(30, 41, 59, 0.95);
+      color: #f8fafc;
+    }
+    .content blockquote {
+      margin: 16px 0;
+      padding: 14px 18px;
+      border-left: 4px solid var(--accent);
+      background: rgba(15, 23, 42, 0.75);
+      border-radius: 0 14px 14px 0;
+    }
+    a { color: #7dd3fc; }
+    .footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="eyebrow">Tier 3 Final Verdict</div>
+      <h1>CF 投資分析框架</h1>
+      <div class="hero-grid">
+        <div class="metric">
+          <div class="metric-label">最終行動</div>
+          <div class="metric-value">BUY</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">信心分數</div>
+          <div class="metric-value">63.2</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">裁決模式</div>
+          <div class="metric-value">cheap</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">交易日</div>
+          <div class="metric-value">2026-03-18</div>
+        </div>
+      </div>
+    </section>
+    <section class="summary-card">
+      <div class="summary-title">執行摘要</div>
+      <div class="summary-list">
+        <div class="summary-item"><div class="summary-number">1</div><div class="summary-text">CF因中東供應緊縮和美國成本優勢，具結構性盈利且技術及財務面強勁回報可期。</div></div><div class="summary-item"><div class="summary-number">2</div><div class="summary-text">目前地緣政治緊張持續驅動氮肥供應緊縮，且技術指標多頭趨勢明顯，基本面支持正回報機會。</div></div><div class="summary-item"><div class="summary-number">3</div><div class="summary-text">採取分批逐步建倉策略，並設置嚴格止損點，密切監控監管進展和地緣政治變化。</div></div>
+      </div>
+    </section>
+    <section class="content">
+      <h2>快速結論</h2>
+<ul>
+<li><strong>最終行動：</strong> BUY</li>
+<li><strong>信心分數：</strong> 63.2/100</li>
+<li><strong>TradingAgents 初步判斷：</strong> BUY</li>
+<li><strong>裁決模式：</strong> cheap</li>
+<li><strong>需要人工複核：</strong> 否</li>
+<li><strong>下一步執行：</strong> 採取分批逐步建倉策略，並設置嚴格止損點，密切監控監管進展和地緣政治變化。</li>
+</ul>
+<h2>為什麼現在做</h2>
+<p>目前地緣政治緊張持續驅動氮肥供應緊縮，且技術指標多頭趨勢明顯，基本面支持正回報機會。</p>
+<h2>為什麼現在不做</h2>
+<p>監管調查仍未明朗，存在潛在嚴重懲罰風險，技術指標過熱可能短期內出現回調。</p>
+<h2>最終行動計畫</h2>
+<p><strong>決策理由：</strong> 多位高階判官一致認為CF受惠於中東地緣政治供應緊縮及強健財務，雖存在監管風險和技術面過熱，但風險可控且已部分反映在價格中。</p>
+<p><strong>進場或執行計畫：</strong> 採取分批逐步建倉策略，並設置嚴格止損點，密切監控監管進展和地緣政治變化。</p>
+<p><strong>風險控制計畫：</strong> 利用分散進場與止損降低短期技術面回調風險，關注監管結果，準備在不利事件發生時迅速減倉。</p>
+<p><strong>重新檢查觸發點：</strong><br />
+- 監管調查有重大不利進展<br />
+- 中東地緣政治局勢顯著緩和<br />
+- 股價技術面跌破重要短中期均線支撐</p>
+<h2>TradingAgents 摘要</h2>
+<ul>
+<li><strong>Tier 1 分數：</strong> 0</li>
+<li><strong>Tier 2 綜合分：</strong> 0</li>
+<li><strong>板塊：</strong> N/A</li>
+<li><strong>風險標記：</strong> Medium</li>
+<li><strong>Structured log：</strong> <code>/Users/yeehowong/Desktop/Project/sp500_pipeline/eval_results/CF/TradingAgentsStrategy_logs/full_states_log_2026-03-18.json</code></li>
+</ul>
+<h2>投資框架投票</h2>
+<table>
+<thead>
+<tr>
+<th>框架</th>
+<th>票向</th>
+<th>信心</th>
+<th>核心論點</th>
+<th>建議動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Howard Marks + Ray Dalio</td>
+<td>BUY</td>
+<td>8</td>
+<td>CF Industries benefits uniquely from a durable geopolitical supply shock and strong fundamentals despite regulatory and technical risks.</td>
+<td>Initiate or add to positions with a disciplined, tactical approach incorporating active risk management—use staggered entries and stop-losses to protect capital, monitor regulatory developments closely, and be prepared to reduce exposure if negative catalysts materialize.</td>
+</tr>
+<tr>
+<td>George Soros + Stanley Druckenmiller</td>
+<td>BUY</td>
+<td>85</td>
+<td>CF擁有因中東地緣政治造成的結構性供應緊縮優勢，結合低成本天然氣、強勁財務和技術性多頭動能，形成非對稱正回報機會，儘管短期技術過熱與監管風險存在，風險已部分反映且可控。</td>
+<td>採取逐步建倉策略，設置嚴格止損以控制回調風險，持續關注監管及地緣政治動態，積極管理倉位風險</td>
+</tr>
+</tbody>
+</table>
+<h2>投資框架觀點</h2>
+<h3>Howard Marks + Ray Dalio</h3>
+<ul>
+<li><strong>票向：</strong> BUY</li>
+<li><strong>信心：</strong> 8.0/100</li>
+<li><strong>核心論點：</strong> CF Industries benefits uniquely from a durable geopolitical supply shock and strong fundamentals despite regulatory and technical risks.</li>
+<li><strong>建議動作：</strong> Initiate or add to positions with a disciplined, tactical approach incorporating active risk management—use staggered entries and stop-losses to protect capital, monitor regulatory developments closely, and be prepared to reduce exposure if negative catalysts materialize.</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- Geopolitical disruption (Middle East conflict, Strait of Hormuz closure) has created a sustained global nitrogen fertilizer supply shortage, benefiting CF through its low-cost U.S. natural gas advantage.<br />
+- Strong financials with significant free cash flow (~$2B cash), robust profitability (20.5% profit margin, 35.3% operating margin, ROE 23.4%), and stable long-term uptrend confirmed by multiple technical indicators (rising 50/200 SMA, MACD, strong momentum).<br />
+- While high, the debt-to-equity ratio is largely due to accounting nuances and mitigated by cash reserves and liquidity (current ratio 3.37); regulatory risks are acknowledged and likely priced in, with CF’s role in global food supply reducing risk of extreme punitive outcomes.</p>
+<p><strong>主要風險：</strong><br />
+- Regulatory and legal uncertainty from DOJ antitrust investigations and price gouging accusations with potential severe downside if adverse rulings occur.<br />
+- Technical overbought signals (RSI &gt; 80) and rising volatility (ATR increase) indicate possible near-term pullbacks or consolidation phases.</p>
+<p><strong>失效條件：</strong><br />
+- Resolution of regulatory inquiries that result in significant penalties or operational restrictions.<br />
+- Deterioration in geopolitical tensions easing supply constraints leading to declining fertilizer prices and loss of CF’s cost competitiveness.</p>
+<h3>George Soros + Stanley Druckenmiller</h3>
+<ul>
+<li><strong>票向：</strong> BUY</li>
+<li><strong>信心：</strong> 85.0/100</li>
+<li><strong>核心論點：</strong> CF擁有因中東地緣政治造成的結構性供應緊縮優勢，結合低成本天然氣、強勁財務和技術性多頭動能，形成非對稱正回報機會，儘管短期技術過熱與監管風險存在，風險已部分反映且可控。</li>
+<li><strong>建議動作：</strong> 採取逐步建倉策略，設置嚴格止損以控制回調風險，持續關注監管及地緣政治動態，積極管理倉位風險</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- 中東衝突及霍爾木茲海峽關閉造成全球氮肥供應緊縮，推升尿素及氨價格至多年高點，為CF帶來結構性利好<br />
+- CF憑藉美國廉價天然氣成本優勢及穩健現金流，財務健康，雖負債比高但現金及經營現金流充裕，債務風險可監控<br />
+- 技術面短中長期均呈現強烈上升趨勢，MACD多頭動能強，50及200日均線形成堅實支撐，股價反映持續買盤熱度</p>
+<p><strong>主要風險：</strong><br />
+- 監管風險：美司法部反壟斷調查及議員價格操控指控，可能導致罰款或商譽受損<br />
+- 技術面過熱短期內或有修正，RSI&gt;80及波動率攀升增加回調風險</p>
+<p><strong>失效條件：</strong><br />
+- 中東地政局勢緩和導致供應緊縮消退，失去價格及盈利支持<br />
+- 監管機構對CF施以重大處罰或限制措施，影響其定價能力及利潤率</p>
+<h2>最終裁決摘要</h2>
+<ul>
+<li><strong>主論點：</strong> CF因中東供應緊縮和美國成本優勢，具結構性盈利且技術及財務面強勁回報可期。</li>
+<li><strong>framework 多數票：</strong> BUY</li>
+<li><strong>一致度：</strong> 2/2</li>
+</ul>
+<p><strong>主要風險：</strong><br />
+- 美司法部反壟斷及價格操控調查可能帶來嚴重處罰<br />
+- 技術面過熱導致短期回調風險</p>
+<hr />
+<p><em>由 SP500 Pipeline Tier 3 產生 — 2026-03-18 21:43</em></p>
+      <div class="footer">Generated at 2026-03-18 21:43</div>
+    </section>
+  </div>
+</body>
+</html>
