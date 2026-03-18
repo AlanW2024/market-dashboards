@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ADP 投資分析框架</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-soft: #1e293b;
+      --border: rgba(148, 163, 184, 0.18);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #ef4444;
+      --glow: rgba(239,68,68,0.18);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 36%),
+        radial-gradient(circle at top right, var(--glow), transparent 30%),
+        linear-gradient(180deg, #020617 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+    .hero {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.32);
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    h1 {
+      margin: 10px 0 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .metric {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .metric-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .metric-value {
+      margin-top: 6px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .summary-card {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+      margin-bottom: 24px;
+    }
+    .summary-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .summary-title::before {
+      content: '';
+      width: 4px;
+      height: 22px;
+      background: var(--accent);
+      border-radius: 999px;
+    }
+    .summary-list {
+      display: grid;
+      gap: 14px;
+    }
+    .summary-item {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      align-items: center;
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 18px;
+      padding: 16px 18px;
+    }
+    .summary-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .summary-text {
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+    .content {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+    }
+    .content h1, .content h2, .content h3 {
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.25;
+    }
+    .content h1 { font-size: 2rem; margin-top: 0; }
+    .content h2 {
+      font-size: 1.35rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .content h3 { font-size: 1.1rem; margin-top: 1.4rem; }
+    .content p, .content li { color: var(--text); }
+    .content strong { color: #f8fafc; }
+    .content code {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 0.15em 0.45em;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.92em;
+    }
+    .content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.7);
+    }
+    .content th, .content td {
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .content th {
+      background: rgba(30, 41, 59, 0.95);
+      color: #f8fafc;
+    }
+    .content blockquote {
+      margin: 16px 0;
+      padding: 14px 18px;
+      border-left: 4px solid var(--accent);
+      background: rgba(15, 23, 42, 0.75);
+      border-radius: 0 14px 14px 0;
+    }
+    a { color: #7dd3fc; }
+    .footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="eyebrow">Tier 3 Final Verdict</div>
+      <h1>ADP 投資分析框架</h1>
+      <div class="hero-grid">
+        <div class="metric">
+          <div class="metric-label">最終行動</div>
+          <div class="metric-value">SELL</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">信心分數</div>
+          <div class="metric-value">60.0</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">裁決模式</div>
+          <div class="metric-value">cheap</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">交易日</div>
+          <div class="metric-value">2026-03-18</div>
+        </div>
+      </div>
+    </section>
+    <section class="summary-card">
+      <div class="summary-title">執行摘要</div>
+      <div class="summary-list">
+        <div class="summary-item"><div class="summary-number">1</div><div class="summary-text">ADP受技術弱勢、高槓桿及不確定宏觀環境壓制，持續存在重大下行風險。</div></div><div class="summary-item"><div class="summary-number">2</div><div class="summary-text">缺乏明顯且堅定的技術反轉信號與基本面改善，短期動能不足，不宜逆勢建倉。</div></div><div class="summary-item"><div class="summary-number">3</div><div class="summary-text">觀察MACD黃金交叉、RSI突破50以上及價格穩定站上50日及200日均線等反轉信號，再行考慮介入。</div></div>
+      </div>
+    </section>
+    <section class="content">
+      <h2>快速結論</h2>
+<ul>
+<li><strong>最終行動：</strong> SELL</li>
+<li><strong>信心分數：</strong> 60.0/100</li>
+<li><strong>TradingAgents 初步判斷：</strong> SELL</li>
+<li><strong>裁決模式：</strong> cheap</li>
+<li><strong>需要人工複核：</strong> 是</li>
+<li><strong>下一步執行：</strong> 觀察MACD黃金交叉、RSI突破50以上及價格穩定站上50日及200日均線等反轉信號，再行考慮介入。</li>
+</ul>
+<h2>為什麼現在做</h2>
+<p>現階段股價持續遠低於主要均線，技術指標未形成確定多頭，槓桿及宏觀經濟風險未緩解，持續持有或新增持倉風險高。</p>
+<h2>為什麼現在不做</h2>
+<p>缺乏明顯且堅定的技術反轉信號與基本面改善，短期動能不足，不宜逆勢建倉。</p>
+<h2>最終行動計畫</h2>
+<p><strong>決策理由：</strong> 兩組 framework judges 及 TradingAgents 均判定賣出，皆基於明確技術性弱勢、高槓桿風險及不確定宏觀環境，無反向有效信號出現。</p>
+<p><strong>進場或執行計畫：</strong> 觀察MACD黃金交叉、RSI突破50以上及價格穩定站上50日及200日均線等反轉信號，再行考慮介入。</p>
+<p><strong>風險控制計畫：</strong> 對現有持倉逐步減碼以控制槓桿帶來的財務及融資風險，密切跟蹤宏觀經濟與公司基本面變化，嚴控止損。</p>
+<p><strong>重新檢查觸發點：</strong><br />
+- MACD確立黃金交叉且RSI突破50以上<br />
+- 價格穩定突破並站上50日與200日均線<br />
+- 宏觀經濟及公司根本面快速明顯改善</p>
+<h2>TradingAgents 摘要</h2>
+<ul>
+<li><strong>Tier 1 分數：</strong> 0</li>
+<li><strong>Tier 2 綜合分：</strong> 0</li>
+<li><strong>板塊：</strong> N/A</li>
+<li><strong>風險標記：</strong> Medium</li>
+<li><strong>Structured log：</strong> <code>/Users/yeehowong/Desktop/Project/sp500_pipeline/eval_results/ADP/TradingAgentsStrategy_logs/full_states_log_2026-03-18.json</code></li>
+</ul>
+<h2>投資框架投票</h2>
+<table>
+<thead>
+<tr>
+<th>框架</th>
+<th>票向</th>
+<th>信心</th>
+<th>核心論點</th>
+<th>建議動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Howard Marks + Ray Dalio</td>
+<td>SELL</td>
+<td>85</td>
+<td>Despite some early signs of technical recovery and strong fundamentals, the significant downtrend, unusually high leverage, macroeconomic uncertainty, and still tentative momentum collectively warrant a sell or avoidance stance.</td>
+<td>Sell existing positions or avoid initiating new ones; monitor technical signals (MACD crossover, RSI &gt;50) and macro developments for potential re-entry opportunities.</td>
+</tr>
+<tr>
+<td>George Soros + Stanley Druckenmiller</td>
+<td>SELL</td>
+<td>85</td>
+<td>ADP處於明顯技術性下跌趨勢且高槓桿伴隨融資風險，短期回升動能不足以構成明確且非對稱的反轉機會，故不宜建倉。</td>
+<td>避免新買入，已有持倉者考慮部分或全部減碼，等待技術形態及風險條件改善後再行評估介入。</td>
+</tr>
+</tbody>
+</table>
+<h2>投資框架觀點</h2>
+<h3>Howard Marks + Ray Dalio</h3>
+<ul>
+<li><strong>票向：</strong> SELL</li>
+<li><strong>信心：</strong> 85.0/100</li>
+<li><strong>核心論點：</strong> Despite some early signs of technical recovery and strong fundamentals, the significant downtrend, unusually high leverage, macroeconomic uncertainty, and still tentative momentum collectively warrant a sell or avoidance stance.</li>
+<li><strong>建議動作：</strong> Sell existing positions or avoid initiating new ones; monitor technical signals (MACD crossover, RSI &gt;50) and macro developments for potential re-entry opportunities.</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- Current stock price is over 20% below the 200-day SMA and 50-day SMA, confirming a sustained bearish technical trend with weak momentum.<br />
+- Leverage ratio (~70) is unusually high for the sector and introduces refinancing and financial risk despite strong cash flows.<br />
+- Momentum indicators (MACD histogram, RSI) show tentative improvement but have not confirmed a robust trend reversal, leaving downside risk intact.<br />
+- Macro environment featuring slowing labor market growth per ADP data and geopolitical uncertainties poses additional headwinds.<br />
+- Institutional ownership is high, but premium valuation and macro risks increase vulnerability to downside volatility.</p>
+<p><strong>主要風險：</strong><br />
+- A confirmed MACD bullish crossover with RSI exceeding 50 could invalidate the bearish technical outlook and trigger a reversal.<br />
+- Significant improvements in macroeconomic conditions, easing of geopolitical tensions, or successful execution and revenue impact from AI/cloud initiatives could shift sentiment.</p>
+<p><strong>失效條件：</strong><br />
+- Sustained price recovery above both 50-day and 200-day SMAs showing a confirmed uptrend.<br />
+- Clear fundamental evidence of leverage reduction and margin expansion alongside macro stabilization.</p>
+<h3>George Soros + Stanley Druckenmiller</h3>
+<ul>
+<li><strong>票向：</strong> SELL</li>
+<li><strong>信心：</strong> 85.0/100</li>
+<li><strong>核心論點：</strong> ADP處於明顯技術性下跌趨勢且高槓桿伴隨融資風險，短期回升動能不足以構成明確且非對稱的反轉機會，故不宜建倉。</li>
+<li><strong>建議動作：</strong> 避免新買入，已有持倉者考慮部分或全部減碼，等待技術形態及風險條件改善後再行評估介入。</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- 股價距離200日均線超過20%，長中期均為下跌趨勢，技術面弱勢明顯。<br />
+- MACD仍為負值且雖有收斂但未形成確定的黃金交叉，RSI回升至39.7仍屬弱勢區間，動量恢復有限且不確定。<br />
+- 公司財務槓桿過高（負債權益比約70），儘管現金流健康，但存在重融資風險，在利率上升及獲利波動時脆弱。<br />
+- 宏觀環境中勞動力數據放緩、市場估值偏高，加上地緣政治不確定性，增加下行風險。<br />
+- 新聞與分析中對ADP的樂觀調整有限，且多數警示需等待更明確技術信號才介入。</p>
+<p><strong>主要風險：</strong><br />
+- 若短期MACD形成確實黃金交叉並且RSI突破50以上，顯示動能回暖信號確立。<br />
+- 若宏觀經濟快速改善，聯準會政策轉鴿且市場資金氾濫推升成長股估值。<br />
+- 若AI及雲端業務出現明顯加速成長超市場預期，帶來估值重估。</p>
+<p><strong>失效條件：</strong><br />
+- 價格突破並穩定站上50日及200日均線以上，結束長期下行趨勢。<br />
+- 關鍵技術指標（MACD和RSI）完成有力多頭結構形成。<br />
+- 宏觀與公司基本面出現實質且快速好轉，解決槓桿及獲利風險。</p>
+<h2>最終裁決摘要</h2>
+<ul>
+<li><strong>主論點：</strong> ADP受技術弱勢、高槓桿及不確定宏觀環境壓制，持續存在重大下行風險。</li>
+<li><strong>framework 多數票：</strong> SELL</li>
+<li><strong>一致度：</strong> 2/2</li>
+</ul>
+<p><strong>主要風險：</strong><br />
+- 技術指標形成持續多頭反轉訊號<br />
+- 宏觀經濟及市場政策出現快速轉暖<br />
+- 公司基本面顯著改善及槓桿風險緩解</p>
+<hr />
+<p><em>由 SP500 Pipeline Tier 3 產生 — 2026-03-18 21:42</em></p>
+      <div class="footer">Generated at 2026-03-18 21:42</div>
+    </section>
+  </div>
+</body>
+</html>
