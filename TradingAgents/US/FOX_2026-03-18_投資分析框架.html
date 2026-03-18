@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FOX 投資分析框架</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-soft: #1e293b;
+      --border: rgba(148, 163, 184, 0.18);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #f59e0b;
+      --glow: rgba(245,158,11,0.18);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 36%),
+        radial-gradient(circle at top right, var(--glow), transparent 30%),
+        linear-gradient(180deg, #020617 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+    .hero {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.32);
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    h1 {
+      margin: 10px 0 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .metric {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .metric-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .metric-value {
+      margin-top: 6px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .summary-card {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+      margin-bottom: 24px;
+    }
+    .summary-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .summary-title::before {
+      content: '';
+      width: 4px;
+      height: 22px;
+      background: var(--accent);
+      border-radius: 999px;
+    }
+    .summary-list {
+      display: grid;
+      gap: 14px;
+    }
+    .summary-item {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      align-items: center;
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 18px;
+      padding: 16px 18px;
+    }
+    .summary-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .summary-text {
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+    .content {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+    }
+    .content h1, .content h2, .content h3 {
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.25;
+    }
+    .content h1 { font-size: 2rem; margin-top: 0; }
+    .content h2 {
+      font-size: 1.35rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .content h3 { font-size: 1.1rem; margin-top: 1.4rem; }
+    .content p, .content li { color: var(--text); }
+    .content strong { color: #f8fafc; }
+    .content code {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 0.15em 0.45em;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.92em;
+    }
+    .content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.7);
+    }
+    .content th, .content td {
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .content th {
+      background: rgba(30, 41, 59, 0.95);
+      color: #f8fafc;
+    }
+    .content blockquote {
+      margin: 16px 0;
+      padding: 14px 18px;
+      border-left: 4px solid var(--accent);
+      background: rgba(15, 23, 42, 0.75);
+      border-radius: 0 14px 14px 0;
+    }
+    a { color: #7dd3fc; }
+    .footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="eyebrow">Tier 3 Final Verdict</div>
+      <h1>FOX 投資分析框架</h1>
+      <div class="hero-grid">
+        <div class="metric">
+          <div class="metric-label">最終行動</div>
+          <div class="metric-value">HOLD</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">信心分數</div>
+          <div class="metric-value">54.2</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">裁決模式</div>
+          <div class="metric-value">cheap</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">交易日</div>
+          <div class="metric-value">2026-03-18</div>
+        </div>
+      </div>
+    </section>
+    <section class="summary-card">
+      <div class="summary-title">執行摘要</div>
+      <div class="summary-list">
+        <div class="summary-item"><div class="summary-number">1</div><div class="summary-text">FOX展現初步復甦技術與營運動能，但槓桿高及現金流負面尚待改善。</div></div><div class="summary-item"><div class="summary-number">2</div><div class="summary-text">高槓桿負債壓力大，且自由現金流持續為負，技術面尚未確認突破，存在較大財務風險與不確定性。</div></div><div class="summary-item"><div class="summary-number">3</div><div class="summary-text">維持現有持股，密切追蹤股價是否突破50日均線，及營運現金流與負債狀況改善情形。</div></div>
+      </div>
+    </section>
+    <section class="content">
+      <h2>快速結論</h2>
+<ul>
+<li><strong>最終行動：</strong> HOLD</li>
+<li><strong>信心分數：</strong> 54.2/100</li>
+<li><strong>TradingAgents 初步判斷：</strong> SELL</li>
+<li><strong>裁決模式：</strong> cheap</li>
+<li><strong>需要人工複核：</strong> 是</li>
+<li><strong>下一步執行：</strong> 維持現有持股，密切追蹤股價是否突破50日均線，及營運現金流與負債狀況改善情形。</li>
+</ul>
+<h2>為什麼現在做</h2>
+<p>短期技術指標顯示賣壓減弱且部分營運指標正向，有一定持股信心，但尚不足以做出買入或賣出決定。</p>
+<h2>為什麼現在不做</h2>
+<p>高槓桿負債壓力大，且自由現金流持續為負，技術面尚未確認突破，存在較大財務風險與不確定性。</p>
+<h2>最終行動計畫</h2>
+<p><strong>決策理由：</strong> TradingAgents 初判為 SELL，但 framework 多數票為 HOLD，且綜合裁決傾向 HOLD，因此下調為保守處理。</p>
+<p><strong>進場或執行計畫：</strong> 維持現有持股，密切追蹤股價是否突破50日均線，及營運現金流與負債狀況改善情形。</p>
+<p><strong>風險控制計畫：</strong> 若股價未突破關鍵均線且現金流及槓桿無改善，分階段減碼以控制財務風險與回檔壓力。</p>
+<p><strong>重新檢查觸發點：</strong><br />
+- 股價突破並穩定於50日均線以上<br />
+- MACD持續正向交叉且RSI攀升至中性以上<br />
+- 持續產生正向營運現金流<br />
+- 負債比率顯著下降</p>
+<h2>TradingAgents 摘要</h2>
+<ul>
+<li><strong>Tier 1 分數：</strong> 0</li>
+<li><strong>Tier 2 綜合分：</strong> 0</li>
+<li><strong>板塊：</strong> N/A</li>
+<li><strong>風險標記：</strong> Medium</li>
+<li><strong>Structured log：</strong> <code>/Users/yeehowong/Desktop/Project/sp500_pipeline/eval_results/FOX/TradingAgentsStrategy_logs/full_states_log_2026-03-18.json</code></li>
+</ul>
+<h2>投資框架投票</h2>
+<table>
+<thead>
+<tr>
+<th>框架</th>
+<th>票向</th>
+<th>信心</th>
+<th>核心論點</th>
+<th>建議動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Howard Marks + Ray Dalio</td>
+<td>HOLD</td>
+<td>7</td>
+<td>FOX展現成長動能與技術面初步回穩，但高槓桿及現金流脆弱尚未獲根本解除，需確認關鍵技術與基本面信號後再作進一步決策。</td>
+<td>持有觀望，待關鍵技術突破及現金流持續改善，減少財務不確定性後，再考慮加碼或調整部位；必要時分階段減碼以控制風險。</td>
+</tr>
+<tr>
+<td>George Soros + Stanley Druckenmiller</td>
+<td>HOLD</td>
+<td>70</td>
+<td>FOX呈現復甦初期的技術和營運動能，但高槓桿和現金流負面風險抑制了明顯的非對稱上行空間。</td>
+<td>暫時持有現有持股，密切關注股價能否突破50日SMA以及現金流及槓桿改善，若未達承諾標準考慮分階段減碼以控風險。</td>
+</tr>
+</tbody>
+</table>
+<h2>投資框架觀點</h2>
+<h3>Howard Marks + Ray Dalio</h3>
+<ul>
+<li><strong>票向：</strong> HOLD</li>
+<li><strong>信心：</strong> 7.0/100</li>
+<li><strong>核心論點：</strong> FOX展現成長動能與技術面初步回穩，但高槓桿及現金流脆弱尚未獲根本解除，需確認關鍵技術與基本面信號後再作進一步決策。</li>
+<li><strong>建議動作：</strong> 持有觀望，待關鍵技術突破及現金流持續改善，減少財務不確定性後，再考慮加碼或調整部位；必要時分階段減碼以控制風險。</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- MACD與RSI技術指標由極度看跌轉為逐步改善，顯示賣壓減弱與回升動能，短期回穩跡象明顯。<br />
+- 公司擁有強勢品牌、多元化營收來源與新平台（Tubi與FOX One）帶來成長契機，加上高比例內部人與機構持股反映信心。<br />
+- 儘管負債比率高（負債權益比約67），但手握約20億美元現金、流動比率約2.8，短期流動性充裕，且債務多為長期負債。</p>
+<p><strong>主要風險：</strong><br />
+- 槓桿過高造成利率上升環境下的財務及再融資風險，且近期營運與自由現金流為負，危及財務穩健性。<br />
+- 長期體育版權成本為固定且高額支出，壓縮利潤空間，影響盈利持續性和現金流狀況。</p>
+<p><strong>失效條件：</strong><br />
+- 股價能明確突破並持穩在50日均線之上，配合MACD確實正向交叉且RSI持續攀升至中性以上，確認技術面強勢。<br />
+- 公司呈現持續且穩健的正向營運現金流，且負債比率顯著下降，展現財務槓桿風險可控。</p>
+<h3>George Soros + Stanley Druckenmiller</h3>
+<ul>
+<li><strong>票向：</strong> HOLD</li>
+<li><strong>信心：</strong> 70.0/100</li>
+<li><strong>核心論點：</strong> FOX呈現復甦初期的技術和營運動能，但高槓桿和現金流負面風險抑制了明顯的非對稱上行空間。</li>
+<li><strong>建議動作：</strong> 暫時持有現有持股，密切關注股價能否突破50日SMA以及現金流及槓桿改善，若未達承諾標準考慮分階段減碼以控風險。</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- MACD負值但逐步改善且柱狀圖轉正，顯示賣壓減弱且短線動能回溫。<br />
+- RSI從極度超賣回升至42，雖仍低於中性，暗示市場情緒從偏空趨於謹慎樂觀。<br />
+- 強勁營運動能，包括FOX新聞收視、FOX Sports營收創新高及Tubi流媒體獲利改善。<br />
+- 長短期均線乖離顯示中期仍有阻力（股價仍在50日SMA下方），需明確突破確認轉強。<br />
+- 高內部持股（約39％）和機構持股（約67％）表達一定信心，短期情緒保持中性偏正向。</p>
+<p><strong>主要風險：</strong><br />
+- 極高負債比率（負債對權益約67倍）帶來財務槓桿風險及利率上升下的再融資壓力。<br />
+- 近期營運現金流負值顯示資金鏈壓力，需觀察持續產生正現金流能力。<br />
+- 體育版權昂貴且長期成本成為利潤擠壓來源，限制盈利彈性。<br />
+- 技術指標尚未形成明顯突破，股價波動仍有一定不確定性。</p>
+<p><strong>失效條件：</strong><br />
+- 股價持續突破並穩定於50日SMA之上且MACD與RSI呈現持續強勁上升趨勢。<br />
+- 持續正向的營運現金流回歸，並明顯減少負債水平以降低財務風險。</p>
+<h2>最終裁決摘要</h2>
+<ul>
+<li><strong>主論點：</strong> FOX展現初步復甦技術與營運動能，但槓桿高及現金流負面尚待改善。</li>
+<li><strong>framework 多數票：</strong> HOLD</li>
+<li><strong>一致度：</strong> 2/2</li>
+</ul>
+<p><strong>主要風險：</strong><br />
+- 財務槓桿及再融資風險高<br />
+- 自由現金流持續負值<br />
+- 體育版權高昂壓縮利潤<br />
+- 技術指標未明確形成突破</p>
+<hr />
+<p><em>由 SP500 Pipeline Tier 3 產生 — 2026-03-18 21:44</em></p>
+      <div class="footer">Generated at 2026-03-18 21:44</div>
+    </section>
+  </div>
+</body>
+</html>
