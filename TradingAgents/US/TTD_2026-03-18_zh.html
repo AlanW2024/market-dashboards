@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTD — SELL | 2026-03-18</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* ─── Custom Properties ─────────────────────────────── */
+:root {
+    --bg-primary: #0b0f19;
+    --bg-secondary: #0f1629;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --bg-inset: #0d1117;
+    --border-subtle: #1e293b;
+    --border-medium: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --signal-color: #ef4444;
+    --signal-glow: rgba(239, 68, 68, 0.15);
+    --signal-rgb: 239, 68, 68;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --sidebar-w: 220px;
+    --header-h: 56px;
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ─── Noise Texture ─────────────────────────────────── */
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* ─── Header Bar ────────────────────────────────────── */
+.header-bar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 100;
+    display: flex; align-items: center;
+}
+.header-inner {
+    width: 100%; max-width: 1400px;
+    margin: 0 auto; padding: 0 2rem;
+    display: flex; align-items: center;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+}
+
+/* ─── Signal Pill ───────────────────────────────────── */
+.signal-pill {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.85rem;
+    background: rgba(var(--signal-rgb), 0.15);
+    border: 1px solid rgba(var(--signal-rgb), 0.3);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-weight: 500; font-size: 0.8rem;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* ─── Layout ────────────────────────────────────────── */
+.layout {
+    display: flex; max-width: 1400px;
+    margin: 0 auto; padding-top: var(--header-h);
+    min-height: 100vh;
+}
+
+/* ─── Sidebar ───────────────────────────────────────── */
+.sidebar {
+    position: sticky; top: var(--header-h);
+    width: var(--sidebar-w); flex-shrink: 0;
+    height: calc(100vh - var(--header-h));
+    padding: 1.5rem 0 1.5rem 1.5rem;
+    overflow-y: auto;
+}
+.sidebar-inner {
+    display: flex; flex-direction: column; gap: 0.25rem;
+}
+.nav-link {
+    display: block; padding: 0.5rem 1rem;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500;
+    border-radius: var(--radius-sm);
+    border-left: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+.nav-link:hover {
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.03);
+}
+.nav-link.active {
+    color: var(--signal-color);
+    border-left-color: var(--signal-color);
+    background: rgba(var(--signal-rgb), 0.08);
+}
+
+/* ─── Main Content ──────────────────────────────────── */
+.main-content {
+    flex: 1; min-width: 0;
+    padding: 1.5rem 2rem 3rem 1.5rem;
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+
+/* ─── Hero Card ─────────────────────────────────────── */
+.hero-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    overflow: hidden;
+}
+.hero-mesh {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(var(--signal-rgb), 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(var(--signal-rgb), 0.05) 0%, transparent 40%),
+        radial-gradient(ellipse at 60% 80%, rgba(var(--signal-rgb), 0.03) 0%, transparent 60%);
+    pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-header {
+    display: flex; align-items: center; gap: 1rem;
+    flex-wrap: wrap; margin-bottom: 0.5rem;
+}
+.hero-ticker {
+    font-family: var(--font-heading);
+    font-size: 2.5rem; font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text-primary), var(--signal-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-date {
+    font-family: var(--font-mono);
+    font-size: 0.9rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.hero-card .signal-pill { font-size: 0.9rem; padding: 0.35rem 1rem; }
+
+/* Risk Badge */
+.risk-badge {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 20px; letter-spacing: 0.05em;
+}
+.risk-low    { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+.risk-medium { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+.risk-high   { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+
+/* Reasons */
+.reasons-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.reason {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(var(--signal-rgb), 0.05);
+    border: 1px solid rgba(var(--signal-rgb), 0.1);
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;
+}
+.reason-num {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px;
+    background: rgba(var(--signal-rgb), 0.15);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 50%;
+}
+
+/* ─── Metrics Grid ──────────────────────────────────── */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+.metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+    position: relative; overflow: hidden;
+}
+.metric-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--signal-color); opacity: 0.4;
+    transition: opacity 0.25s ease;
+}
+.metric-card:hover {
+    border-color: rgba(var(--signal-rgb), 0.3);
+    box-shadow: 0 0 20px rgba(var(--signal-rgb), 0.08);
+}
+.metric-card:hover::before { opacity: 1; }
+.metric-label {
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+}
+.metric-value {
+    font-family: var(--font-mono);
+    font-size: 1.35rem; font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* ─── Section Cards ─────────────────────────────────── */
+.section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2rem;
+    transition: border-color 0.25s ease;
+}
+.section-card:hover { border-color: var(--border-medium); }
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.section-title::before {
+    content: ''; display: inline-block;
+    width: 4px; height: 20px;
+    background: var(--signal-color); border-radius: 2px;
+}
+.section-body {
+    color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.section-body h1, .section-body h2, .section-body h3 {
+    font-family: var(--font-heading);
+    color: var(--text-primary); margin: 1.5rem 0 0.75rem;
+}
+.section-body h1 { font-size: 1.2rem; }
+.section-body h2 { font-size: 1.1rem; }
+.section-body h3 { font-size: 1rem; }
+.section-body p { margin-bottom: 0.75rem; }
+.section-body ul, .section-body ol { margin: 0.5rem 0 1rem 1.5rem; }
+.section-body li { margin-bottom: 0.3rem; }
+.section-body strong { color: var(--text-primary); }
+.section-body em { color: var(--text-muted); font-style: italic; }
+
+/* Tables in sections */
+.section-body table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0; font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.section-body thead th {
+    background: rgba(var(--signal-rgb), 0.1);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.78rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.section-body tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.section-body tbody tr:hover { background: rgba(255,255,255,0.02); }
+.section-body tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+
+/* ─── Technical Dashboard ──────────────────────────── */
+.tech-dashboard {
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+.gauges-row {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    justify-content: center; padding: 0.5rem 0;
+}
+.gauge-container {
+    width: 200px; text-align: center;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem 0.5rem 0.75rem;
+}
+.gauge-svg { width: 100%; height: auto; }
+.charts-row {
+    display: grid; grid-template-columns: 1fr; gap: 1rem;
+}
+.chart-container {
+    position: relative; height: 220px;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+
+/* ─── MA Comparison Chart ──────────────────────────── */
+.ma-chart {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.ma-bar-row {
+    display: flex; align-items: center; gap: 0.75rem;
+}
+.ma-label {
+    width: 56px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    color: var(--text-muted); text-align: right;
+}
+.ma-bar-track {
+    flex: 1; height: 24px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px; overflow: hidden;
+}
+.ma-bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 1s ease;
+}
+.ma-value {
+    width: 64px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    color: var(--text-primary); text-align: right;
+}
+
+/* ─── KPI Grid ─────────────────────────────────────── */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.kpi-card {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+.kpi-label {
+    font-size: 0.72rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.3rem;
+}
+.kpi-value {
+    font-family: var(--font-mono);
+    font-size: 1.1rem; font-weight: 600;
+}
+
+/* ─── Sentiment Dashboard ──────────────────────────── */
+.sentiment-summary { margin-bottom: 1.5rem; }
+.sentiment-bar {
+    display: flex; height: 28px;
+    border-radius: 14px; overflow: hidden;
+    background: var(--bg-inset);
+}
+.sent-fill { transition: width 0.8s ease; min-width: 2px; }
+.sent-pos { background: #10b981; }
+.sent-neu { background: #475569; }
+.sent-neg { background: #ef4444; }
+.sentiment-counts {
+    display: flex; justify-content: center;
+    gap: 1.5rem; margin-top: 0.75rem;
+}
+.sent-count {
+    font-family: var(--font-mono); font-size: 0.8rem;
+}
+.sent-count-pos { color: #10b981; }
+.sent-count-neu { color: #64748b; }
+.sent-count-neg { color: #ef4444; }
+.sent-tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem; border-radius: 10px;
+    font-size: 0.78rem; font-weight: 500;
+}
+.sent-tag-positive { background: rgba(16,185,129,0.15); color: #10b981; }
+.sent-tag-negative { background: rgba(239,68,68,0.15); color: #ef4444; }
+.sent-tag-neutral { background: rgba(100,116,139,0.15); color: #94a3b8; }
+.sent-row-positive td:first-child { border-left: 3px solid #10b981; }
+.sent-row-negative td:first-child { border-left: 3px solid #ef4444; }
+.sent-row-neutral td:first-child { border-left: 3px solid #475569; }
+
+/* ─── Indicator Table ──────────────────────────────── */
+.indicator-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.indicator-table thead th {
+    background: rgba(var(--signal-rgb), 0.08);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.indicator-table tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.indicator-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.indicator-table tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+.ind-name {
+    font-family: var(--font-mono); font-weight: 500;
+    color: var(--text-primary);
+}
+.ind-value {
+    font-family: var(--font-mono); color: var(--signal-color);
+}
+
+/* ─── Debate Comparison ────────────────────────────── */
+.debate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; margin-bottom: 1rem;
+}
+.debate-panel {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.debate-panel-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.debate-preview {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    max-height: 200px; overflow: hidden;
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+.debate-preview p { margin-bottom: 0.5rem; }
+.debate-preview strong { color: var(--text-primary); }
+.debate-expand { margin-top: 0.75rem; }
+.debate-expand summary {
+    cursor: pointer; color: var(--signal-color);
+    font-size: 0.85rem; font-weight: 500;
+    padding: 0.4rem 0; user-select: none;
+    list-style: none;
+}
+.debate-expand summary::-webkit-details-marker { display: none; }
+.debate-expand summary::before {
+    content: '\25B8 '; font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+.debate-expand[open] summary::before { transform: rotate(90deg); }
+.debate-full {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    margin-top: 0.75rem;
+    max-height: 600px; overflow-y: auto;
+}
+.debate-full p { margin-bottom: 0.5rem; }
+.debate-full strong { color: var(--text-primary); }
+.debate-full ul, .debate-full ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.debate-full li { margin-bottom: 0.3rem; }
+
+/* ─── Judge Decision ───────────────────────────────── */
+.judge-decision {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    border-left: 3px solid var(--signal-color);
+}
+.judge-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    color: var(--signal-color);
+    margin-bottom: 0.75rem;
+}
+.judge-body {
+    color: var(--text-secondary);
+    font-size: 0.9rem; line-height: 1.7;
+}
+.judge-body p { margin-bottom: 0.5rem; }
+.judge-body strong { color: var(--text-primary); }
+.judge-body ul, .judge-body ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.judge-body li { margin-bottom: 0.3rem; }
+
+/* ─── Tabs (legacy fallback) ───────────────────────── */
+.tab-bar {
+    display: flex; gap: 0.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 1.25rem;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tab-btn {
+    padding: 0.6rem 1.25rem; background: none; border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.88rem; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.tab-btn:hover { color: var(--text-secondary); }
+.tab-btn.active {
+    color: var(--signal-color);
+    border-bottom-color: var(--signal-color);
+}
+.tab-panel {
+    display: none; color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
+.tab-panel p { margin-bottom: 0.75rem; }
+.tab-panel strong { color: var(--text-primary); }
+.tab-panel ul, .tab-panel ol { margin: 0.5rem 0 1rem 1.5rem; }
+.tab-panel li { margin-bottom: 0.3rem; }
+.text-muted { color: var(--text-muted); font-style: italic; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Collapsible Debate Rounds ─────────────────────── */
+.debate-round {
+    margin: 0.5rem 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    overflow: hidden; transition: border-color 0.2s ease;
+}
+.debate-round[open] { border-color: rgba(var(--signal-rgb), 0.2); }
+.debate-round summary {
+    padding: 0.7rem 1rem; background: var(--bg-inset);
+    cursor: pointer; font-weight: 600; font-size: 0.88rem;
+    color: var(--text-secondary); list-style: none;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: all 0.2s ease; user-select: none;
+}
+.debate-round summary::-webkit-details-marker { display: none; }
+.debate-round summary::before {
+    content: '\25B8'; font-size: 0.75rem;
+    color: var(--text-muted); transition: transform 0.2s ease;
+}
+.debate-round[open] summary::before { transform: rotate(90deg); }
+.debate-round summary:hover {
+    background: rgba(255,255,255,0.03); color: var(--text-primary);
+}
+.round-content {
+    padding: 1rem; border-top: 1px solid var(--border-subtle);
+    color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7;
+}
+.round-content p { margin-bottom: 0.6rem; }
+.round-content strong { color: var(--text-primary); }
+.round-content ul, .round-content ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+
+/* ─── Footer ────────────────────────────────────────── */
+.dashboard-footer {
+    text-align: center; padding: 2rem;
+    color: var(--text-muted); font-size: 0.8rem;
+    font-family: var(--font-mono);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 1rem;
+}
+
+/* ─── Responsive ────────────────────────────────────── */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; top: var(--header-h);
+        left: 0; right: 0; width: 100%;
+        height: auto; padding: 0.5rem;
+        background: rgba(11, 15, 25, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-subtle);
+        z-index: 90; overflow-x: auto; overflow-y: hidden;
+    }
+    .sidebar-inner {
+        flex-direction: row; gap: 0; min-width: max-content;
+    }
+    .nav-link {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        padding: 0.4rem 0.75rem; font-size: 0.78rem;
+        white-space: nowrap;
+    }
+    .nav-link.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--signal-color);
+    }
+    html { scroll-padding-top: calc(var(--header-h) + 3.5rem); }
+    .main-content { padding: 4.5rem 1rem 2rem 1rem; }
+    .hero-ticker { font-size: 1.8rem; }
+    .hero-card { padding: 1.5rem; }
+    .section-card { padding: 1.25rem; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .tab-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+    .gauges-row { gap: 0.75rem; }
+    .gauge-container { width: 160px; }
+    .debate-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-container { height: 180px; }
+    .ma-label { width: 48px; font-size: 0.72rem; }
+    .ma-value { width: 52px; font-size: 0.78rem; }
+}
+@media (min-width: 769px) {
+    .main-content { padding-top: 1.5rem; }
+}
+
+/* ─── Print ─────────────────────────────────────────── */
+@media print {
+    body { background: #fff; color: #111; }
+    body::before { display: none; }
+    .header-bar { position: relative; background: #fff; border-bottom: 2px solid #111; }
+    .header-inner { color: #111; }
+    .sidebar { display: none; }
+    .layout { display: block; }
+    .main-content { padding: 1rem; }
+    .hero-card, .section-card, .metric-card, .kpi-card, .gauge-container,
+    .debate-panel, .judge-decision {
+        background: #fff; border-color: #ddd;
+        box-shadow: none; break-inside: avoid;
+    }
+    .hero-mesh { display: none; }
+    .hero-ticker {
+        background: none;
+        -webkit-text-fill-color: #111; color: #111;
+    }
+    .signal-pill {
+        background: #eee; border-color: #ccc; color: #333;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .debate-round { break-inside: avoid; }
+    .debate-round .round-content { display: block; }
+    .debate-preview { max-height: none; mask-image: none; -webkit-mask-image: none; }
+    .debate-full { max-height: none; }
+    .tab-panel { display: block !important; margin-bottom: 1rem; }
+    .tab-bar { display: none; }
+    .section-body, .round-content, .tab-panel, .debate-full,
+    .judge-body { color: #333; }
+    .section-title, .debate-panel-title, .judge-title { color: #111; }
+    .metric-label, .kpi-label { color: #666; }
+    .metric-value, .kpi-value, .ind-value, .ma-value { color: #111; }
+    .reason { background: #f9f9f9; border-color: #ddd; color: #333; }
+    .reason-num { background: #eee; color: #333; }
+    .chart-container { display: none; }
+    .sent-tag { border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<header class="header-bar">
+    <div class="header-inner">TTD — SELL | 2026-03-18</div>
+</header>
+
+<div class="layout">
+    <nav class="sidebar" id="sidebar"><div class="sidebar-inner"><a href="#executive-summary" class="nav-link" data-section="executive-summary">執行摘要</a>
+<a href="#market" class="nav-link" data-section="market">技術面</a>
+<a href="#sentiment" class="nav-link" data-section="sentiment">情緒</a>
+<a href="#news" class="nav-link" data-section="news">新聞</a>
+<a href="#fundamentals" class="nav-link" data-section="fundamentals">基本面</a>
+<a href="#investment-debate" class="nav-link" data-section="investment-debate">投資辯論</a>
+<a href="#trader-plan" class="nav-link" data-section="trader-plan">交易計劃</a>
+<a href="#risk-debate" class="nav-link" data-section="risk-debate">風險辯論</a>
+</div></nav>
+    <main class="main-content">
+        <section id="executive-summary" class="hero-card"><div class="hero-mesh"></div><div class="hero-content"><div class="hero-header"><h1 class="hero-ticker">TTD</h1><span class="signal-pill">SELL</span></div><div class="hero-date">2026-03-18</div></div></section>
+        <section id="market" class="section-card"><h2 class="section-title">技術面分析</h2><div class="tech-dashboard"><div class="gauges-row"><div class="gauge-container"><svg viewBox="0 0 200 130" class="gauge-svg"><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#1e293b" stroke-width="12" stroke-linecap="round"/><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-dasharray="219.9" stroke-dashoffset="132.3" style="transition: stroke-dashoffset 1s ease;"/><text x="100" y="95" text-anchor="middle" fill="#10b981" font-family="'DM Mono', monospace" font-size="28" font-weight="600">39.8</text><text x="100" y="125" text-anchor="middle" fill="#64748b" font-family="'Outfit', sans-serif" font-size="13">RSI</text></svg></div><div class="gauge-container"><svg viewBox="0 0 200 130" class="gauge-svg"><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#1e293b" stroke-width="12" stroke-linecap="round"/><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-dasharray="219.9" stroke-dashoffset="179.0" style="transition: stroke-dashoffset 1s ease;"/><text x="100" y="95" text-anchor="middle" fill="#10b981" font-family="'DM Mono', monospace" font-size="28" font-weight="600">1.86</text><text x="100" y="125" text-anchor="middle" fill="#64748b" font-family="'Outfit', sans-serif" font-size="13">ATR (波動率)</text></svg></div></div><div class="charts-row"><div class="chart-container"><canvas id="macdChart"></canvas></div></div><table class="indicator-table"><thead><tr><th>指標</th><th>數值</th><th>訊號</th><th>解讀</th></tr></thead><tbody><tr><td class="ind-name">50 日 SMA</td><td class="ind-value">~29.93</td><td>中期趨勢低於長期均線</td><td>中期趨勢低於長期均線</td></tr><tr><td class="ind-name">200 日 SMA</td><td class="ind-value">~49.62</td><td>長期看跌基準</td><td>長期看跌基準</td></tr><tr><td class="ind-name">10 日 EMA</td><td class="ind-value">~26.68</td><td>短期趨勢反映</td><td>短期趨勢反映</td></tr><tr><td class="ind-name">MACD</td><td class="ind-value">-0.63</td><td>動能負向，低於訊號線</td><td>動能負向，低於訊號線</td></tr><tr><td class="ind-name">MACD 訊號線</td><td class="ind-value">-0.92</td><td>目前低於 MACD 線</td><td>目前低於 MACD 線</td></tr><tr><td class="ind-name">MACD 柱狀圖</td><td class="ind-value">+0.29</td><td>微弱正值，可能暗示動能轉變</td><td>微弱正值，可能暗示動能轉變</td></tr><tr><td class="ind-name">RSI</td><td class="ind-value">39.82</td><td>中性偏弱勢動能</td><td>中性偏弱勢動能</td></tr><tr><td class="ind-name">ATR</td><td class="ind-value">1.86</td><td>波動適中</td><td>波動適中</td></tr></tbody></table></div></section>
+        <section id="sentiment" class="section-card"><h2 class="section-title">情緒分析</h2><div class="sentiment-summary"><div class="sentiment-bar"><div class="sent-fill sent-pos" style="width:57.1%"></div><div class="sent-fill sent-neu" style="width:14.3%"></div><div class="sent-fill sent-neg" style="width:28.6%"></div></div><div class="sentiment-counts"><span class="sent-count sent-count-pos">4 正面</span><span class="sent-count sent-count-neu">1 中性</span><span class="sent-count sent-count-neg">2 負面</span></div></div><table class="indicator-table"><thead><tr><th>項目</th><th>詳情</th><th>情緒</th></tr></thead><tbody><tr class="sent-row-negative"><td>Publicis 審計及建議</td><td>發現費用、結算及 AI 工具 Kokai 問題；建議客戶避開 TTD</td><td>負面</td></tr><tr class="sent-row-positive"><td>執行長內部購股</td><td>執行長 Jeff Green 購買1.48億美元股份</td><td>正面</td></tr><tr class="sent-row-negative"><td>董事會成員辭職</td><td>Gokul Rajaram 在審計及治理疑慮中辭職</td><td>負面</td></tr><tr class="sent-row-positive"><td>OpenAI 合作猜測</td><td>與 OpenAI 進行 AI 廣告相關對話及合作</td><td>正面</td></tr><tr class="sent-row-positive"><td>CTV 及 AI 成長策略</td><td>擴展至 CTV 基礎設施（Ventura、OpenAds、Kokai）及 AI 驅動購買</td><td>正面</td></tr><tr class="sent-row-neutral"><td>估值及宏觀壓力</td><td>以折價市盈率交易；宏觀經濟與利潤率限制加劇短期展望壓力</td><td>混合</td></tr><tr class="sent-row-positive"><td>國際市場擴張</td><td>加大對歐洲、中東、非洲及亞太市場的投資，構建更廣泛的成長基礎</td><td>正面</td></tr></tbody></table></section>
+        <section id="news" class="section-card"><h2 class="section-title">新聞分析</h2><div class="section-body"><h3>綜合市場與宏觀經濟報告（2026年3月11日 - 3月18日）</h3>
+<h4>全球市場概覽：</h4>
+<ol>
+<li><strong>科技與創新 IPO 狂潮</strong>：</li>
+<li>
+<p>無人機軟體公司「Swarmer」成為本週重大亮點，在首次公開募股（IPO）首週內股價飆升450%至700%。這是近來最驚人的誤價現象之一，定價最初為每股5美元，但因執行層的研究計劃及市場強勁需求，IPO後股價迅速上漲。此波科技IPO熱潮象徵投資者對尖端科技產業，特別是無人機與人工智慧相關創新的持續熱情。</p>
+</li>
+<li>
+<p><strong>加密貨幣與金融市場拓展</strong>：</p>
+</li>
+<li>
+<p>紐約證券交易所（NYSE）母公司正在加大對加密貨幣領域的布局，顯示機構對加密資產的接受度或整合度提升。此舉激發部分頂級基金經理的多頭情緒，暗示市場流動性及資產配置策略可能轉變，加密貨幣正逐漸成為主流金融機構的重要資產類別。</p>
+</li>
+<li>
+<p><strong>地緣政治與貿易因素</strong>：</p>
+</li>
+<li>
+<p>報告中提及「關稅雲霄飛車」現象，反映貿易關稅持續帶來波動和不確定性，可能對全球貿易流和供應鏈造成難以預測的影響，增加依賴國際貿易產業的風險。</p>
+</li>
+<li>
+<p><strong>中國科技股興趣</strong>：</p>
+</li>
+<li>
+<p>儘管地緣政治緊張局勢持續，專業建議仍指出對中國科技股的顯著吸引力。這反映美中經濟關係及新興市場投資策略可能正在發生變化。</p>
+</li>
+<li>
+<p><strong>美國就業市場報告</strong>：</p>
+</li>
+<li>美國股市因就業報告數據而略受提振，被視為「利好消息」，但漲幅有限。就業數據依然是塑造聯準會政策預期、影響利率和股市估值的核心因素。</li>
+</ol>
+<h4>關於 The Trade Desk (TTD) 的具體洞見：</h4>
+<ol>
+<li><strong>近期股價波動</strong>：</li>
+<li>
+<p>由於法國廣告巨頭 Publicis 於第三方稽核發現收費、帳單問題及AI工具 Kokai 的問題，停止對TTD的推薦，導致股價下跌約6.7%至9.4%。該爭議使TTD面臨聲譽及營運風險，股價自2025年9月以來已大跌超過40%。</p>
+</li>
+<li>
+<p><strong>內部人交易與AI合作</strong>：</p>
+</li>
+<li>與拋售潮形成對比，執行長 Jeff Green 進行了約1.48億美元的大額內部買進，凸顯管理層的信心。</li>
+<li>
+<p>關於與 OpenAI 合作的早期談判及推測，預示藉由深入整合先進AI技術於平台，尤其是程式化廣告領域，具備潛在利多。</p>
+</li>
+<li>
+<p><strong>業務策略與成長前景</strong>：</p>
+</li>
+<li>TTD積極推動透過其產品 Ventura、OpenAds 與 Kokai 擴展連網電視（CTV）基礎設施，致力提升透明度與AI驅動的廣告採購，儘管短期面臨執行與宏觀經濟風險，但為中長期成長布局。</li>
+<li>
+<p>地理多元化為重點，增加歐非中東（EMEA）及亞太（APAC）地區市場投資，這些市場增速超越北美。</p>
+</li>
+<li>
+<p><strong>估值與市場地位</strong>：</p>
+</li>
+<li>TTD以約12.64倍的折價預期本益比交易，在同業中相對被低估。</li>
+<li>然而鑒於近期稽核發現及廣告產業面臨的宏觀經濟逆風，投資者仍然保持謹慎。</li>
+</ol>
+<h4>主要要點摘要表：</h4>
+<table>
+<thead>
+<tr>
+<th>類別</th>
+<th>主要洞見</th>
+<th>對交易者/投資者的影響</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IPO市場</td>
+<td>Swarmer IPO飆升450-700%，反映科技創新強勁需求</td>
+<td>科技IPO機會多但波動性高</td>
+</tr>
+<tr>
+<td>加密貨幣拓展</td>
+<td>紐交所加深加密貨幣參與，引發基金經理看多支持</td>
+<td>加密相關資產潛在成長</td>
+</tr>
+<tr>
+<td>貿易與地緣政治</td>
+<td>關稅被形容為波動劇烈的「關稅雲霄飛車」</td>
+<td>全球貿易敏感行業風險持續</td>
+</tr>
+<tr>
+<td>中國科技股</td>
+<td>地緣政治緊張下，投資者仍維持興趣</td>
+<td>新興市場投資機會</td>
+</tr>
+<tr>
+<td>美國勞動市場</td>
+<td>就業報告呈現部分正面但訊號混合</td>
+<td>影響聯準會政策預期及市場情緒</td>
+</tr>
+<tr>
+<td>The Trade Desk (TTD)</td>
+<td>稽核及Publicis風波打擊股價；CEO買入1.48億美元</td>
+<td>股價波動大；AI合作可能帶來轉機</td>
+</tr>
+<tr>
+<td>TTD策略布局</td>
+<td>CTV與AI平台擴展；EMEA/APAC市場發展設定</td>
+<td>多元市場長期成長潛力</td>
+</tr>
+<tr>
+<td>TTD估值</td>
+<td>估值吸引，然面臨執行風險</td>
+<td>具風險考量的價值買入選項</td>
+</tr>
+</tbody>
+</table>
+<p>本詳細綜合分析顯示，儘管宏觀經濟與行業主題如科技創新、AI與加密貨幣呈現正向動能，但公司個別風險與地緣政治不確定性依然存在，需採取平衡且精選的投資策略。</p>
+<p>若您需要，我可以提供更深入的 The Trade Desk 或其他行業分析。您是否希望根據這些洞見聚焦於潛在交易策略？</p></div></section>
+        <section id="fundamentals" class="section-card"><h2 class="section-title">基本面分析</h2><div class="kpi-grid"><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Market Cap</div><div class="kpi-value" style="color:#64748b;">$11.93B</div></div><div class="kpi-card" style="border-left:3px solid #f59e0b;"><div class="kpi-label">P/E (TTM)</div><div class="kpi-value" style="color:#f59e0b;">27.86</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EPS</div><div class="kpi-value" style="color:#64748b;">10.52</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Revenue</div><div class="kpi-value" style="color:#64748b;">$2.9B</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EBITDA</div><div class="kpi-value" style="color:#64748b;">$690M</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Profit Margin</div><div class="kpi-value" style="color:#10b981;">15.3%</div></div><div class="kpi-card" style="border-left:3px solid #ef4444;"><div class="kpi-label">Debt/Equity</div><div class="kpi-value" style="color:#ef4444;">17.56</div></div></div><table class="indicator-table"><thead><tr><th>關鍵指標</th><th>數值</th><th>評論</th></tr></thead><tbody><tr><td>市值</td><td>$11.93B</td><td>中大型市值，具成長溢價</td></tr><tr><td>過去市盈率</td><td>27.86</td><td>中等估值</td></tr><tr><td>預期市盈率</td><td>10.52</td><td>預期EPS強勁成長</td></tr><tr><td>EPS（TTM）</td><td>$0.9</td><td>當前盈餘</td></tr><tr><td>預期EPS</td><td>$2.38</td><td>預計大幅成長</td></tr><tr><td>營收（TTM）</td><td>$2.9B</td><td>營收成長</td></tr><tr><td>毛利率</td><td>~79%</td><td>高毛利業務</td></tr><tr><td>EBITDA</td><td>$690M</td><td>穩健的營運現金流</td></tr><tr><td>淨利率</td><td>15.3%</td><td>穩健獲利能力</td></tr><tr><td>營業利潤率</td><td>30.3%</td><td>營運效率良好</td></tr><tr><td>負債對權益比</td><td>17.56</td><td>槓桿高，風險提醒，但淨現金緩解</td></tr><tr><td>淨現金</td><td>$867M</td><td>強勁現金緩衝</td></tr><tr><td>機構持股比例</td><td>85.23%</td><td>機構高度持股，信心充足</td></tr><tr><td>空頭持股比例</td><td>10.76%</td><td>空頭持股顯著，或顯示審慎態度</td></tr><tr><td>自由現金流（近期季度）</td><td>$282M</td><td>支撐回購和成長投資</td></tr><tr><td>股票回購（近期季度）</td><td>$423M</td><td>顯著的資本返還</td></tr></tbody></table></section>
+        <section id="investment-debate" class="section-card"><h2 class="section-title">投資辯論</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #10b981;"><h3 class="debate-panel-title" style="color:#10b981;">多頭觀點</h3><div class="debate-preview"><p>Bull Analyst: 我很感謝你對 TTD 近期困境的深思熟慮觀點——Publicis 的審計問題、股價急跌以及公司治理疑慮確實是投資人需要謹慎權衡的因素。但讓我們退後一步，從更大的視角來看，因為我堅信這裡存在著遠超過這些短期挑戰的龐大上升潛力。</p>
+<p><strong>首先，成長潛力非常誘人。</strong> 的確，50 天與 200 天簡單移動平均線等短中期趨勢指標顯示出弱勢格局，動能指標也較為疲軟。但請記住，技術面通常落後於基本面，尤其是市場對重大新聞風險過度反應時。我們正看到一個典型的「洗盤」時刻，多項空頭信號已將股價大幅壓低，但例如 MACD 柱狀圖這類動能指標正暗示可能的穩定或轉折。RSI 位於超賣區以上，尚未顯示出拋售告終，這意味著股價有空間趨於穩定，甚至隨著基本面改善而反彈。</p>
+<p><strong>談到基本面——TTD 依然是高利潤、高盈利的公司，且所處行業擁有強勁的長期成長趨勢。</strong> 他們 29 億美元的過去十二個月營收、30% 的營業利潤率以及 15% 以上的淨利潤率展現了卓越的經營能力。約 10.5 倍的預期本益比相較於同業及 TTD 歷史水平相當吸引，顯示市場對未來成長的預期已深度折價。分析師預期每股...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>Bull Analyst: 我很感謝你對 TTD 近期困境的深思熟慮觀點——Publicis 的審計問題、股價急跌以及公司治理疑慮確實是投資人需要謹慎權衡的因素。但讓我們退後一步，從更大的視角來看，因為我堅信這裡存在著遠超過這些短期挑戰的龐大上升潛力。</p>
+<p><strong>首先，成長潛力非常誘人。</strong> 的確，50 天與 200 天簡單移動平均線等短中期趨勢指標顯示出弱勢格局，動能指標也較為疲軟。但請記住，技術面通常落後於基本面，尤其是市場對重大新聞風險過度反應時。我們正看到一個典型的「洗盤」時刻，多項空頭信號已將股價大幅壓低，但例如 MACD 柱狀圖這類動能指標正暗示可能的穩定或轉折。RSI 位於超賣區以上，尚未顯示出拋售告終，這意味著股價有空間趨於穩定，甚至隨著基本面改善而反彈。</p>
+<p><strong>談到基本面——TTD 依然是高利潤、高盈利的公司，且所處行業擁有強勁的長期成長趨勢。</strong> 他們 29 億美元的過去十二個月營收、30% 的營業利潤率以及 15% 以上的淨利潤率展現了卓越的經營能力。約 10.5 倍的預期本益比相較於同業及 TTD 歷史水平相當吸引，顯示市場對未來成長的預期已深度折價。分析師預期每股盈餘將翻倍以上，從 0.9 美元增至 2.38 美元，反映出強勁的成長或利潤擴張預期。</p>
+<p><strong>這成長故事建立在 TTD 在 Connected TV (CTV) 和 AI 驅動廣告上的策略佈局——這是個呈指數型增長並正在改造數字廣告支出格局的領域。</strong> 公司對 Ventura、OpenAds 和 Kokai 等產品的投資賦予了它顯著的競爭優勢：在求透明度與效率的時代，打造一個透明且由 AI 驅動的廣告採購平台。此外，TTD 在歐洲中東非洲（EMEA）和亞太市場的擴張使其得以在北美飽和市場以外，捕捉超額成長機會。</p>
+<p><strong>近期因 Publicis 審計結果與董事會變動引起的負面情緒，雖然影響合理，但需放入背景中看待。</strong> 這些確實是治理層面的挑戰，但內部人，特別是執行長 Jeff Green，已透過投入近 1.48 億美元自有資金購買公司股票展現出巨大信心。如此規模的內部購股極少輕率進行，強烈傳達了公司內在價值和未來前景的信號。此外，市場傳聞關於與 OpenAI 在 AI 廣告上的策略合作，倘若落實，將成為改變遊戲規則的重要因素——進一步區隔 TTD 與競爭者，並實現更優秀的廣告定向。</p>
+<p><strong>針對槓桿率問題：的確，負債對股東權益比高達 17.56，傳統上容易引發警示。</strong> 然而，TTD 持有 8.67 億美元的淨現金，足以抵銷其總負債。這筆現金緩衝提供了充裕的流動性與彈性，可用於管理槓桿風險、投資成長計畫或繼續策略性庫藏股。說到庫藏股，公司近期回購了 4.23 億美元股票——這項大規模資本回饋，彰顯管理層對於目前股價被低估的堅定信念。</p>
+<p><strong>針對悲觀觀點中對估值與動能的質疑，須強調的是市場對治理或短期利潤壓力的恐懼，往往反而為長期投資人創造進場良機。</strong> 折價的本益比，加上健全的現金流生成（上季自由現金流 2.81 億美元）、強勢機構持股比例（85%）及日益增長的盈利能力，為當市場克服懷疑時創造了穩健的上漲基礎。</p>
+<p><strong>此外，該行業趨勢仍對 AI、CTV 及程序化數字廣告持看多態度，而這亦是 TTD 的核心競爭領域。</strong> 無人機軟體的 IPO 熱潮以及紐交所的加密貨幣舉措顯示市場日益接受 AI 及下一代科技創新——此強勁動能將助推以 AI 為中心的公司如 TTD。</p>
+<p><strong>總結而言：</strong></p>
+<ul>
+<li>短期股價走勢確實不佳，空頭的擔憂值得謹慎觀察。</li>
+<li>但基本面依舊強健且估值具吸引力。</li>
+<li>公司在 AI 驅動的 CTV 廣告領域具獨特競爭優勢且日益重要。</li>
+<li>內部人買股與策略性 AI 投資顯示管理層信心與成長催化劑。</li>
+<li>技術指標可能見底或趨於穩定，顯示潛在反轉契機。</li>
+<li>宏觀經濟及產業風向由 AI 及程序化媒體推動長期成長。</li>
+</ul>
+<p><strong>本質上，今日的 TTD 是經典的「逢低買進」機會，對於欣賞其長期策略定位與強健基本面的耐心投資人來說，風險／報酬比明顯偏向上行。</strong></p>
+<p>你是否同意，有時最好的成長故事需稍作喘息，震盪出較弱持股者，繼而再繼續成長？鑒於內部買盤及 AI 合作的熱度，TTD 是否看起來準備好在當前陰霾消散後強勢崛起？</p></div></details></div><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">空頭觀點</h3><div class="debate-preview"><p>Bear Analyst: 我很欣賞你對 TTD 上漲潛力所提出的詳盡且充滿熱情的論點，也尊重你對成長敘事、內線買盤以及新興 AI 助力的信心。但請允許我謹慎地拆解為何這些正面因素對投資人而言，在目前階段可能只是過度樂觀而非現實。</p>
+<p><strong>首先，我們來看看技術背景與近期的價格走勢，因為市場正用腳投票表明態度。</strong> 你提到類似 MACD 直方圖等動能指標暗示可能穩定，且 RSI 並未深度超賣——這是合理的觀點。然而事實是，股價仍深陷急遽下跌趨勢，價格遠低於 50 日與 200 日簡單移動平均線（約分別為 29.9 與 49.6）。這是經典的看跌格局，不僅是短期回調，更是持續下跌趨勢——往往反映基本面惡化或市場感知轉弱。動能稍微放緩並非看漲的確證，而是持續走跌過程中的暫時止跌。</p>
+<p>請記得技術指標常與投資者情緒轉折同時或先行，而目前情緒─受嚴重審計紅旗推動─極度負面。在跌勢中爆量出貨顯示恐慌或被迫賣出，代表弱勢持股者退出，而非信心買進。因此你說這可能是「洗盤」，但這更像是結構性的趨勢，需要重大催化劑（目前缺乏）才能反轉。</p>
+<p>**至於基本面，TTD 確實擁有高利潤率與快速成長的盈餘預估；但這無法...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>Bear Analyst: 我很欣賞你對 TTD 上漲潛力所提出的詳盡且充滿熱情的論點，也尊重你對成長敘事、內線買盤以及新興 AI 助力的信心。但請允許我謹慎地拆解為何這些正面因素對投資人而言，在目前階段可能只是過度樂觀而非現實。</p>
+<p><strong>首先，我們來看看技術背景與近期的價格走勢，因為市場正用腳投票表明態度。</strong> 你提到類似 MACD 直方圖等動能指標暗示可能穩定，且 RSI 並未深度超賣——這是合理的觀點。然而事實是，股價仍深陷急遽下跌趨勢，價格遠低於 50 日與 200 日簡單移動平均線（約分別為 29.9 與 49.6）。這是經典的看跌格局，不僅是短期回調，更是持續下跌趨勢——往往反映基本面惡化或市場感知轉弱。動能稍微放緩並非看漲的確證，而是持續走跌過程中的暫時止跌。</p>
+<p>請記得技術指標常與投資者情緒轉折同時或先行，而目前情緒─受嚴重審計紅旗推動─極度負面。在跌勢中爆量出貨顯示恐慌或被迫賣出，代表弱勢持股者退出，而非信心買進。因此你說這可能是「洗盤」，但這更像是結構性的趨勢，需要重大催化劑（目前缺乏）才能反轉。</p>
+<p><strong>至於基本面，TTD 確實擁有高利潤率與快速成長的盈餘預估；但這無法呈現完整且無瑕的畫面。</strong> 股價便宜只是建立在對未來 EPS 成長預期的充分信任之上，該預期在短時間內從 0.9 美元激增至 2.38 美元──這樣的跳升既非瑣碎，也非保證。實際上，不確定環境 — 審計疑慮、治理缺失與廣告支出宏觀壓力 — 讓此成長預估頗具風險。我們已見類似案例（如面臨合規問題的廣告科技公司）中，當運營或監管問題浮現，未來盈餘經常被下修。</p>
+<p>此外，儘管帳上有淨現金，但 17.56 的龐大負債權益比不可忽視。此極端槓桿揭示結構性財務風險，一旦現金儲備減少，可能放大市場不利波動或限制營運彈性。淨現金部份抵消該風險，但同時也代表資產負債表具結構複雜度，若盈餘或自由現金流成長不如預期，恐成隱憂。雖然 CEO 以 1.48 億美元大手筆內線買股表面鼓舞，但內線並非萬無一失——他們會過度樂觀或錯誤判斷時機，並非股價必漲之保證。</p>
+<p><strong>關於 Publicis 審計餘波及董事會成員辭職，這兩事件絕非瑣碎「雜音」。</strong> 它們直指治理、透明度與客戶信任核心。Publicis 是大型廣告巨頭，他們因費用、帳單異常及 AI 工具可靠性問題而明確建議客戶避開 TTD，這是嚴重的營運風險。Deloitte 或其他公司可負責審計，但當一大客戶明確撤退並警示其他人，表示潛在系統性問題，長期可能導致客戶流失或聲譽損害。董事辭職所凸顯的治理失誤更添風險，故目前仍難簡化為短期小挫折。</p>
+<p><strong>你對 AI 與 CTV 佈局的樂觀可理解，但很大程度上依賴執行風險與市場飽和的現實考量。</strong> 廣告科技領域競爭激烈，傳統巨頭與新創公司激烈角逐 — 創新週期快速且成本高昂。TTD 競爭對手如 Google、Amazon 及專門 AI 廣告平台不斷進展，通常擁有更深的資金與整合生態系統。TTD 的戰略產品（Ventura、OpenAds、Kokai）有潛力，但國際區域（EMEA、APAC）採用與擴張需要時間與資金，且若遭遇監管打擊，恐壓縮利潤與成長。這讓 EPS 即將翻倍的預期充滿投機色彩。</p>
+<p><strong>此外，我認為指出社會情緒和市場心理層面相當重要。</strong> 融券比例高達 10.76％，融券天數比接近 2.6 天——顯示活躍空方賣家存有實質懷疑，且常對負面信號反應迅速。股價因壞消息下跌 6.7% 至 9.4% 不僅僅是波動，而是市場權衡風險的判斷。內線買股抵銷情緒但尚未扭轉，表現市場仍存觀望或偏空態度。</p>
+<p><strong>過往經驗教導我，關於「壞消息買入」的故事要謹慎視之，除非有明確且有說服力的營運復甦或風險正常化證據。</strong> 許多有潛力的科技成長故事，在治理問題或宏觀逆風下被過度樂觀預測所拖累，這在過去五年廣告科技與 AI 投資屢見不鮮。投資者理當不僅以內線買盤與廣泛 AI 熱潮為轉機標準──它們是必要條件，卻非充分條件。</p>
+<h3>總結，我的看跌立場如下：</h3>
+<ul>
+<li>技術面與成交量數據強烈確認持續看跌動能，不只是短期洗盤。</li>
+<li>治理問題、客戶警示與審計後遺症構成重大營運與聲譽風險。</li>
+<li>儘管有淨現金，高槓桿加劇在艱困宏觀與產業環境下的財務脆弱。</li>
+<li>前瞻盈餘增長假設激進，競爭與監管情況令其風險偏高。</li>
+<li>市場情緒及融券數據顯示理性懷疑，而非盲目樂觀。</li>
+<li>AI 與 CTV 機會確實存在，但近期成長推動力尚未確定且風險高。</li>
+<li>內線買股是利多，但無法抵銷消極因素，不應令投資人忽略風險。</li>
+</ul>
+<p>TTD 可能終將穩定，但在大幅折價且問題叢生的情況下，耐心與信心是昂貴代價。投資人應要求明確的風險解決與營運穩定跡象，再考慮回補。現在急匆匆進場，恐淪為週期性或結構性下跌掩蓋的「買入良機」陷阱。</p>
+<p>雖然我尊重你的樂觀看法，但建議將 TTD 視為高風險投機部位，而非驗證過的成長買入，尤其基於治理、財務結構及執行風險多重紅旗。</p>
+<p>你認為有哪些具體跡象或事件，才能真正讓你相信 TTD 的風險已充分消除，且股價準備好迎接持續回彈？</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">裁判決定</h3><div class="judge-body"><p>兩位分析師皆對TTD的情況提供了深思熟慮且全面的分析。看多方強調公司強勁的基本面及由科技創新、內部人士買入、以及AI/CTV市場順風推動的長期成長潛力，將近期的拋售形容為投資者的過度反應，並視為一個典型的「壞消息買進」機會。看空方則以持續的技術面看跌趨勢、受到Publicis審計風波引發的嚴重治理疑慮、AI驅動廣告科技的競爭與執行風險，以及儘管持有淨現金但與槓桿有關的財務風險提出警告。看空方同時強調盈利假設過於樂觀，以及從高空頭比例反映的市場負面情緒，建議耐心等待基於證據的再入場，而非現在急於入市。</p>
+<p>經過謹慎權衡，我在此明確站在看空方立場。基本面故事雖有可期之處，但目前被尚未完全解決的可見短期風險所掩蓋：審計與治理問題威脅客戶信任與營運穩定；股價技術面顯示持續下跌趨勢而非穩定底部；且成長預測基於產業形勢不均之下的樂觀假設。內部人士買入值得鼓勵，但不足以抵銷這些風險，特別是考慮到目前激進的估值折價可能是合理的。過早買入有被長期結構性下跌困住的風險。</p>
+<p>我的建議是賣出，或已持有者則大幅減倉。這是一個資金風控決策，目的是保護資本並待風險緩解跡象更明顯時重新評估。</p>
+<p>具體對交易者而言：</p>
+<ol>
+<li>
+<p><strong>建議</strong>：現階段賣出或大幅降低TTD持倉。</p>
+</li>
+<li>
+<p><strong>理由</strong>：看空方論點更為有力，因治理與客戶信任等實質風險仍未解決，技術面不支持已見底，且成長預測在現有外部壓力下偏向樂觀。進一步下跌的可能性很大。</p>
+</li>
+<li>
+<p><strong>策略行動</strong>：</p>
+</li>
+<li>在短期內開始逐步降低TTD持倉，以避免在波動中被迫拋售。</li>
+<li>建立觀察清單以等待確定性信號，考慮未來再入場，包括：<ul>
+<li>Publicis審計風波及治理重組問題的解決或實質進展。</li>
+<li>客戶留存及營收穩定或成長的證據。</li>
+<li>股價突破關鍵技術阻力位（如50日與200日均線）並伴隨成交量確認。</li>
+<li>盈利報告在市場與產業壓力下達到或超出保守指引。</li>
+<li>空頭比例下降與市場情緒轉好。</li>
+</ul>
+</li>
+<li>考慮將資金重新配置到更穩定、治理風險較低但具相似成長潛力的科技股。</li>
+<li>持有部分持倉者應使用保護性停損限制下行風險。</li>
+<li>持續關注產業及宏觀趨勢，尤其中的監管變化，可能廣泛影響廣告科技領域。</li>
+</ol>
+<p>過去經驗教訓我，樂觀常令我忽視治理或營運風險，導致多年回報低迷，此處我強調資本保存超過追逐可能過早的反彈。與其試圖接住掉落的刀子而承受巨大損失，不如等待明顯復甦信號。</p>
+<p>總而言之，先行賣出，密切觀察，且只在基本面與技術面證據明確指向持續復甦時，才考慮新買入。這種有紀律且基於證據的策略，既尊重公司長期潛力，也符合當前市場現實。</p></div></div></section>
+        <section id="trader-plan" class="section-card"><h2 class="section-title">交易者投資計劃</h2><div class="section-body"><p>TTD 的投資計劃呈現出平衡的觀點，但鑒於實際情況，理所當然地偏向謹慎。創新與內部人士買入的基本承諾，因近期具體風險而被掩蓋：Publicis 審計事件遺留的治理問題未解決，技術面走勢偏空且尚未見穩定底部，以及在產業逆風下增長假設顯得過於樂觀。</p>
+<p>重點考量：<br />
+- 治理與審計問題對客戶信任及運營穩定構成嚴重風險，可能直接影響營收。<br />
+- 技術面顯示持續下跌趨勢，尚無突破 50 日與 200 日均線的確認。<br />
+- 高度空頭頭寸與負面市場情緒暗示存在進一步下行風險。<br />
+- 雖然內部人士買入為正面信號，但不足以充分抵消目前的結構性風險。</p>
+<p>鑒於以上因素，謹慎的做法是現在減少持倉以保護資本，而非過早追逐反彈。這樣能在仍然波動的環境中進行風險管理，同時保持對回升信號的警覺。</p>
+<p>可執行建議：<br />
+- 逐步賣出或大幅減少 TTD 持股。<br />
+- 對剩餘部位設置保護性止損。<br />
+- 監控上述關鍵指標，以便將來可能重新進場。<br />
+- 將資金重新配置到治理風險較低的穩健科技公司。</p>
+<p>此策略可將因忽視治理與技術面警示信號而陷入長期下跌的風險降至最低，並建立當前景更有利時重新介入的紀律框架。</p>
+<p>最終交易建議：<strong>SELL</strong></p></div></section>
+        <section id="risk-debate" class="section-card"><h2 class="section-title">風險管理辯論</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">進取觀點</h3><div class="debate-preview"><p>激進分析師：保守分析師對於治理、技術性崩潰及看跌情緒的擔憂，在表面上固然合理，但卻未能充分體會TTD所展現的巨大機會。的確，Publicis的審計風波與董事會辭職帶來了噪音和短期負面新聞，但這正是那些對願意越過短期動盪的投資者創造買入窗口的暫時性干擾。</p>
+<p>首先，談治理與審計問題：確實存在不確定性——競爭和監管總是帶來複雜性。但CEO斥資高達1.48億美元的內部購股，是一種信念的巨大信號。高層不會輕易動用如此巨額資金，這筆購買發生在風暴之中，顯然表明管理層相信該股嚴重被低估並將反彈。內部人士買盤往往先於重大轉機。保守觀點認為此舉「無法充分緩解結構性風險」，忽略了此處獨特且強烈的信號作用。</p>
+<p>其次，針對技術面，是的，50日和200日移動平均線顯示熊市趨勢。但被忽略的是動量指標中的微妙且關鍵行為：MACD柱狀圖轉為略微正值，RSI在超賣水平上方企穩，且中度波動率（ATR為1.86）暗示該股已準備好迎來「紓解性反彈」或整合階段。等待「確認突破」是典型的風險回避，往往導致錯過入場時機——當TTD與OpenAI的AI合作及CTV擴展等創新催化劑起作用時，動量很少會等到完美確認。</p>
+<p>第三，關於市場情...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>激進分析師：保守分析師對於治理、技術性崩潰及看跌情緒的擔憂，在表面上固然合理，但卻未能充分體會TTD所展現的巨大機會。的確，Publicis的審計風波與董事會辭職帶來了噪音和短期負面新聞，但這正是那些對願意越過短期動盪的投資者創造買入窗口的暫時性干擾。</p>
+<p>首先，談治理與審計問題：確實存在不確定性——競爭和監管總是帶來複雜性。但CEO斥資高達1.48億美元的內部購股，是一種信念的巨大信號。高層不會輕易動用如此巨額資金，這筆購買發生在風暴之中，顯然表明管理層相信該股嚴重被低估並將反彈。內部人士買盤往往先於重大轉機。保守觀點認為此舉「無法充分緩解結構性風險」，忽略了此處獨特且強烈的信號作用。</p>
+<p>其次，針對技術面，是的，50日和200日移動平均線顯示熊市趨勢。但被忽略的是動量指標中的微妙且關鍵行為：MACD柱狀圖轉為略微正值，RSI在超賣水平上方企穩，且中度波動率（ATR為1.86）暗示該股已準備好迎來「紓解性反彈」或整合階段。等待「確認突破」是典型的風險回避，往往導致錯過入場時機——當TTD與OpenAI的AI合作及CTV擴展等創新催化劑起作用時，動量很少會等到完美確認。</p>
+<p>第三，關於市場情緒與空頭利息：高空頭利息往往意味著看跌交易集中。當情緒轉變時，這些空頭被迫回補，造成劇烈擠壓，迅速推動漲幅。忽視這種動態會讓投資者錯失潛在爆發性上漲機會。中度估值折讓（預測本益比約10.5倍），加上預期每股盈餘將超過現有收益兩倍，顯示市場已反映增長，但尚未完全反映TTD在國際市場（EMEA、APAC）及AI驅動廣告霸主地位的寬廣發展空間。</p>
+<p>中立分析師隱含的偏好是謹慎觀望而非大膽出擊，同樣低估了在此稀有的創新、估值與內部人士信心匯聚的機會。宏觀趨勢大力支持以AI和CTV基礎設施顛覆廣告行業的公司——TTD正是其中領先者。對AI技術爆炸性市場關注（類比無人機IPO熱潮與加密貨幣機構採用）創造了有利於技術創新者激進布局的更廣泛強勁環境，而非撤退。</p>
+<p>此外，健康的基本面反駁了典型「賣出」敘述：強勁現金流、健康利潤率、穩健自由現金流支持股票回購，以及淨現金多於適度負債。認為高槓桿是紅旗的論點忽略了淨現金與流動性緩衝明顯降低公司財務風險。公司創造現金並回饋股東的能力，在風險正面消化時擴大上行空間——這正是此激進架構擬發揮作用之處。</p>
+<p>總結來說，保守策略基於資本保護，但有錯失由AI進步、CEO內部購股、國際版圖擴張和CTC廣告轉型所驅動的轉型性反彈的風險。謹慎的盲點是市場錯價、動量轉變與策略性技術創新領導帶來的非對稱上行潛力。這裡有極具說服力的押注點：在當前低迷水平早期介入、配合基於波動率的嚴格止損，捕捉超額收益並控制風險。</p>
+<p>這正是激進風險承擔勝過被動謹慎的環境——現在大膽投資，有利於把握由AI合作（OpenAI合作猜測）、CTV市場增長及當前審計噪音遲早解決/控制推動的可能飆升。現階段賣出將鎖定虧損，並喪失來自創新領導的突破性收益。積極持有甚至加碼是利用市場錯配的最明智做法。</p>
+<p>最終，追求安全、在TTD現有波動中猶豫不決者，將落後於那些領悟結構性成長故事、準備主導數位廣告未來者。風險真實存在，但機遇更大。把握此刻，意味著接受短期噪音並豪賭長期技術顛覆。這是此情境所要求的高回報心態。</p></div></details></div><div class="debate-panel" style="border-top:3px solid #3b82f6;"><h3 class="debate-panel-title" style="color:#3b82f6;">保守觀點</h3><div class="debate-preview"><p>保守型分析師：我欣賞激進型分析師的熱情以及中立型分析師的謹慎，但在平衡機會與風險方面，我必須對幾個觀點提出不同看法，因為風險管理依然是最重要的。</p>
+<p>先從內部人士買進的論點說起：是的，執行長斥資1.48億美元買股確實是信心的強烈訊號，但絕不能將內部人士買入等同於風險不存在。高管們常透過買股顯示承諾，但內部人士對公司前景常帶有高度偏見，可能低估外部治理風險。Publicis審計風波未解、帳務不規則，以及AI工具Kokai出問題，直接威脅客戶信任與營收，而這個行業中聲譽極其重要。這種監管與營運上的不確定性絕非「暫時性的干擾」，內部人士買股也無法神奇抵銷。特別是有董事會成員在此關頭辭職，反映出結構性問題，可能要歷經幾季甚至數年才能徹底解決。長期治理挑戰的風險非常現實存在。</p>
+<p>談技術面，雖然MACD柱狀圖和RSI顯示熊市動能可能正逐步減弱，但整體趨勢仍明顯偏空：股價仍遠低於50日均線（約29.93）及200日均線（約49.62），且近期價格迅速跌入20多美元中段，造成動態阻力位，難以形成有意義的反彈。等待確定突破，不是因為風險厭惡，而是為了切實降低假訊號的機率，因為此股顯然面臨下行壓力。沒有確認...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>保守型分析師：我欣賞激進型分析師的熱情以及中立型分析師的謹慎，但在平衡機會與風險方面，我必須對幾個觀點提出不同看法，因為風險管理依然是最重要的。</p>
+<p>先從內部人士買進的論點說起：是的，執行長斥資1.48億美元買股確實是信心的強烈訊號，但絕不能將內部人士買入等同於風險不存在。高管們常透過買股顯示承諾，但內部人士對公司前景常帶有高度偏見，可能低估外部治理風險。Publicis審計風波未解、帳務不規則，以及AI工具Kokai出問題，直接威脅客戶信任與營收，而這個行業中聲譽極其重要。這種監管與營運上的不確定性絕非「暫時性的干擾」，內部人士買股也無法神奇抵銷。特別是有董事會成員在此關頭辭職，反映出結構性問題，可能要歷經幾季甚至數年才能徹底解決。長期治理挑戰的風險非常現實存在。</p>
+<p>談技術面，雖然MACD柱狀圖和RSI顯示熊市動能可能正逐步減弱，但整體趨勢仍明顯偏空：股價仍遠低於50日均線（約29.93）及200日均線（約49.62），且近期價格迅速跌入20多美元中段，造成動態阻力位，難以形成有意義的反彈。等待確定突破，不是因為風險厭惡，而是為了切實降低假訊號的機率，因為此股顯然面臨下行壓力。沒有確認就追逐小的動量變化，往往會讓投資組合遭遇鞭打與不必要的波動。考慮到平均真實波幅（ATR）仍處於中等波動（約1.86），價格波動在尚未出現實質反彈前，仍可能造成嚴重損失。</p>
+<p>關於空頭放空比例與空頭擠壓的概念——理論上可能，但這屬投機情境。高空頭比例顯示有投資者看到下行風險，但押注擠壓需假設有足夠強大的催化劑能迫使空頭大量平倉。鑑於公司仍被審計與治理陰影籠罩，且基本面持續看空，這種催化劑並非理所當然。依賴此類事件，帶來不必要的投機風險，與保守風險配置背道而馳。</p>
+<p>你強調的估值與成長故事——如預期前瞻本益比約10.5或EPS預期躍升——的確反映分析師的樂觀預測，但這些基於風險能成功化解的前提。槓桿依然是風險紅旗，負債股本比高達17.5雖有淨現金緩衝，但一旦營收受審計風波或監管罰款影響，該流動性可能迅速消耗。面對尚未解決的重大風險，假設執行順利並不審慎。</p>
+<p>宏觀環境方面，確實，AI與CTV是令人振奮的成長行業，TTD佈局得宜。但所有創新公司都面臨執行風險，尤其是新興技術必須同步符合監管與營運控管，並且進行策略擴張。Publicis風波凸顯，即便是前景光明的創新，也能迅速被治理失誤掩蓋。保守策略可保護資本度過波動期，避免在挑戰延長時被困於錯誤一方。</p>
+<p>最後說到基本面：健康的利潤率、現金流及庫藏股皆屬正面；但在目前波動擴大與治理壓力下，庫藏股可能更多是為支撐股價，而非根本價值支撐。依賴庫藏股風險依然存在，且無法消弭營運與聲譽上的漏洞。</p>
+<p>總結，激進立場低估治理與審計風險的嚴重性及持續時間，輕忽技術面既有的看跌趨勢，且高估迅速翻轉市場情緒的催化劑概率。採用保守策略，降低曝險、耐心等待風險化解與技術面確認回升，符合審慎資產保護與可持續長期成長之道。</p>
+<p>冒險以謀取潛在上行空間，危及資本保全，是我認為公司應避免的取捨。這關乎有節制的曝險與嚴謹的防護，而非在結構性不確定及波動仍大的環境中追逐短期反彈。</p></div></details></div><div class="debate-panel" style="border-top:3px solid #f59e0b;"><h3 class="debate-panel-title" style="color:#f59e0b;">中立觀點</h3><div class="debate-preview"><p>中立分析師：積極和保守的分析師都帶來了寶貴的見解，但他們的立場各自都有些偏頗。積極分析師正確地強調了內部人購買、AI合作夥伴關係以及像CTV擴展這樣的增長計劃所帶來的機會，這些確實是TTD長期增長的重要推動力。但該觀點在某種程度上淡化了Publicis事件和董事會辭職暴露出的具體治理和審計風險。內部人購買是重要的看漲信號，但高管們也可能是因為對公司抱有信念而產生偏見的內部人，儘管公司面臨結構性挑戰。這應被視為積極信號，但不應被視為風險已完全解除的保證。</p>
+<p>在看漲的技術信號方面，MACD柱狀圖略有上升，RSI徘徊在40附近，確實顯示出可能的動能轉變早期跡象，或者至少顯示出看空壓力的放緩，但股價仍遠低於關鍵移動平均線如50日及200日SMA，這意味著下跌趨勢仍占主導。若未確認真正突破前便積極介入，可能面臨震盪和假突破的風險，尤其是在治理問題和市場懷疑籠罩的股票中。我同意此處應謹慎觀察，而非立即積極買入。</p>
+<p>相反，保守分析師正確地關注資本保全，鑑於未解決的治理問題和持續的看跌價格走勢。對審計風波、高槓桿以及潛在持續營收壓力的懷疑，是基於事實的合理擔憂，尤其股票技術走勢尚未出現反轉。然而，保守...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>中立分析師：積極和保守的分析師都帶來了寶貴的見解，但他們的立場各自都有些偏頗。積極分析師正確地強調了內部人購買、AI合作夥伴關係以及像CTV擴展這樣的增長計劃所帶來的機會，這些確實是TTD長期增長的重要推動力。但該觀點在某種程度上淡化了Publicis事件和董事會辭職暴露出的具體治理和審計風險。內部人購買是重要的看漲信號，但高管們也可能是因為對公司抱有信念而產生偏見的內部人，儘管公司面臨結構性挑戰。這應被視為積極信號，但不應被視為風險已完全解除的保證。</p>
+<p>在看漲的技術信號方面，MACD柱狀圖略有上升，RSI徘徊在40附近，確實顯示出可能的動能轉變早期跡象，或者至少顯示出看空壓力的放緩，但股價仍遠低於關鍵移動平均線如50日及200日SMA，這意味著下跌趨勢仍占主導。若未確認真正突破前便積極介入，可能面臨震盪和假突破的風險，尤其是在治理問題和市場懷疑籠罩的股票中。我同意此處應謹慎觀察，而非立即積極買入。</p>
+<p>相反，保守分析師正確地關注資本保全，鑑於未解決的治理問題和持續的看跌價格走勢。對審計風波、高槓桿以及潛在持續營收壓力的懷疑，是基於事實的合理擔憂，尤其股票技術走勢尚未出現反轉。然而，保守策略可能過於風險回避，因為它忽視了具體的正面因素：CEO以1.48億美元的金額進行內部人購買是罕見的信心表現，公司強健的基本面—健康的利潤率、正現金流以及持續在AI和國際市場的戰略投資—表明目前的風險或多或少已被市場部分消化。大幅減倉或完全賣出可能會錯過潛在的穩定或早期反彈階段。</p>
+<p>平衡且適度的策略似乎是最明智的前進之路。逐步減持而非全面拋售，可以降低暴露於較高風險中，而不會過早鎖定損失。保持較小持倉可參與未來反轉，一旦有審計問題解決、治理穩定以及技術確認（如股價持續站上50日SMA並伴隨MACD黃金交叉）等明確跡象出現。鑑於平均真實波幅（ATR）處於中等水平，採用波動率調整的止損能夠控制下行風險，同時允許在動能積極變化時獲利。</p>
+<p>此外，按中立觀點建議，轉向更穩健的科技公司進行再配置是審慎之舉——這有助於將風險分散，遠離仍籠罩TTD的爭議雲霧，且不會完全失去其創新增長前景的敞口。密切關注Publicis事件的解決、監管更新以及AI/CTV計劃的執行情況，是把握再入場或減倉時機的關鍵。</p>
+<p>總結而言，全面忽視內部人購買或AI驅動的增長故事，忽略了重要的長期驅動因素；反之，完全無視審計和治理風波風險，則是對下行風險準備不足。無論是完全賣出還是大膽持有，都無法完整反映現實的複雜性。適度且分階段的方法平衡了這些相互競爭的動態——既保障資本，又保有在明確復甦跡象出現時把握機會的靈活性。這條平衡路線尊重了當前存在的上升潛力與結構性風險。</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">裁判決定</h3><div class="judge-body"><p><strong>最終建議：現在賣出（或顯著減少）TTD 部位</strong></p>
+<hr />
+<h3>1. 主要論點總結</h3>
+<ul>
+<li><strong>激進分析師：</strong>  </li>
+<li>執行長內部購買1.48億美元是強烈的看漲信號，顯示深度信心。  </li>
+<li>最近的拋售是「壞消息買入」機會，由短期噪音驅動。  </li>
+<li>動量指標（MACD轉正，RSI穩定）和適中的ATR表明緩解性反彈或整理期即將到來。  </li>
+<li>高空頭比例有利於空頭擠壓，可能推動股價快速上漲。  </li>
+<li>基本面強勁：淨現金狀況、正現金流、回購及AI/CTV帶動。  </li>
+<li>
+<p>宏觀趨勢強烈支持像TTD這樣的顛覆性AI驅動廣告科技公司。</p>
+</li>
+<li>
+<p><strong>保守分析師：</strong>  </p>
+</li>
+<li>內部購買不是萬無一失——高管可能存在偏見，風險依然真實存在。  </li>
+<li>Publicis審計風波、帳單異常及董事會辭職顯示嚴重治理和客戶信任風險，可能持續數季甚至數年。  </li>
+<li>股價仍明顯低於重要技術均線（50日和200日SMA），顯示強烈下跌趨勢；技術風險高。  </li>
+<li>高槓桿加上營運不確定性，儘管淨現金，財務風險仍增加。  </li>
+<li>依賴空頭擠壓或樂觀成長預期在當前環境屬於投機且風險大。  </li>
+<li>回購可能扭曲價格但不能解決根本治理及營運問題。  </li>
+<li>
+<p>保護資本，減少曝險並等待風險解決及技術底部確認為審慎之舉。</p>
+</li>
+<li>
+<p><strong>中性分析師：</strong>  </p>
+</li>
+<li>內部購買及強勁成長舉措（AI合作、CTV擴展）是有意義的正面因素，但不能消除治理及審計風險。  </li>
+<li>初步動量信號存在，但整體價格仍偏空；等待確認突破以避免假反彈較明智。  </li>
+<li>建議適度調整持倉而非全部賣出，以管理風險同時保留成長曝險。  </li>
+<li>推薦利用波動性停損，關注審計問題解決、治理穩定及技術確認後再考慮重返。  </li>
+<li>建議將部分資金配置到更穩健的科技股，以平衡成長機會與治理不確定性。</li>
+</ul>
+<hr />
+<h3>2. 決策理由與反駁觀點</h3>
+<ul>
+<li>
+<p><strong>激進分析師</strong>的樂觀看法雖具說服力，但低估了Publicis審計風波及董事會動盪所帶來的治理與營運風險的規模、複雜性及持續時間。內部購買雖是極為正面的訊號，但不等同於結構性風險不存在，尤其當客戶信任與監管風險仍不明朗時。內部信念令人鼓舞，但單靠此點不足以支持當前積極買入。</p>
+</li>
+<li>
+<p><strong>保守分析師</strong>展現了符合具體未決問題的風險管理視角：  </p>
+<blockquote>
+<p>「治理挑戰持續的風險非常真實」「技術趨勢仍明顯負面」。<br />
+  保守觀點也正確指出，追逐短期技術信號或押注空頭擠壓，在當前環境中大幅增加下行風險。保存資本直到有意義的風險緩解及技術反彈證據出現為明智之選。</p>
+</blockquote>
+</li>
+<li>
+<p><strong>中性分析師</strong>建議的逐步減持方案在風險與機會間取得平衡，但可能過於謹慎，未充分應對當前標題治理及客戶信任風險的嚴重性。此策略降低了強制損失風險，但未完全規避下跌趨勢持續及結構性問題未解帶來的曝險。</p>
+</li>
+<li>
+<p>回顧過去在治理相關反彈樂觀預期導致長期虧損的經驗，立即果斷的風險降低更有助於資本保全與靈活性。</p>
+</li>
+</ul>
+<hr />
+<h3>3. 交易計畫優化</h3>
+<p><strong>原始計畫：</strong> 現在賣出或大幅減持，並監控風險解決和技術確認的明確跡象，才考慮重新進場。</p>
+<p><strong>結合分析師見解的優化計畫：</strong></p>
+<ol>
+<li><strong>立即行動：</strong>  </li>
+<li>立即執行<strong>賣出或大幅減持</strong>策略，以降低因治理、客戶信任和技術風險持續影響的曝險。  </li>
+<li>採用<strong>分階段賣出</strong>方式（數週內完成），避免在波動劇烈期間被迫恐慌拋售。  </li>
+<li>
+<p>利用與ATR（約1.86）相符的<strong>保護性停損點</strong>，限制剩餘持倉的下行風險。</p>
+</li>
+<li>
+<p><strong>監控再入市觸發條件：</strong>（對應中性分析師關注事項）  </p>
+</li>
+<li><strong>Publicis審計風波及治理重組進展/解決跡象</strong>（如董事會穩定、監管明朗）。  </li>
+<li><strong>客戶留存、營收穩定或增長的證據</strong>，體現在接下來的財報中。  </li>
+<li><strong>50日及200日SMA上方的技術突破確認</strong>，伴隨成交量確認及動量指標支持（MACD交叉，RSI高於50）。  </li>
+<li><strong>空頭比率降低</strong>及市場情緒改善。  </li>
+<li>
+<p>在當前產業及宏觀壓力下，財報表現符合或超過保守分析預期。</p>
+</li>
+<li>
+<p><strong>投資組合管理：</strong>  </p>
+</li>
+<li>考慮將賣出所得重新配置至<strong>更穩健、治理風險較低但具AI/CTV曝光的科技股</strong>，以維持成長導向的同時降低風險。  </li>
+<li>設置<strong>監測清單及警報</strong>，針對上述因素，實現依據證據的及時再入，而非投機操作。  </li>
+<li>持續關注廣告科技產業及相關監管動態，靈活調整策略。</li>
+</ol>
+<hr />
+<h3>4. 從過去錯誤中學到的教訓</h3>
+<ul>
+<li>避免基於<strong>樂觀但未證實的轉機敘事</strong>提前布局，尤其在存在治理缺失及客戶信任問題時。  </li>
+<li>內部購買是強烈正訊號，但不能使投資人忽視營運與監管現實。  </li>
+<li><strong>等待技術信號確立與基本面風險緩解</strong>可避免價格震盪和長期虧損。  </li>
+<li>警惕治理及審計相關風險的持續時間和規模，避免因過度樂觀及急躁買入導致資本侵蝕。  </li>
+<li>在不確定時期分散風險，保留更多選擇權。</li>
+</ul>
+<hr />
+<h3><strong>結論：</strong></h3>
+<p>儘管The Trade Desk（TTD）憑藉技術創新、AI/CTV成長及獨特的內部信念具有<strong>長期強勁的潛力</strong>，但這些利多目前被顯著的短期風險掩蓋——尤其是治理與審計風波、偏空技術趨勢及在執行不確定下的財務槓桿。</p>
+<p><strong>持續下跌趨勢及進一步下行的風險顯著高於近期反彈或空頭擠壓的可能性。</strong> 因此，最佳的風險管理決策是：</p>
+<blockquote>
+<p><strong>現在賣出或大幅減持TTD持倉以保全資本。</strong></p>
+</blockquote>
+<p>只有在基本面風險明確緩解且技術反彈得到確認後，才應考慮在嚴格風控與分散曝險的基礎上重新買入。此策略兼顧TTD的創新潛力與即時威脅股東價值的現實。</p>
+<hr />
+<p><strong>建議：</strong><br />
+<strong>現在賣出或顯著減少TTD曝險。</strong><br />
+密切關注催化劑及技術信號，待風險消退且動量確認時，才把握機會適時再入。</p></div></div></section>
+        <footer class="dashboard-footer"><p>由 TradingAgents 於 2026-03-18 15:17 產生</p></footer>
+    </main>
+</div>
+
+<script>
+(function() {
+    // ─── Tab Switching (legacy fallback) ────────────
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var container = btn.closest('.tabs-container');
+            var tabId = btn.getAttribute('data-tab');
+            container.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            container.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+            btn.classList.add('active');
+            var panel = container.querySelector('[data-panel="' + tabId + '"]');
+            if (panel) panel.classList.add('active');
+        });
+    });
+
+    // ─── Smooth Scroll from Nav ─────────────────────
+    document.querySelectorAll('.nav-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var id = link.getAttribute('href').slice(1);
+            var el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // ─── IntersectionObserver for Nav Tracking ──────
+    var navLinks = document.querySelectorAll('.nav-link');
+    var sections = [];
+    navLinks.forEach(function(link) {
+        var id = link.getAttribute('data-section');
+        var el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el });
+    });
+
+    if (sections.length && 'IntersectionObserver' in window) {
+        var currentActive = null;
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    currentActive = entry.target.id;
+                }
+            });
+            if (currentActive) {
+                navLinks.forEach(function(l) {
+                    if (l.getAttribute('data-section') === currentActive) {
+                        l.classList.add('active');
+                    } else {
+                        l.classList.remove('active');
+                    }
+                });
+            }
+        }, {
+            rootMargin: '-80px 0px -60% 0px',
+            threshold: 0
+        });
+        sections.forEach(function(s) { observer.observe(s.el); });
+    }
+})();
+</script>
+
+<script>document.addEventListener("DOMContentLoaded", function() {  if (typeof Chart === "undefined") return;  var ctx = document.getElementById("macdChart");  if (!ctx) return;  new Chart(ctx, {    type: "bar",    data: {      labels: ["MACD", "Signal", "Histogram"],      datasets: [{        data: [-0.63, 0, 0],        backgroundColor: ["#ef4444", "#8b5cf6", "#10b981"],        borderRadius: 4,        barThickness: 40      }]    },    options: {      responsive: true,      maintainAspectRatio: false,      plugins: { legend: { display: false } },      scales: {        y: {          grid: { color: "#1e293b" },          ticks: { color: "#64748b", font: { family: "DM Mono" } }        },        x: {          grid: { display: false },          ticks: { color: "#64748b", font: { family: "DM Mono" } }        }      }    }  });});</script>
+
+</body>
+</html>
