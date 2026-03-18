@@ -26,6 +26,7 @@ const FILES = {
     {"name":"ADP_2026-03-18.html","path":"TradingAgents/US/ADP_2026-03-18.html","dir":"TradingAgents/US"},
     {"name":"BR_2026-03-18_zh.html","path":"TradingAgents/US/BR_2026-03-18_zh.html","dir":"TradingAgents/US"},
     {"name":"BR_2026-03-18.html","path":"TradingAgents/US/BR_2026-03-18.html","dir":"TradingAgents/US"},
+    {"name":"CF_2026-03-18.html","path":"TradingAgents/US/CF_2026-03-18.html","dir":"TradingAgents/US"},
     {"name":"DLR_2026-03-17_投資分析框架.html","path":"TradingAgents/US/DLR_2026-03-17_投資分析框架.html","dir":"TradingAgents/US"},
     {"name":"DLR_2026-03-17_zh.html","path":"TradingAgents/US/DLR_2026-03-17_zh.html","dir":"TradingAgents/US"},
     {"name":"DLR_2026-03-17.html","path":"TradingAgents/US/DLR_2026-03-17.html","dir":"TradingAgents/US"},
