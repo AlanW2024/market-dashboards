@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACN 投資分析框架</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-soft: #1e293b;
+      --border: rgba(148, 163, 184, 0.18);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #f59e0b;
+      --glow: rgba(245,158,11,0.18);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 36%),
+        radial-gradient(circle at top right, var(--glow), transparent 30%),
+        linear-gradient(180deg, #020617 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+    .hero {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.32);
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    h1 {
+      margin: 10px 0 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .metric {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .metric-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .metric-value {
+      margin-top: 6px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .summary-card {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+      margin-bottom: 24px;
+    }
+    .summary-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .summary-title::before {
+      content: '';
+      width: 4px;
+      height: 22px;
+      background: var(--accent);
+      border-radius: 999px;
+    }
+    .summary-list {
+      display: grid;
+      gap: 14px;
+    }
+    .summary-item {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      align-items: center;
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 18px;
+      padding: 16px 18px;
+    }
+    .summary-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .summary-text {
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+    .content {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+    }
+    .content h1, .content h2, .content h3 {
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.25;
+    }
+    .content h1 { font-size: 2rem; margin-top: 0; }
+    .content h2 {
+      font-size: 1.35rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .content h3 { font-size: 1.1rem; margin-top: 1.4rem; }
+    .content p, .content li { color: var(--text); }
+    .content strong { color: #f8fafc; }
+    .content code {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 0.15em 0.45em;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.92em;
+    }
+    .content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.7);
+    }
+    .content th, .content td {
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .content th {
+      background: rgba(30, 41, 59, 0.95);
+      color: #f8fafc;
+    }
+    .content blockquote {
+      margin: 16px 0;
+      padding: 14px 18px;
+      border-left: 4px solid var(--accent);
+      background: rgba(15, 23, 42, 0.75);
+      border-radius: 0 14px 14px 0;
+    }
+    a { color: #7dd3fc; }
+    .footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="eyebrow">Tier 3 Final Verdict</div>
+      <h1>ACN 投資分析框架</h1>
+      <div class="hero-grid">
+        <div class="metric">
+          <div class="metric-label">最終行動</div>
+          <div class="metric-value">HOLD</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">信心分數</div>
+          <div class="metric-value">55.8</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">裁決模式</div>
+          <div class="metric-value">cheap</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">交易日</div>
+          <div class="metric-value">2026-03-18</div>
+        </div>
+      </div>
+    </section>
+    <section class="summary-card">
+      <div class="summary-title">執行摘要</div>
+      <div class="summary-list">
+        <div class="summary-item"><div class="summary-number">1</div><div class="summary-text">儘管擁有AI結構性成長潛力，極高財務槓桿及技術面弱勢造成重大風險，短期宜觀望。</div></div><div class="summary-item"><div class="summary-number">2</div><div class="summary-text">過高負債比與持續賣壓風險未明顯改善，且無確定反轉訊號，操作加倉風險大。</div></div><div class="summary-item"><div class="summary-number">3</div><div class="summary-text">維持現有持倉，嚴格設置停損，密切追蹤MACD金叉、RSI持續上升及負債結構改善等反轉條件。</div></div>
+      </div>
+    </section>
+    <section class="content">
+      <h2>快速結論</h2>
+<ul>
+<li><strong>最終行動：</strong> HOLD</li>
+<li><strong>信心分數：</strong> 55.8/100</li>
+<li><strong>TradingAgents 初步判斷：</strong> HOLD</li>
+<li><strong>裁決模式：</strong> cheap</li>
+<li><strong>需要人工複核：</strong> 是</li>
+<li><strong>下一步執行：</strong> 維持現有持倉，嚴格設置停損，密切追蹤MACD金叉、RSI持續上升及負債結構改善等反轉條件。</li>
+</ul>
+<h2>為什麼現在做</h2>
+<p>目前股價仍低於主要均線且技術指標尚未確立多頭，短期風險控制及觀望合理。</p>
+<h2>為什麼現在不做</h2>
+<p>過高負債比與持續賣壓風險未明顯改善，且無確定反轉訊號，操作加倉風險大。</p>
+<h2>最終行動計畫</h2>
+<p><strong>決策理由：</strong> 兩組framework judges與TradingAgents皆維持HOLD，因財務槓桿高企與技術指標弱勢風險尚未解除，缺乏明確反轉信號。</p>
+<p><strong>進場或執行計畫：</strong> 維持現有持倉，嚴格設置停損，密切追蹤MACD金叉、RSI持續上升及負債結構改善等反轉條件。</p>
+<p><strong>風險控制計畫：</strong> 設定停損點防範再融資風險及技術面不利反應，並警戒利率上升和執行風險惡化。</p>
+<p><strong>重新檢查觸發點：</strong><br />
+- MACD形成確立金叉且伴隨價格突破50日和200日均線<br />
+- 負債權益比顯著下降與自由現金流持續強勁增長<br />
+- 營收與淨利出現顯著改善信號</p>
+<h2>TradingAgents 摘要</h2>
+<ul>
+<li><strong>Tier 1 分數：</strong> 0</li>
+<li><strong>Tier 2 綜合分：</strong> 0</li>
+<li><strong>板塊：</strong> N/A</li>
+<li><strong>風險標記：</strong> Medium</li>
+<li><strong>Structured log：</strong> <code>/Users/yeehowong/Desktop/Project/sp500_pipeline/eval_results/ACN/TradingAgentsStrategy_logs/full_states_log_2026-03-18.json</code></li>
+</ul>
+<h2>投資框架投票</h2>
+<table>
+<thead>
+<tr>
+<th>框架</th>
+<th>票向</th>
+<th>信心</th>
+<th>核心論點</th>
+<th>建議動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Howard Marks + Ray Dalio</td>
+<td>HOLD</td>
+<td>75</td>
+<td>儘管 Accenture 具備AI和數位轉型的長期成長潛力，但極度高槓桿結構與技術面弱勢帶來重大風險，當下宜保持觀望並嚴格風控。</td>
+<td>維持原有持倉，密切監控技術面與債務風險變化，設定嚴格停損，待確明反轉訊號與風險緩解後再考慮加碼。</td>
+</tr>
+<tr>
+<td>George Soros + Stanley Druckenmiller</td>
+<td>HOLD</td>
+<td>8</td>
+<td>儘管ACN在AI與數位轉型具結構性成長潛力，但極高的負債比與技術指標持續弱勢使風險無法忽視，故當前宜保持觀望，等待技術與基本面明確改善。</td>
+<td>維持現有持倉不動，嚴格設置停損，密切監控技術指標與債務狀況變化，等待明確向上突破信號才適度加碼。</td>
+</tr>
+</tbody>
+</table>
+<h2>投資框架觀點</h2>
+<h3>Howard Marks + Ray Dalio</h3>
+<ul>
+<li><strong>票向：</strong> HOLD</li>
+<li><strong>信心：</strong> 75.0/100</li>
+<li><strong>核心論點：</strong> 儘管 Accenture 具備AI和數位轉型的長期成長潛力，但極度高槓桿結構與技術面弱勢帶來重大風險，當下宜保持觀望並嚴格風控。</li>
+<li><strong>建議動作：</strong> 維持原有持倉，密切監控技術面與債務風險變化，設定嚴格停損，待確明反轉訊號與風險緩解後再考慮加碼。</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- 財務面顯示ACN有強勁現金流與充裕現金儲備(約96.5億美元)，支持其積極投入AI與數位創新。<br />
+- 技術指標呈現中長期下跌趨勢(價格遠低於50日和200日均線)，短期MACD和RSI提示賣壓減緩但尚無明確反轉信號。<br />
+- 外部情緒與分析師偏向樂觀，強調公司AI戰略與核心競爭力，但多數分析師近期已下調目標價，反映市場對前景仍有疑慮。</p>
+<p><strong>主要風險：</strong><br />
+- 異常高的負債對權益比(25.7)帶來再融資風險及利率上升風險，尤其在宏觀不確定環境下更為敏感。<br />
+- AI競爭激烈且存在執行風險，若市場需求減弱或競爭加劇，成長預期可能遭到挑戰。</p>
+<p><strong>失效條件：</strong><br />
+- 若公司能明顯降低負債比率，改善資本結構風險。<br />
+- 若技術指標出現確立的短中期趨勢反轉（如MACD金叉與RSI持續上升），並伴隨營收與淨利重要改善。</p>
+<h3>George Soros + Stanley Druckenmiller</h3>
+<ul>
+<li><strong>票向：</strong> HOLD</li>
+<li><strong>信心：</strong> 8.0/100</li>
+<li><strong>核心論點：</strong> 儘管ACN在AI與數位轉型具結構性成長潛力，但極高的負債比與技術指標持續弱勢使風險無法忽視，故當前宜保持觀望，等待技術與基本面明確改善。</li>
+<li><strong>建議動作：</strong> 維持現有持倉不動，嚴格設置停損，密切監控技術指標與債務狀況變化，等待明確向上突破信號才適度加碼。</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- 負債權益比高達25.69，異常且加劇再融資與利率風險，財務槓桿風險不可小覷。<br />
+- 價格持續低於50日與200日均線，短中期趨勢仍偏空，RSI接近超賣但尚未確認反轉。<br />
+- MACD指標由強負轉為微正，顯示空頭動能慣性減弱，但尚不足以作為買入確立訊號。</p>
+<p><strong>主要風險：</strong><br />
+- 若市場利率上升或經濟放緩導致融資成本升高，加劇財務壓力。<br />
+- AI與數位轉型競爭激烈，執行風險與市場份額流失可能侵蝕長期成長預期。</p>
+<p><strong>失效條件：</strong><br />
+- MACD明確轉正形成金叉，且價格突破50日與200日均線形成多頭趨勢。<br />
+- 財務負債結構明顯改善，負債權益比顯著下降且自由現金流持續強勁。</p>
+<h2>最終裁決摘要</h2>
+<ul>
+<li><strong>主論點：</strong> 儘管擁有AI結構性成長潛力，極高財務槓桿及技術面弱勢造成重大風險，短期宜觀望。</li>
+<li><strong>framework 多數票：</strong> HOLD</li>
+<li><strong>一致度：</strong> 2/2</li>
+</ul>
+<p><strong>主要風險：</strong><br />
+- 異常高負債比帶來再融資與利率風險<br />
+- 技術指標持續偏弱且反轉訊號尚未確立<br />
+- AI市場競爭激烈與執行風險</p>
+<hr />
+<p><em>由 SP500 Pipeline Tier 3 產生 — 2026-03-18 21:42</em></p>
+      <div class="footer">Generated at 2026-03-18 21:42</div>
+    </section>
+  </div>
+</body>
+</html>
