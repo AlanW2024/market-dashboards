@@ -20,6 +20,7 @@ const FILES = {
   "📈 個股分析 (US)": [
     {"name":"ACN_2026-03-18_zh.html","path":"TradingAgents/US/ACN_2026-03-18_zh.html","dir":"TradingAgents/US"},
     {"name":"ACN_2026-03-18.html","path":"TradingAgents/US/ACN_2026-03-18.html","dir":"TradingAgents/US"},
+    {"name":"ADBE_2026-03-18_投資分析框架.html","path":"TradingAgents/US/ADBE_2026-03-18_投資分析框架.html","dir":"TradingAgents/US"},
     {"name":"ADBE_2026-03-18_zh.html","path":"TradingAgents/US/ADBE_2026-03-18_zh.html","dir":"TradingAgents/US"},
     {"name":"ADBE_2026-03-18.html","path":"TradingAgents/US/ADBE_2026-03-18.html","dir":"TradingAgents/US"},
     {"name":"ADP_2026-03-18_zh.html","path":"TradingAgents/US/ADP_2026-03-18_zh.html","dir":"TradingAgents/US"},
