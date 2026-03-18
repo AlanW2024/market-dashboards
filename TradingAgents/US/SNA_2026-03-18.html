@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNA — BUY | 2026-03-18</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* ─── Custom Properties ─────────────────────────────── */
+:root {
+    --bg-primary: #0b0f19;
+    --bg-secondary: #0f1629;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --bg-inset: #0d1117;
+    --border-subtle: #1e293b;
+    --border-medium: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --signal-color: #10b981;
+    --signal-glow: rgba(16, 185, 129, 0.15);
+    --signal-rgb: 16, 185, 129;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --sidebar-w: 220px;
+    --header-h: 56px;
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ─── Noise Texture ─────────────────────────────────── */
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* ─── Header Bar ────────────────────────────────────── */
+.header-bar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 100;
+    display: flex; align-items: center;
+}
+.header-inner {
+    width: 100%; max-width: 1400px;
+    margin: 0 auto; padding: 0 2rem;
+    display: flex; align-items: center;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+}
+
+/* ─── Signal Pill ───────────────────────────────────── */
+.signal-pill {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.85rem;
+    background: rgba(var(--signal-rgb), 0.15);
+    border: 1px solid rgba(var(--signal-rgb), 0.3);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-weight: 500; font-size: 0.8rem;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* ─── Layout ────────────────────────────────────────── */
+.layout {
+    display: flex; max-width: 1400px;
+    margin: 0 auto; padding-top: var(--header-h);
+    min-height: 100vh;
+}
+
+/* ─── Sidebar ───────────────────────────────────────── */
+.sidebar {
+    position: sticky; top: var(--header-h);
+    width: var(--sidebar-w); flex-shrink: 0;
+    height: calc(100vh - var(--header-h));
+    padding: 1.5rem 0 1.5rem 1.5rem;
+    overflow-y: auto;
+}
+.sidebar-inner {
+    display: flex; flex-direction: column; gap: 0.25rem;
+}
+.nav-link {
+    display: block; padding: 0.5rem 1rem;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500;
+    border-radius: var(--radius-sm);
+    border-left: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+.nav-link:hover {
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.03);
+}
+.nav-link.active {
+    color: var(--signal-color);
+    border-left-color: var(--signal-color);
+    background: rgba(var(--signal-rgb), 0.08);
+}
+
+/* ─── Main Content ──────────────────────────────────── */
+.main-content {
+    flex: 1; min-width: 0;
+    padding: 1.5rem 2rem 3rem 1.5rem;
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+
+/* ─── Hero Card ─────────────────────────────────────── */
+.hero-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    overflow: hidden;
+}
+.hero-mesh {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(var(--signal-rgb), 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(var(--signal-rgb), 0.05) 0%, transparent 40%),
+        radial-gradient(ellipse at 60% 80%, rgba(var(--signal-rgb), 0.03) 0%, transparent 60%);
+    pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-header {
+    display: flex; align-items: center; gap: 1rem;
+    flex-wrap: wrap; margin-bottom: 0.5rem;
+}
+.hero-ticker {
+    font-family: var(--font-heading);
+    font-size: 2.5rem; font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text-primary), var(--signal-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-date {
+    font-family: var(--font-mono);
+    font-size: 0.9rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.hero-card .signal-pill { font-size: 0.9rem; padding: 0.35rem 1rem; }
+
+/* Risk Badge */
+.risk-badge {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 20px; letter-spacing: 0.05em;
+}
+.risk-low    { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+.risk-medium { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+.risk-high   { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+
+/* Reasons */
+.reasons-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.reason {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(var(--signal-rgb), 0.05);
+    border: 1px solid rgba(var(--signal-rgb), 0.1);
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;
+}
+.reason-num {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px;
+    background: rgba(var(--signal-rgb), 0.15);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 50%;
+}
+
+/* ─── Metrics Grid ──────────────────────────────────── */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+.metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+    position: relative; overflow: hidden;
+}
+.metric-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--signal-color); opacity: 0.4;
+    transition: opacity 0.25s ease;
+}
+.metric-card:hover {
+    border-color: rgba(var(--signal-rgb), 0.3);
+    box-shadow: 0 0 20px rgba(var(--signal-rgb), 0.08);
+}
+.metric-card:hover::before { opacity: 1; }
+.metric-label {
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+}
+.metric-value {
+    font-family: var(--font-mono);
+    font-size: 1.35rem; font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* ─── Section Cards ─────────────────────────────────── */
+.section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2rem;
+    transition: border-color 0.25s ease;
+}
+.section-card:hover { border-color: var(--border-medium); }
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.section-title::before {
+    content: ''; display: inline-block;
+    width: 4px; height: 20px;
+    background: var(--signal-color); border-radius: 2px;
+}
+.section-body {
+    color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.section-body h1, .section-body h2, .section-body h3 {
+    font-family: var(--font-heading);
+    color: var(--text-primary); margin: 1.5rem 0 0.75rem;
+}
+.section-body h1 { font-size: 1.2rem; }
+.section-body h2 { font-size: 1.1rem; }
+.section-body h3 { font-size: 1rem; }
+.section-body p { margin-bottom: 0.75rem; }
+.section-body ul, .section-body ol { margin: 0.5rem 0 1rem 1.5rem; }
+.section-body li { margin-bottom: 0.3rem; }
+.section-body strong { color: var(--text-primary); }
+.section-body em { color: var(--text-muted); font-style: italic; }
+
+/* Tables in sections */
+.section-body table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0; font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.section-body thead th {
+    background: rgba(var(--signal-rgb), 0.1);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.78rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.section-body tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.section-body tbody tr:hover { background: rgba(255,255,255,0.02); }
+.section-body tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+
+/* ─── Technical Dashboard ──────────────────────────── */
+.tech-dashboard {
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+.gauges-row {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    justify-content: center; padding: 0.5rem 0;
+}
+.gauge-container {
+    width: 200px; text-align: center;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem 0.5rem 0.75rem;
+}
+.gauge-svg { width: 100%; height: auto; }
+.charts-row {
+    display: grid; grid-template-columns: 1fr; gap: 1rem;
+}
+.chart-container {
+    position: relative; height: 220px;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+
+/* ─── MA Comparison Chart ──────────────────────────── */
+.ma-chart {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.ma-bar-row {
+    display: flex; align-items: center; gap: 0.75rem;
+}
+.ma-label {
+    width: 56px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    color: var(--text-muted); text-align: right;
+}
+.ma-bar-track {
+    flex: 1; height: 24px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px; overflow: hidden;
+}
+.ma-bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 1s ease;
+}
+.ma-value {
+    width: 64px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    color: var(--text-primary); text-align: right;
+}
+
+/* ─── KPI Grid ─────────────────────────────────────── */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.kpi-card {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+.kpi-label {
+    font-size: 0.72rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.3rem;
+}
+.kpi-value {
+    font-family: var(--font-mono);
+    font-size: 1.1rem; font-weight: 600;
+}
+
+/* ─── Sentiment Dashboard ──────────────────────────── */
+.sentiment-summary { margin-bottom: 1.5rem; }
+.sentiment-bar {
+    display: flex; height: 28px;
+    border-radius: 14px; overflow: hidden;
+    background: var(--bg-inset);
+}
+.sent-fill { transition: width 0.8s ease; min-width: 2px; }
+.sent-pos { background: #10b981; }
+.sent-neu { background: #475569; }
+.sent-neg { background: #ef4444; }
+.sentiment-counts {
+    display: flex; justify-content: center;
+    gap: 1.5rem; margin-top: 0.75rem;
+}
+.sent-count {
+    font-family: var(--font-mono); font-size: 0.8rem;
+}
+.sent-count-pos { color: #10b981; }
+.sent-count-neu { color: #64748b; }
+.sent-count-neg { color: #ef4444; }
+.sent-tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem; border-radius: 10px;
+    font-size: 0.78rem; font-weight: 500;
+}
+.sent-tag-positive { background: rgba(16,185,129,0.15); color: #10b981; }
+.sent-tag-negative { background: rgba(239,68,68,0.15); color: #ef4444; }
+.sent-tag-neutral { background: rgba(100,116,139,0.15); color: #94a3b8; }
+.sent-row-positive td:first-child { border-left: 3px solid #10b981; }
+.sent-row-negative td:first-child { border-left: 3px solid #ef4444; }
+.sent-row-neutral td:first-child { border-left: 3px solid #475569; }
+
+/* ─── Indicator Table ──────────────────────────────── */
+.indicator-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.indicator-table thead th {
+    background: rgba(var(--signal-rgb), 0.08);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.indicator-table tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.indicator-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.indicator-table tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+.ind-name {
+    font-family: var(--font-mono); font-weight: 500;
+    color: var(--text-primary);
+}
+.ind-value {
+    font-family: var(--font-mono); color: var(--signal-color);
+}
+
+/* ─── Debate Comparison ────────────────────────────── */
+.debate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; margin-bottom: 1rem;
+}
+.debate-panel {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.debate-panel-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.debate-preview {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    max-height: 200px; overflow: hidden;
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+.debate-preview p { margin-bottom: 0.5rem; }
+.debate-preview strong { color: var(--text-primary); }
+.debate-expand { margin-top: 0.75rem; }
+.debate-expand summary {
+    cursor: pointer; color: var(--signal-color);
+    font-size: 0.85rem; font-weight: 500;
+    padding: 0.4rem 0; user-select: none;
+    list-style: none;
+}
+.debate-expand summary::-webkit-details-marker { display: none; }
+.debate-expand summary::before {
+    content: '\25B8 '; font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+.debate-expand[open] summary::before { transform: rotate(90deg); }
+.debate-full {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    margin-top: 0.75rem;
+    max-height: 600px; overflow-y: auto;
+}
+.debate-full p { margin-bottom: 0.5rem; }
+.debate-full strong { color: var(--text-primary); }
+.debate-full ul, .debate-full ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.debate-full li { margin-bottom: 0.3rem; }
+
+/* ─── Judge Decision ───────────────────────────────── */
+.judge-decision {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    border-left: 3px solid var(--signal-color);
+}
+.judge-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    color: var(--signal-color);
+    margin-bottom: 0.75rem;
+}
+.judge-body {
+    color: var(--text-secondary);
+    font-size: 0.9rem; line-height: 1.7;
+}
+.judge-body p { margin-bottom: 0.5rem; }
+.judge-body strong { color: var(--text-primary); }
+.judge-body ul, .judge-body ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.judge-body li { margin-bottom: 0.3rem; }
+
+/* ─── Tabs (legacy fallback) ───────────────────────── */
+.tab-bar {
+    display: flex; gap: 0.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 1.25rem;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tab-btn {
+    padding: 0.6rem 1.25rem; background: none; border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.88rem; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.tab-btn:hover { color: var(--text-secondary); }
+.tab-btn.active {
+    color: var(--signal-color);
+    border-bottom-color: var(--signal-color);
+}
+.tab-panel {
+    display: none; color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
+.tab-panel p { margin-bottom: 0.75rem; }
+.tab-panel strong { color: var(--text-primary); }
+.tab-panel ul, .tab-panel ol { margin: 0.5rem 0 1rem 1.5rem; }
+.tab-panel li { margin-bottom: 0.3rem; }
+.text-muted { color: var(--text-muted); font-style: italic; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Collapsible Debate Rounds ─────────────────────── */
+.debate-round {
+    margin: 0.5rem 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    overflow: hidden; transition: border-color 0.2s ease;
+}
+.debate-round[open] { border-color: rgba(var(--signal-rgb), 0.2); }
+.debate-round summary {
+    padding: 0.7rem 1rem; background: var(--bg-inset);
+    cursor: pointer; font-weight: 600; font-size: 0.88rem;
+    color: var(--text-secondary); list-style: none;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: all 0.2s ease; user-select: none;
+}
+.debate-round summary::-webkit-details-marker { display: none; }
+.debate-round summary::before {
+    content: '\25B8'; font-size: 0.75rem;
+    color: var(--text-muted); transition: transform 0.2s ease;
+}
+.debate-round[open] summary::before { transform: rotate(90deg); }
+.debate-round summary:hover {
+    background: rgba(255,255,255,0.03); color: var(--text-primary);
+}
+.round-content {
+    padding: 1rem; border-top: 1px solid var(--border-subtle);
+    color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7;
+}
+.round-content p { margin-bottom: 0.6rem; }
+.round-content strong { color: var(--text-primary); }
+.round-content ul, .round-content ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+
+/* ─── Footer ────────────────────────────────────────── */
+.dashboard-footer {
+    text-align: center; padding: 2rem;
+    color: var(--text-muted); font-size: 0.8rem;
+    font-family: var(--font-mono);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 1rem;
+}
+
+/* ─── Responsive ────────────────────────────────────── */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; top: var(--header-h);
+        left: 0; right: 0; width: 100%;
+        height: auto; padding: 0.5rem;
+        background: rgba(11, 15, 25, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-subtle);
+        z-index: 90; overflow-x: auto; overflow-y: hidden;
+    }
+    .sidebar-inner {
+        flex-direction: row; gap: 0; min-width: max-content;
+    }
+    .nav-link {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        padding: 0.4rem 0.75rem; font-size: 0.78rem;
+        white-space: nowrap;
+    }
+    .nav-link.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--signal-color);
+    }
+    html { scroll-padding-top: calc(var(--header-h) + 3.5rem); }
+    .main-content { padding: 4.5rem 1rem 2rem 1rem; }
+    .hero-ticker { font-size: 1.8rem; }
+    .hero-card { padding: 1.5rem; }
+    .section-card { padding: 1.25rem; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .tab-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+    .gauges-row { gap: 0.75rem; }
+    .gauge-container { width: 160px; }
+    .debate-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-container { height: 180px; }
+    .ma-label { width: 48px; font-size: 0.72rem; }
+    .ma-value { width: 52px; font-size: 0.78rem; }
+}
+@media (min-width: 769px) {
+    .main-content { padding-top: 1.5rem; }
+}
+
+/* ─── Print ─────────────────────────────────────────── */
+@media print {
+    body { background: #fff; color: #111; }
+    body::before { display: none; }
+    .header-bar { position: relative; background: #fff; border-bottom: 2px solid #111; }
+    .header-inner { color: #111; }
+    .sidebar { display: none; }
+    .layout { display: block; }
+    .main-content { padding: 1rem; }
+    .hero-card, .section-card, .metric-card, .kpi-card, .gauge-container,
+    .debate-panel, .judge-decision {
+        background: #fff; border-color: #ddd;
+        box-shadow: none; break-inside: avoid;
+    }
+    .hero-mesh { display: none; }
+    .hero-ticker {
+        background: none;
+        -webkit-text-fill-color: #111; color: #111;
+    }
+    .signal-pill {
+        background: #eee; border-color: #ccc; color: #333;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .debate-round { break-inside: avoid; }
+    .debate-round .round-content { display: block; }
+    .debate-preview { max-height: none; mask-image: none; -webkit-mask-image: none; }
+    .debate-full { max-height: none; }
+    .tab-panel { display: block !important; margin-bottom: 1rem; }
+    .tab-bar { display: none; }
+    .section-body, .round-content, .tab-panel, .debate-full,
+    .judge-body { color: #333; }
+    .section-title, .debate-panel-title, .judge-title { color: #111; }
+    .metric-label, .kpi-label { color: #666; }
+    .metric-value, .kpi-value, .ind-value, .ma-value { color: #111; }
+    .reason { background: #f9f9f9; border-color: #ddd; color: #333; }
+    .reason-num { background: #eee; color: #333; }
+    .chart-container { display: none; }
+    .sent-tag { border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<header class="header-bar">
+    <div class="header-inner">SNA — BUY | 2026-03-18</div>
+</header>
+
+<div class="layout">
+    <nav class="sidebar" id="sidebar"><div class="sidebar-inner"><a href="#executive-summary" class="nav-link" data-section="executive-summary">Executive Summary</a>
+<a href="#market" class="nav-link" data-section="market">Technical</a>
+<a href="#sentiment" class="nav-link" data-section="sentiment">Sentiment</a>
+<a href="#news" class="nav-link" data-section="news">News</a>
+<a href="#fundamentals" class="nav-link" data-section="fundamentals">Fundamentals</a>
+<a href="#investment-debate" class="nav-link" data-section="investment-debate">Investment Debate</a>
+<a href="#trader-plan" class="nav-link" data-section="trader-plan">Trader Plan</a>
+<a href="#risk-debate" class="nav-link" data-section="risk-debate">Risk Debate</a>
+</div></nav>
+    <main class="main-content">
+        <section id="executive-summary" class="hero-card"><div class="hero-mesh"></div><div class="hero-content"><div class="hero-header"><h1 class="hero-ticker">SNA</h1><span class="signal-pill">BUY</span><span class="risk-badge risk-medium">Medium Risk</span></div><div class="hero-date">2026-03-18</div><div class=reasons-list><div class="reason"><span class="reason-num">1</span><span>Snap-on’s stock remains above the critical 200-day SMA, supported by strong fundamentals and solid free cash flow, indicating a healthy long-term uptrend.  </span></div>
+<div class="reason"><span class="reason-num">2</span><span>The company’s high leverage is balanced by strong liquidity and manageable interest expenses, suggesting debt is a strategic growth lever rather than a risk.  </span></div>
+<div class="reason"><span class="reason-num">3</span><span>Valuation is reasonable relative to growth prospects, and buying during this corrective dip offers a favorable risk-reward with disciplined entry and monitoring.  </span></div>
+</div></div></section>
+        <section id="market" class="section-card"><h2 class="section-title">Technical Dashboard</h2><div class="tech-dashboard"><table class="indicator-table"><thead><tr><th>Indicator</th><th>Value</th><th>Signal</th><th>Interpretation</th></tr></thead><tbody><tr><td class="ind-name">10 EMA</td><td class="ind-value">Short-term momentum declining, bearish signs emerging</td><td></td><td></td></tr><tr><td class="ind-name">50 SMA</td><td class="ind-value">Medium-term trend tested, currently acting as resistance</td><td></td><td></td></tr><tr><td class="ind-name">200 SMA</td><td class="ind-value">Long-term uptrend intact, strong support below current price</td><td></td><td></td></tr><tr><td class="ind-name">MACD</td><td class="ind-value">Momentum turning bearish, confirms weakening bullish trend</td><td></td><td></td></tr><tr><td class="ind-name">MACD Signal</td><td class="ind-value">Validates MACD bearish crossover</td><td></td><td></td></tr><tr><td class="ind-name">MACD Histogram</td><td class="ind-value">Visual confirmation of weakening momentum</td><td></td><td></td></tr><tr><td class="ind-name">RSI</td><td class="ind-value">Shows weakening buying strength, approaching neutral to slightly oversold conditions</td><td></td><td></td></tr><tr><td class="ind-name">ATR</td><td class="ind-value">Stable volatility environment, no excessive risk spikes</td><td></td><td></td></tr></tbody></table></div></section>
+        <section id="sentiment" class="section-card"><h2 class="section-title">Sentiment Dashboard</h2><div class="sentiment-summary"><div class="sentiment-bar"><div class="sent-fill sent-pos" style="width:0.0%"></div><div class="sent-fill sent-neu" style="width:100.0%"></div><div class="sent-fill sent-neg" style="width:0.0%"></div></div><div class="sentiment-counts"><span class="sent-count sent-count-pos">0 Positive</span><span class="sent-count sent-count-neu">1 Neutral</span><span class="sent-count sent-count-neg">0 Negative</span></div></div><table class="indicator-table"><thead><tr><th>Date Range</th><th>Source</th><th>Sentiment</th><th>Reasoning</th><th>Narrative Trend</th><th>Sentiment Momentum</th><th>Implications</th></tr></thead><tbody><tr class="sent-row-neutral"><td>2026-03-11 to 18</td><td>Simply Wall St.</td><td><span class="sent-tag sent-tag-neutral">Neutral/ Cautious</span></td><td>Focus on valuation vs. performance history, mixed recent returns</td><td>Valuation reassessment and stock performance</td><td>Stable with slight caution</td><td>Investors may reconsider valuation amid good long-term but mixed short-term returns</td></tr></tbody></table></section>
+        <section id="news" class="section-card"><h2 class="section-title">News Analysis</h2><div class="section-body"><p>Here's a comprehensive report on the current state of the world relevant for trading and macroeconomics, focusing on recent news from March 11 to March 18, 2026, with a particular note on the company Snap-on (SNA) and global market dynamics:</p>
+<ol>
+<li>Snap-on (SNA) Company-Specific Insights:</li>
+<li>Snap-on shares have experienced notable multi-year gains with 5.4% returns year-to-date, 16.7% over the past year, 69.3% over three years, and 88.8% over five years.</li>
+<li>However, the past week saw a decline of 3.6%, and a slight gain of 0.4% over the past month, indicating some recent volatility or profit-taking.</li>
+<li>Current trading price is around US$369.77, prompting discussions on whether the valuation still offers good value or if the stock is fully priced in.</li>
+<li>
+<p>Snap-on is a long-established company, but investors are reappraising the stock given the recent mixed performance.</p>
+</li>
+<li>
+<p>Macro and Global Market News:</p>
+</li>
+<li>A major highlight on global markets is the extraordinary debut of the IPO for Swarmer, a drone-software company.</li>
+<li>Swarmer's stock surged dramatically, with an initial public offering (IPO) priced at $5 per share, but opening trading at $12.50 and surging up to 520-700% increases in the initial days, reflecting massive market enthusiasm and potential overvaluation or speculative trading interest.</li>
+<li>The strong IPO performance of Swarmer could indicate investor appetite for technology and innovation stocks, particularly in emerging sectors like drone software.</li>
+<li>However, such spectacular IPO gains might also invite cautiousness over possible speculative excesses or market corrections in volatile sectors.</li>
+</ol>
+<p>Implications for Traders and Macro Investors:<br />
+- For Snap-on (SNA), the current mixed signals suggest a careful revaluation of future earnings potential versus its already appreciated stock price. Traders should watch for any upcoming earnings, guidance, or sector developments impacting tooling and equipment industries.<br />
+- The robust IPO activity in tech, exemplified by Swarmer's debut, points to ongoing investor risk appetite in high-growth areas, which could influence capital flows, sector rotations, and valuations.<br />
+- More broadly, the global market remains dynamic with a mixture of steady corporate growth (as seen in Snap-on's longer-term gains) and episodic speculative bubbles (as shown by tech IPO surges).<br />
+- Investors should balance defensive positions in established companies with high-growth, higher-risk opportunities in innovation-driven stocks.</p>
+<table>
+<thead>
+<tr>
+<th>Key Point</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Snap-on multi-year performance</td>
+<td>YTD +5.4%, 1-year +16.7%, 3-year +69.3%, 5-year +88.8%</td>
+</tr>
+<tr>
+<td>Snap-on recent weekly/monthly trend</td>
+<td>-3.6% last week decline, +0.4% last month gain</td>
+</tr>
+<tr>
+<td>Snap-on current valuation question</td>
+<td>Trading near $369.77, debate on value vs. fully priced</td>
+</tr>
+<tr>
+<td>Swarmer IPO performance</td>
+<td>IPO priced at $5, surged 450%-700% within days, exceptional debut in drone software sector</td>
+</tr>
+<tr>
+<td>Market sentiment</td>
+<td>Appetite for tech innovation stocks but possible speculative risk</td>
+</tr>
+<tr>
+<td>Trading implication</td>
+<td>Weigh stable industrial stocks against high-growth tech, monitor sector rotation risks</td>
+</tr>
+</tbody>
+</table>
+<p>Let me know if you want detailed insights on specific sectors or companies or global macro trends beyond this scope.</p></div></section>
+        <section id="fundamentals" class="section-card"><h2 class="section-title">Fundamentals Dashboard</h2><div class="kpi-grid"><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Market Cap</div><div class="kpi-value" style="color:#64748b;">$19.13B</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Revenue</div><div class="kpi-value" style="color:#64748b;">$5.16B</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Profit Margin</div><div class="kpi-value" style="color:#10b981;">19.7%</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">P/E (TTM)</div><div class="kpi-value" style="color:#10b981;">19.15</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Forward P/E</div><div class="kpi-value" style="color:#10b981;">17.14</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EPS</div><div class="kpi-value" style="color:#64748b;">$19.18</div></div><div class="kpi-card" style="border-left:3px solid #ef4444;"><div class="kpi-label">Debt/Equity</div><div class="kpi-value" style="color:#ef4444;">21.71</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Current Ratio</div><div class="kpi-value" style="color:#10b981;">4.79</div></div><div class="kpi-card" style="border-left:3px solid #f59e0b;"><div class="kpi-label">Dividend Yield</div><div class="kpi-value" style="color:#f59e0b;">2.66%</div></div></div><table class="indicator-table"><thead><tr><th>Metric</th><th>Value</th><th>Comments</th></tr></thead><tbody><tr><td>Market Cap</td><td>$19.13B</td><td>Solid mid-large cap industrial</td></tr><tr><td>Revenue (TTM)</td><td>$5.16B</td><td>Steady growth</td></tr><tr><td>Net Income (TTM)</td><td>$1.02B</td><td>Healthy profitability</td></tr><tr><td>Profit Margin</td><td>19.7%</td><td>Strong profit margins</td></tr><tr><td>Operating Margin</td><td>25.4%</td><td>Operational efficiency</td></tr><tr><td>P/E Ratio (TTM)</td><td>19.15</td><td>Reasonable valuation</td></tr><tr><td>Forward P/E</td><td>17.14</td><td>Growth expectations</td></tr><tr><td>EPS (TTM)</td><td>$19.18</td><td>Solid earnings</td></tr><tr><td>Forward EPS</td><td>$21.44</td><td>Positive earnings outlook</td></tr><tr><td>Debt to Equity</td><td>21.71</td><td>Very high leverage - key risk</td></tr><tr><td>Current Ratio</td><td>4.79</td><td>Strong liquidity</td></tr><tr><td>Free Cash Flow (Quarterly)</td><td>~$254M</td><td>Strong cash generation</td></tr><tr><td>Dividend Yield</td><td>2.66%</td><td>Attractive yield</td></tr><tr><td>Insider Ownership</td><td>2.36%</td><td>Low insider stake</td></tr><tr><td>Institutional Ownership</td><td>95.99%</td><td>Strong institutional support</td></tr><tr><td>Short Interest % of Float</td><td>6.60%</td><td>Moderate short interest</td></tr><tr><td>Market Cap vs Book Value</td><td>+221.3%</td><td>High premium reflecting growth/profitability</td></tr></tbody></table></section>
+        <section id="investment-debate" class="section-card"><h2 class="section-title">Investment Debate</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #10b981;"><h3 class="debate-panel-title" style="color:#10b981;">Bull Case</h3><div class="debate-preview"><p>Bull Analyst: Absolutely, I’m excited to share why Snap-on (SNA) remains a compelling buy despite recent technical hiccups and the cautious tone from some quarters. Let’s unpack this together, piece by piece, balancing the bear’s concerns with the bigger picture that confirms Snap-on’s strength and growth runway.</p>
+<hr />
+<h3>Addressing the Bear’s Key Concerns First</h3>
+<p>**Concern #1: Recent technical indicators show bearish momentum with declines below the 10 EMA and 50 SMA; MACD and RSI also indicat...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Bull Analyst: Absolutely, I’m excited to share why Snap-on (SNA) remains a compelling buy despite recent technical hiccups and the cautious tone from some quarters. Let’s unpack this together, piece by piece, balancing the bear’s concerns with the bigger picture that confirms Snap-on’s strength and growth runway.</p>
+<hr />
+<h3>Addressing the Bear’s Key Concerns First</h3>
+<p><strong>Concern #1: Recent technical indicators show bearish momentum with declines below the 10 EMA and 50 SMA; MACD and RSI also indicate weakening buying strength.</strong></p>
+<p>That’s true short-term, no sugarcoating it — Snap-on’s price did dip from highs near $389 down toward $367 in a correction phase. But here’s the critical nuance: the price remains well above the <strong>200-day SMA (~$338)</strong>, a classic sign of an intact <strong>long-term uptrend</strong>. Technical indicators like the MACD and RSI are <em>confirming a short to medium-term correction</em> but not signaling a full trend reversal. This is in fact healthy — even the best growth stocks have pullbacks for digestion and value-building. The ATR’s stability shows consistent volatility but not panic selling, which means smart investors are stepping in and price moves are orderly, not chaotic.</p>
+<hr />
+<h3>Peeling Back the Layers on Growth Potential</h3>
+<p>Snap-on’s <strong>multi-year performance speaks volumes</strong>:</p>
+<ul>
+<li>+5.4% YTD</li>
+<li>+16.7% last year</li>
+<li>+69.3% over 3 years</li>
+<li>+88.8% over 5 years</li>
+</ul>
+<p>This is <strong>robust compounded growth</strong> that contextualizes short-term dips as noise rather than structural weakness.</p>
+<p>Further, Snap-on operates in the <strong>industrial tools and accessories sector</strong>, which is inherently scalable. Their products are mission-critical for automotive, aerospace, and heavy industries — sectors continuing to see steady demand. Emerging automation trends in manufacturing, rising aftermarket automotive service needs, and industrial tooling sophistication all build a growing market opportunity.</p>
+<p>Revenue is strong at $5.16B TTM and growing, with consistent <strong>+19.7% profit margins</strong> and <strong>25.4% operating margins</strong> that show operational leverage and pricing power. The company’s free cash flow (~$254M per quarter) supports ongoing investments and shareholder returns, not just maintenance.</p>
+<hr />
+<h3>Competitive Advantages Are Rock Solid</h3>
+<p>Snap-on isn’t just “another tool company.” Their <strong>brand is one of the strongest in the industry</strong>, trusted by millions of professional mechanics and industrial customers worldwide. This brand loyalty translates into pricing power and high switching costs for customers.</p>
+<p>They invest heavily in innovation, offering proprietary hardware, digital diagnostic tools, and software platforms. This ecosystem creates <strong>sticky customer relationships and diversifies revenue streams</strong> beyond commoditized tools.</p>
+<p>Institutional ownership at roughly 96% reflects strong confidence from sophisticated investors like Vanguard and BlackRock, aligning with Snap-on’s sustainable moat.</p>
+<hr />
+<h3>Tackling the Debt-to-Equity Anomaly Head-On</h3>
+<p>The extremely high debt-to-equity ratio (21.7) is the one eyebrow-raiser for sure. But it’s not a death sentence:</p>
+<ul>
+<li>Snap-on maintains a <strong>net positive cash position (~$331M)</strong> despite the leverage, backed by strong quarterly cash flows.</li>
+<li>The company’s <strong>current ratio is a robust 4.79</strong>, indicating healthy short-term liquidity to cover obligations.</li>
+<li>Interest payments are moderate compared to EBITDA and free cash generation — Snap-on manages its leverage responsibly.</li>
+<li>This leverage is a strategic choice, fueling buybacks, dividends, and investments, not reckless borrowing.</li>
+</ul>
+<p>Yes, it creates sensitivity to interest rates and leverage risks, so investors should stay alert to macroeconomic shifts, but this risk is mitigated by Snap-on’s consistent earnings and cash generation. It’s a <strong>leveraged growth story</strong> rather than a financial risk warning.</p>
+<hr />
+<h3>Positive Market Sentiment &amp; Macro Tailwinds</h3>
+<p>Recent news coverage is neutral to cautiously optimistic, but that balance reflects a mature, stable growth stock rather than a red flag. The valuation discussion is healthy — it signals a <strong>market already pricing in Snap-on’s strong prospects but still with room for upside given expected EPS growth (forward EPS $21.44 vs. trailing $19.18).</strong></p>
+<p>Macro trends matter too: As tech IPOs like Swarmer stir excitement in high-growth, speculative categories, Snap-on stands out as a <strong>defensive yet growth-oriented industrial player</strong>. For investors wary of tech bubbles, Snap-on offers a compelling alternative grounded in real earnings and cash flow.</p>
+<hr />
+<h3>Lessons Learned &amp; How They Strengthen the Bull Case Today</h3>
+<p>Reflecting on past market cycles and Snap-on’s history, we’ve seen that:</p>
+<ul>
+<li>Price corrections in fundamentally strong stocks are not signs of permanent damage. For example, Snap-on’s 2018-2019 correction was followed by subsequent multi-year rallies.</li>
+<li>High leverage without cash flow is dangerous, but seen with consistent free cash flow and strong operational metrics, it can accelerate shareholder returns and investments.</li>
+<li>Technical momentum can be a lagging indicator. Long-term uptrend confirmation through 200-day SMA remains the gold standard here.</li>
+<li>Valuation concerns ebb and flow; disciplined investors understand the value of companies with durable moats and strong cash flow backing.</li>
+</ul>
+<hr />
+<h3>In Conclusion: Why Snap-on Is a Smart Buy Now</h3>
+<ul>
+<li><strong>Long-term growth story intact</strong>, with expanding industrial market opportunities.</li>
+<li><strong>Strong brand and product moat</strong>, securing recurring revenue and pricing power.</li>
+<li><strong>Robust financials and cash flow</strong>, enabling dividends, buybacks, and smart capital allocation.</li>
+<li><strong>Technical correction healthy, not adversative</strong>, offering a buying window.</li>
+<li><strong>Leverage risks exist but are managed</strong>, balanced by liquidity and earnings strength.</li>
+<li><strong>Reasonable valuation</strong> with forward EPS growth supporting upside.</li>
+</ul>
+<p>While the bears focus too much on short-term indicators and leverage risks, bulls see Snap-on as a resilient powerhouse positioned for continued expansion with well-managed financials and deep customer loyalty. For investors seeking a blend of growth, income, and stability in industrial tools, Snap-on is a stock to hold—and buy more on weakness.</p>
+<hr />
+<p>Happy to dig deeper into any part or run additional scenario analyses. What do you think—is the bear’s case losing steam against Snap-on’s fundamentals and long-term trends?</p></div></details></div><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">Bear Case</h3><div class="debate-preview"><p>Bear Analyst: Great points from the bull side — I appreciate the detailed breakdown and the confidence in Snap-on’s (SNA) long-term prospects. But let’s dig deeper into the counterarguments grounded in the risks, challenges, and warning signs I see—especially from a cautious bear’s perspective. I want to engage directly with your points and show why, despite the shine, there are real reasons to be skeptical about the stock right now.</p>
+<hr />
+<h3>On Technicals: Correction or Red Flag?</h3>
+<p>You rightly...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Bear Analyst: Great points from the bull side — I appreciate the detailed breakdown and the confidence in Snap-on’s (SNA) long-term prospects. But let’s dig deeper into the counterarguments grounded in the risks, challenges, and warning signs I see—especially from a cautious bear’s perspective. I want to engage directly with your points and show why, despite the shine, there are real reasons to be skeptical about the stock right now.</p>
+<hr />
+<h3>On Technicals: Correction or Red Flag?</h3>
+<p>You rightly highlight the long-term uptrend signaled by the price being above the 200-day SMA — I won’t argue that SNAP is broken as a legacy industrial stock. But the technical data isn’t just about short-term dips; it’s about the <strong>nature and persistence</strong> of this downward momentum.</p>
+<ul>
+<li>The <strong>10-day EMA has clearly rolled over below the 50 SMA</strong>, signaling a short- to medium-term bearish tone. That might look like a healthy correction, but <strong>price action already dropped from near 389 to about 367 in a month</strong> with volume spikes on down days. That suggests <strong>selling pressure is accelerating</strong>, not just consolidating**.</li>
+<li>The <strong>MACD has flipped significantly negative (-1.4) and crossed below its signal line</strong>, with the histogram confirming weakening momentum—this is a strong technical warning—not a minor hiccup.</li>
+<li>The <strong>RSI trending down into the low 40s</strong> means buying strength is fading; we’re not yet oversold, so more downside pressure remains before a real bounce can be expected.</li>
+<li>ATR being stable reflects consistent volatility but also no sign of capitulation or buyer panic — it means the current selling is controlled, possibly setting up for further declines before a bottom.</li>
+</ul>
+<p>Technically, I see <strong>a warning flag for a deeper correction or stalled growth</strong>, not just a short-term blip that bulls treat it as.</p>
+<hr />
+<h3>On Fundamentals: High Leverage Is a Larger Concern Than Presented</h3>
+<p>You call the elevated <strong>debt-to-equity ratio (21.7) a “strategic choice,”</strong> but I say this is <strong>anomalously dangerous</strong>.</p>
+<ul>
+<li>A 21.7 debt-to-equity ratio is literally off the charts for an industrial company with a strong brand like Snap-on — it puts the company <strong>highly sensitive to rising interest rates or an economic pullback</strong>.</li>
+<li>While free cash flow (~$254M/quarter) is strong, it barely covers debt servicing plus capital returns. Even a small downturn in operating profit or cash flow could impair the company’s ability to meet obligations or sustain shareholder payouts.</li>
+<li>This leverage limits financial flexibility — Snap-on cannot significantly increase investments in R&amp;D or acquisitions without risking credit downgrades or refinancing risks.</li>
+<li>Macroeconomically, with <strong>interest rates still elevated to tame inflation</strong>, this high debt magnifies the impact of any tightening, unlike less-levered peers.</li>
+</ul>
+<p>I argue the leverage here isn’t just “managed risk” but a structural financial vulnerability that makes SNA a riskier holding if market conditions worsen.</p>
+<hr />
+<h3>On Growth and Industry Risks: Not as Bulletproof as Portrayed</h3>
+<p>You talk about broad demand in automotive and industrial tooling, which is true historically, but let’s not overlook:</p>
+<ul>
+<li><strong>Market saturation and maturation risk.</strong> The core professional automotive and aerospace tool markets are highly mature, with limited room for disruptive new growth. Incremental innovation in tools and diagnostics is happening, but competitors and generic brands continually pressure pricing.</li>
+<li><strong>Emerging technologies</strong> — the industry is under threat from innovations like additive manufacturing, robotic automation, and digitization partly from tech entrants, not just legacy industrial firms.</li>
+<li>Competitors in high-tech diagnostic tools and software platforms, especially agile startups or tech giants moving into industrial IoT, <strong>threaten to erode Snap-on’s moat</strong> over time.</li>
+<li>Snap-on’s <strong>modest insider ownership (2.36%)</strong> versus high institutional (96%) could suggest less entrepreneurial drive and more passive holding, possibly leading to less dynamic innovation.</li>
+</ul>
+<p>So, the secular growth tailwinds you highlight appear weaker and more contested than the bull case acknowledges.</p>
+<hr />
+<h3>On Market Sentiment and Valuation: Priced for Perfection with Thin Margins for Error</h3>
+<p>The cautious neutrality in sentiment and the debate over valuation are pretty telling:</p>
+<ul>
+<li>Snap-on’s <strong>P/E (19.15) and forward P/E (17.14) imply moderate expectations growth</strong>, but the market is not giving much room for disappointment. Any missed earnings or macro slowdown could severely punish the stock.</li>
+<li>The <strong>market cap premium of 221% over book value</strong> isn’t unusual but means investors are paying handsomely for future growth. The question is, what if growth stalls or margins compress?</li>
+<li>While bulls cite multi-year gains, <strong>recent declines (-3.6% last week, small +0.4% last month) show profit-taking or re-pricing happening</strong>. This hints investors may already be acting on value reassessment.</li>
+</ul>
+<p>In short, Snap-on is somewhat priced for perfection, with little buffer.</p>
+<hr />
+<h3>Reflections and Lessons Learned: Over-Emphasizing Strengths Can Blind One to Risks</h3>
+<p>From past debates and market cycles, I’ve learned:</p>
+<ul>
+<li>Technical signals like MACD and RSI often <strong>lead fundamental downtrends</strong> by weeks or months — dismissing them risks late entries.</li>
+<li>Leverage can <strong>amplify gains but devastate during downturns</strong>—companies with reasonable debt fare better through shocks.</li>
+<li>Long histories of growth don’t guarantee future resilience, especially in evolving sectors exposed to innovation and competition.</li>
+<li>Institutional ownership, while usually positive, can sometimes heighten vulnerability to rapid sell-offs if sentiment shifts.</li>
+</ul>
+<p>So, I caution against lengthening exposure on this pullback without critically addressing these risks.</p>
+<hr />
+<h3>To Summarize the Bear Case</h3>
+<ul>
+<li><strong>Technical momentum strongly favors further short- to medium-term weakness.</strong></li>
+<li><strong>Extreme debt leverage is a glaring financial risk</strong>, particularly in the current macro environment.</li>
+<li><strong>Market saturation, competitive threats, and evolving technologies challenge Snap-on’s growth prospects.</strong></li>
+<li><strong>Valuation leaves little margin for error, with growing cautious sentiment signaling investor reappraisal.</strong></li>
+<li>Past lessons on heavy leverage and momentum signal danger rather than opportunity here.</li>
+</ul>
+<hr />
+<h3>Final Thought for Bulls and Investors</h3>
+<p>You say Snap-on is a <strong>“resilient powerhouse… positioned for continued expansion.”</strong> I say it looks like a <strong>strong but increasingly vulnerable name that faces headwinds and risks that could outpace its growth drivers in the near-to-medium term</strong>. The prudent move is to wait for clearer signs of sustained momentum recovery, leverage reduction, or diversified growth before committing more capital.</p>
+<p>How do you reconcile the huge leverage and bearish technical indicators with your view that now is a good entry? Would you consider trimming exposure or hedging given these risks?</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">Judge Decision</h3><div class="judge-body"><p>Thanks for laying out such a thorough and thoughtful debate on Snap-on (SNA). Both perspectives bring important insights, but after weighing the arguments carefully, my recommendation is to <strong>Buy</strong> the stock now, with certain risk management caveats.</p>
+<p>Let me walk you through the reasoning and action plan.</p>
+<hr />
+<p><strong>Summary of Key Points</strong></p>
+<p>From the <strong>bull side</strong>, the strongest evidence is:</p>
+<ul>
+<li>The long-term uptrend remains intact, with price above the 200-day SMA and solid multi-year stock appreciation.</li>
+<li>Snap-on’s operational fundamentals are robust: growing revenues, strong margins, consistent free cash flow, and strategic use of leverage.</li>
+<li>The company’s strong brand and innovation in digital tools create a competitive moat and recurring customer revenue.</li>
+<li>Institutional ownership and cash liquidity provide stability.</li>
+<li>The recent price dip is a natural correction, not a breakdown, offering a better entry point.</li>
+</ul>
+<p>From the <strong>bear side</strong>, the key concerns are:</p>
+<ul>
+<li>Bearish short- to medium-term technical signals (MACD, RSI, moving averages) suggest continued downside risk.</li>
+<li>The extremely high debt-to-equity ratio (~21.7) is structurally risky, especially in a rising rates environment.</li>
+<li>Industry risks including maturation, saturation, and disruptive new technologies that could challenge growth.</li>
+<li>Valuation is somewhat rich, priced for sustained good performance with limited margin for error.</li>
+<li>Institutional ownership concentration and trading volume patterns hint at cautious investor sentiment.</li>
+</ul>
+<hr />
+<p><strong>Why Buy Despite the Bear Case?</strong></p>
+<p>Technical indicators indeed warn of short-term weakness, but they don't contradict the fundamental picture here. Technical momentum can lag or overshoot, and Snap-on’s long-term trend support and operational strength are compelling reasons not to abandon the name entirely.</p>
+<p>The extremely high leverage is the biggest red flag. However, the company's strong quarterly free cash flow (~$254M), healthy liquidity (current ratio ~4.79), and manageable interest burden mitigate immediate solvency risk. This is a leveraged growth story leveraging debt prudently for shareholder returns, not a reckless financial gamble.</p>
+<p>Industry risks are real but balanced by Snap-on’s entrenched market position, innovation efforts, and diversified product ecosystem. These factors reduce the threat from new entrants or tech disruption in the near term.</p>
+<p>Valuation is fair rather than overblown given growth prospects, and the recent correction may actually build a margin of safety, especially if new investors use it as a buying opportunity.</p>
+<p>Taken together, this paints a picture of a solidly managed company with cyclical pressures causing a pause in momentum, but strong fundamental footing and strategic flexibility for recovery and continued growth.</p>
+<hr />
+<p><strong>Investment Plan</strong></p>
+<ol>
+<li>
+<p><strong>Recommendation:</strong> Initiate or add to core position in Snap-on at current levels, viewing the recent pullback as a tactical entry point within a long-term growth framework.</p>
+</li>
+<li>
+<p><strong>Rationale:</strong> You're buying into a high-quality industrial compounder with a durable moat, strong cash flow, and strategic leverage used to accelerate shareholder returns. The technical weakness signals short-term risk but also opportunity to establish position before wider recognition of growth potential returns the stock to new highs.</p>
+</li>
+<li>
+<p><strong>Strategic Actions:</strong></p>
+</li>
+<li><strong>Position Sizing:</strong> Start with a moderate position size, not full allocation, to balance upside potential against observed risks.</li>
+<li><strong>Entry Price Target:</strong> Current price near $367 is attractive relative to the long-term low and 200-day average near $338.</li>
+<li><strong>Risk Controls:</strong> Use a stop-loss around 10-12% below entry to limit drawdown should the downtrend worsen.</li>
+<li><strong>Monitoring Leverage &amp; Cash Flow:</strong> Track Snap-on’s quarterly cash flow and debt metrics closely. If debt servicing deteriorates or cash flow weakens materially, reconsider weighting.</li>
+<li><strong>Watch Macroeconomics:</strong> Rising interest rates or recession would amplify debt risk; consider hedging or trimming if macro worsens.</li>
+<li><strong>Add on Dips:</strong> Use technical weakness (e.g., touch of 200-day SMA or oversold indicators) as secondary entry points to accumulate shares at better prices.</li>
+<li><strong>Dividend Reinvestment:</strong> If holding longer term, reinvest dividends to compound returns during sideways markets.</li>
+<li>
+<p><strong>Stay Updated on Innovation &amp; Competition:</strong> Monitor Snap-on’s product pipeline and competitive moves for signs of moat erosion or breakthrough opportunities.</p>
+</li>
+<li>
+<p><strong>Learning from Past Mistakes:</strong> <br />
+   Having seen the pitfalls of overreacting to short-term technicals without considering fundamentals, this decision is carefully balanced—not ignoring risks but weighing them in context. I've also learned that high leverage needs ongoing vigilance; thus, my plan includes detailed debt monitoring and risk controls.</p>
+</li>
+</ol>
+<hr />
+<p><strong>Final Take</strong></p>
+<p>Snap-on’s latest correction resembles a classic opportunity where market technical caution intersects with robust business strength. The bear case rightly tempers enthusiasm with reminders of leverage risks and industry challenges, but none of these outweigh Snap-on’s attractive growth profile backed by strong cash flow and brand resilience.</p>
+<p>For investors who accept moderate leverage exposure and want a blend of growth plus income in industrials, Snap-on offers a smart Buy at current levels with disciplined risk management.</p>
+<p>I’m confident this decision captures both the prudence urged by the bear and the conviction of the bull, creating an actionable and thoughtful investment path forward.</p></div></div></section>
+        <section id="trader-plan" class="section-card"><h2 class="section-title">Trader Investment Plan</h2><div class="section-body"><p>Considering the comprehensive analysis and balanced view presented:</p>
+<ul>
+<li>The company's long-term uptrend, strong fundamentals, robust cash flow, and strategic use of leverage support a core Buy stance.</li>
+<li>Short-term technical weakness and high leverage are valid concerns but manageable with disciplined risk controls.</li>
+<li>The proposed entry strategies, stop-loss, and monitoring plans show a prudent approach that mitigates potential downsides.</li>
+<li>The recent price dip near the 200-day SMA offers an advantageous entry point within a long-term growth framework.</li>
+</ul>
+<p>Given all these points, the best course is to initiate or add to a position in Snap-on (SNA), starting moderately and maintaining vigilance on debt metrics and macroeconomic changes. This approach balances the risks and rewards effectively.</p>
+<p>FINAL TRANSACTION PROPOSAL: <strong>BUY</strong></p></div></section>
+        <section id="risk-debate" class="section-card"><h2 class="section-title">Risk Management Debate</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">Aggressive</h3><div class="debate-preview"><p>Aggressive Analyst: Let's address the conservative and neutral cautions head-on, because they miss the potent upside here by focusing excessively on near-term technical hiccups and the unusual leverage metric. Starting with the technical picture — yes, short-term momentum indicators like the MACD and 10-day EMA are signaling a pullback, and the price recently dipped below the 50-day SMA. But the very fact that the price remains well above the 200-day SMA — currently around 338 versus price near...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Aggressive Analyst: Let's address the conservative and neutral cautions head-on, because they miss the potent upside here by focusing excessively on near-term technical hiccups and the unusual leverage metric. Starting with the technical picture — yes, short-term momentum indicators like the MACD and 10-day EMA are signaling a pullback, and the price recently dipped below the 50-day SMA. But the very fact that the price remains well above the 200-day SMA — currently around 338 versus price near 370 — means this is a controlled correction within a robust long-term uptrend. The conservative viewpoint stalls there, fixating on the short-term bearish signals and warning about momentum erosion. But this dip near the 200-day SMA is actually a rare and attractive entry opportunity for those willing to act boldly.</p>
+<p>Imagine locking in shares at these lower levels before the momentum reverses — the technical indicators are likely bottoming, as seen by the RSI nearing oversold territory at 42. The ATR is steady, meaning the volatility is controlled; we’re not dealing with panic selling but a disciplined pullback. By initiating or adding positions now, you position yourself to ride the next upswing with price likely gravitating back to or beyond recent highs around 389. Waiting for perfect signals loses the chance to capitalize on this market inefficiency in the correction phase.</p>
+<p>Now, turning to the elephant in the room — the 21.7 debt-to-equity ratio flagged as an extreme outlier. This is often raised by conservative critics as a dealbreaker. But here’s the aggressive take: Snap-on’s leverage is a strategic weapon, not a liability to fear blindly. This leverage supports expansion, share repurchases, and dividend growth. Despite this, the company maintains a very strong current ratio near 4.79, ample liquidity buffers, and positive net cash of $331 million. Free cash flow averages $254 million per quarter — that’s substantial internal capital to service debt, invest in growth, and drive shareholder returns.</p>
+<p>In fact, this kind of intelligent leverage amplifies investor returns in a growing, profitable company with solid margins (operating margin 25.4%, profit margin 19.7%). The manageable interest expense of around $8-14 million per quarter demonstrates that the debt cost is not crushing profit or cash flow. Rather than shying away due to high leverage, the bold investor sees this as a lever for outsized gains, especially in a company with a forward P/E of 17.14 and EPS growth projected from $19.18 to $21.44.</p>
+<p>Looking at sentiment and the broader market context, the neutral analyst’s “cautious optimism” overlooks the shifting tides of capital. While Snap-on’s valuation appears re-priced due to recent minor declines (3.6% past week), the broader market is exhibiting appetite for innovation and high growth—underscored by the spectacular IPO surge of firms like Swarmer in the tech/innovation space. This indicates a willingness among investors to take calculated bets on forward growth narratives. Snap-on’s strategic use of leverage mirrors that growth ambition amid stable fundamentals. Conservative hesitation ignores how capturing opportunity early in companies navigating maturity while investing in their future can yield asymmetrical rewards.</p>
+<p>Furthermore, letting valuation concerns dominate your thinking here means you miss the underlying fact that Snap-on’s stock performance over three to five years has been extraordinary (+69.3% and +88.8% respectively), proving the company’s ability to compound value despite market fluctuations. Why wait for “perfect clarity” when you can start positioning now, with disciplined stops and ongoing monitoring, and compound your gains as the uptrend resumes?</p>
+<p>So, yes, the short-term picture has noise and some risk. But the conservative and neutral takes underestimate the power of those temporary weaknesses as entry points, underestimate how well Snap-on’s financials support aggressive growth strategies despite leverage, and undervalue the reward profile available to decisive traders. In this environment, the high-reward, tactical buy approach doesn’t just balance risk and reward — it tilts the odds decisively toward capitalizing on momentum rebound and earnings growth potential.</p>
+<p>In short: the best path forward is to act now, embrace the short-term weakness as a market discount, lean into the robust long-term trend supported by solid fundamentals and cash flow, and harness the company’s strategic leverage — all with prudent risk controls. The reward upside here is too compelling to wait on cautious reassessment. This is a classic “buy the dip” scenario where boldness wins.</p></div></details></div><div class="debate-panel" style="border-top:3px solid #3b82f6;"><h3 class="debate-panel-title" style="color:#3b82f6;">Conservative</h3><div class="debate-preview"><p>Conservative Analyst: I appreciate the aggressive and neutral analysts’ enthusiasm, but as the conservative risk analyst, I must emphasize that their optimism glosses over some very significant risks that can jeopardize our firm’s long-term stability and capital preservation.</p>
+<p>Starting with the technical picture, yes, the price remains above the 200-day SMA, but that’s a minimum floor, not a green light to jump in aggressively. The short-term momentum indicators—the 10-day EMA, MACD turning neg...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Conservative Analyst: I appreciate the aggressive and neutral analysts’ enthusiasm, but as the conservative risk analyst, I must emphasize that their optimism glosses over some very significant risks that can jeopardize our firm’s long-term stability and capital preservation.</p>
+<p>Starting with the technical picture, yes, the price remains above the 200-day SMA, but that’s a minimum floor, not a green light to jump in aggressively. The short-term momentum indicators—the 10-day EMA, MACD turning negative, and RSI dropping near 42—are not trivial. They point not just to a mild pullback, but to weakening buying strength that could extend further before any serious recovery. Volume spikes on down days also reinforce that selling pressure exists. This tells me price could test lower support levels, and entering prematurely risks giving back capital. The argument to buy now on the dip assumes momentum will reverse swiftly—yet there is no confirmed signal that the turnaround is imminent. From a conservative standpoint, waiting for more clear technical validation would reduce the risk of catching a falling knife.</p>
+<p>Turning to the leverage argument, the aggressive take frames the extremely high debt-to-equity ratio—an astounding 21.7—as a “strategic weapon.” But that number is far beyond what would be considered prudent. Even though Snap-on shows strong liquidity now and manageable interest expense, this leverage drastically heightens vulnerability. Rising interest rates, tightening credit markets, or an economic downturn could quickly escalate debt servicing costs and strain cash flows. The firm is exposed to financial risk that could erode its operational strength or force deleveraging at inopportune times, affecting share price and credit ratings. The conservative view says: let’s not bank on steady cash flows in a world where volatility, inflation, or geopolitical shocks can disrupt even the most solid companies. It’s better to reduce exposure or enter cautiously with strict capital allocation limits until debt reduction becomes clearer.</p>
+<p>Regarding market sentiment and IPO enthusiasm for tech stocks like Swarmer, I see this as a double-edged sword. Yes, there’s appetite for innovation but also an elevated risk of speculative excess and bubbles, especially given the extreme IPO price run-ups. This can inject volatility and sector rotations that could pull capital away from industrial stalwarts like Snap-on, putting downward pressure on their valuations. The neutral analyst’s “cautious optimism” is closer to reality here—investors need to watch how broader capital flows shift, rather than assume steady inflows to Snap-on’s mature sector.</p>
+<p>Lastly, while Snap-on’s historical returns have been excellent, past performance is no safeguard against future volatility. The recent weekly decline of 3.6% amid technical weakness and high leverage signals that the firm’s valuation may be fully priced or even stretched. Even the neutral report questions whether Snap-on’s current share price fairly reflects underlying risks. From a capital protection perspective, it’s unwise to chase returns in this uncertain environment. Instead, we should prioritize steady growth within a margin-of-safety framework—waiting until momentum indicators improve, valuation levels stabilize, and leverage risks diminish.</p>
+<p>In summary, the aggressive approach underestimates how the interplay between weakening momentum, excessive leverage, and broader market volatility can compromise risk. The neutral stance acknowledges these but doesn’t push back hard enough on the need for caution. Our firm’s discipline demands we protect assets by avoiding premature buys amid high debt and technical vulnerability. A measured entry or holding pattern with vigilant risk controls, rather than an outright buy now, better safeguards our capital and aligns with sustainable growth goals. Long-term success depends on preserving principal first, not chasing potential but uncertain upside in a leveraged, momentum-fading name.</p></div></details></div><div class="debate-panel" style="border-top:3px solid #f59e0b;"><h3 class="debate-panel-title" style="color:#f59e0b;">Neutral</h3><div class="debate-preview"><p>Neutral Analyst: Both the aggressive and conservative analysts raise compelling points, but each leans into a bias that could be problematic if adopted too rigidly. The aggressive perspective rightly highlights Snap-on’s solid long-term uptrend and strong fundamentals, which indeed form a backbone for a “buy the dip” strategy. But this enthusiasm risks downplaying the real technical and financial risks brewing in the near term. Conversely, the conservative stance correctly flags significant cau...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Neutral Analyst: Both the aggressive and conservative analysts raise compelling points, but each leans into a bias that could be problematic if adopted too rigidly. The aggressive perspective rightly highlights Snap-on’s solid long-term uptrend and strong fundamentals, which indeed form a backbone for a “buy the dip” strategy. But this enthusiasm risks downplaying the real technical and financial risks brewing in the near term. Conversely, the conservative stance correctly flags significant caution around the short-term bearish momentum and the extraordinary leverage, but it arguably tilts too far into risk aversion, potentially missing a timely entry opportunity that disciplined investors can capitalize on.</p>
+<p>Starting with the aggressive analyst’s take: Yes, the price remaining well above the 200-day SMA is a meaningful long-term bullish indicator, and the company’s profitability, cash flow generation, and dividend yield do paint a strong picture. The maintained liquidity and positive net cash position help cushion the leverage risks, and free cash flow is healthy. However, the aggressive analyst somewhat glosses over the sobering technical signals: the MACD has turned decidedly negative, the RSI has dropped from overbought into a neutral-to-oversold zone, and the recent price action dipped below the 50-day SMA and 10-day EMA, which are telling signs of medium- to short-term bearish momentum. Furthermore, volume spikes accompanying down days signal genuine selling pressure, not just a controlled correction. It is a nuanced environment — while the 200-day SMA acts as support, the path back to previous highs is not guaranteed or immediate.</p>
+<p>Moreover, while the aggressive view frames Snap-on’s very high debt-to-equity ratio as a strategic lever fueling growth and returns, that leverage level is so extreme it cannot be dismissed lightly. Having a debt-to-equity ratio over 20 is highly unusual and poses a real financial risk if cash flows falter, interest rates rise, or the macroeconomic environment shifts suddenly. The interest expense is currently manageable given free cash flow, but any disruption could amplify financial stress quickly. Even strong liquidity today may not be enough if prolonged downturn conditions emerge. Thus, this leverage presents a material risk dimension that deserves more than a confident shrug.</p>
+<p>From the conservative analyst’s perspective: The insistence on waiting for clearer technical confirmation before initiating or adding positions is prudently cautious and helps avoid the emotional trap of chasing momentum that hasn’t turned yet. The calls to watch for potential continued selling pressure and further downside testing of support levels embody sound risk management. The concern about market sentiment shifting away due to speculative surges in other sectors like tech IPOs — here exemplified by Swarmer — is a valid macro consideration that could impact capital flows into mature industrials like Snap-on.</p>
+<p>Yet the conservative argument may lean too heavily into sidelining gains for fear of a “falling knife” scenario. The stock is sitting above the 200-day SMA, cash flows are solid, and established companies like Snap-on often see pullbacks that resolve into resumed uptrends. Waiting indefinitely for perfect signals risks opportunity cost, especially given Snap-on’s strong multi-year return track record and relatively reasonable valuation metrics. Furthermore, the extremely cautious posture towards leveraging ignores that companies in capital-intensive sectors often utilize debt effectively if managed well — though that management risk is acknowledged, it’s not an automatic dealbreaker.</p>
+<p>So how to thread the needle? The neutral, balanced approach should be:</p>
+<p>Recognize the long-term bullish fundamental context of Snap-on — solid earnings, cash flow, and institutional backing provide a strong foundation that supports a core buy stance.</p>
+<p>At the same time, respect the medium- to short-term technical warning signs: momentum remains weak, price is below the 10 EMA and 50 SMA for now, and volume on down days hints at sellers still active. That means entry should be measured and disciplined, not aggressive or all-in.</p>
+<p>Financial risk from the exceptionally high leverage must be monitored closely. It’s not enough to say liquidity cushions it; one must assume scenarios of rising interest costs or economic slowdowns and remain vigilant with stop-losses or position sizing to limit exposure. This risk element argues against oversized positions initially.</p>
+<p>Macroeconomic and market sentiment factors add complexity. While novelty-driven sectors like technology IPOs grab headlines and capital, mature industrials can hold value as defensive, income-generating assets — balancing a portfolio with both exposure types can hedge sector rotation risks. For Snap-on specifically, volatile speculative enthusiasm elsewhere may create headwinds, so attention to sector flows and updates on credit market conditions is warranted.</p>
+<p>In sum, a moderate strategy would suggest starting with a smaller, controlled position size at the favorable technical “dip” near the 200-day SMA but waiting for confirmation that the 10-day EMA and MACD momentum begin to stabilize or turn before increasing exposure meaningfully. Rigid stop-loss protocols should be set to protect against an extended breakdown. Concurrently, keep a close watch on debt servicing metrics, quarterly cash flow trends, and macroeconomic indicators like interest rates and credit spreads to reassess leverage risk regularly.</p>
+<p>This balanced approach leverages the upside capture potential championed by the aggressive analyst but tempers it with the conservative analyst’s caution to safeguard capital amid uncertainties. It respects Snap-on’s fundamental strength while remaining mindful of technical signals and leverage vulnerabilities — an alignment of offense and defense within a dynamic market environment. This creates a sustainable path forward that neither ignores risk nor eschews opportunity.</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">Judge Decision</h3><div class="judge-body"><p>After a careful and detailed evaluation of the debate among the aggressive, neutral, and conservative risk analysts, I provide the following:</p>
+<hr />
+<h3><strong>Recommendation: BUY</strong> (with disciplined, risk-managed entry and monitoring)</h3>
+<hr />
+<h3><strong>Summary of Key Arguments</strong></h3>
+<h4>Aggressive Analyst (Bull Case):</h4>
+<ul>
+<li>Snap-on remains in a <strong>strong long-term uptrend</strong>, with price well above the 200-day SMA (~$338 vs. $367 current).</li>
+<li>The recent decline is a <strong>healthy correction</strong>, creating an attractive entry point.</li>
+<li>Operational fundamentals are solid: strong margins (~25.4% operating margin), robust free cash flow (~$254M quarterly), and strategic leverage driving growth and shareholder returns.</li>
+<li>The debt-to-equity ratio (~21.7) is a <strong>strategic growth lever</strong>, not a liability, supported by ample liquidity (current ratio ~4.79) and manageable interest expense.</li>
+<li>Institutional ownership and stable cash position add stability.</li>
+<li>Momentum indicators like RSI nearing oversold (~42) suggest short-term bottoming.</li>
+<li>Valuation remains reasonable (forward P/E ~17.14) relative to growth prospects.</li>
+<li>Confidence that buying at this dip positions for capitalizing on anticipated momentum rebound.</li>
+</ul>
+<h4>Conservative Analyst (Bear Case):</h4>
+<ul>
+<li><strong>Short-term technical trends are weak:</strong> MACD negative, price below 50-day SMA and 10-day EMA, volume spikes on down days; risk of further downside exists.</li>
+<li>Extraordinary <strong>leverage poses significant risk</strong>: debt-to-equity at 21.7 is extreme, heightening vulnerability to rising rates or economic slowdown.</li>
+<li>Strong liquidity now may not withstand prolonged stress or macro shocks.</li>
+<li>Market sentiment is cautious; capital rotation into speculative tech IPOs could decrease industrial sector valuations.</li>
+<li>Historical returns do not guarantee future performance; current valuation may be stretched.</li>
+<li>Advocates waiting for clearer technical confirmation and/or deleveraging before entering/increasing exposure.</li>
+<li>Focus on capital preservation and risk limitation, avoid chasing uncertain upside.</li>
+</ul>
+<h4>Neutral Analyst (Balanced Case):</h4>
+<ul>
+<li>Validates Snap-on’s strong fundamentals and long-term trend but warns of <strong>medium- to short-term bearish momentum</strong> signs.</li>
+<li>Acknowledges substantial leverage as a risk requiring close monitoring.</li>
+<li>Advocates for a <strong>measured entry</strong> at dip near the 200-day SMA, but with strict risk controls such as conservative position sizing and stop-losses.</li>
+<li>Advises close attention to macro conditions (interest rates, credit spreads) and industry dynamics.</li>
+<li>Suggests staged accumulation: start modest, increase exposure as technicals improve.</li>
+<li>Recognizes that sidestepping risks completely means missing a tactical opportunity, but cautions against overcommitment.</li>
+<li>Recommends combining offense (entry at dip) with defense (discipline and monitoring).</li>
+</ul>
+<hr />
+<h3><strong>Rationale for Buy Decision</strong></h3>
+<p>The debate clearly highlights that while Snap-on faces non-trivial risks—especially due to its extreme leverage and weaker short-term technical signals—the company’s strong fundamentals, cash flow generation, brand moat, and maintained liquidity provide a compelling foundation for growth continuation.</p>
+<ul>
+<li>
+<p><strong>Long-term Trend and Fundamentals Over Short-Term Noise:</strong> The stock remains above a critical long-term moving average (200-day SMA), a classic technical support level. The aggressive analyst's point that this is a “controlled correction” is reinforced by the neutral analyst’s acknowledgment of a favorable risk-reward at these levels. Short-term signals caution but do not yet confirm a trend reversal.</p>
+</li>
+<li>
+<p><strong>Leverage as a Risk, Not a Dealbreaker:</strong> The conservative analyst rightly flags the high debt-to-equity ratio as a red flag, yet this must be balanced with the firm’s solid quarterly free cash flows, strong current ratio, and manageable interest expense. The debt appears strategically utilized for growth and shareholder returns rather than reckless borrowing. Vigilant monitoring and risk controls (stop-losses, position sizing) must address this risk without precluding engagement.</p>
+</li>
+<li>
+<p><strong>Valuation and Market Context:</strong> The share price has softened recently, improving purchase levels. Valuation multiples are fair given earnings growth projections and dividend yields. While speculative tech IPOs like Swarmer may divert capital, Snap-on’s mature industrial niche and cash-generative profile offer defensive value within a diversified portfolio.</p>
+</li>
+<li>
+<p><strong>Risk-Reward and Tactical Opportunity:</strong> Buying now takes advantage of the dip relative to recent highs (~$389) and longer-term lows (~$338). The aggressive analyst’s call to "buy the dip" with prudent stops aligns well with the neutral analyst’s strategic balance: enter modestly, add on dips, and be ready to exit if technical or fundamental deterioration accelerates.</p>
+</li>
+</ul>
+<hr />
+<h3><strong>Refined Trader’s Plan (Incorporating All Analysts’ Insights)</strong></h3>
+<ol>
+<li>
+<p><strong>Action:</strong> Initiate or add to a <strong>moderate position</strong> in Snap-on near current price (~$367), betting on long-term growth and stability amid a favorable correction.</p>
+</li>
+<li>
+<p><strong>Position Sizing:</strong> Start with a <em>controlled allocation</em> to mitigate leverage and technical uncertainties; avoid full allocation upfront.</p>
+</li>
+<li>
+<p><strong>Entry Strategy:</strong> Use the current price dip just above the 200-day SMA as an opportunistic entry point; add more only if momentum indicators like MACD and 10-day EMA stabilize or turn positive.</p>
+</li>
+<li>
+<p><strong>Risk Management:</strong></p>
+</li>
+<li><strong>Stop-loss:</strong> Set a stop-loss around 10-12% below entry to limit downside should the downtrend strengthen.</li>
+<li><strong>Debt &amp; Cash Flow Monitoring:</strong> Closely watch quarterly filings for any signs of weakening free cash flow or deteriorating liquidity metrics.</li>
+<li>
+<p><strong>Macro Vigilance:</strong> Stay alert to interest rate hikes or recession indicators that could exacerbate debt risks; consider hedging or trimming if macro conditions worsen.</p>
+</li>
+<li>
+<p><strong>Ongoing Assessment:</strong></p>
+</li>
+<li>Follow innovation and competitive landscape updates to detect moat erosion.</li>
+<li>
+<p>Watch volume and price action on technical support levels for confirmation or invalidation of recovery attempts.</p>
+</li>
+<li>
+<p><strong>Dividend Reinvestment:</strong> If holding longer-term, reinvest dividends to compound gains during consolidation periods.</p>
+</li>
+</ol>
+<hr />
+<h3><strong>Learning from Past Mistakes</strong></h3>
+<ul>
+<li>Avoid <strong>overreacting to short-term technical signals or leverage data in isolation</strong>; instead, contextualize within fundamental and market environment.</li>
+<li>Recognize that <strong>excessive caution can lead to missed opportunities</strong>, so balance must be struck.</li>
+<li>Implement <strong>structured risk controls</strong> to prevent large losses in volatile conditions.</li>
+<li>Maintain <strong>flexibility</strong> to revise positions based on evolving data—technical momentum, cash flow stability, macro shifts—to avoid static commitment.</li>
+</ul>
+<hr />
+<h3><strong>Final Take</strong></h3>
+<p>This comprehensive debate underscores that Snap-on offers a balanced risk-return profile today: strong fundamental durability underpins the case to Buy, tempered by legitimate near-term technical and leverage risks requiring discipline and risk controls. The best course is to <strong>Buy now with measured size, proactive stop-losses, and vigilant monitoring</strong>, leveraging the current correction as a tactical entry within a well-managed, long-term growth investment framework.</p>
+<hr />
+<p><strong>Decision:</strong> <strong>Buy</strong> Snap-on (SNA) shares now, with disciplined risk management measures firmly in place.</p></div></div></section>
+        <footer class="dashboard-footer"><p>Generated at 2026-03-18 14:38 by TradingAgents</p></footer>
+    </main>
+</div>
+
+<script>
+(function() {
+    // ─── Tab Switching (legacy fallback) ────────────
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var container = btn.closest('.tabs-container');
+            var tabId = btn.getAttribute('data-tab');
+            container.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            container.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+            btn.classList.add('active');
+            var panel = container.querySelector('[data-panel="' + tabId + '"]');
+            if (panel) panel.classList.add('active');
+        });
+    });
+
+    // ─── Smooth Scroll from Nav ─────────────────────
+    document.querySelectorAll('.nav-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var id = link.getAttribute('href').slice(1);
+            var el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // ─── IntersectionObserver for Nav Tracking ──────
+    var navLinks = document.querySelectorAll('.nav-link');
+    var sections = [];
+    navLinks.forEach(function(link) {
+        var id = link.getAttribute('data-section');
+        var el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el });
+    });
+
+    if (sections.length && 'IntersectionObserver' in window) {
+        var currentActive = null;
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    currentActive = entry.target.id;
+                }
+            });
+            if (currentActive) {
+                navLinks.forEach(function(l) {
+                    if (l.getAttribute('data-section') === currentActive) {
+                        l.classList.add('active');
+                    } else {
+                        l.classList.remove('active');
+                    }
+                });
+            }
+        }, {
+            rootMargin: '-80px 0px -60% 0px',
+            threshold: 0
+        });
+        sections.forEach(function(s) { observer.observe(s.el); });
+    }
+})();
+</script>
+
+
+
+</body>
+</html>
