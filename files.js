@@ -5,6 +5,7 @@ const FILES = {
   "🇺🇸 美股盤後": [
     {"name":"2026-03-16 盤後Dashboard.html","path":"美股/盤後/2026-03-16 盤後Dashboard.html","dir":"美股/盤後"},
     {"name":"2026-03-17 美股盤後Dashboard.html","path":"美股/盤後/2026-03-17 美股盤後Dashboard.html","dir":"美股/盤後"},
+    {"name":"test-dashboard.html","path":"美股/盤後/test-dashboard.html","dir":"美股/盤後"},
   ],
   "🇭🇰 港股盤前": [
     {"name":"2026-03-18 港股盤前Dashboard.html","path":"港股/盤前/2026-03-18 港股盤前Dashboard.html","dir":"港股/盤前"},
@@ -28,7 +29,9 @@ const FILES = {
     {"name":"DLR_2026-03-17.html","path":"TradingAgents/US/DLR_2026-03-17.html","dir":"TradingAgents/US"},
     {"name":"FDS_2026-03-18_zh.html","path":"TradingAgents/US/FDS_2026-03-18_zh.html","dir":"TradingAgents/US"},
     {"name":"FDS_2026-03-18.html","path":"TradingAgents/US/FDS_2026-03-18.html","dir":"TradingAgents/US"},
+    {"name":"MSTR_2026-03-16_zh.html","path":"TradingAgents/US/MSTR_2026-03-16_zh.html","dir":"TradingAgents/US"},
     {"name":"MSTR_2026-03-16.html","path":"TradingAgents/US/MSTR_2026-03-16.html","dir":"TradingAgents/US"},
+    {"name":"MSTR_2026-03-17.html","path":"TradingAgents/US/MSTR_2026-03-17.html","dir":"TradingAgents/US"},
     {"name":"VICI_2026-03-18_zh.html","path":"TradingAgents/US/VICI_2026-03-18_zh.html","dir":"TradingAgents/US"},
     {"name":"VICI_2026-03-18.html","path":"TradingAgents/US/VICI_2026-03-18.html","dir":"TradingAgents/US"},
   ],

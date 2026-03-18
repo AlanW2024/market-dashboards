@@ -1,17 +1,31 @@
 #!/bin/bash
 # sync-dashboards.sh — Copy HTML dashboards from Obsidian vault to GitHub Pages repo
-# Usage: ./sync-dashboards.sh
-# Run after generating market reports to update the mobile-viewable site.
+# Runs automatically via launchd when vault HTML files change, or manually.
 
 set -e
 
 VAULT="/Users/yeehowong/Documents/GitHub/obsidian_vault/01-市場日報"
 REPO="/Users/yeehowong/Documents/GitHub/market-dashboards"
+LOCK="/tmp/sync-dashboards.lock"
+LOG="/tmp/sync-dashboards.log"
+
+# Prevent concurrent runs
+if [ -f "$LOCK" ]; then
+  pid=$(cat "$LOCK")
+  if kill -0 "$pid" 2>/dev/null; then
+    echo "$(date): Already running (pid $pid), skipping" >> "$LOG"
+    exit 0
+  fi
+fi
+echo $$ > "$LOCK"
+trap 'rm -f "$LOCK"' EXIT
+
+echo "$(date): Sync started" >> "$LOG"
 
 cd "$REPO"
 
-# Source → Destination mapping
-declare -a PAIRS=(
+# Source directories to sync
+declare -a DIRS=(
   "美股/盤前"
   "美股/盤後"
   "港股/盤前"
@@ -21,19 +35,19 @@ declare -a PAIRS=(
 )
 
 count=0
-for dir in "${PAIRS[@]}"; do
+for dir in "${DIRS[@]}"; do
   mkdir -p "$REPO/$dir"
   if ls "$VAULT/$dir/"*.html 1>/dev/null 2>&1; then
-    cp "$VAULT/$dir/"*.html "$REPO/$dir/"
+    rsync -u "$VAULT/$dir/"*.html "$REPO/$dir/"
     n=$(ls "$REPO/$dir/"*.html 2>/dev/null | wc -l | tr -d ' ')
     count=$((count + n))
   fi
 done
 
-echo "Copied $count HTML files"
-
 # Generate files.js for index.html
-echo "const FILES = {" > "$REPO/files.js"
+cat > "$REPO/files.js" << 'HEADER'
+const FILES = {
+HEADER
 
 declare -a SECTIONS=(
   "🇺🇸 美股盤前:美股/盤前"
@@ -59,14 +73,13 @@ for entry in "${SECTIONS[@]}"; do
 done
 
 echo "};" >> "$REPO/files.js"
-echo "Generated files.js"
 
-# Git commit and push
+# Only push if there are actual changes
 git add -A
 if git diff --cached --quiet; then
-  echo "No changes to push."
+  echo "$(date): No changes" >> "$LOG"
 else
   git commit -m "Sync dashboards $(date +%Y-%m-%d\ %H:%M)"
   git push origin main
-  echo "✅ Pushed to GitHub Pages"
+  echo "$(date): Pushed $count HTML files" >> "$LOG"
 fi
