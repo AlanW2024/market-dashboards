@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTD — SELL | 2026-03-18</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* ─── Custom Properties ─────────────────────────────── */
+:root {
+    --bg-primary: #0b0f19;
+    --bg-secondary: #0f1629;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --bg-inset: #0d1117;
+    --border-subtle: #1e293b;
+    --border-medium: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --signal-color: #ef4444;
+    --signal-glow: rgba(239, 68, 68, 0.15);
+    --signal-rgb: 239, 68, 68;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --sidebar-w: 220px;
+    --header-h: 56px;
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ─── Noise Texture ─────────────────────────────────── */
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* ─── Header Bar ────────────────────────────────────── */
+.header-bar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 100;
+    display: flex; align-items: center;
+}
+.header-inner {
+    width: 100%; max-width: 1400px;
+    margin: 0 auto; padding: 0 2rem;
+    display: flex; align-items: center;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+}
+
+/* ─── Signal Pill ───────────────────────────────────── */
+.signal-pill {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.85rem;
+    background: rgba(var(--signal-rgb), 0.15);
+    border: 1px solid rgba(var(--signal-rgb), 0.3);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-weight: 500; font-size: 0.8rem;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* ─── Layout ────────────────────────────────────────── */
+.layout {
+    display: flex; max-width: 1400px;
+    margin: 0 auto; padding-top: var(--header-h);
+    min-height: 100vh;
+}
+
+/* ─── Sidebar ───────────────────────────────────────── */
+.sidebar {
+    position: sticky; top: var(--header-h);
+    width: var(--sidebar-w); flex-shrink: 0;
+    height: calc(100vh - var(--header-h));
+    padding: 1.5rem 0 1.5rem 1.5rem;
+    overflow-y: auto;
+}
+.sidebar-inner {
+    display: flex; flex-direction: column; gap: 0.25rem;
+}
+.nav-link {
+    display: block; padding: 0.5rem 1rem;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500;
+    border-radius: var(--radius-sm);
+    border-left: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+.nav-link:hover {
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.03);
+}
+.nav-link.active {
+    color: var(--signal-color);
+    border-left-color: var(--signal-color);
+    background: rgba(var(--signal-rgb), 0.08);
+}
+
+/* ─── Main Content ──────────────────────────────────── */
+.main-content {
+    flex: 1; min-width: 0;
+    padding: 1.5rem 2rem 3rem 1.5rem;
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+
+/* ─── Hero Card ─────────────────────────────────────── */
+.hero-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    overflow: hidden;
+}
+.hero-mesh {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(var(--signal-rgb), 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(var(--signal-rgb), 0.05) 0%, transparent 40%),
+        radial-gradient(ellipse at 60% 80%, rgba(var(--signal-rgb), 0.03) 0%, transparent 60%);
+    pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-header {
+    display: flex; align-items: center; gap: 1rem;
+    flex-wrap: wrap; margin-bottom: 0.5rem;
+}
+.hero-ticker {
+    font-family: var(--font-heading);
+    font-size: 2.5rem; font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text-primary), var(--signal-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-date {
+    font-family: var(--font-mono);
+    font-size: 0.9rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.hero-card .signal-pill { font-size: 0.9rem; padding: 0.35rem 1rem; }
+
+/* Risk Badge */
+.risk-badge {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 20px; letter-spacing: 0.05em;
+}
+.risk-low    { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+.risk-medium { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+.risk-high   { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+
+/* Reasons */
+.reasons-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.reason {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(var(--signal-rgb), 0.05);
+    border: 1px solid rgba(var(--signal-rgb), 0.1);
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;
+}
+.reason-num {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px;
+    background: rgba(var(--signal-rgb), 0.15);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 50%;
+}
+
+/* ─── Metrics Grid ──────────────────────────────────── */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+.metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+    position: relative; overflow: hidden;
+}
+.metric-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--signal-color); opacity: 0.4;
+    transition: opacity 0.25s ease;
+}
+.metric-card:hover {
+    border-color: rgba(var(--signal-rgb), 0.3);
+    box-shadow: 0 0 20px rgba(var(--signal-rgb), 0.08);
+}
+.metric-card:hover::before { opacity: 1; }
+.metric-label {
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+}
+.metric-value {
+    font-family: var(--font-mono);
+    font-size: 1.35rem; font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* ─── Section Cards ─────────────────────────────────── */
+.section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2rem;
+    transition: border-color 0.25s ease;
+}
+.section-card:hover { border-color: var(--border-medium); }
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.section-title::before {
+    content: ''; display: inline-block;
+    width: 4px; height: 20px;
+    background: var(--signal-color); border-radius: 2px;
+}
+.section-body {
+    color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.section-body h1, .section-body h2, .section-body h3 {
+    font-family: var(--font-heading);
+    color: var(--text-primary); margin: 1.5rem 0 0.75rem;
+}
+.section-body h1 { font-size: 1.2rem; }
+.section-body h2 { font-size: 1.1rem; }
+.section-body h3 { font-size: 1rem; }
+.section-body p { margin-bottom: 0.75rem; }
+.section-body ul, .section-body ol { margin: 0.5rem 0 1rem 1.5rem; }
+.section-body li { margin-bottom: 0.3rem; }
+.section-body strong { color: var(--text-primary); }
+.section-body em { color: var(--text-muted); font-style: italic; }
+
+/* Tables in sections */
+.section-body table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0; font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.section-body thead th {
+    background: rgba(var(--signal-rgb), 0.1);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.78rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.section-body tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.section-body tbody tr:hover { background: rgba(255,255,255,0.02); }
+.section-body tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+
+/* ─── Technical Dashboard ──────────────────────────── */
+.tech-dashboard {
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+.gauges-row {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    justify-content: center; padding: 0.5rem 0;
+}
+.gauge-container {
+    width: 200px; text-align: center;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem 0.5rem 0.75rem;
+}
+.gauge-svg { width: 100%; height: auto; }
+.charts-row {
+    display: grid; grid-template-columns: 1fr; gap: 1rem;
+}
+.chart-container {
+    position: relative; height: 220px;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+
+/* ─── MA Comparison Chart ──────────────────────────── */
+.ma-chart {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.ma-bar-row {
+    display: flex; align-items: center; gap: 0.75rem;
+}
+.ma-label {
+    width: 56px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    color: var(--text-muted); text-align: right;
+}
+.ma-bar-track {
+    flex: 1; height: 24px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px; overflow: hidden;
+}
+.ma-bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 1s ease;
+}
+.ma-value {
+    width: 64px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    color: var(--text-primary); text-align: right;
+}
+
+/* ─── KPI Grid ─────────────────────────────────────── */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.kpi-card {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+.kpi-label {
+    font-size: 0.72rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.3rem;
+}
+.kpi-value {
+    font-family: var(--font-mono);
+    font-size: 1.1rem; font-weight: 600;
+}
+
+/* ─── Sentiment Dashboard ──────────────────────────── */
+.sentiment-summary { margin-bottom: 1.5rem; }
+.sentiment-bar {
+    display: flex; height: 28px;
+    border-radius: 14px; overflow: hidden;
+    background: var(--bg-inset);
+}
+.sent-fill { transition: width 0.8s ease; min-width: 2px; }
+.sent-pos { background: #10b981; }
+.sent-neu { background: #475569; }
+.sent-neg { background: #ef4444; }
+.sentiment-counts {
+    display: flex; justify-content: center;
+    gap: 1.5rem; margin-top: 0.75rem;
+}
+.sent-count {
+    font-family: var(--font-mono); font-size: 0.8rem;
+}
+.sent-count-pos { color: #10b981; }
+.sent-count-neu { color: #64748b; }
+.sent-count-neg { color: #ef4444; }
+.sent-tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem; border-radius: 10px;
+    font-size: 0.78rem; font-weight: 500;
+}
+.sent-tag-positive { background: rgba(16,185,129,0.15); color: #10b981; }
+.sent-tag-negative { background: rgba(239,68,68,0.15); color: #ef4444; }
+.sent-tag-neutral { background: rgba(100,116,139,0.15); color: #94a3b8; }
+.sent-row-positive td:first-child { border-left: 3px solid #10b981; }
+.sent-row-negative td:first-child { border-left: 3px solid #ef4444; }
+.sent-row-neutral td:first-child { border-left: 3px solid #475569; }
+
+/* ─── Indicator Table ──────────────────────────────── */
+.indicator-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.indicator-table thead th {
+    background: rgba(var(--signal-rgb), 0.08);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.indicator-table tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.indicator-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.indicator-table tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+.ind-name {
+    font-family: var(--font-mono); font-weight: 500;
+    color: var(--text-primary);
+}
+.ind-value {
+    font-family: var(--font-mono); color: var(--signal-color);
+}
+
+/* ─── Debate Comparison ────────────────────────────── */
+.debate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; margin-bottom: 1rem;
+}
+.debate-panel {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.debate-panel-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.debate-preview {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    max-height: 200px; overflow: hidden;
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+.debate-preview p { margin-bottom: 0.5rem; }
+.debate-preview strong { color: var(--text-primary); }
+.debate-expand { margin-top: 0.75rem; }
+.debate-expand summary {
+    cursor: pointer; color: var(--signal-color);
+    font-size: 0.85rem; font-weight: 500;
+    padding: 0.4rem 0; user-select: none;
+    list-style: none;
+}
+.debate-expand summary::-webkit-details-marker { display: none; }
+.debate-expand summary::before {
+    content: '\25B8 '; font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+.debate-expand[open] summary::before { transform: rotate(90deg); }
+.debate-full {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    margin-top: 0.75rem;
+    max-height: 600px; overflow-y: auto;
+}
+.debate-full p { margin-bottom: 0.5rem; }
+.debate-full strong { color: var(--text-primary); }
+.debate-full ul, .debate-full ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.debate-full li { margin-bottom: 0.3rem; }
+
+/* ─── Judge Decision ───────────────────────────────── */
+.judge-decision {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    border-left: 3px solid var(--signal-color);
+}
+.judge-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    color: var(--signal-color);
+    margin-bottom: 0.75rem;
+}
+.judge-body {
+    color: var(--text-secondary);
+    font-size: 0.9rem; line-height: 1.7;
+}
+.judge-body p { margin-bottom: 0.5rem; }
+.judge-body strong { color: var(--text-primary); }
+.judge-body ul, .judge-body ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.judge-body li { margin-bottom: 0.3rem; }
+
+/* ─── Tabs (legacy fallback) ───────────────────────── */
+.tab-bar {
+    display: flex; gap: 0.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 1.25rem;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tab-btn {
+    padding: 0.6rem 1.25rem; background: none; border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.88rem; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.tab-btn:hover { color: var(--text-secondary); }
+.tab-btn.active {
+    color: var(--signal-color);
+    border-bottom-color: var(--signal-color);
+}
+.tab-panel {
+    display: none; color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
+.tab-panel p { margin-bottom: 0.75rem; }
+.tab-panel strong { color: var(--text-primary); }
+.tab-panel ul, .tab-panel ol { margin: 0.5rem 0 1rem 1.5rem; }
+.tab-panel li { margin-bottom: 0.3rem; }
+.text-muted { color: var(--text-muted); font-style: italic; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Collapsible Debate Rounds ─────────────────────── */
+.debate-round {
+    margin: 0.5rem 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    overflow: hidden; transition: border-color 0.2s ease;
+}
+.debate-round[open] { border-color: rgba(var(--signal-rgb), 0.2); }
+.debate-round summary {
+    padding: 0.7rem 1rem; background: var(--bg-inset);
+    cursor: pointer; font-weight: 600; font-size: 0.88rem;
+    color: var(--text-secondary); list-style: none;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: all 0.2s ease; user-select: none;
+}
+.debate-round summary::-webkit-details-marker { display: none; }
+.debate-round summary::before {
+    content: '\25B8'; font-size: 0.75rem;
+    color: var(--text-muted); transition: transform 0.2s ease;
+}
+.debate-round[open] summary::before { transform: rotate(90deg); }
+.debate-round summary:hover {
+    background: rgba(255,255,255,0.03); color: var(--text-primary);
+}
+.round-content {
+    padding: 1rem; border-top: 1px solid var(--border-subtle);
+    color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7;
+}
+.round-content p { margin-bottom: 0.6rem; }
+.round-content strong { color: var(--text-primary); }
+.round-content ul, .round-content ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+
+/* ─── Footer ────────────────────────────────────────── */
+.dashboard-footer {
+    text-align: center; padding: 2rem;
+    color: var(--text-muted); font-size: 0.8rem;
+    font-family: var(--font-mono);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 1rem;
+}
+
+/* ─── Responsive ────────────────────────────────────── */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; top: var(--header-h);
+        left: 0; right: 0; width: 100%;
+        height: auto; padding: 0.5rem;
+        background: rgba(11, 15, 25, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-subtle);
+        z-index: 90; overflow-x: auto; overflow-y: hidden;
+    }
+    .sidebar-inner {
+        flex-direction: row; gap: 0; min-width: max-content;
+    }
+    .nav-link {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        padding: 0.4rem 0.75rem; font-size: 0.78rem;
+        white-space: nowrap;
+    }
+    .nav-link.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--signal-color);
+    }
+    html { scroll-padding-top: calc(var(--header-h) + 3.5rem); }
+    .main-content { padding: 4.5rem 1rem 2rem 1rem; }
+    .hero-ticker { font-size: 1.8rem; }
+    .hero-card { padding: 1.5rem; }
+    .section-card { padding: 1.25rem; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .tab-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+    .gauges-row { gap: 0.75rem; }
+    .gauge-container { width: 160px; }
+    .debate-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-container { height: 180px; }
+    .ma-label { width: 48px; font-size: 0.72rem; }
+    .ma-value { width: 52px; font-size: 0.78rem; }
+}
+@media (min-width: 769px) {
+    .main-content { padding-top: 1.5rem; }
+}
+
+/* ─── Print ─────────────────────────────────────────── */
+@media print {
+    body { background: #fff; color: #111; }
+    body::before { display: none; }
+    .header-bar { position: relative; background: #fff; border-bottom: 2px solid #111; }
+    .header-inner { color: #111; }
+    .sidebar { display: none; }
+    .layout { display: block; }
+    .main-content { padding: 1rem; }
+    .hero-card, .section-card, .metric-card, .kpi-card, .gauge-container,
+    .debate-panel, .judge-decision {
+        background: #fff; border-color: #ddd;
+        box-shadow: none; break-inside: avoid;
+    }
+    .hero-mesh { display: none; }
+    .hero-ticker {
+        background: none;
+        -webkit-text-fill-color: #111; color: #111;
+    }
+    .signal-pill {
+        background: #eee; border-color: #ccc; color: #333;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .debate-round { break-inside: avoid; }
+    .debate-round .round-content { display: block; }
+    .debate-preview { max-height: none; mask-image: none; -webkit-mask-image: none; }
+    .debate-full { max-height: none; }
+    .tab-panel { display: block !important; margin-bottom: 1rem; }
+    .tab-bar { display: none; }
+    .section-body, .round-content, .tab-panel, .debate-full,
+    .judge-body { color: #333; }
+    .section-title, .debate-panel-title, .judge-title { color: #111; }
+    .metric-label, .kpi-label { color: #666; }
+    .metric-value, .kpi-value, .ind-value, .ma-value { color: #111; }
+    .reason { background: #f9f9f9; border-color: #ddd; color: #333; }
+    .reason-num { background: #eee; color: #333; }
+    .chart-container { display: none; }
+    .sent-tag { border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<header class="header-bar">
+    <div class="header-inner">TTD — SELL | 2026-03-18</div>
+</header>
+
+<div class="layout">
+    <nav class="sidebar" id="sidebar"><div class="sidebar-inner"><a href="#executive-summary" class="nav-link" data-section="executive-summary">Executive Summary</a>
+<a href="#market" class="nav-link" data-section="market">Technical</a>
+<a href="#sentiment" class="nav-link" data-section="sentiment">Sentiment</a>
+<a href="#news" class="nav-link" data-section="news">News</a>
+<a href="#fundamentals" class="nav-link" data-section="fundamentals">Fundamentals</a>
+<a href="#investment-debate" class="nav-link" data-section="investment-debate">Investment Debate</a>
+<a href="#trader-plan" class="nav-link" data-section="trader-plan">Trader Plan</a>
+<a href="#risk-debate" class="nav-link" data-section="risk-debate">Risk Debate</a>
+</div></nav>
+    <main class="main-content">
+        <section id="executive-summary" class="hero-card"><div class="hero-mesh"></div><div class="hero-content"><div class="hero-header"><h1 class="hero-ticker">TTD</h1><span class="signal-pill">SELL</span><span class="risk-badge risk-high">High Risk</span></div><div class="hero-date">2026-03-18</div><div class=reasons-list><div class="reason"><span class="reason-num">1</span><span>Governance and audit fallout from Publicis, along with board resignations, present serious unresolved operational and client trust risks that could persist for quarters or years.  </span></div>
+<div class="reason"><span class="reason-num">2</span><span>The stock remains in a strong downtrend below key moving averages, indicating high technical risk and potential for further price declines.  </span></div>
+<div class="reason"><span class="reason-num">3</span><span>Betting on short-term momentum from insider buying or a speculative short squeeze is risky and does not offset fundamental and governance uncertainties.  </span></div>
+</div></div></section>
+        <section id="market" class="section-card"><h2 class="section-title">Technical Dashboard</h2><div class="tech-dashboard"><div class="gauges-row"><div class="gauge-container"><svg viewBox="0 0 200 130" class="gauge-svg"><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#1e293b" stroke-width="12" stroke-linecap="round"/><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-dasharray="219.9" stroke-dashoffset="132.3" style="transition: stroke-dashoffset 1s ease;"/><text x="100" y="95" text-anchor="middle" fill="#10b981" font-family="'DM Mono', monospace" font-size="28" font-weight="600">39.8</text><text x="100" y="125" text-anchor="middle" fill="#64748b" font-family="'Outfit', sans-serif" font-size="13">RSI</text></svg></div><div class="gauge-container"><svg viewBox="0 0 200 130" class="gauge-svg"><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#1e293b" stroke-width="12" stroke-linecap="round"/><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-dasharray="219.9" stroke-dashoffset="179.0" style="transition: stroke-dashoffset 1s ease;"/><text x="100" y="95" text-anchor="middle" fill="#10b981" font-family="'DM Mono', monospace" font-size="28" font-weight="600">1.86</text><text x="100" y="125" text-anchor="middle" fill="#64748b" font-family="'Outfit', sans-serif" font-size="13">ATR (Volatility)</text></svg></div></div><div class="charts-row"><div class="chart-container"><canvas id="macdChart"></canvas></div></div><table class="indicator-table"><thead><tr><th>Indicator</th><th>Value</th><th>Signal</th><th>Interpretation</th></tr></thead><tbody><tr><td class="ind-name">50-day SMA</td><td class="ind-value">~29.93</td><td>Medium-term trend below long-term average</td><td>Medium-term trend below long-term average</td></tr><tr><td class="ind-name">200-day SMA</td><td class="ind-value">~49.62</td><td>Long-term bearish benchmark</td><td>Long-term bearish benchmark</td></tr><tr><td class="ind-name">10-day EMA</td><td class="ind-value">~26.68</td><td>Short-term trend reflection</td><td>Short-term trend reflection</td></tr><tr><td class="ind-name">MACD</td><td class="ind-value">-0.63</td><td>Negative momentum, below signal</td><td>Negative momentum, below signal</td></tr><tr><td class="ind-name">MACD Signal</td><td class="ind-value">-0.92</td><td>Lower than MACD line currently</td><td>Lower than MACD line currently</td></tr><tr><td class="ind-name">MACD Histogram</td><td class="ind-value">+0.29</td><td>Slight positive, may signal momentum shift</td><td>Slight positive, may signal momentum shift</td></tr><tr><td class="ind-name">RSI</td><td class="ind-value">39.82</td><td>Neutral to slightly bearish momentum</td><td>Neutral to slightly bearish momentum</td></tr><tr><td class="ind-name">ATR</td><td class="ind-value">1.86</td><td>Moderate volatility</td><td>Moderate volatility</td></tr></tbody></table></div></section>
+        <section id="sentiment" class="section-card"><h2 class="section-title">Sentiment Dashboard</h2><div class="sentiment-summary"><div class="sentiment-bar"><div class="sent-fill sent-pos" style="width:57.1%"></div><div class="sent-fill sent-neu" style="width:14.3%"></div><div class="sent-fill sent-neg" style="width:28.6%"></div></div><div class="sentiment-counts"><span class="sent-count sent-count-pos">4 Positive</span><span class="sent-count sent-count-neu">1 Neutral</span><span class="sent-count sent-count-neg">2 Negative</span></div></div><table class="indicator-table"><thead><tr><th>Aspect</th><th>Details</th><th>Sentiment</th></tr></thead><tbody><tr class="sent-row-negative"><td>Publicis Audit &amp; Advisory</td><td>Found issues in fees, billing, and AI tool Kokai; advised clients to avoid TTD</td><td><span class="sent-tag sent-tag-negative">Negative</span></td></tr><tr class="sent-row-positive"><td>CEO Insider Buying</td><td>$148 million share purchase by CEO Jeff Green</td><td><span class="sent-tag sent-tag-positive">Positive</span></td></tr><tr class="sent-row-negative"><td>Board Member Resignation</td><td>Gokul Rajaram stepped down amid audit and governance concerns</td><td><span class="sent-tag sent-tag-negative">Negative</span></td></tr><tr class="sent-row-positive"><td>OpenAI Partnership Speculation</td><td>Talks and collaborations with OpenAI on AI advertising</td><td><span class="sent-tag sent-tag-positive">Positive</span></td></tr><tr class="sent-row-positive"><td>CTV &amp; AI Growth Strategy</td><td>Expansion into CTV infrastructure (Ventura, OpenAds, Kokai) and AI-driven buying</td><td><span class="sent-tag sent-tag-positive">Positive</span></td></tr><tr class="sent-row-neutral"><td>Valuation &amp; Macro Pressure</td><td>Trades at discounted P/E; macroeconomic and margin constraints weigh on near-term outlook</td><td><span class="sent-tag sent-tag-neutral">Mixed</span></td></tr><tr class="sent-row-positive"><td>International Market Expansion</td><td>Increased investments in EMEA and APAC markets for broader growth base</td><td><span class="sent-tag sent-tag-positive">Positive</span></td></tr></tbody></table></section>
+        <section id="news" class="section-card"><h2 class="section-title">News Analysis</h2><div class="section-body"><h3>Comprehensive Market and Macroeconomic Report (March 11 - March 18, 2026)</h3>
+<h4>Global Market Overview:</h4>
+<ol>
+<li><strong>IPO Mania in Tech and Innovation</strong>:</li>
+<li>
+<p>The drone software company "Swarmer" has been a major highlight, surging between 450% to 700% in its initial public offering (IPO) debut over the past week. This represents one of the most spectacular mispricings observed recently, with pricing initially set at $5 per share and rapidly climbing post-IPO due to executive research initiatives and strong market interest. This momentum in tech IPOs symbolizes ongoing investor enthusiasm for cutting-edge technology sectors, particularly in drone and AI-related innovations.</p>
+</li>
+<li>
+<p><strong>Cryptocurrency and Financial Market Expansion</strong>:</p>
+</li>
+<li>
+<p>The NYSE owner is making deeper moves into the cryptocurrency space, which signals a broader institutional acceptance or integration of crypto assets. This has stirred bullish sentiment among certain top fund managers. Such developments suggest potential shifts in market liquidity and asset allocation strategies, with cryptocurrencies becoming increasingly mainstream within major financial institutions.</p>
+</li>
+<li>
+<p><strong>Geopolitical and Trade Factors</strong>:</p>
+</li>
+<li>
+<p>Insights include a "Tariff Roller Coaster" referencing continued volatility and uncertainty around trade tariffs, likely creating unpredictable impacts on global trade flows and supply chains. This adds risk to international trade-dependent sectors.</p>
+</li>
+<li>
+<p><strong>Chinese Tech Stocks Interest</strong>:</p>
+</li>
+<li>
+<p>Despite ongoing geopolitical tensions, there remains a notable allure towards Chinese technology stocks, as highlighted by professional recommendations. This interest reflects potential evolving dynamics in US-China economic relations and investor strategies in emerging markets.</p>
+</li>
+<li>
+<p><strong>US Labor Market Reports</strong>:</p>
+</li>
+<li>The US stock market received a tentative boost based on jobs report data, perceived as "good news," although the uplift was nuanced. Employment figures continue to play a central role in shaping Federal Reserve policy expectations, impacting interest rates and equity valuations.</li>
+</ol>
+<h4>Specific Insights into The Trade Desk (TTD):</h4>
+<ol>
+<li><strong>Recent Stock Volatility</strong>:</li>
+<li>The Trade Desk experienced a notable decline of approximately 6.7% to 9.4% amidst concerns raised by Publicis, a major French advertising firm, ceasing its recommendation of TTD following a third-party audit revealing fees, billing issues, and problems with its AI tool Kokai.</li>
+<li>
+<p>This controversy has introduced both reputational and operational risks for TTD, placing pressure on the stock price which fell significantly since September 2025, by over 40%.</p>
+</li>
+<li>
+<p><strong>Insider Activity and AI Partnerships</strong>:</p>
+</li>
+<li>Contrasting the sell-off, CEO Jeff Green made a significant insider purchase valued around $148 million, underscoring management's confidence.</li>
+<li>
+<p>Speculation and early talks around a partnership with OpenAI reflect potential upside from integrating advanced AI technologies more deeply into the platform, especially for programmatic advertising.</p>
+</li>
+<li>
+<p><strong>Business Strategy and Growth Prospects</strong>:</p>
+</li>
+<li>TTD is pushing aggressively into Connected TV (CTV) infrastructure through its products Ventura, OpenAds, and Kokai. The aim is to enhance transparency and AI-driven ad buying, positioning itself well for medium-to-long term growth despite near-term execution and macroeconomic risks.</li>
+<li>
+<p>Geographic diversification is a focus, with increased investment in EMEA (Europe, Middle East, Africa) and APAC regions, markets that are outpacing growth in North America.</p>
+</li>
+<li>
+<p><strong>Valuation and Market Position</strong>:</p>
+</li>
+<li>Trading at a discounted forward P/E ratio (~12.64X), TTD looks comparatively undervalued within its peer group.</li>
+<li>However, investors remain cautious given recent audit findings and macroeconomic headwinds impacting the advertising sector broadly.</li>
+</ol>
+<h4>Summary Table of Key Points:</h4>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Key Insight</th>
+<th>Impact on Traders/Investors</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IPO Market</td>
+<td>Swarmer’s IPO surges 450-700%, signaling strong tech innovation interest</td>
+<td>Opportunity in tech IPOs, but with volatility</td>
+</tr>
+<tr>
+<td>Crypto Expansion</td>
+<td>NYSE's deeper crypto involvement gains bullish fund manager support</td>
+<td>Potential growth in crypto-related assets</td>
+</tr>
+<tr>
+<td>Trade &amp; Geopolitics</td>
+<td>Trade tariffs discussed as volatile ("Tariff Roller Coaster")</td>
+<td>Continued risk in global trade-sensitive sectors</td>
+</tr>
+<tr>
+<td>Chinese Tech Stocks</td>
+<td>Sustained investor interest despite geopolitical tensions</td>
+<td>Emerging market investment opportunity</td>
+</tr>
+<tr>
+<td>US Labor Market</td>
+<td>Jobs report gives somewhat positive but mixed signals</td>
+<td>Influences Fed policy expectations, market mood</td>
+</tr>
+<tr>
+<td>The Trade Desk (TTD)</td>
+<td>Stock hit by audit and Publicis fallout; CEO buys $148M shares</td>
+<td>Volatile stock; potential turnaround via AI</td>
+</tr>
+<tr>
+<td>TTD Strategic Moves</td>
+<td>CTV and AI platform expansion; EMEA/APAC growth focus</td>
+<td>Long-term growth potential in diversified markets</td>
+</tr>
+<tr>
+<td>TTD Valuation</td>
+<td>Trades at attractive P/E but faces execution risks</td>
+<td>Possible value buy with risk considerations</td>
+</tr>
+</tbody>
+</table>
+<p>This detailed synthesis suggests that while macroeconomic and sectoral themes like tech innovation, AI, and crypto show positive dynamics, individual company risks and geopolitical uncertainties persist, requiring balanced and selective investment approaches.</p>
+<p>If you would like, I can provide more detailed analysis on The Trade Desk or other sectors. Would you prefer a focus on potential trade strategies based on these insights?</p></div></section>
+        <section id="fundamentals" class="section-card"><h2 class="section-title">Fundamentals Dashboard</h2><div class="kpi-grid"><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Market Cap</div><div class="kpi-value" style="color:#64748b;">$11.93B</div></div><div class="kpi-card" style="border-left:3px solid #f59e0b;"><div class="kpi-label">P/E (TTM)</div><div class="kpi-value" style="color:#f59e0b;">27.86</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Forward P/E</div><div class="kpi-value" style="color:#10b981;">10.52</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EPS</div><div class="kpi-value" style="color:#64748b;">10.52</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Revenue</div><div class="kpi-value" style="color:#64748b;">$2.9B</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Profit Margin</div><div class="kpi-value" style="color:#10b981;">~79%</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EBITDA</div><div class="kpi-value" style="color:#64748b;">$690M</div></div><div class="kpi-card" style="border-left:3px solid #ef4444;"><div class="kpi-label">Debt/Equity</div><div class="kpi-value" style="color:#ef4444;">17.56</div></div></div><table class="indicator-table"><thead><tr><th>Key Metric</th><th>Value</th><th>Commentary</th></tr></thead><tbody><tr><td>Market Cap</td><td>$11.93B</td><td>Mid-large cap with growth premium</td></tr><tr><td>Trailing P/E</td><td>27.86</td><td>Moderate valuation</td></tr><tr><td>Forward P/E</td><td>10.52</td><td>Strong expected EPS growth</td></tr><tr><td>EPS (TTM)</td><td>$0.9</td><td>Current earnings</td></tr><tr><td>Forward EPS</td><td>$2.38</td><td>Projected substantial growth</td></tr><tr><td>Revenue (TTM)</td><td>$2.9B</td><td>Growing revenue</td></tr><tr><td>Gross Profit Margin</td><td>~79%</td><td>High margin business</td></tr><tr><td>EBITDA</td><td>$690M</td><td>Healthy operational cash flow</td></tr><tr><td>Net Income Margin</td><td>15.3%</td><td>Solid profitability</td></tr><tr><td>Operating Margin</td><td>30.3%</td><td>Efficient operations</td></tr><tr><td>Debt to Equity</td><td>17.56</td><td>High leverage - risk flagged, mitigated by net cash</td></tr><tr><td>Net Cash Position</td><td>$867M</td><td>Strong cash buffer</td></tr><tr><td>Institutional Ownership</td><td>85.23%</td><td>Strong institutional conviction</td></tr><tr><td>Short Interest</td><td>10.76%</td><td>Notable short interest - possible caution</td></tr><tr><td>Free Cash Flow (recent qtr)</td><td>$282M</td><td>Supportive of buybacks and growth investments</td></tr><tr><td>Stock Repurchase (recent qtr)</td><td>$423M</td><td>Significant capital returned</td></tr></tbody></table></section>
+        <section id="investment-debate" class="section-card"><h2 class="section-title">Investment Debate</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #10b981;"><h3 class="debate-panel-title" style="color:#10b981;">Bull Case</h3><div class="debate-preview"><p>Bull Analyst: I appreciate the thoughtful perspective on TTD’s recent struggles — the audit issues from Publicis, the sharp stock declines, and governance concerns are indeed factors investors need to weigh carefully. But let’s step back and look at the bigger picture, because I firmly believe there is substantial upside here that outweighs these near-term challenges.</p>
+<p><strong>First, the growth potential is quite compelling.</strong> Yes, the short and medium-term trend indicators like the 50-day and 200-da...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Bull Analyst: I appreciate the thoughtful perspective on TTD’s recent struggles — the audit issues from Publicis, the sharp stock declines, and governance concerns are indeed factors investors need to weigh carefully. But let’s step back and look at the bigger picture, because I firmly believe there is substantial upside here that outweighs these near-term challenges.</p>
+<p><strong>First, the growth potential is quite compelling.</strong> Yes, the short and medium-term trend indicators like the 50-day and 200-day SMAs show a bearish backdrop, and momentum metrics are soft. But remember, technicals often lag fundamentals, especially when a market overreacts to headline risks. We’re seeing a classic “washout” moment where multiple bearish signals have pushed the price down sharply, but momentum indicators such as the MACD histogram are hinting at a possible stabilization or momentum inflection. The RSI is above oversold levels, not signaling a capitulation yet, meaning there is room for the stock to stabilize and even rebound as fundamentals improve.</p>
+<p><strong>Now, speaking of fundamentals — TTD remains a high-margin, profitable business in an industry with strong secular tailwinds.</strong> Their $2.9B trailing revenue, 30% operating margins, and 15%+ net income margins demonstrate operational excellence. The forward P/E ratio of ~10.5 is very attractive relative to peers and TTD’s historical norms, signaling the market is pricing in a deep discount relative to expected growth. Analysts expect EPS to more than double, from $0.9 to $2.38, which speaks volumes about anticipated growth or margin expansion.</p>
+<p><strong>That growth narrative is anchored in TTD’s strategic moves into Connected TV (CTV) and AI-powered advertising—a segment that’s growing exponentially and transforming the digital ad spend landscape.</strong> The company’s investments in products like Ventura, OpenAds, and Kokai give it a significant competitive edge: a transparent and AI-driven ad buying platform at a time when transparency and efficiency are in high demand. Moreover, TTD’s expansion in the EMEA and APAC markets positions it to capture outsized opportunities outside the saturated North American market.</p>
+<p><strong>The recent negativity fueled by Publicis’ audit findings and board changes, while understandably impactful, need to be contextualized.</strong> These are certainly governance challenges, but insiders, particularly CEO Jeff Green, have demonstrated immense confidence by putting nearly $148 million of their own capital into shares. Insider purchases of this scale are rarely made lightly and send a strong signal about the company’s intrinsic value and future prospects. Plus, the market’s rumors about strategic collaboration with OpenAI around AI advertising, if materialized, can be a game-changer—further differentiating TTD from competitors and enabling superior ad targeting.</p>
+<p><strong>Addressing the leverage concern: yes, the debt-to-equity ratio is high at 17.56</strong>, which traditionally raises red flags. However, TTD carries a net cash position of $867 million, more than offsetting gross debt. This cash buffer provides ample liquidity and flexibility to manage leverage risk, invest in growth initiatives, or continue strategic buybacks. And speaking of buybacks, the company recently repurchased $423 million in shares—a massive capital return that shows the management’s strong conviction the shares are undervalued at current prices.</p>
+<p><strong>Regarding the bear case on valuation and momentum, it’s critical to highlight that market fears around governance or near-term margin pressures can create entry points for long-term investors.</strong> The discounted P/E, combined with solid cash flow generation ($281M free cash flow last quarter), strong institutional ownership (85%), and growing profitability, creates a robust foundation for upside when the market overcomes its dark cloud of skepticism.</p>
+<p><strong>Also, the sector still trends bullishly toward AI, CTV, and programmatic digital advertising, areas where TTD is a recognized leader.</strong> The drone software IPO surge and NYSE’s crypto moves indicate a market increasingly embracing AI and next-gen tech innovation — momentum that can lift AI-centric companies like TTD.</p>
+<p><strong>So in summary:</strong></p>
+<ul>
+<li>Yes, the short-term price action looks grim and bears merit a cautious eye.</li>
+<li>But the fundamentals remain strong and valuation attractive.</li>
+<li>The company’s unique competitive advantages in AI-driven CTV advertising are becoming more relevant by the day.</li>
+<li>Insider buying and strategic AI initiatives signal management confidence and growth catalysts.</li>
+<li>Technicals may be bottoming or stabilizing, showing potential for an inflection.</li>
+<li>Macroeconomic and sectoral tailwinds from AI and programmatic media reinforce longer-term growth.</li>
+</ul>
+<p><strong>In essence, TTD today is a classic “buy on bad news” opportunity, with the risk/reward skewed meaningfully to the upside for patient investors who appreciate the company’s long-term strategic positioning and strong fundamentals.</strong></p>
+<p>Would you agree that sometimes the best growth stories need a pause to shake out weaker hands before resuming their run? And with the insider buying and AI partnership buzz, doesn’t TTD look poised to emerge stronger once the current clouds clear?</p></div></details></div><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">Bear Case</h3><div class="debate-preview"><p>Bear Analyst: I appreciate your detailed and passionate case for TTD’s upside, and I respect the confidence you place in the growth narrative, insider buying, and emerging AI tailwinds. But let me, respectfully, unpack why these positives may be more optimism than reality for investors, especially at this juncture.</p>
+<p><strong>First, let’s look at the technical backdrop and recent price action, because that’s where the market is clearly voting with its feet.</strong> You mention that momentum indicators such a...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Bear Analyst: I appreciate your detailed and passionate case for TTD’s upside, and I respect the confidence you place in the growth narrative, insider buying, and emerging AI tailwinds. But let me, respectfully, unpack why these positives may be more optimism than reality for investors, especially at this juncture.</p>
+<p><strong>First, let’s look at the technical backdrop and recent price action, because that’s where the market is clearly voting with its feet.</strong> You mention that momentum indicators such as the MACD histogram hint at a possible stabilization, and the RSI isn’t deeply oversold yet — fair points. However, the reality is the stock is still entrenched in a sharp downtrend, with price well below both the 50-day and a very distant 200-day SMA (around 29.9 and 49.6 respectively). This is a textbook bearish structure that suggests not just a short-term pullback, but a sustained downtrend — often reflecting deteriorating fundamentals or market perception. Momentum easing so slightly is hardly a bullish confirmation but rather a tentative pause in an ongoing decline. </p>
+<p>Remember that technical indicators often lead or coincide with investor sentiment turning, and here the sentiment—fueled by egregious audit red flags—is deeply negative. The spike in selling volume during the drop reflects panic or forced selling, signifying weak hands exiting, not confident buying. So while you suggest it might be a “washout,” this looks closer to a structural trend that needs substantial catalysts (something lacking currently) to reverse. </p>
+<p><strong>On fundamentals, yes, TTD boasts high margins and rapidly growing earnings estimates; however, these do not paint a full, unalloyed picture.</strong> The valuation looks cheap only if you fully trust the forward EPS growth forecast, which more than doubles from $0.9 to $2.38 in a short timeframe—a leap that is not trivial or guaranteed by any means. In fact, the very uncertain environment — audit concerns, governance lapses, and macroeconomic pressures on ad spending — makes that forecast precarious. We’ve seen in similar situations (e.g., ad-tech firms facing compliance issues) that future earnings expectations are frequently revised downward when operational or regulatory issues come to light.</p>
+<p>Also, the enormously high debt-to-equity ratio of 17.56 is not something to gloss over, even with net cash on the books. This extreme leverage reveals structural financial risk that could amplify adverse market moves or limit operational flexibility if cash reserves dwindle. Net cash position partly offsets it, yes, but it also suggests a balance sheet with structural complexity that could become a problem if earnings or free cash flow growth disappoints. Huge insider buying (the $148 million CEO purchase) is encouraging on the surface, but insiders are not infallible — they can be overly optimistic or misread timing. It’s never a guarantee of stock appreciation.</p>
+<p><strong>Now, regarding the Publicis audit fallout and board member resignation—these events are far from trivial “noise.”</strong> They strike at the heart of governance, transparency, and customer trust. Publicis is a significant advertising giant, and their advisories to clients to avoid TTD specifically due to fees, billing irregularities, and AI tool reliability issues are serious business risks. Deloitte or others might audit firms, but when a major client openly pulls back and warns others, it signals potential systemic problems that could cascade with long-term client loss or reputational harm. Governance lapses, highlighted by the board resignation, compound these risks — so it’s too early to dismiss this as a short-term hiccup.</p>
+<p><strong>Your optimism about the AI and CTV positioning is understandable, but it leans heavily on execution risks and market saturation realities.</strong> The ad-tech industry is fiercely competitive, with legacy giants and nimble startups vying aggressively — innovation cycles are fast and costly. TTD’s competitors like Google, Amazon, and specialized AI ad platforms are continually advancing, often with deeper pockets and integrated ecosystems. TTD’s strategic products (Ventura, OpenAds, Kokai) are promising, but adoption and scaling in international regions (EMEA, APAC) take time and capital, which if delayed or challenged by regulatory crackdowns, can deteriorate margins and growth. This makes the imminent doubling of EPS speculative at best.</p>
+<p><strong>Also, I think it’s crucial to highlight the social sentiment and market psychology points here.</strong> The short interest stands at 10.76% and a short ratio near 2.6 days — this means there is material skepticism reflected by active short sellers, who tend to be well-informed and quick to act on negative signals. The stock’s recent 6.7% to 9.4% decline on bad news is not just volatility; it’s a market judgment weighing the precise risk I’m describing. Insider buying offsets sentiment but hasn’t reversed it, signaling that the broader market remains ambivalent or bearish.</p>
+<p><strong>From past lessons, I’ve learned to be cautious about narratives relying heavily on “buy on bad news” without clear and convincing evidence of operational recovery or risk normalization.</strong> Many promising tech growth stories falter under over-optimistic projections amid governance concerns or macro headwinds, as seen repeatedly in ad-tech and AI investments of the past five years. It’s wise to demand more than just insider buying and broad AI hype before labeling a stock a bargain — these are necessary but not sufficient conditions for a turnaround.</p>
+<h3>In summary, my bear case is this:</h3>
+<ul>
+<li>The technicals and volume data strongly confirm sustained bearish momentum, not a mere short-term washout.</li>
+<li>Governance issues, client red flags, and audit fallout pose material operational and reputational risks.</li>
+<li>High leverage, despite net cash, increases financial vulnerability amid challenging macro and sector dynamics.</li>
+<li>The forward earnings growth assumption is aggressive and at risk given the competitive and regulatory environment.</li>
+<li>Market sentiment and short interest indicate measured skepticism, not blindness.</li>
+<li>AI and CTV opportunities are real but far from guaranteed growth drivers in the near term amidst execution risk.</li>
+<li>Insider buying is a positive but insufficient counterweight to the negatives and should not blind investors to risks.</li>
+</ul>
+<p>TTD may eventually find footing, but patience and conviction are expensive in heavily discounted and troubled stocks. Investors should demand clear evidence of risk resolution and operational stability before considering re-entry. Rushing in now risks being caught in a cyclical or structural decline masked as a “buying opportunity.”</p>
+<p>So while I respect your bullish hope, my advice is to view TTD as a high-risk speculative position for now, not a proven growth buy, especially given the multiple red flags on governance, financial structure, and competitive execution.</p>
+<p>What specific signs or events do you think would truly convince you that TTD’s risks are adequately cleared and the stock is ready for a sustainable rebound?</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">Judge Decision</h3><div class="judge-body"><p>Both analysts offer thoughtful and thorough analysis of TTD’s situation. The bull emphasizes the company’s strong fundamentals and long-term growth potential driven by tech innovation, insider buying, and AI/CTV market tailwinds, framing the recent selloff as an investor overreaction and a classic “buy on bad news” chance. The bear counters with caution about the sustained bearish technical trend, serious governance concerns sparked by the Publicis audit fallout, competitive and execution risks in AI-driven adtech, and financial risks tied to leverage despite net cash. The bear also stresses the aggressive earnings assumptions and prevailing negative market sentiment reflected in high short interest, advising patient evidence-based re-entry rather than rushing in now.</p>
+<p>After carefully weighing both, I side decisively with the bear on this one. The fundamental story has promise but is currently overshadowed by tangible near-term risks that are not yet fully resolved: the audit and governance issues threaten client trust and operational stability; the stock’s technicals point to a continuing downtrend rather than a settled base; and the growth forecasts rely on optimistic assumptions in an uneven industry landscape. Insider buying is encouraging but insufficient to counterbalance these risks, especially given the aggressive valuation discount might be well justified here. Premature buying risks trapping investors in a drawn-out structural decline.</p>
+<p>My recommendation is to Sell or, for those already holding, reduce exposure significantly. This is a risk management call to preserve capital and reassess once clearer signs of risk mitigation emerge.</p>
+<p>Concretely, for the trader:</p>
+<ol>
+<li>
+<p><strong>Recommendation</strong>: Sell or significantly reduce holdings in TTD now.</p>
+</li>
+<li>
+<p><strong>Rationale</strong>: The bear presents a stronger case as tangible risks around governance and client trust remain unresolved, technicals do not confirm a bottom, and growth projections are optimistic under current external pressures. The possibility of further downside is material.</p>
+</li>
+<li>
+<p><strong>Strategic Actions</strong>:</p>
+</li>
+<li>Begin lowering TTD exposure gradually over the short term to avoid forced selling amid volatility.</li>
+<li>Set a watchlist for confirmatory signals to consider re-entry in the future, including:<ul>
+<li>Resolution or substantial progress on Publicis audit fallout and governance restructuring.</li>
+<li>Evidence of client retention and revenue stabilization or growth.</li>
+<li>Breakout above key technical resistance levels like the 50-day and 200-day SMA with volume confirmation.</li>
+<li>Earnings reports meeting or exceeding conservative guidance amid market/industry pressures.</li>
+<li>Reduced short interest and improving sentiment.</li>
+</ul>
+</li>
+<li>Consider reallocating proceeds to more stable or less governance-risk tech stocks with comparable growth potential but cleaner risk profiles.</li>
+<li>Use protective stops if holding residual positions to limit downside.</li>
+<li>Monitor sector and macro trends, especially regulatory changes, that could impact adtech broadly.</li>
+</ol>
+<p>Having learned from similar situations where optimism blinded me to governance or operational risks that dragged down returns over years, here I emphasize capital preservation over chasing a potentially premature rebound. It’s better to watch for clear recovery signals than to suffer steep drawdowns trying to catch a falling knife.</p>
+<p>In short, sell first, watch closely, and only consider new buys when fundamental and technical evidence align convincingly toward sustained recovery. This disciplined, evidence-based approach respects both the company’s long-term potential and the immediate market realities.</p></div></div></section>
+        <section id="trader-plan" class="section-card"><h2 class="section-title">Trader Investment Plan</h2><div class="section-body"><p>The investment plan for TTD presents a balanced view but rightly leans toward caution given the realities on the ground. The fundamental promise of innovation and insider buying is overshadowed by concrete near-term risks: unresolved governance issues from the Publicis audit fallout, bearish technical trends showing no stable bottom yet, and growth assumptions appearing overly optimistic amid industry headwinds.</p>
+<p>Key considerations:<br />
+- Governance and audit concerns pose serious risk to client trust and operational stability, which can directly impact revenue.<br />
+- Technicals indicate continued downtrend; no breakout above 50-day and 200-day SMAs confirmed.<br />
+- High short interest and negative market sentiment suggest further downside risk.<br />
+- Although insider buying is positive, it does not sufficiently mitigate the structural risks currently.</p>
+<p>Given these factors, the prudent approach is to reduce exposure now to preserve capital, rather than chasing a rebound prematurely. This allows for risk management in a still volatile environment while staying alert for signals of recovery.</p>
+<p>Actionable recommendation:<br />
+- Gradually sell or significantly reduce holdings in TTD.<br />
+- Use protective stops on any remaining positions.<br />
+- Monitor the key indicators outlined for a potential re-entry later.<br />
+- Reallocate capital toward more stable tech companies with fewer governance concerns.</p>
+<p>This approach minimizes the risk of being trapped in a prolonged decline due to ignored governance and technical red flags. It also sets a framework for disciplined re-engagement when the outlook becomes more favorable.</p>
+<p>FINAL TRANSACTION PROPOSAL: <strong>SELL</strong></p></div></section>
+        <section id="risk-debate" class="section-card"><h2 class="section-title">Risk Management Debate</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">Aggressive</h3><div class="debate-preview"><p>Aggressive Analyst: The conservative analyst’s concerns about governance, technical breakdowns, and bearish sentiment are understandable on the surface, but they fall short of appreciating the magnitude of opportunity TTD presents. Yes, Publicis' audit fallout and board resignation introduce noise and short-term negative headlines, but these are exactly the types of temporary disruptions that create buying windows for investors willing to look beyond the near-term turbulence.</p>
+<p>First, on governa...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Aggressive Analyst: The conservative analyst’s concerns about governance, technical breakdowns, and bearish sentiment are understandable on the surface, but they fall short of appreciating the magnitude of opportunity TTD presents. Yes, Publicis' audit fallout and board resignation introduce noise and short-term negative headlines, but these are exactly the types of temporary disruptions that create buying windows for investors willing to look beyond the near-term turbulence.</p>
+<p>First, on governance and audit issues: Sure, there’s uncertainty—competition and regulation always bring complexity. But the CEO’s massive $148 million insider purchase is a towering signal of conviction. Executives don’t deploy that kind of capital lightly, and this purchase comes amidst the storm, clearly indicating management’s belief that the stock is severely undervalued and poised to rebound. Insider buying often precedes major turnarounds. The conservative stance that it "does not sufficiently mitigate structural risk" dismisses the unique signaling power here.</p>
+<p>Second, regarding technicals, yes, the 50-day and 200-day SMAs show bearish trends. But what gets missed is the subtle but critical behavior in momentum indicators: the MACD histogram turning slightly positive, RSI stabilizing above oversold levels, and moderate volatility (ATR at 1.86) suggesting that the stock is primed for a relief rally or consolidation phase. Waiting for a "confirmed breakout" is classic risk-aversion that often causes missed entries—momentum rarely waits for perfect confirmation when innovation catalysts like TTD’s AI collaborations with OpenAI and CTV expansion are in play.</p>
+<p>Third, on market sentiment and short interest: high short interest often implies a crowded trade on the negative side. When sentiment shifts, these shorts are forced to cover, causing sharp squeezes that can rapidly accelerate gains. Ignoring this dynamic leaves investors blind to potential explosive upside moves. The moderate valuation discount (forward P/E ~10.5), combined with a forward EPS estimate more than doubling current earnings, shows the market is pricing in growth, but not fully reflecting TTD’s wide runway in international markets (EMEA, APAC) and AI-driven advertising dominance.</p>
+<p>The neutral analyst's implied preference for cautious observation rather than bold action similarly underestimates the rare confluence of innovation, valuation, and insider confidence here. Macro trends are heavily in favor of companies disrupting advertising with AI and CTV infrastructure—areas where TTD leads. The exploding market interest in AI technologies (paralleled by drone IPO mania and crypto institutional adoption) creates a broader robust environment favoring aggressive positioning in tech innovators, not retreat.</p>
+<p>Also, the healthy fundamentals defy a typical "sell" narrative: strong cash flow, healthy margins, robust free cash flow supporting stock buybacks, and a substantial net cash position versus moderate debt. The argument that high leverage is a red flag omits that net cash and liquidity cushion significantly de-risk the company’s financial position. The company's ability to generate cash and return capital to shareholders amplifies upside when risks shake out positively—which this aggressive framework is designed to exploit.</p>
+<p>In sum, the conservative approach is rooted in guarding capital but risks missing a transformational rebound fueled by AI advancements, CEO insider buying, expanding international footprint, and the shift toward CTV advertising. The caution blindspots are the asymmetric upside from market mispricing, momentum shifts, and strategic tech innovation leadership. There’s a compelling bet here that discipline and patience for capital preservation overlook: early entry at current depressed levels with tight volatility-based stops captures outsized gains while controlling risk.</p>
+<p>This is precisely the environment where aggressive risk-taking trumps passive caution—bold investments now position the trader to ride a probable surge fueled by AI partnerships (OpenAI collaboration speculation), CTV market growth, and the inevitable resolution/containment of current audit noise. Selling now locks in pain and forfeits breakthrough gains from innovation leadership. Actively holding or even adding is the smartest move to exploit the dislocation.</p>
+<p>Ultimately, those who chase safety in TTD’s current volatility will trail behind those who grasp the structural growth story poised to dominate digital advertising’s future. The risks are real, but the opportunity far greater. Seizing this chance means embracing the short-term noise and betting big on longer-term tech disruption. That’s the high-reward mindset this situation demands.</p></div></details></div><div class="debate-panel" style="border-top:3px solid #3b82f6;"><h3 class="debate-panel-title" style="color:#3b82f6;">Conservative</h3><div class="debate-preview"><p>Conservative Analyst: I appreciate the aggressive analyst’s enthusiasm and the neutral analyst’s caution, but I have to push back on several points here when it comes to balancing opportunity with risk, which remains paramount.</p>
+<p>Starting with the insider buying argument: Yes, the CEO’s $148 million purchase is a strong signal of confidence, but it’s crucial not to conflate insider buying with an absence of risk. Executives often buy shares to signal commitment, but insiders can also be highly b...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Conservative Analyst: I appreciate the aggressive analyst’s enthusiasm and the neutral analyst’s caution, but I have to push back on several points here when it comes to balancing opportunity with risk, which remains paramount.</p>
+<p>Starting with the insider buying argument: Yes, the CEO’s $148 million purchase is a strong signal of confidence, but it’s crucial not to conflate insider buying with an absence of risk. Executives often buy shares to signal commitment, but insiders can also be highly biased toward their company’s prospects and may underestimate external governance risks. The unresolved Publicis audit fallout, billing irregularities, and the AI tool Kokai's issues directly threaten client trust and revenue streams in a sector where reputation matters enormously. This regulatory and operational uncertainty is not a mere “temporary disruption” that insider buying can magically offset. Especially with a board member resigning amid these concerns—it points to structural issues that could take quarters, even years, to fully resolve. The risk of prolonged governance challenges is very real.</p>
+<p>On technicals, while it’s true the MACD histogram and RSI hint at possibly easing bearish momentum, the broader trend remains decisively negative: prices still trade well below both the 50-day (~29.93) and the 200-day SMA (~49.62), and recent price action has sharply dropped into the mid-20s. This creates dynamic resistance levels that are tough hurdles for a meaningful rally to form. Waiting for a confirmed breakout is not about being risk-averse for its own sake—it's a practical necessity to reduce the chances of a false signal in a stock with clear downward pressure. Attempting to chase small momentum shifts without confirmation tends to expose the portfolio to whipsaws and needless volatility. With ATR still at moderate volatility (around 1.86), price swings can still inflict identity-threatening losses before any meaningful upside.</p>
+<p>Regarding the short interest and the idea of a short squeeze—while theoretically possible, this is a speculative scenario. A high short interest obviously means some investors see downside risk, but betting on a squeeze assumes a catalyst strong enough to force shorts out en masse. Given the audit and governance clouds hanging over the company, and ongoing bearish fundamentals, this catalyst is far from guaranteed. Relying on this kind of event adds unnecessary speculative risk inconsistent with a conservative risk profile.</p>
+<p>The valuation and growth story you highlight—like the forward P/E around 10.5 or the expected leap in EPS—do reflect optimism and analyst projections, but they are predicated on the successful resolution of the very risks we are flagging. Leverage remains a red flag, with debt-to-equity at a staggering 17.5, which is offset partially by net cash, but that liquidity could be quickly eroded if the company faces revenue pressure or higher operating costs as a result of audit fallout or regulatory fines. It’s not prudent to assume smooth execution when these heavy risks have not yet been resolved.</p>
+<p>Looking at the macro environment, yes, AI and CTV are exciting growth sectors, and TTD is positioning itself well. But all innovative companies face execution risks, especially emerging technologies that require seamless regulatory and operational controls alongside strategic expansion. The Publicis fallout highlights how quickly promising innovation can become overshadowed by governance missteps. A conservative strategy protects capital through this turbulence and lets the firm avoid being caught on the wrong side if challenges lengthen.</p>
+<p>Finally, regarding fundamentals: healthy margins, cash flows, and buybacks are positive, but buybacks at current elevated volatility and under governance stress could be more about supporting the share price than fundamental value. Relying on buybacks is not without risk and does not remove the operational and reputational vulnerabilities at play.</p>
+<p>In summary, the aggressive stance undervalues the severity and longevity of governance and audit risks, downplays the established bearish trend in technicals, and overestimates the likelihood of a catalyst strong enough to flip sentiment swiftly. A conservative approach that reduces exposure now and waits patiently for clearer signs of risk resolution and confirmed technical recovery is aligned with prudent asset protection and sustainable long-term growth.</p>
+<p>Taking risk to capture potential upside here imperils capital preservation, and that is a trade-off I believe the firm should avoid. It’s about measured exposure and disciplined protection, not chasing short-term rebounds in a still volatile and structurally uncertain environment.</p></div></details></div><div class="debate-panel" style="border-top:3px solid #f59e0b;"><h3 class="debate-panel-title" style="color:#f59e0b;">Neutral</h3><div class="debate-preview"><p>Neutral Analyst: Both the aggressive and conservative analysts bring valuable insights, but their stances each lean a bit too far. The aggressive analyst rightly highlights the opportunity in insider buying, AI partnerships, and growth initiatives like the CTV expansion, which are indeed strong long-term growth drivers for TTD. But the argument somewhat downplays the tangible governance and audit risks exposed by Publicis' fallout and the board resignation. Insider buying is an important bullis...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Neutral Analyst: Both the aggressive and conservative analysts bring valuable insights, but their stances each lean a bit too far. The aggressive analyst rightly highlights the opportunity in insider buying, AI partnerships, and growth initiatives like the CTV expansion, which are indeed strong long-term growth drivers for TTD. But the argument somewhat downplays the tangible governance and audit risks exposed by Publicis' fallout and the board resignation. Insider buying is an important bullish signal, but executives may also be biased insiders who believe in the company despite structural challenges. It should be treated as a positive, yet not as an all-clear on risk.</p>
+<p>On the bullish technical signals, the MACD histogram’s slight uptick and the RSI hovering near 40 do show some early signs of a possible momentum shift or at least a slowing of the bearish pressure, but the price remains well below key moving averages like the 50-day and far below the 200-day SMA, implying that the downtrend still dominates. Jumping in aggressively before confirming any true breakout could open the door to whipsaws and false rallies, especially in a stock shadowed by governance concerns and market skepticism. I agree with cautious observation here, not immediate aggressive buying.</p>
+<p>Conversely, the conservative analyst rightly focuses on capital preservation given the unresolved governance issues and the prevailing bearish price action. The skeptics about the audit fallout, high leverage, and the potential for continued revenue pressure are well-founded concerns that require serious attention, especially since the stock’s technical trend is far from reversing yet. However, the conservative approach might be overly risk-averse by discounting the tangible positives: CEO insider buying at $148 million is an uncommon show of faith, and the company’s strong fundamentals — healthy profit margins, positive cash flow, and ongoing strategic investments into AI and international markets — suggest the risks may be at least partially priced in at current levels. Reducing exposure drastically or selling outright might mean missing out on a potential stabilizing or early rebound phase.</p>
+<p>A balanced, moderate approach seems to be the smartest path forward. Gradually trimming positions rather than wholesale selling would reduce exposure to the heightened risk without locking in losses prematurely. Maintaining a smaller stake allows participation in a potential turnaround once there’s clearer evidence of audit resolution, governance stability, and technical confirmation like a sustained price move above the 50-day SMA coupled with MACD crossover. Utilizing volatility-adjusted stops, given ATR is moderate, can contain downside risk while allowing for upside if momentum shifts affirmatively.</p>
+<p>Also, reallocation toward more stable tech companies as suggested by the neutral stance is prudent — this diversifies risk away from the cloud of controversy that still hangs over TTD without losing all exposure to its innovative growth prospects. Keeping a watchful eye on the resolution of the Publicis issues, regulatory updates, and execution on AI/CTV initiatives is key to timing re-entry or scaling back in.</p>
+<p>In summary, dismissing insider buying or the AI-driven growth story outright ignores important long-term drivers just as ignoring audit and governance fallout risks underpreparing for downside. Neither a full sell nor a bold hold captures the nuanced reality. A moderate, staged approach balances these competing dynamics — safeguarding capital while retaining the agility to capitalize when clearer signs of recovery emerge. This balanced path respects both the upside potential and the structural risks present today.</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">Judge Decision</h3><div class="judge-body"><p><strong>Final Recommendation: Sell (or Significantly Reduce Exposure) in TTD Now</strong></p>
+<hr />
+<h3>1. Summary of Key Arguments</h3>
+<ul>
+<li><strong>Aggressive Analyst:</strong>  </li>
+<li>Insider buying of $148M by CEO is a powerful bullish signal, indicating deep conviction.  </li>
+<li>The recent selloff is a “buy on bad news” opportunity driven by short-term noise.  </li>
+<li>Momentum indicators (MACD turning positive, RSI stabilizing) and moderate ATR suggest a relief rally or consolidation is likely imminent.  </li>
+<li>High short interest primes for a short squeeze, potentially driving sharp gains.  </li>
+<li>Strong fundamentals: net cash position, positive cash flow, buybacks, and AI/CTV tailwinds.  </li>
+<li>
+<p>Macro trend strongly favors disruptive AI-driven adtech companies like TTD.</p>
+</li>
+<li>
+<p><strong>Conservative Analyst:</strong>  </p>
+</li>
+<li>Insider buying is not a free pass—executives can be biased and risks remain real.  </li>
+<li>Publicis audit fallout, billing irregularities, and board resignation signal serious governance and client trust risks that could drag on for quarters or years.  </li>
+<li>The stock price remains decisively below key technical moving averages (50-day and 200-day SMA), indicating a strong downtrend; thus, technical risk is high.  </li>
+<li>High leverage combined with operational uncertainty increases financial risk despite net cash.  </li>
+<li>Betting on a short squeeze or optimistic growth projections is speculative and risky in current environment.  </li>
+<li>Buybacks may distort price but don’t fix underlying governance and operational issues.  </li>
+<li>
+<p>Preserving capital by reducing exposure and waiting for clearer evidence of risk resolution and technical bottom is prudent.</p>
+</li>
+<li>
+<p><strong>Neutral Analyst:</strong>  </p>
+</li>
+<li>Insider buying and strong growth initiatives (AI partnerships, CTV expansion) are meaningful positives but do not erase governance and audit risks.  </li>
+<li>Early momentum signals exist but price action remains bearish overall; waiting for confirmed technical breakout is wise to avoid false rallies.  </li>
+<li>Moderately suggests trimming positions rather than outright selling to manage risk while retaining growth exposure.  </li>
+<li>Recommends using volatility stops and watching for audit resolution, governance stabilization, and technical confirmation before re-entry.  </li>
+<li>Suggests reallocation toward more stable tech stocks to balance growth prospects against governance uncertainty.</li>
+</ul>
+<hr />
+<h3>2. Rationale for Decision and Counterarguments</h3>
+<ul>
+<li>
+<p>The bold <strong>Aggressive Analyst’s</strong> thesis is compelling in its optimism but underestimates the magnitude, complexity, and likely duration of governance and operational risks stemming from the Publicis audit fallout and board turmoil. While insider buying is an extremely positive sign, it does <strong>not</strong> equate to an absence of structural risk, especially where client trust and regulatory exposure remain clouded. Insider conviction is encouraging but alone insufficient to justify immediate aggressive buying at this juncture.</p>
+</li>
+<li>
+<p>The <strong>Conservative Analyst</strong> presents a grounded risk management perspective that aligns well with tangible, unresolved issues:  </p>
+<blockquote>
+<p>“The risk of prolonged governance challenges is very real,” and “technical trend remains decisively negative.”<br />
+  The conservative stance also correctly identifies that chasing short-term technical signals or betting on a speculative short squeeze increases downside risk substantially in this environment. Preserving capital until meaningful evidence of risk mitigation and technical recovery emerges is prudent.</p>
+</blockquote>
+</li>
+<li>
+<p>The <strong>Neutral Analyst’s</strong> suggestion of a gradual reduction—as opposed to wholesale selling—balances risk and opportunity but may err on the side of caution without sufficiently addressing the severity of headline governance and client trust risks currently weighing on the stock. While this moderation reduces forced losses, it doesn’t fully mitigate exposure to a likely continuation of the downtrend and unresolved structural issues.</p>
+</li>
+<li>
+<p>Reflecting on past experiences where optimism on governance-related recoveries led to prolonged drawdowns, immediate decisive risk reduction better serves capital preservation and flexibility.</p>
+</li>
+</ul>
+<hr />
+<h3>3. Refining the Trader’s Plan</h3>
+<p><strong>Original Plan:</strong> Sell or significantly reduce holdings now, then monitor for clear evidence of risk resolution and technical confirmation before considering re-entry.</p>
+<p><strong>Refined Plan with Incorporation of Analysts’ Insights:</strong></p>
+<ol>
+<li><strong>Immediate Action:</strong>  </li>
+<li>Implement a <strong>sell or significant position reduction</strong> strategy NOW to reduce exposure to ongoing governance, client trust, and technical risks.  </li>
+<li>Use a <strong>staged selling approach</strong> over short time horizon (weeks) to avoid forced, panic-driven sales amid volatility.  </li>
+<li>
+<p>Deploy <strong>protective stops</strong> aligned with ATR (~1.86) to limit downside risk on residual holdings.</p>
+</li>
+<li>
+<p><strong>Monitoring for Re-Entry Triggers:</strong> (Aligned with the Neutral Analyst’s watchlist)  </p>
+</li>
+<li><strong>Progress/Resolution on Publicis audit fallout and governance restructuring</strong> (e.g., board stabilization, regulatory clarity).  </li>
+<li><strong>Evidence of client retention, revenue stabilization or growth</strong> in upcoming earnings reports.  </li>
+<li><strong>Confirmed technical breakout</strong> above 50-day and 200-day SMA with volume confirmation and supportive momentum indicators (MACD crossover, RSI above 50).  </li>
+<li><strong>Reduction in short interest</strong> and improvement in market sentiment.  </li>
+<li>
+<p><strong>Earnings performance</strong> meeting or exceeding conservative analyst guidance amid prevailing industry and macro pressures.</p>
+</li>
+<li>
+<p><strong>Portfolio Management:</strong>  </p>
+</li>
+<li>Consider reallocating proceeds into <strong>more stable, less governance-risk tech stocks</strong> with strong fundamentals and AI/CTV exposure but cleaner risk profiles to maintain growth orientation with lower risk.  </li>
+<li>Maintain a <strong>watchlist with alerts</strong> tied to the factors above to enable a timely, evidence-based re-entry rather than speculative calls.  </li>
+<li>Continue monitoring sector/regulatory developments impacting adtech broadly to adjust the strategy adaptively.</li>
+</ol>
+<hr />
+<h3>4. Lessons from Past Mistakes</h3>
+<ul>
+<li>Avoid premature entry premised on <strong>optimistic but unconfirmed turnaround narratives</strong>, especially where governance faults and client trust issues exist.  </li>
+<li>Insider buying is a strong positive but should not blind investors to operational and regulatory realities.  </li>
+<li><strong>Waiting for confirmed technical signals combined with fundamental risk mitigation</strong> helps avoid whipsaws and prolonged drawdowns.  </li>
+<li>Being vigilant to the <strong>duration and magnitude of governance and audit-related risks</strong> prevents capital erosion from overly optimistic, impatience-driven buys.  </li>
+<li>Diversifying away from singular risk exposures during uncertain periods preserves optionality.</li>
+</ul>
+<hr />
+<h3><strong>Conclusion:</strong></h3>
+<p>While The Trade Desk (TTD) holds <strong>strong long-term promise</strong> driven by tech innovation, AI/CTV growth, and unique insider conviction, these positives are currently <strong>overshadowed by significant near-term risks</strong>—notably governance and audit fallout, bearish technical trends, and financial leverage under uncertain execution.</p>
+<p><strong>The risk of a sustained downtrend and further downside materially outweighs the chance for a near-term rebound or short squeeze.</strong> Thus, the best risk-management decision is to:</p>
+<blockquote>
+<p><strong>Sell or significantly reduce TTD holdings now to preserve capital.</strong>  </p>
+</blockquote>
+<p>Only after clear evidence of fundamental risk resolution and confirmed technical recovery should new buying be considered, supported by tight risk controls and diversified exposure. This approach respects both the innovative potential of TTD and the immediate realities threatening shareholder value.</p>
+<hr />
+<p><strong>Recommendation:</strong><br />
+<strong>SELL or SIGNIFICANTLY REDUCE exposure in TTD now.</strong><br />
+Monitor catalysts and technical signals closely for opportunity to re-enter opportunistically when risks subside and momentum confirms.</p></div></div></section>
+        <footer class="dashboard-footer"><p>Generated at 2026-03-18 15:12 by TradingAgents</p></footer>
+    </main>
+</div>
+
+<script>
+(function() {
+    // ─── Tab Switching (legacy fallback) ────────────
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var container = btn.closest('.tabs-container');
+            var tabId = btn.getAttribute('data-tab');
+            container.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            container.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+            btn.classList.add('active');
+            var panel = container.querySelector('[data-panel="' + tabId + '"]');
+            if (panel) panel.classList.add('active');
+        });
+    });
+
+    // ─── Smooth Scroll from Nav ─────────────────────
+    document.querySelectorAll('.nav-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var id = link.getAttribute('href').slice(1);
+            var el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // ─── IntersectionObserver for Nav Tracking ──────
+    var navLinks = document.querySelectorAll('.nav-link');
+    var sections = [];
+    navLinks.forEach(function(link) {
+        var id = link.getAttribute('data-section');
+        var el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el });
+    });
+
+    if (sections.length && 'IntersectionObserver' in window) {
+        var currentActive = null;
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    currentActive = entry.target.id;
+                }
+            });
+            if (currentActive) {
+                navLinks.forEach(function(l) {
+                    if (l.getAttribute('data-section') === currentActive) {
+                        l.classList.add('active');
+                    } else {
+                        l.classList.remove('active');
+                    }
+                });
+            }
+        }, {
+            rootMargin: '-80px 0px -60% 0px',
+            threshold: 0
+        });
+        sections.forEach(function(s) { observer.observe(s.el); });
+    }
+})();
+</script>
+
+<script>document.addEventListener("DOMContentLoaded", function() {  if (typeof Chart === "undefined") return;  var ctx = document.getElementById("macdChart");  if (!ctx) return;  new Chart(ctx, {    type: "bar",    data: {      labels: ["MACD", "Signal", "Histogram"],      datasets: [{        data: [-0.63, -0.92, 0.29],        backgroundColor: ["#ef4444", "#ef4444", "#10b981"],        borderRadius: 4,        barThickness: 40      }]    },    options: {      responsive: true,      maintainAspectRatio: false,      plugins: { legend: { display: false } },      scales: {        y: {          grid: { color: "#1e293b" },          ticks: { color: "#64748b", font: { family: "DM Mono" } }        },        x: {          grid: { display: false },          ticks: { color: "#64748b", font: { family: "DM Mono" } }        }      }    }  });});</script>
+
+</body>
+</html>
