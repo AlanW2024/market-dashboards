@@ -33,6 +33,7 @@ const FILES = {
     {"name":"DLR_2026-03-17.html","path":"TradingAgents/US/DLR_2026-03-17.html","dir":"TradingAgents/US"},
     {"name":"FDS_2026-03-18_zh.html","path":"TradingAgents/US/FDS_2026-03-18_zh.html","dir":"TradingAgents/US"},
     {"name":"FDS_2026-03-18.html","path":"TradingAgents/US/FDS_2026-03-18.html","dir":"TradingAgents/US"},
+    {"name":"MSFT_2026-03-18_zh.html","path":"TradingAgents/US/MSFT_2026-03-18_zh.html","dir":"TradingAgents/US"},
     {"name":"MSFT_2026-03-18.html","path":"TradingAgents/US/MSFT_2026-03-18.html","dir":"TradingAgents/US"},
     {"name":"MSTR_2026-03-16_zh.html","path":"TradingAgents/US/MSTR_2026-03-16_zh.html","dir":"TradingAgents/US"},
     {"name":"MSTR_2026-03-16.html","path":"TradingAgents/US/MSTR_2026-03-16.html","dir":"TradingAgents/US"},
