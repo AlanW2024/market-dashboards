@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GOOG 投資分析框架</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-soft: #1e293b;
+      --border: rgba(148, 163, 184, 0.18);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #10b981;
+      --glow: rgba(16,185,129,0.18);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 36%),
+        radial-gradient(circle at top right, var(--glow), transparent 30%),
+        linear-gradient(180deg, #020617 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+    .hero {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.32);
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    h1 {
+      margin: 10px 0 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .metric {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .metric-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .metric-value {
+      margin-top: 6px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .summary-card {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+      margin-bottom: 24px;
+    }
+    .summary-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .summary-title::before {
+      content: '';
+      width: 4px;
+      height: 22px;
+      background: var(--accent);
+      border-radius: 999px;
+    }
+    .summary-list {
+      display: grid;
+      gap: 14px;
+    }
+    .summary-item {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      align-items: center;
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 18px;
+      padding: 16px 18px;
+    }
+    .summary-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .summary-text {
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+    .content {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+    }
+    .content h1, .content h2, .content h3 {
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.25;
+    }
+    .content h1 { font-size: 2rem; margin-top: 0; }
+    .content h2 {
+      font-size: 1.35rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .content h3 { font-size: 1.1rem; margin-top: 1.4rem; }
+    .content p, .content li { color: var(--text); }
+    .content strong { color: #f8fafc; }
+    .content code {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 0.15em 0.45em;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.92em;
+    }
+    .content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.7);
+    }
+    .content th, .content td {
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .content th {
+      background: rgba(30, 41, 59, 0.95);
+      color: #f8fafc;
+    }
+    .content blockquote {
+      margin: 16px 0;
+      padding: 14px 18px;
+      border-left: 4px solid var(--accent);
+      background: rgba(15, 23, 42, 0.75);
+      border-radius: 0 14px 14px 0;
+    }
+    a { color: #7dd3fc; }
+    .footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="eyebrow">Tier 3 Final Verdict</div>
+      <h1>GOOG 投資分析框架</h1>
+      <div class="hero-grid">
+        <div class="metric">
+          <div class="metric-label">最終行動</div>
+          <div class="metric-value">BUY</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">信心分數</div>
+          <div class="metric-value">60.8</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">裁決模式</div>
+          <div class="metric-value">cheap</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">交易日</div>
+          <div class="metric-value">2026-03-18</div>
+        </div>
+      </div>
+    </section>
+    <section class="summary-card">
+      <div class="summary-title">執行摘要</div>
+      <div class="summary-list">
+        <div class="summary-item"><div class="summary-number">1</div><div class="summary-text">Alphabet基本面穩健且AI多元發展具備非對稱上行機會，短期技術指標回穩支持階段性買入。</div></div><div class="summary-item"><div class="summary-number">2</div><div class="summary-text">短期技術指標已回穩，股價穩固於200日均線之上，AI戰略多元且具潛力，適合分批進場捕捉成長。</div></div><div class="summary-item"><div class="summary-number">3</div><div class="summary-text">採取分階段買入策略，設定嚴格停損點，首階段小量進場，待股價突破50日均線及確認動能續強後加碼。</div></div>
+      </div>
+    </section>
+    <section class="content">
+      <h2>快速結論</h2>
+<ul>
+<li><strong>最終行動：</strong> BUY</li>
+<li><strong>信心分數：</strong> 60.8/100</li>
+<li><strong>TradingAgents 初步判斷：</strong> BUY</li>
+<li><strong>裁決模式：</strong> cheap</li>
+<li><strong>需要人工複核：</strong> 否</li>
+<li><strong>下一步執行：</strong> 採取分階段買入策略，設定嚴格停損點，首階段小量進場，待股價突破50日均線及確認動能續強後加碼。</li>
+</ul>
+<h2>為什麼現在做</h2>
+<p>短期技術指標已回穩，股價穩固於200日均線之上，AI戰略多元且具潛力，適合分批進場捕捉成長。</p>
+<h2>為什麼現在不做</h2>
+<p>價格尚未突破50日均線，存在反覆整理及AI基礎建設瓶頸風險，可能導致短期波動或拉回。</p>
+<h2>最終行動計畫</h2>
+<p><strong>決策理由：</strong> 兩組結構化裁決均支持買入，並強調基本面及技術指標穩健，儘管短期面臨50日均線壓力及執行風險，整體多頭趨勢仍具吸引力。</p>
+<p><strong>進場或執行計畫：</strong> 採取分階段買入策略，設定嚴格停損點，首階段小量進場，待股價突破50日均線及確認動能續強後加碼。</p>
+<p><strong>風險控制計畫：</strong> 密切跟蹤50日均線突破狀況與AI供應鏈瓶頸改善，迅速調整持倉規模並啟動停損，防止潛在中期回撤。</p>
+<p><strong>重新檢查觸發點：</strong><br />
+- 股價無法突破並站穩50日均線持續超過多日<br />
+- MACD負轉且RSI跌破45<br />
+- AI基礎設施供應鏈狀況惡化或競爭對手顯著超越</p>
+<h2>TradingAgents 摘要</h2>
+<ul>
+<li><strong>Tier 1 分數：</strong> 0</li>
+<li><strong>Tier 2 綜合分：</strong> 0</li>
+<li><strong>板塊：</strong> N/A</li>
+<li><strong>風險標記：</strong> Medium</li>
+<li><strong>Structured log：</strong> <code>/Users/yeehowong/Desktop/Project/sp500_pipeline/eval_results/GOOG/TradingAgentsStrategy_logs/full_states_log_2026-03-18.json</code></li>
+</ul>
+<h2>投資框架投票</h2>
+<table>
+<thead>
+<tr>
+<th>框架</th>
+<th>票向</th>
+<th>信心</th>
+<th>核心論點</th>
+<th>建議動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Howard Marks + Ray Dalio</td>
+<td>BUY</td>
+<td>85</td>
+<td>Alphabet’s robust long-term fundamentals, strong cash flow, diversified AI-driven growth, and early technical stabilization outweigh medium-term resistance and execution risks, justifying a disciplined buy now.</td>
+<td>Initiate or add to positions with a disciplined, phased approach and implement stop-losses to manage downside while positioning to capture AI-driven upside.</td>
+</tr>
+<tr>
+<td>George Soros + Stanley Druckenmiller</td>
+<td>BUY</td>
+<td>8</td>
+<td>GOOG長期多頭趨勢穩固，短期技術指標顯示動量穩定且AI多元化布局具非對稱上行潛力，建議階段性進場並嚴控風險。</td>
+<td>現階段分批買入GOOG，設置嚴格的停損點位以控制風險，密切關注50日均線突破和AI基礎設施瓶頸的改善動態</td>
+</tr>
+</tbody>
+</table>
+<h2>投資框架觀點</h2>
+<h3>Howard Marks + Ray Dalio</h3>
+<ul>
+<li><strong>票向：</strong> BUY</li>
+<li><strong>信心：</strong> 85.0/100</li>
+<li><strong>核心論點：</strong> Alphabet’s robust long-term fundamentals, strong cash flow, diversified AI-driven growth, and early technical stabilization outweigh medium-term resistance and execution risks, justifying a disciplined buy now.</li>
+<li><strong>建議動作：</strong> Initiate or add to positions with a disciplined, phased approach and implement stop-losses to manage downside while positioning to capture AI-driven upside.</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- Price remains well above long-term 200 SMA (~258), confirming a sustained bullish baseline.<br />
+- Positive momentum signals: MACD histogram turned positive, RSI rebounding from oversold levels, and narrowing MACD gap indicate stabilizing short-term momentum.<br />
+- Strong balance sheet with net cash around $60 billion and healthy free cash flow (~$24 billion quarterly) supports innovation and risk absorption.<br />
+- Fundamental growth expectations: forward EPS rising from $10.80 to $13.42, enabling justified premium valuation at forward P/E ~23.<br />
+- Strategic AI initiatives including Gemini integration and CMS-Fitbit health partnership demonstrate diversification and competitive edge beyond core search business.</p>
+<p><strong>主要風險：</strong><br />
+- Medium-term price resistance at 50 SMA (~318.7) not yet broken, signaling potential pullback or consolidation.<br />
+- Execution risk from AI infrastructure cooling supply constraints could delay growth or increase costs.</p>
+<p><strong>失效條件：</strong><br />
+- Sustained failure to break and hold above 50 SMA signaling loss of momentum and potential medium-term downtrend.<br />
+- Material worsening in AI infrastructure supply chain or worsening macro/geopolitical factors impacting Alphabet’s execution and profitability.</p>
+<h3>George Soros + Stanley Druckenmiller</h3>
+<ul>
+<li><strong>票向：</strong> BUY</li>
+<li><strong>信心：</strong> 8.0/100</li>
+<li><strong>核心論點：</strong> GOOG長期多頭趨勢穩固，短期技術指標顯示動量穩定且AI多元化布局具非對稱上行潛力，建議階段性進場並嚴控風險。</li>
+<li><strong>建議動作：</strong> 現階段分批買入GOOG，設置嚴格的停損點位以控制風險，密切關注50日均線突破和AI基礎設施瓶頸的改善動態</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- 價格持續高於200日均線（約258），長線趨勢明顯多頭<br />
+- MACD柱狀圖由負轉正（+0.82），RSI從超賣區恢復至約50，短期動能回穩跡象明顯<br />
+- 公司現金淨額約598億美元，季度自由現金流超過245億美元，金融體質強健，支持持續研發與資本支出<br />
+- AI戰略多元且領先，如CMS-Fitbit健康AI整合與Gemini AI深度滲透日常產品，技術優勢明顯<br />
+- 股價相對於50日均線仍有壓力，但等待突破風險與機會並存，提前布局可分享可能爆發的AI驅動成長</p>
+<p><strong>主要風險：</strong><br />
+- AI基礎建設中冷卻系統和供應鏈瓶頸若未能有效改善，可能延遲營收與壓縮利潤率<br />
+- 股價尚未突破50日均線，短中期技術面仍存在反覆整理風險，估值偏高對執行不確定性敏感</p>
+<p><strong>失效條件：</strong><br />
+- 股價無法攻克並站穩於50日均線（約318.7）以上且短期動能指標轉弱，例如MACD負轉且RSI跌破45<br />
+- AI競爭對手超越且公司在AI核心供應鏈瓶頸持續惡化，導致研發投入無法有效轉化為實質成長</p>
+<h2>最終裁決摘要</h2>
+<ul>
+<li><strong>主論點：</strong> Alphabet基本面穩健且AI多元發展具備非對稱上行機會，短期技術指標回穩支持階段性買入。</li>
+<li><strong>framework 多數票：</strong> BUY</li>
+<li><strong>一致度：</strong> 2/2</li>
+</ul>
+<p><strong>主要風險：</strong><br />
+- 股價未能突破50日均線導致短期整理<br />
+- AI基礎設施供應鏈瓶頸可能影響成長節奏與利潤率</p>
+<hr />
+<p><em>由 SP500 Pipeline Tier 3 產生 — 2026-03-18 21:45</em></p>
+      <div class="footer">Generated at 2026-03-18 21:45</div>
+    </section>
+  </div>
+</body>
+</html>
