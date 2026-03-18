@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LULU — SELL | 2026-03-18</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* ─── Custom Properties ─────────────────────────────── */
+:root {
+    --bg-primary: #0b0f19;
+    --bg-secondary: #0f1629;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --bg-inset: #0d1117;
+    --border-subtle: #1e293b;
+    --border-medium: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --signal-color: #ef4444;
+    --signal-glow: rgba(239, 68, 68, 0.15);
+    --signal-rgb: 239, 68, 68;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --sidebar-w: 220px;
+    --header-h: 56px;
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ─── Noise Texture ─────────────────────────────────── */
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* ─── Header Bar ────────────────────────────────────── */
+.header-bar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 100;
+    display: flex; align-items: center;
+}
+.header-inner {
+    width: 100%; max-width: 1400px;
+    margin: 0 auto; padding: 0 2rem;
+    display: flex; align-items: center;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+}
+
+/* ─── Signal Pill ───────────────────────────────────── */
+.signal-pill {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.85rem;
+    background: rgba(var(--signal-rgb), 0.15);
+    border: 1px solid rgba(var(--signal-rgb), 0.3);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-weight: 500; font-size: 0.8rem;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* ─── Layout ────────────────────────────────────────── */
+.layout {
+    display: flex; max-width: 1400px;
+    margin: 0 auto; padding-top: var(--header-h);
+    min-height: 100vh;
+}
+
+/* ─── Sidebar ───────────────────────────────────────── */
+.sidebar {
+    position: sticky; top: var(--header-h);
+    width: var(--sidebar-w); flex-shrink: 0;
+    height: calc(100vh - var(--header-h));
+    padding: 1.5rem 0 1.5rem 1.5rem;
+    overflow-y: auto;
+}
+.sidebar-inner {
+    display: flex; flex-direction: column; gap: 0.25rem;
+}
+.nav-link {
+    display: block; padding: 0.5rem 1rem;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500;
+    border-radius: var(--radius-sm);
+    border-left: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+.nav-link:hover {
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.03);
+}
+.nav-link.active {
+    color: var(--signal-color);
+    border-left-color: var(--signal-color);
+    background: rgba(var(--signal-rgb), 0.08);
+}
+
+/* ─── Main Content ──────────────────────────────────── */
+.main-content {
+    flex: 1; min-width: 0;
+    padding: 1.5rem 2rem 3rem 1.5rem;
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+
+/* ─── Hero Card ─────────────────────────────────────── */
+.hero-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    overflow: hidden;
+}
+.hero-mesh {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(var(--signal-rgb), 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(var(--signal-rgb), 0.05) 0%, transparent 40%),
+        radial-gradient(ellipse at 60% 80%, rgba(var(--signal-rgb), 0.03) 0%, transparent 60%);
+    pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-header {
+    display: flex; align-items: center; gap: 1rem;
+    flex-wrap: wrap; margin-bottom: 0.5rem;
+}
+.hero-ticker {
+    font-family: var(--font-heading);
+    font-size: 2.5rem; font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text-primary), var(--signal-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-date {
+    font-family: var(--font-mono);
+    font-size: 0.9rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.hero-card .signal-pill { font-size: 0.9rem; padding: 0.35rem 1rem; }
+
+/* Risk Badge */
+.risk-badge {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 20px; letter-spacing: 0.05em;
+}
+.risk-low    { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+.risk-medium { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+.risk-high   { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+
+/* Reasons */
+.reasons-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.reason {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(var(--signal-rgb), 0.05);
+    border: 1px solid rgba(var(--signal-rgb), 0.1);
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;
+}
+.reason-num {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px;
+    background: rgba(var(--signal-rgb), 0.15);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 50%;
+}
+
+/* ─── Metrics Grid ──────────────────────────────────── */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+.metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+    position: relative; overflow: hidden;
+}
+.metric-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--signal-color); opacity: 0.4;
+    transition: opacity 0.25s ease;
+}
+.metric-card:hover {
+    border-color: rgba(var(--signal-rgb), 0.3);
+    box-shadow: 0 0 20px rgba(var(--signal-rgb), 0.08);
+}
+.metric-card:hover::before { opacity: 1; }
+.metric-label {
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+}
+.metric-value {
+    font-family: var(--font-mono);
+    font-size: 1.35rem; font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* ─── Section Cards ─────────────────────────────────── */
+.section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2rem;
+    transition: border-color 0.25s ease;
+}
+.section-card:hover { border-color: var(--border-medium); }
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.section-title::before {
+    content: ''; display: inline-block;
+    width: 4px; height: 20px;
+    background: var(--signal-color); border-radius: 2px;
+}
+.section-body {
+    color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.section-body h1, .section-body h2, .section-body h3 {
+    font-family: var(--font-heading);
+    color: var(--text-primary); margin: 1.5rem 0 0.75rem;
+}
+.section-body h1 { font-size: 1.2rem; }
+.section-body h2 { font-size: 1.1rem; }
+.section-body h3 { font-size: 1rem; }
+.section-body p { margin-bottom: 0.75rem; }
+.section-body ul, .section-body ol { margin: 0.5rem 0 1rem 1.5rem; }
+.section-body li { margin-bottom: 0.3rem; }
+.section-body strong { color: var(--text-primary); }
+.section-body em { color: var(--text-muted); font-style: italic; }
+
+/* Tables in sections */
+.section-body table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0; font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.section-body thead th {
+    background: rgba(var(--signal-rgb), 0.1);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.78rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.section-body tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.section-body tbody tr:hover { background: rgba(255,255,255,0.02); }
+.section-body tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+
+/* ─── Technical Dashboard ──────────────────────────── */
+.tech-dashboard {
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+.gauges-row {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    justify-content: center; padding: 0.5rem 0;
+}
+.gauge-container {
+    width: 200px; text-align: center;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem 0.5rem 0.75rem;
+}
+.gauge-svg { width: 100%; height: auto; }
+.charts-row {
+    display: grid; grid-template-columns: 1fr; gap: 1rem;
+}
+.chart-container {
+    position: relative; height: 220px;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+
+/* ─── MA Comparison Chart ──────────────────────────── */
+.ma-chart {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.ma-bar-row {
+    display: flex; align-items: center; gap: 0.75rem;
+}
+.ma-label {
+    width: 56px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    color: var(--text-muted); text-align: right;
+}
+.ma-bar-track {
+    flex: 1; height: 24px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px; overflow: hidden;
+}
+.ma-bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 1s ease;
+}
+.ma-value {
+    width: 64px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    color: var(--text-primary); text-align: right;
+}
+
+/* ─── KPI Grid ─────────────────────────────────────── */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.kpi-card {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+.kpi-label {
+    font-size: 0.72rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.3rem;
+}
+.kpi-value {
+    font-family: var(--font-mono);
+    font-size: 1.1rem; font-weight: 600;
+}
+
+/* ─── Sentiment Dashboard ──────────────────────────── */
+.sentiment-summary { margin-bottom: 1.5rem; }
+.sentiment-bar {
+    display: flex; height: 28px;
+    border-radius: 14px; overflow: hidden;
+    background: var(--bg-inset);
+}
+.sent-fill { transition: width 0.8s ease; min-width: 2px; }
+.sent-pos { background: #10b981; }
+.sent-neu { background: #475569; }
+.sent-neg { background: #ef4444; }
+.sentiment-counts {
+    display: flex; justify-content: center;
+    gap: 1.5rem; margin-top: 0.75rem;
+}
+.sent-count {
+    font-family: var(--font-mono); font-size: 0.8rem;
+}
+.sent-count-pos { color: #10b981; }
+.sent-count-neu { color: #64748b; }
+.sent-count-neg { color: #ef4444; }
+.sent-tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem; border-radius: 10px;
+    font-size: 0.78rem; font-weight: 500;
+}
+.sent-tag-positive { background: rgba(16,185,129,0.15); color: #10b981; }
+.sent-tag-negative { background: rgba(239,68,68,0.15); color: #ef4444; }
+.sent-tag-neutral { background: rgba(100,116,139,0.15); color: #94a3b8; }
+.sent-row-positive td:first-child { border-left: 3px solid #10b981; }
+.sent-row-negative td:first-child { border-left: 3px solid #ef4444; }
+.sent-row-neutral td:first-child { border-left: 3px solid #475569; }
+
+/* ─── Indicator Table ──────────────────────────────── */
+.indicator-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.indicator-table thead th {
+    background: rgba(var(--signal-rgb), 0.08);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.indicator-table tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.indicator-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.indicator-table tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+.ind-name {
+    font-family: var(--font-mono); font-weight: 500;
+    color: var(--text-primary);
+}
+.ind-value {
+    font-family: var(--font-mono); color: var(--signal-color);
+}
+
+/* ─── Debate Comparison ────────────────────────────── */
+.debate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; margin-bottom: 1rem;
+}
+.debate-panel {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.debate-panel-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.debate-preview {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    max-height: 200px; overflow: hidden;
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+.debate-preview p { margin-bottom: 0.5rem; }
+.debate-preview strong { color: var(--text-primary); }
+.debate-expand { margin-top: 0.75rem; }
+.debate-expand summary {
+    cursor: pointer; color: var(--signal-color);
+    font-size: 0.85rem; font-weight: 500;
+    padding: 0.4rem 0; user-select: none;
+    list-style: none;
+}
+.debate-expand summary::-webkit-details-marker { display: none; }
+.debate-expand summary::before {
+    content: '\25B8 '; font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+.debate-expand[open] summary::before { transform: rotate(90deg); }
+.debate-full {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    margin-top: 0.75rem;
+    max-height: 600px; overflow-y: auto;
+}
+.debate-full p { margin-bottom: 0.5rem; }
+.debate-full strong { color: var(--text-primary); }
+.debate-full ul, .debate-full ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.debate-full li { margin-bottom: 0.3rem; }
+
+/* ─── Judge Decision ───────────────────────────────── */
+.judge-decision {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    border-left: 3px solid var(--signal-color);
+}
+.judge-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    color: var(--signal-color);
+    margin-bottom: 0.75rem;
+}
+.judge-body {
+    color: var(--text-secondary);
+    font-size: 0.9rem; line-height: 1.7;
+}
+.judge-body p { margin-bottom: 0.5rem; }
+.judge-body strong { color: var(--text-primary); }
+.judge-body ul, .judge-body ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.judge-body li { margin-bottom: 0.3rem; }
+
+/* ─── Tabs (legacy fallback) ───────────────────────── */
+.tab-bar {
+    display: flex; gap: 0.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 1.25rem;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tab-btn {
+    padding: 0.6rem 1.25rem; background: none; border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.88rem; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.tab-btn:hover { color: var(--text-secondary); }
+.tab-btn.active {
+    color: var(--signal-color);
+    border-bottom-color: var(--signal-color);
+}
+.tab-panel {
+    display: none; color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
+.tab-panel p { margin-bottom: 0.75rem; }
+.tab-panel strong { color: var(--text-primary); }
+.tab-panel ul, .tab-panel ol { margin: 0.5rem 0 1rem 1.5rem; }
+.tab-panel li { margin-bottom: 0.3rem; }
+.text-muted { color: var(--text-muted); font-style: italic; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Collapsible Debate Rounds ─────────────────────── */
+.debate-round {
+    margin: 0.5rem 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    overflow: hidden; transition: border-color 0.2s ease;
+}
+.debate-round[open] { border-color: rgba(var(--signal-rgb), 0.2); }
+.debate-round summary {
+    padding: 0.7rem 1rem; background: var(--bg-inset);
+    cursor: pointer; font-weight: 600; font-size: 0.88rem;
+    color: var(--text-secondary); list-style: none;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: all 0.2s ease; user-select: none;
+}
+.debate-round summary::-webkit-details-marker { display: none; }
+.debate-round summary::before {
+    content: '\25B8'; font-size: 0.75rem;
+    color: var(--text-muted); transition: transform 0.2s ease;
+}
+.debate-round[open] summary::before { transform: rotate(90deg); }
+.debate-round summary:hover {
+    background: rgba(255,255,255,0.03); color: var(--text-primary);
+}
+.round-content {
+    padding: 1rem; border-top: 1px solid var(--border-subtle);
+    color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7;
+}
+.round-content p { margin-bottom: 0.6rem; }
+.round-content strong { color: var(--text-primary); }
+.round-content ul, .round-content ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+
+/* ─── Footer ────────────────────────────────────────── */
+.dashboard-footer {
+    text-align: center; padding: 2rem;
+    color: var(--text-muted); font-size: 0.8rem;
+    font-family: var(--font-mono);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 1rem;
+}
+
+/* ─── Responsive ────────────────────────────────────── */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; top: var(--header-h);
+        left: 0; right: 0; width: 100%;
+        height: auto; padding: 0.5rem;
+        background: rgba(11, 15, 25, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-subtle);
+        z-index: 90; overflow-x: auto; overflow-y: hidden;
+    }
+    .sidebar-inner {
+        flex-direction: row; gap: 0; min-width: max-content;
+    }
+    .nav-link {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        padding: 0.4rem 0.75rem; font-size: 0.78rem;
+        white-space: nowrap;
+    }
+    .nav-link.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--signal-color);
+    }
+    html { scroll-padding-top: calc(var(--header-h) + 3.5rem); }
+    .main-content { padding: 4.5rem 1rem 2rem 1rem; }
+    .hero-ticker { font-size: 1.8rem; }
+    .hero-card { padding: 1.5rem; }
+    .section-card { padding: 1.25rem; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .tab-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+    .gauges-row { gap: 0.75rem; }
+    .gauge-container { width: 160px; }
+    .debate-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-container { height: 180px; }
+    .ma-label { width: 48px; font-size: 0.72rem; }
+    .ma-value { width: 52px; font-size: 0.78rem; }
+}
+@media (min-width: 769px) {
+    .main-content { padding-top: 1.5rem; }
+}
+
+/* ─── Print ─────────────────────────────────────────── */
+@media print {
+    body { background: #fff; color: #111; }
+    body::before { display: none; }
+    .header-bar { position: relative; background: #fff; border-bottom: 2px solid #111; }
+    .header-inner { color: #111; }
+    .sidebar { display: none; }
+    .layout { display: block; }
+    .main-content { padding: 1rem; }
+    .hero-card, .section-card, .metric-card, .kpi-card, .gauge-container,
+    .debate-panel, .judge-decision {
+        background: #fff; border-color: #ddd;
+        box-shadow: none; break-inside: avoid;
+    }
+    .hero-mesh { display: none; }
+    .hero-ticker {
+        background: none;
+        -webkit-text-fill-color: #111; color: #111;
+    }
+    .signal-pill {
+        background: #eee; border-color: #ccc; color: #333;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .debate-round { break-inside: avoid; }
+    .debate-round .round-content { display: block; }
+    .debate-preview { max-height: none; mask-image: none; -webkit-mask-image: none; }
+    .debate-full { max-height: none; }
+    .tab-panel { display: block !important; margin-bottom: 1rem; }
+    .tab-bar { display: none; }
+    .section-body, .round-content, .tab-panel, .debate-full,
+    .judge-body { color: #333; }
+    .section-title, .debate-panel-title, .judge-title { color: #111; }
+    .metric-label, .kpi-label { color: #666; }
+    .metric-value, .kpi-value, .ind-value, .ma-value { color: #111; }
+    .reason { background: #f9f9f9; border-color: #ddd; color: #333; }
+    .reason-num { background: #eee; color: #333; }
+    .chart-container { display: none; }
+    .sent-tag { border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<header class="header-bar">
+    <div class="header-inner">LULU — SELL | 2026-03-18</div>
+</header>
+
+<div class="layout">
+    <nav class="sidebar" id="sidebar"><div class="sidebar-inner"><a href="#executive-summary" class="nav-link" data-section="executive-summary">Executive Summary</a>
+<a href="#market" class="nav-link" data-section="market">Technical</a>
+<a href="#sentiment" class="nav-link" data-section="sentiment">Sentiment</a>
+<a href="#news" class="nav-link" data-section="news">News</a>
+<a href="#fundamentals" class="nav-link" data-section="fundamentals">Fundamentals</a>
+<a href="#investment-debate" class="nav-link" data-section="investment-debate">Investment Debate</a>
+<a href="#trader-plan" class="nav-link" data-section="trader-plan">Trader Plan</a>
+<a href="#risk-debate" class="nav-link" data-section="risk-debate">Risk Debate</a>
+</div></nav>
+    <main class="main-content">
+        <section id="executive-summary" class="hero-card"><div class="hero-mesh"></div><div class="hero-content"><div class="hero-header"><h1 class="hero-ticker">LULU</h1><span class="signal-pill">SELL</span><span class="risk-badge risk-high">High Risk</span></div><div class="hero-date">2026-03-18</div><div class=reasons-list><div class="reason"><span class="reason-num">1</span><span>Leadership transition creates significant execution risk and potential operational disruptions that could last multiple quarters.  </span></div>
+<div class="reason"><span class="reason-num">2</span><span>Extremely high financial leverage (~40 debt-to-equity) increases vulnerability to revenue volatility and rising interest rates.  </span></div>
+<div class="reason"><span class="reason-num">3</span><span>Bearish technical indicators including negative MACD and price below major moving averages suggest the downtrend may persist.  </span></div>
+</div></div></section>
+        <section id="market" class="section-card"><h2 class="section-title">Technical Dashboard</h2><div class="tech-dashboard"><div class="gauges-row"><div class="gauge-container"><svg viewBox="0 0 200 130" class="gauge-svg"><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#1e293b" stroke-width="12" stroke-linecap="round"/><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-dasharray="219.9" stroke-dashoffset="147.3" style="transition: stroke-dashoffset 1s ease;"/><text x="100" y="95" text-anchor="middle" fill="#10b981" font-family="'DM Mono', monospace" font-size="28" font-weight="600">33</text><text x="100" y="125" text-anchor="middle" fill="#64748b" font-family="'Outfit', sans-serif" font-size="13">RSI</text></svg></div><div class="gauge-container"><svg viewBox="0 0 200 130" class="gauge-svg"><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#1e293b" stroke-width="12" stroke-linecap="round"/><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#f59e0b" stroke-width="12" stroke-linecap="round" stroke-dasharray="219.9" stroke-dashoffset="131.9" style="transition: stroke-dashoffset 1s ease;"/><text x="100" y="95" text-anchor="middle" fill="#f59e0b" font-family="'DM Mono', monospace" font-size="28" font-weight="600">6</text><text x="100" y="125" text-anchor="middle" fill="#64748b" font-family="'Outfit', sans-serif" font-size="13">ATR (Volatility)</text></svg></div></div><table class="indicator-table"><thead><tr><th>Indicator</th><th>Value</th><th>Signal</th><th>Interpretation</th></tr></thead><tbody><tr><td class="ind-name">Close Price</td><td class="ind-value">159.27 (Mar 17)</td><td>Downtrend, below key MAs</td><td>Downtrend, below key MAs</td></tr><tr><td class="ind-name">50 SMA</td><td class="ind-value">~183.00</td><td>Resistance, price below indicating bearish intermediate trend</td><td>Resistance, price below indicating bearish intermediate trend</td></tr><tr><td class="ind-name">200 SMA</td><td class="ind-value">~196.34</td><td>Strong resistance, bearish long-term trend</td><td>Strong resistance, bearish long-term trend</td></tr><tr><td class="ind-name">10 EMA</td><td class="ind-value">~164.57</td><td>Confirming short-term downward momentum</td><td>Confirming short-term downward momentum</td></tr><tr><td class="ind-name">MACD</td><td class="ind-value">Negative, decreasing</td><td>Bearish momentum, no reversal signal</td><td>Bearish momentum, no reversal signal</td></tr><tr><td class="ind-name">MACD Signal</td><td class="ind-value">Negative</td><td>Confirms MACD bearish signal</td><td>Confirms MACD bearish signal</td></tr><tr><td class="ind-name">MACD Histogram</td><td class="ind-value">Negative</td><td>Confirming momentum weakness</td><td>Confirming momentum weakness</td></tr><tr><td class="ind-name">RSI</td><td class="ind-value">~33 (near oversold)</td><td>Near oversold, potential for short bounce, no reversal confirmed</td><td>Near oversold, potential for short bounce, no reversal confirmed</td></tr><tr><td class="ind-name">ATR</td><td class="ind-value">~6-7</td><td>Elevated volatility indicating risk and price swings</td><td>Elevated volatility indicating risk and price swings</td></tr></tbody></table></div></section>
+        <section id="sentiment" class="section-card"><h2 class="section-title">Sentiment Dashboard</h2><div class="sentiment-summary"><div class="sentiment-bar"><div class="sent-fill sent-pos" style="width:28.6%"></div><div class="sent-fill sent-neu" style="width:0.0%"></div><div class="sent-fill sent-neg" style="width:71.4%"></div></div><div class="sentiment-counts"><span class="sent-count sent-count-pos">2 Positive</span><span class="sent-count sent-count-neu">0 Neutral</span><span class="sent-count sent-count-neg">5 Negative</span></div></div><table class="indicator-table"><thead><tr><th>Aspect</th><th>Details</th><th>Sentiment</th></tr></thead><tbody><tr class="sent-row-positive"><td>Q4 Earnings vs Estimates</td><td>EPS $5.01 vs $4.78 est; Revenue $3.64B vs $3.58B est</td><td><span class="sent-tag sent-tag-positive">Positive</span></td></tr><tr class="sent-row-negative"><td>Q1 and Full Year Outlook</td><td>Disappointing guidance below expectations</td><td><span class="sent-tag sent-tag-negative">Negative</span></td></tr><tr class="sent-row-positive"><td>International Sales Growth</td><td>Strong contributor to Q4 results</td><td><span class="sent-tag sent-tag-positive">Positive</span></td></tr><tr class="sent-row-negative"><td>North American Market</td><td>Headwinds and margin pressures reported</td><td><span class="sent-tag sent-tag-negative">Negative</span></td></tr><tr class="sent-row-negative"><td>Leadership/Governance</td><td>Chip Bergh joins board; ongoing CEO search; founder influence issues</td><td><span class="sent-tag sent-tag-negative">Mixed (slightly negative due to uncertainty)</span></td></tr><tr class="sent-row-negative"><td>Stock Market Reaction</td><td>Stock down post-earnings due to weak outlook</td><td><span class="sent-tag sent-tag-negative">Negative</span></td></tr><tr class="sent-row-negative"><td>Sentiment Momentum</td><td>Initially positive from Q4 beats; overall trending slightly negative due to outlook</td><td><span class="sent-tag sent-tag-negative">Slightly Negative</span></td></tr></tbody></table></section>
+        <section id="news" class="section-card"><h2 class="section-title">News Analysis</h2><div class="section-body"><p>Here is a comprehensive report on the current state of the world relevant for trading and macroeconomics, focusing specifically on Lululemon (LULU), along with broader global market trends from the past week:</p>
+<hr />
+<h3>Lululemon (LULU) Earnings and Corporate Developments</h3>
+<ol>
+<li><strong>Q4 Earnings Beat but Mixed Market Reaction</strong></li>
+<li>Lululemon reported strong Q4 earnings with EPS of $5.01, beating analyst estimates of $4.78, and net revenue of $3.64 billion surpassing the $3.58 billion estimate. This shows solid underlying business performance.</li>
+<li>
+<p>Despite the earnings beat, Lululemon's stock declined in after-hours trading due to cautious guidance. The outlook for Q1 and full-year 2026 was weaker than investors hoped, raising concerns about growth sustainability.</p>
+</li>
+<li>
+<p><strong>International Growth &amp; North American Headwinds</strong></p>
+</li>
+<li>The company has demonstrated strong international sales growth, which is a bright spot and a potential growth lever.</li>
+<li>
+<p>However, Lululemon faces challenges in its core North American market, with some margin pressures reported.</p>
+</li>
+<li>
+<p><strong>Leadership and Governance Changes</strong></p>
+</li>
+<li>Former Levi Strauss CEO Chip Bergh joined Lululemon’s board as the company continues its search for a new CEO. This points to ongoing management transition and potential strategic recalibration.</li>
+<li>
+<p>Founder Chip Wilson's presence continues to impact the company culture and governance, with discussions around a "post-founder syndrome."</p>
+</li>
+<li>
+<p><strong>Investor Sentiment and Stock Performance</strong></p>
+</li>
+<li>The stock is near 52-week lows, pressured not by the quarter's results but by future outlook uncertainties.</li>
+<li>Analysts and investors are watching closely to see if Lululemon can overcome current challenges with new leadership and improve guidance.</li>
+</ol>
+<hr />
+<h3>Broader Global Market and Economic Developments</h3>
+<ol>
+<li><strong>Market Sensitivity to Federal Reserve Policy</strong></li>
+<li>Global equity markets have been volatile around the Federal Reserve’s monetary policy meetings, awaiting interest rate decisions and inflation data such as the producer-price index.</li>
+<li>
+<p>The Fed's stance remains critical for overall market liquidity and investor sentiment.</p>
+</li>
+<li>
+<p><strong>IPO Market Highlights</strong></p>
+</li>
+<li>The recent IPO of drone-software company Swarmer saw spectacular price surges (up to 700% after its debut), indicating a continued appetite for high-growth tech stocks in niche sectors.</li>
+<li>
+<p>This volatility and investor enthusiasm reflect a dynamic but sometimes overheated market segment.</p>
+</li>
+<li>
+<p><strong>Cryptocurrency and Tech Stocks</strong></p>
+</li>
+<li>The NYSE owner expanding deeper into crypto markets and top fund managers bullish on related stocks suggest investor interest in digital assets is resurging, though regulatory and market risks remain.</li>
+<li>Asian and Chinese tech stocks are also being highlighted by some market pros, signaling continued focus on growth opportunities in global technology.</li>
+</ol>
+<hr />
+<h3>Insights for Traders and Macro Investors</h3>
+<ul>
+<li><strong>Lululemon's situation</strong> signals caution. While its fundamentals remain strong, the guidance downgrade and leadership shake-ups introduce near-term risks. Traders might consider the stock a hold or a cautious buy on dips if they believe in the company's turnaround potential.</li>
+<li><strong>Global market watchers</strong> should keep a close eye on the Fed's actions and inflation data, which will influence risk appetite across equities and bonds.</li>
+<li>The <strong>IPO surge in drone software</strong> might reflect areas of innovation to watch, but also signals caution for speculative excess.</li>
+<li><strong>Crypto and tech sectors</strong> continue to be volatile but provide growth opportunities for risk-tolerant investors.</li>
+</ul>
+<hr />
+<h3>Key Points Table</h3>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Details</th>
+<th>Implications</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lululemon Q4 Earnings</td>
+<td>EPS $5.01 vs $4.78 est; Revenue $3.64B vs $3.58B est; stock down on weak outlook</td>
+<td>Solid current results; cautious future guidance</td>
+</tr>
+<tr>
+<td>Lululemon Growth Regions</td>
+<td>Strong international sales; North American challenges and margin pressure</td>
+<td>Growth pivot to international markets</td>
+</tr>
+<tr>
+<td>Corporate Governance</td>
+<td>New board member Chip Bergh (ex-Levi's CEO); ongoing CEO search; founder influence</td>
+<td>Potential strategic shifts and leadership risks</td>
+</tr>
+<tr>
+<td>Stock Performance</td>
+<td>Near 52-week lows despite earnings beat</td>
+<td>Market skepticism on company outlook</td>
+</tr>
+<tr>
+<td>Fed Policy &amp; Macro Environment</td>
+<td>Markets sensitive to Fed rate decisions and inflation data</td>
+<td>Influences equity and bond market volatility</td>
+</tr>
+<tr>
+<td>IPO Market</td>
+<td>Drone software IPO Swarmer surges over 500%</td>
+<td>High investor enthusiasm in tech IPOs</td>
+</tr>
+<tr>
+<td>Crypto &amp; Tech Stocks</td>
+<td>NYSE moving deeper into crypto; pros bullish on Chinese tech</td>
+<td>Continued volatility and growth focus</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>If you want, I can also provide detailed sector-specific or regional economic updates to complement this report.</p>
+<p>Would you like me to proceed?</p></div></section>
+        <section id="fundamentals" class="section-card"><h2 class="section-title">Fundamentals Dashboard</h2><div class="kpi-grid"><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Market Cap</div><div class="kpi-value" style="color:#64748b;">$18.9B</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">P/E (TTM)</div><div class="kpi-value" style="color:#10b981;">11.08</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Forward P/E</div><div class="kpi-value" style="color:#10b981;">11.76</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EPS</div><div class="kpi-value" style="color:#64748b;">14.38</div></div><div class="kpi-card" style="border-left:3px solid #f59e0b;"><div class="kpi-label">Price to Book</div><div class="kpi-value" style="color:#f59e0b;">4.17</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Profit Margin</div><div class="kpi-value" style="color:#10b981;">15.7%</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">ROE</div><div class="kpi-value" style="color:#10b981;">41.0%</div></div><div class="kpi-card" style="border-left:3px solid #ef4444;"><div class="kpi-label">Debt/Equity</div><div class="kpi-value" style="color:#ef4444;">39.16</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Current Ratio</div><div class="kpi-value" style="color:#10b981;">2.13</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Revenue</div><div class="kpi-value" style="color:#64748b;">$2.57B</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EBITDA</div><div class="kpi-value" style="color:#64748b;">$563M</div></div></div><table class="indicator-table"><thead><tr><th>Category</th><th>Metric</th><th>Latest Value</th><th>Insight</th></tr></thead><tbody><tr><td>Market Cap</td><td></td><td>$18.9B</td><td>Large cap retailer</td></tr><tr><td>P/E Ratio (TTM)</td><td></td><td>11.08</td><td>Reasonable valuation</td></tr><tr><td>Forward P/E</td><td></td><td>11.76</td><td>Slightly higher than trailing</td></tr><tr><td>EPS (TTM)</td><td></td><td>14.38</td><td>Strong earnings per share</td></tr><tr><td>Forward EPS</td><td></td><td>13.54</td><td>Slight EPS taper expected</td></tr><tr><td>Price to Book</td><td></td><td>4.17</td><td>Premium valuation reflecting brand</td></tr><tr><td>Profit Margin</td><td></td><td>15.7%</td><td>Healthy profitability</td></tr><tr><td>Operating Margin</td><td></td><td>17.0%</td><td>Efficient operations</td></tr><tr><td>Return on Equity (ROE)</td><td></td><td>41.0%</td><td>Exceptional shareholder returns</td></tr><tr><td>Return on Assets (ROA)</td><td></td><td>20.3%</td><td>Strong asset utilization</td></tr><tr><td>Debt to Equity</td><td></td><td>39.16</td><td>Very high leverage; risk factor</td></tr><tr><td>Current Ratio</td><td></td><td>2.13</td><td>Good liquidity</td></tr><tr><td>Total Debt</td><td></td><td>$1.76B</td><td>Significant debt load</td></tr><tr><td>Total Cash</td><td></td><td>$1.04B</td><td>Solid cash reserves</td></tr><tr><td>Institutional Ownership</td><td></td><td>81.99%</td><td>High institutional confidence</td></tr><tr><td>Insider Ownership</td><td></td><td>4.62%</td><td>Insider stake moderate</td></tr><tr><td>Free Cash Flow (quarter)</td><td></td><td>$82M</td><td>Positive but variable</td></tr><tr><td>Revenue (latest quarter)</td><td></td><td>$2.57B</td><td>Steady growth</td></tr><tr><td>EBITDA (latest quarter)</td><td></td><td>$563M</td><td>Positive, recently rebounding</td></tr><tr><td>Stock Buybacks</td><td></td><td>$191M</td><td>Capital returned to shareholders</td></tr></tbody></table></section>
+        <section id="investment-debate" class="section-card"><h2 class="section-title">Investment Debate</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #10b981;"><h3 class="debate-panel-title" style="color:#10b981;">Bull Case</h3><div class="debate-preview"><p>Bull Analyst: Thanks for laying out the detailed bear case and technical context. I get why the stock’s current price action and guidance raised eyebrows — downtrends, cautious outlooks, and leadership shifts always make investors nervous. But let’s dig deeper, because beneath the near-term noise, Lululemon’s fundamentals and strategic position speak strongly to a compelling growth story.</p>
+<hr />
+<h3>Growth Potential: International Expansion &amp; Long-Term Scalability</h3>
+<p>Yes, the North American market...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Bull Analyst: Thanks for laying out the detailed bear case and technical context. I get why the stock’s current price action and guidance raised eyebrows — downtrends, cautious outlooks, and leadership shifts always make investors nervous. But let’s dig deeper, because beneath the near-term noise, Lululemon’s fundamentals and strategic position speak strongly to a compelling growth story.</p>
+<hr />
+<h3>Growth Potential: International Expansion &amp; Long-Term Scalability</h3>
+<p>Yes, the North American market faces margin pressures, but look closely at the reality — Lululemon <strong>beat Q4 earnings and revenue estimates</strong>, powered by <strong>robust international sales growth</strong>. This is a clear signal the company’s expanding beyond its saturated home turf into powerful new geographies where lifestyle and athleisure trends are booming.</p>
+<ul>
+<li>International markets represent a multi-billion-dollar runway that’s only beginning to scale.</li>
+<li>The brand’s global appeal and premium positioning cater perfectly to growing health-conscious, active consumers worldwide.</li>
+<li>This international growth offsets near-term North American headwinds and is backed by real reported revenue outperformance, not just promise.</li>
+</ul>
+<p>Even with conservative guidance, the fundamentals show <strong>ongoing revenue growth</strong> and a <strong>strong operating margin of 17%</strong>, which means profitable expansion, not reckless spending. Plus, the solid free cash flow generation—even if lumpy quarter-to-quarter—underpins sustainable reinvestment and shareholder returns like buybacks.</p>
+<hr />
+<h3>Competitive Moat: Strong Brand &amp; Governance Evolution</h3>
+<p>Lululemon’s brand equity is among the strongest in apparel retail, yielding a <strong>premium price-to-book ratio (4.17x)</strong> and an exceptional <strong>return on equity (41%)</strong>. This says the company’s capital is highly productive and investors value it for its unique market position.</p>
+<p>Concerns on leadership transitions are valid but also signal <strong>long-term strategic resetting</strong>. The appointment of Chip Bergh, an experienced leader known for driving turnaround and growth (Levi’s exec background), signals:</p>
+<ul>
+<li>Active governance to professionalize and stabilize management.</li>
+<li>Veteran expertise is stepping in to unlock new growth avenues.</li>
+<li>The company is addressing founder-related governance risks head on with credible solutions.</li>
+</ul>
+<p>Contrast this with companies stuck in founder stasis — Lululemon is proactively responding to internal challenges, which will benefit the stock over the medium term.</p>
+<hr />
+<h3>Refuting the Bear: Technicals &amp; Sentiment Bounce Potential</h3>
+<p>Sure, technically LULU is oversold near RSI 33 and trading below moving averages — classic bearish signals. But these also set the stage for sharp rebounds when:</p>
+<ul>
+<li>Earnings show real beat.</li>
+<li>International growth stories gain traction.</li>
+<li>Leadership clarity emerges.</li>
+</ul>
+<p>The bears’ call for waiting on MACD crossovers or moving average breaks ignores the <strong>market’s tendency to overshoot on fear, creating tactical buying opportunities</strong> for long-term players. Volatility as reflected by ATR actually empowers disciplined investors to enter positions at attractive discounts.</p>
+<hr />
+<h3>Learning from History: Patience Pays on Quality Brands</h3>
+<p>We’ve seen in past market cycles that strong brands with wide moats and scalable international opportunities often face short-term selling on guidance misses but rebound strongly as strategic clarity and operating leverage materialize.</p>
+<ul>
+<li>Past “over-leveraged” consumer brands (like Nike in its restructuring phases) dealt with skepticism but ultimately rewarded patient investors as global expansion took hold.</li>
+<li>The current market is underpricing Lululemon’s international growth and governance reforms by focusing too hard on immediate guidance misses.</li>
+<li>The rich institutional ownership (~82%) signals confidence that true value lies beyond near-term volatility.</li>
+</ul>
+<hr />
+<h3>Final Thoughts</h3>
+<p>In this debate, the bears rightly highlight near-term caution areas, but these are <strong>short-term hurdles on an otherwise strong trajectory</strong>. Solid Q4 beats, growing international footprint, extraordinary capital efficiency, improving governance, and a premium brand in a growing market segment form a <strong>powerful bull thesis</strong>.</p>
+<p>Instead of capitulating to the downtrend momentum, savvy investors will view current pricing as a chance to buy into Lululemon’s <strong>long-term story of profitable growth and global expansion</strong> — all while the bears fixate on noisy short-term metrics. Remember, the best returns often come by embracing transient market dislocations in quality growth companies like LULU.</p>
+<hr />
+<p>If you'd like, I can craft a specific trading strategy that leverages technical oversold conditions alongside fundamental strength to optimize entry points. What do you think?</p></div></details></div><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">Bear Case</h3><div class="debate-preview"><p>Bear Analyst: Appreciate your thorough bull perspective, and I hear the enthusiasm for Lululemon’s long-term story—especially the international expansion and brand strength. But I’m going to press on some key counterpoints because the risks here are real and undervalue why caution remains justified right now.</p>
+<hr />
+<h3>1. The International Growth Story Is Not a Free Pass</h3>
+<p>You mentioned international sales growth as a cornerstone of future upside—and on the surface, that’s true. But let’s not gl...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Bear Analyst: Appreciate your thorough bull perspective, and I hear the enthusiasm for Lululemon’s long-term story—especially the international expansion and brand strength. But I’m going to press on some key counterpoints because the risks here are real and undervalue why caution remains justified right now.</p>
+<hr />
+<h3>1. The International Growth Story Is Not a Free Pass</h3>
+<p>You mentioned international sales growth as a cornerstone of future upside—and on the surface, that’s true. But let’s not gloss over the fact that the North American market, historically Lululemon’s primary revenue engine, is showing <strong>clear margin pressures and operational headwinds</strong>. The earnings beat was mostly driven by what you called “real reported revenue outperformance” internationally, but the <strong>overall guidance was substantially downgraded</strong>—and that’s the market’s main gripe reflected in the after-hours selloff.</p>
+<ul>
+<li>Expanding internationally often comes with <strong>higher upfront costs, complex supply chains, and uncertain consumer adoption curves</strong>, especially in more price-sensitive or competitive markets.</li>
+<li>The premium brand positioning may lose some “price power” internationally or require discounting to gain foothold, further squeezing margins.</li>
+<li>So while international markets represent opportunity, <strong>counting on them as a net offset without accounting for near-term costs and North American slippage is overly optimistic</strong>.</li>
+</ul>
+<hr />
+<h3>2. The Leadership and Governance Reset Is More Risk Than Reassurance</h3>
+<p>Yes, the appointment of Chip Bergh conveys the <em>intent</em> to professionalize governance, but it also signals <strong>ongoing founder-related dysfunction</strong> and uncertainty in the C-suite. The CEO search dragging on alongside founder influence issues suggests:</p>
+<ul>
+<li>Potential for <strong>strategic drift or delayed decision-making</strong> during a critical transition phase.</li>
+<li>Leadership missteps could exacerbate margin pressures and execution risks, not instantly fix them.</li>
+<li>Experience at another apparel company doesn’t guarantee a smooth turnaround in vastly different market conditions nor a quick restoration of investor confidence.</li>
+</ul>
+<p>So this “reset” could easily become a prolonged period of instability rather than immediate strength. Markets hate uncertainty, and it’s showing in the persistent downtrend despite the positive board move.</p>
+<hr />
+<h3>3. The Technicals and Volatility Signal More Downside Risk, Not Just a Tactical Bounce</h3>
+<p>Oversold RSI readings near 33 might tempt some to bet on a rebound, but:</p>
+<ul>
+<li>The downtrend below <em>both</em> the 50-day SMA (~183) and the 200-day SMA (~196) reveals a <strong>strong structural sell signal</strong> rather than a mere short-term dip.</li>
+<li>The MACD is negative and falling with no bullish crossover in sight—momentum remains decisively bearish.</li>
+<li>Meanwhile, the <strong>elevated ATR demonstrates heightened volatility</strong>, meaning price swings could be violent and unpredictable, increasing risk for longer-term holders.</li>
+<li>Betting on a bounce here is speculative. The evidence <em>suggests</em> investors should wait for <strong>confirmations like reclaiming moving averages or trend reversal signals</strong> before considering buying in.</li>
+</ul>
+<hr />
+<h3>4. Financial Leverage Is a Major Concern</h3>
+<p>Your bulls rightly applaud profitability margins and stellar ROE (41%) but overlook the <strong>extraordinarily high debt-to-equity ratio of 39.16, which is alarmingly high</strong> for a retail company.</p>
+<ul>
+<li>This debt level implies <strong>significant financial risk</strong>—even a modest rise in interest rates or a softer revenue environment can materially pressure earnings.</li>
+<li>High leverage restricts flexibility to invest or navigate downturns.</li>
+<li>In an environment with macroeconomic uncertainties—rate hikes or consumer spending softness—carrying such debt <strong>amplifies vulnerability</strong>.</li>
+</ul>
+<p>Lululemon is betting growth will outpace risks; that’s a gamble in a market clearly signaling caution.</p>
+<hr />
+<h3>5. Lessons from Similar Situations Warn Against Overoptimism</h3>
+<p>You pointed to Nike and others rebounding after restructuring and market skepticism. Fair enough—but recall that Nike’s turnaround:</p>
+<ul>
+<li>Happened with <strong>strong management stability</strong> and clearer governance.</li>
+<li>Took years to materialize despite being a dominant brand.</li>
+<li>Occurred amid arguably stronger macroeconomic tailwinds.</li>
+</ul>
+<p>Lululemon, by contrast:</p>
+<ul>
+<li>Faces <strong>immediate market saturation at home, international growth costs, leadership uncertainty, and very high leverage simultaneously</strong>.</li>
+<li>Has experienced recent <strong>EBITDA volatility and uneven free cash flow</strong>.</li>
+<li>And is priced with elevated expectations—P/B reflecting premium valuation, yet guidance suggests EPS contracting slightly.</li>
+</ul>
+<p>This isn’t a neat "buy the dip" scenario; it’s a complex squeeze between ongoing operational hurdles and market skepticism.</p>
+<hr />
+<h3>In Summary</h3>
+<p>I respect the bullish optimism but believe it underestimates:</p>
+<ul>
+<li>The <strong>real risks in execution and capital structure</strong>;</li>
+<li>The <strong>length and uncertainty of the leadership transition</strong>;</li>
+<li>The <strong>technical indicators’ warning of continued downtrend and volatility</strong>;</li>
+<li>And the <strong>market’s justified concern over cautious guidance despite a Q4 beat</strong>.</li>
+</ul>
+<p>While the brand and international potential exist, <strong>today’s risk-reward profile is skewed toward caution or even avoidance</strong>, not aggressive accumulation. Investors will be better served by waiting for clearer signs that Lululemon has stabilized its North American business, secured leadership, reduced leverage, and proven international growth can offset domestic margin issues sustainably.</p>
+<hr />
+<h3>How About You?</h3>
+<p>Would you be comfortable buying aggressively here with 200-day SMA resistance ~23% above current price and a debt profile that puts the needle on financial risk? I’m happy to help analyze potential downside scenarios or discuss how to hedge exposure if holding this stock. What’s your read on the leadership timeline—too fast to expect a turnaround?</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">Judge Decision</h3><div class="judge-body"><p>Alright, let’s weigh the key arguments from both sides carefully.</p>
+<p>The bull analyst makes a strong case around Lululemon’s solid Q4 results that beat earnings and revenue estimates, powered by impressive international growth. This indicates the company is successfully extending beyond its saturated North American market. The premium brand reputation and operational efficiency — shown in a 17% operating margin and 41% ROE — lend credibility to a sustainable, profitable growth path. The governance shift, with a seasoned exec like Chip Bergh stepping in, is framed as a strategic reset that should structurally improve management and unlock new value rather than signaling instability. The bull side also highlights how oversold technical indicators can lead to attractive entry points amid transient market fear—something that savvy long-term investors often benefit from.</p>
+<p>On the other side, the bear analyst rightly cautions that international expansion, while promising, carries substantial upfront costs and complexity that could offset near-term gains, especially since North American margins are under pressure. The leadership transition isn’t a clean break but rather a period of uncertainty and possible strategic drift—and history shows such phases can drag on, causing ongoing weakness. From a technical standpoint, the persistent downtrend below major moving averages and negative MACD argue against jumping in now; the increased volatility (ATR) suggests elevated risk. Critically, the extremely high debt-to-equity ratio (nearly 40) raises a red flag. High leverage amplifies financial risk, restricts flexibility, and heightens vulnerability to any downturns or rising interest rates—a serious concern in retail where consumer spending dynamics can shift fast. The bear also points out that past corporate turnarounds required stable leadership and took years, contrasting this with Lululemon’s multiple simultaneous challenges.</p>
+<p>After balancing these views, the bull’s points about strong brand, profitable growth, international runway, and governance improvements deserve respect, but the bear’s emphasis on financial leverage, technical downtrend, and leadership uncertainty cuts deep and can’t be dismissed lightly. While international expansion is exciting, it’s not risk-free or immediate in payoff. The technicals strongly suggest the stock is in a downtrend with no clear reversal yet. And the debt load makes the margin pressures and uncertain operating environment more precarious.</p>
+<p>Given this, the prudent and most actionable stance is to <strong>Sell</strong> or at least reduce exposure now rather than buy or hold heavily. The long-term story is promising, but near- to medium-term risks are significant enough that patience is warranted. The market’s after-hours selloff post-guidance downgrade and bleak technical outlook affirm this caution.</p>
+<p><strong>Here’s the plan for the trader:</strong></p>
+<p><strong>Recommendation:</strong> Sell or significantly trim existing Lululemon positions. Avoid new buys until clear signs of a sustainable turnaround emerge.</p>
+<p><strong>Rationale:</strong><br />
+- Leadership transition uncertainty and operational margin pressure mean execution risks are elevated.<br />
+- Very high debt-to-equity ratio drastically heightens financial risk in a volatile retail landscape.<br />
+- Technical chart indicates downtrend with resistance well above current price, suggesting limited near-term upside.<br />
+- International growth costs and scaling challenges mean the bullish thesis may take longer to materialize, increasing opportunity cost and risk.<br />
+- If the trader wants to re-enter, wait for:<br />
+    - Stabilization of North American margins and clearer profit guidance.<br />
+    - Definitive leadership appointment and execution clarity.<br />
+    - Technical confirmation such as reclaiming the 50- and 200-day moving averages and MACD positive crossover.<br />
+    - Debt reduction progress or signs of improved financial flexibility.</p>
+<p><strong>Strategic Actions:</strong><br />
+- Gradually exit or scale down existing LULU exposure to lock in profits or limit losses before potential further downside.<br />
+- Deploy stop-loss orders to protect remaining position from abrupt volatility spikes.<br />
+- Monitor quarterly results and news flow closely, focusing on leadership updates, guidance revisions, and leverage metrics.<br />
+- If comfortable with options, consider hedging remaining exposure via put options or collars to manage downside risk until clarity emerges.<br />
+- Stay ready to re-enter on fundamentally backed and technically confirmed strength, ideally below key moving averages with better guidance clarity.</p>
+<p>In my past experiences, jumping into names with high debt and unclear leadership during technical downtrends has led to avoidable losses or prolonged holding periods. By emphasizing risk management and waiting for signs of stabilization, this approach should improve decision quality and protect capital.</p>
+<p>In short, Lululemon holds promise but right now the risks outweigh the rewards. Selling or trimming is the smart, actionable move with a clear plan to watch for and act on confirmation of a sustained turnaround down the line.</p></div></div></section>
+        <section id="trader-plan" class="section-card"><h2 class="section-title">Trader Investment Plan</h2><div class="section-body"><p>After thoroughly analyzing the presented investment plan for Lululemon (LULU), I concur with the prudent and cautious stance outlined.</p>
+<p>While the company boasts impressive brand strength, favorable long-term growth prospects driven by international expansion, and solid profitability metrics, the near- to mid-term risks are significant. These include:</p>
+<ul>
+<li>Leadership transition uncertainty, which historically can extend periods of underperformance.</li>
+<li>A very high debt-to-equity ratio (~40), raising financial vulnerability amid volatile economic and consumer conditions.</li>
+<li>Negative technical indicators: persistent downtrend, trading below key moving averages, negative MACD, and increased volatility signaled by ATR.</li>
+<li>Elevated costs and operational challenges associated with international growth, meaning earnings improvements may face delays.</li>
+<li>Recent after-hours selloff post-guidance downgrade, reinforcing market skepticism.</li>
+</ul>
+<p>Given these substantial headwinds, holding or adding to positions presently exposes capital to downside risk without clear evidence of a sustainable turnaround.</p>
+<p>Therefore, the best course of action is to <strong>reduce exposure or exit LULU holdings systematically</strong>, employing stop-losses or hedging where appropriate to protect capital. Monitoring should focus on signs of margin stabilization, leadership clarity, deleveraging progress, and technical reversals (e.g., reclaiming 50- and 200-day moving averages, MACD turning positive) before reentering or increasing stakes.</p>
+<p>This disciplined approach aligns with the lessons learned that jumping into leveraged stocks amid technical weakness and leadership uncertainty can result in avoidable losses.</p>
+<p>FINAL TRANSACTION PROPOSAL: <strong>SELL</strong></p></div></section>
+        <section id="risk-debate" class="section-card"><h2 class="section-title">Risk Management Debate</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">Aggressive</h3><div class="debate-preview"><p>Aggressive Analyst: I understand why the conservative and neutral analysts emphasize caution on Lululemon right now — leadership uncertainty, a high debt-to-equity ratio around 40, bearish technical signals, and a disappointing forward outlook certainly make it tempting to reduce or exit exposure. But that cautious position actually risks missing one of the rare high-upside opportunities in the apparel retail space right now.</p>
+<p>First, the strong international growth and recent Q4 earnings beat a...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Aggressive Analyst: I understand why the conservative and neutral analysts emphasize caution on Lululemon right now — leadership uncertainty, a high debt-to-equity ratio around 40, bearish technical signals, and a disappointing forward outlook certainly make it tempting to reduce or exit exposure. But that cautious position actually risks missing one of the rare high-upside opportunities in the apparel retail space right now.</p>
+<p>First, the strong international growth and recent Q4 earnings beat are more than fleeting positives—the company’s revenue and EPS exceeded expectations even amid clear headwinds. The market is fixated on short-term guidance weakness, but that discount creates a compelling entry point for bold investors. LULU’s brand remains exceptionally strong, and its international expansion is unlocking new growth markets that have not yet been fully priced in. When you look at the fundamentals, despite the elevated leverage, the company maintains a solid current ratio and $1 billion cash on hand, giving it breathing room to weather near-term volatility and fund growth initiatives without immediate distress.</p>
+<p>That very high debt-to-equity ratio carries risk, yes, but it’s also a strategic lever. Lululemon is aggressively deploying capital to scale internationally and invest in innovation—key for sustaining its premium positioning and capturing market share from competitors. Conservative players may balk at this, but leverage, when timed right, multiplies returns exponentially once the momentum shifts positive. The firm’s 41% ROE shows remarkable efficiency in converting equity into earnings, a sign that their capital usage is skillful rather than reckless.</p>
+<p>Regarding the technicals and negative momentum—you have to remember markets price in future expectations and already reflect some pessimism. The price hovering below the 50- and 200-day moving averages, negative MACD, and an RSI near oversold—these indicate the stock is beaten down and primed for a turnaround. Prices close to oversold levels often precede sharp rebounds once catalysts align. With Chip Bergh, an industry veteran with a proven leadership track record, joining the board, and a CEO search underway, the company’s governance story is in flux—with significant potential for strategic rejuvenation that the market hasn’t fully accounted for yet.</p>
+<p>The cautious guidance from Lululemon should not be viewed as a fatal flaw—it’s actually a conservative move from management acknowledging near-term cost pressures and North American challenges. This transparency allows aggressive investors to position ahead of the inevitable recovery. While the conservative perspective waits for perfect confirmation — MACD crossovers, price reclaiming key averages — the aggressive investor recognizes that by then, much of the juicy upside has evaporated.</p>
+<p>Finally, the market context supports risk-taking here. Growth sectors like drone software IPOs are soaring 500-700%, signaling that investors are hungry for innovation and high-reward futures. Lululemon represents a unique blend: a strong, globally relevant brand aggressively expanding in a growing category (athleisure), not speculative tech, but with equally disruptive innovation potential. This is a chance to pivot from mere market participation to market leadership if you commit to a bold stance.</p>
+<p>In summary, selling now — or waiting for a full technical turnaround — risks missing a substantial rebound fueled by international growth, improving governance, and solid cash flow fundamentals. The elevated leverage is a calculated bet to accelerate expansion and market dominance. The leadership uncertainty, while a near-term risk, also signals potential for transformative change and massive upside if the right CEO and board leadership take hold. Being aggressive and holding or even adding positions now, with hedging as needed, capitalizes on the dislocated price versus intrinsic growth potential.</p>
+<p>So yes, risk is elevated — but so is reward. The conservative and neutral views overly discount Lululemon’s powerful brand momentum, international opportunity, and latent governance catalysts. True alpha is captured by those willing to embrace uncertainty and act decisively when the market turns overly pessimistic. Now is precisely that moment.</p></div></details></div><div class="debate-panel" style="border-top:3px solid #3b82f6;"><h3 class="debate-panel-title" style="color:#3b82f6;">Conservative</h3><div class="debate-preview"><p>Conservative Analyst: I appreciate the aggressive analyst’s enthusiasm for Lululemon’s brand strength and international growth, but from a conservative risk perspective, several important risks are being glossed over or downplayed that could jeopardize capital preservation and steady growth.</p>
+<p>First, yes, Lululemon beat Q4 earnings and revenue estimates, but the very fact that despite this strong past quarter the stock has dropped substantially and remains well below its 50- and 200-day moving a...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Conservative Analyst: I appreciate the aggressive analyst’s enthusiasm for Lululemon’s brand strength and international growth, but from a conservative risk perspective, several important risks are being glossed over or downplayed that could jeopardize capital preservation and steady growth.</p>
+<p>First, yes, Lululemon beat Q4 earnings and revenue estimates, but the very fact that despite this strong past quarter the stock has dropped substantially and remains well below its 50- and 200-day moving averages signals the market is focused on more than just headline numbers. The cautious guidance issued for Q1 and the full year reflects real operational pressures—margin compression in North America, rising costs, and leadership uncertainty—that will likely impact earnings stability in the near term. Betting on a rebound without clearer signs of margin stabilization or resolving those issues risks chasing a “hope trade” rather than protecting capital through a measured approach.</p>
+<p>About the leverage argument — high debt-to-equity of nearly 40 is far from a benign “strategic lever.” It represents elevated financial risk that can magnify losses if growth slows or interest rates rise. While the company has over a billion in cash and a solid current ratio, that does not eliminate the burden of servicing $1.76 billion in total debt, especially given the volatility in quarterly EBITDA and negative free cash flow in some recent periods. Leverage cuts both ways; it can amplify upside but can equally accelerate downside if earnings or cash flow falter during turbulent market or consumer conditions. In volatile consumer sectors like apparel, this risk is heightened, especially with ongoing international expansion challenges that tend to delay profitability improvements.</p>
+<p>Regarding the technical setup: oversold RSI near 33 and negative MACD do indicate bearish momentum has been intense, but oversold conditions can persist or worsen in prolonged downtrends. Relying on a technical bounce without fundamental triggers—such as leadership clarity, guidance improvement, or deleveraging progress—would be speculative and expose the firm to avoidable volatility. Waiting for more definitive signs—price reclaiming the 50-day SMA, MACD crossover, or sustained margin gains—is prudent to avoid premature commitment to a position that could result in drawdowns.</p>
+<p>The governance situation adds another layer of uncertainty rather than reassurance. While adding Chip Bergh is positive, the ongoing CEO search and the founder’s persistent influence create a potentially unstable strategic environment. Leadership transitions often come with operational disruptions or shifts in priorities that may delay or impair execution of international growth plans. Betting on “transformative change” without clearer visibility increases risk unnecessarily.</p>
+<p>Lastly, the comparison to speculative high-flying tech or IPO plays like drone software stocks is misplaced for a conservative strategy. Lululemon is a consumer cyclical company with cyclical demand patterns and operational cost pressures, not a fast-scaling tech disruptor commanding a market-implied growth multiple that justifies elevated risk. Drawing parallels risks conflating fundamentally different risk profiles. Our mandate is capital preservation and steady, reliable growth — chasing outsized returns in a leveraged consumer retail stock facing short- to medium-term headwinds runs counter to that.</p>
+<p>In summary, while the aggressive viewpoint highlights potential upside, it fails to sufficiently weigh the substantial and concrete near-term risks around elevated leverage, leadership uncertainty, operational headwinds, and confirmed bearish technical trends. The data and market reaction suggest a cautious approach — systematically reducing exposure and protecting capital until stronger, more stable signs emerge — remains the most prudent path to safeguard assets and ensure steady growth without undue volatility or loss potential. This isn’t about missing upside, it’s about managing downside thoughtfully.</p></div></details></div><div class="debate-panel" style="border-top:3px solid #f59e0b;"><h3 class="debate-panel-title" style="color:#f59e0b;">Neutral</h3><div class="debate-preview"><p>Neutral Analyst: Both the aggressive and conservative analysts raise crucial points, but each leans strongly toward either upside or downside, potentially missing a balanced path that manages risk while allowing participation in recovery.</p>
+<p>Starting with the aggressive stance, it’s true that Lululemon’s strong Q4 earnings and international growth are positive and that the stock looks oversold technically. Those are valid signs the pessimism might be overdone in the short term. However, relying h...</p></div><details class="debate-expand"><summary>Show full analysis</summary><div class="debate-full"><p>Neutral Analyst: Both the aggressive and conservative analysts raise crucial points, but each leans strongly toward either upside or downside, potentially missing a balanced path that manages risk while allowing participation in recovery.</p>
+<p>Starting with the aggressive stance, it’s true that Lululemon’s strong Q4 earnings and international growth are positive and that the stock looks oversold technically. Those are valid signs the pessimism might be overdone in the short term. However, relying heavily on a rebound now, without clearer operational or leadership stability, is a gamble. The aggressive argument frames the elevated leverage as a strategic choice to amplify returns, which it can be—but it risks magnifying losses equally, especially since the debt-to-equity is nearly 40, an extraordinarily high level not easily shrugged off. Claiming the current $1 billion cash and current ratio “give breathing room” ignores that servicing $1.76 billion debt hinges on consistent earnings and cash flow, which have shown volatility and negative swings recently. The aggressive take also tends to downplay how persistent bearish technical signals like a negative MACD and price below major moving averages often precede extended downtrends, not instant rebounds. So, the argument to buy or hold now “ahead of a turnaround” presumes too much optimism around timing and management’s ability to quickly stabilize margins and leadership.</p>
+<p>On the conservative side, the points about leadership transitions, margin pressures, and the inherent risks of such high leverage are well-founded. The caution around technical indicators that have yet to show a clear reversal is prudent. The emphasis on protecting capital by reducing exposure until better clarity is achieved aligns with a risk-averse mandate. Yet the conservative argument may undervalue the solid fundamentals beneath the surface—Lululemon’s brand strength, international sales growth, positive free cash flow recently, and the presence of experienced board members like Chip Bergh. It treats the guidance caution and leadership uncertainty as fixed negatives, whereas these are often transitional challenges in play for many companies at inflection points. The conservative view also risks being overly reactive to short-term price trends, potentially missing gradual improvement phases or underestimating how market sentiment can shift when visible progress on growth and governance emerges.</p>
+<p>What seems to offer the best middle ground is a strategy that acknowledges both sides’ concerns but seeks measured participation rather than complete exit or aggressive doubling down. Holding a reduced position or implementing systematic partial sales would protect capital and reduce exposure to volatility. Hedging strategies could mitigate downside while leaving room to benefit if operational metrics improve and leadership clarifies strategy.</p>
+<p>Meanwhile, active monitoring is key: watching for fundamental signals like progress on CEO appointment, stabilization or improvement in margins (especially in North America), deleveraging efforts or refinancing with better terms, and technical confirmations such as reclaiming the 50-day SMA or a bullish MACD crossover. The moderate RSI near oversold supports readiness for a bounce, but waiting for these confirmatory signals avoids chasing failed rallies. International growth remains the bright spot to focus on but tempered by the risks of elevated costs and delayed profit improvements.</p>
+<p>Additionally, given the broader market’s sensitivity to Fed policy and economic shifts, maintaining flexibility and readiness to adapt the LULU position as macro conditions evolve will help manage risk. The recent disappointing guidance means the market’s cautious stance is understandable, but Lululemon’s quality and liquidity position mean it isn’t a stock to abandon wholesale.</p>
+<p>In summary, neither an all-out sell nor an aggressive hold/add aligns fully with the current environment. A balanced approach combining partial position trimming, disciplined stop-loss or hedging, and vigilant fundamental and technical monitoring best captures upside potential while mitigating downside risk. This moderate stance leverages the company’s strengths but respects elevated near-term uncertainties, preserving capital while leaving room to re-engage decisively on clearer signs of recovery and leadership stability.</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">Judge Decision</h3><div class="judge-body"><p><strong>Final Recommendation:</strong> <strong>Sell</strong> or significantly reduce existing Lululemon (LULU) positions now. Avoid new purchases until clear signs of turnaround materialize.</p>
+<hr />
+<h3>1. Summary of Key Arguments</h3>
+<ul>
+<li><strong>Aggressive Analyst (Bull):</strong>  </li>
+<li>Lululemon’s strong Q4 results beat earnings and revenue estimates, fueled by international growth.  </li>
+<li>The premium brand and operational efficiency (17% operating margin, 41% ROE) support sustainable growth.  </li>
+<li>Governance changes (Chip Bergh joining, CEO search) potentially unlock strategic value.  </li>
+<li>Technical indicators (oversold RSI, proximity to major moving averages) suggest a near-term rebound opportunity.  </li>
+<li>Elevated debt-to-equity (~40) is a strategic lever to accelerate expansion, backed by $1B cash and solid current ratio.  </li>
+<li>
+<p>Waiting for perfect technical signals risks missing material upside.</p>
+</li>
+<li>
+<p><strong>Conservative Analyst (Bear):</strong>  </p>
+</li>
+<li>Despite strong Q4, stock price remains depressed with bearish technical signals (negative MACD, downtrend below 50/200-day SMAs).  </li>
+<li>Elevated leverage (~40 debt-to-equity) significantly increases financial risk, especially amid volatile consumer demand and rising interest rates.  </li>
+<li>Leadership uncertainty and strategic drift during CEO transition increase execution risk and could drag results.  </li>
+<li>International expansion entails upfront costs delaying profitability gains and adds complexity.  </li>
+<li>
+<p>Patience warranted until margins stabilize, debt pressure eases, and technical picture improves.</p>
+</li>
+<li>
+<p><strong>Neutral Analyst (Balanced):</strong>  </p>
+</li>
+<li>Acknowledges strong fundamentals and international growth but also elevated leverage, leadership risk, and bearish technicals.  </li>
+<li>Supports partial position trimming and downside hedging rather than outright sell or buy.  </li>
+<li>Calls for vigilant monitoring of key catalysts: leadership clarity, margin stabilization, deleveraging progress, and technical confirmations (50-day SMA reclaim and MACD crossover).  </li>
+<li>Warns against chasing rebounds prematurely to avoid volatility-driven losses.</li>
+</ul>
+<hr />
+<h3>2. Rationale for Decision</h3>
+<p><strong>Why Sell Now?</strong></p>
+<ul>
+<li>
+<p><strong>Leadership and Execution Risk:</strong><br />
+  The leadership transition is not a tidy handoff but a period of uncertainty; history shows such phases often cause operational disruptions lasting quarters or years. The potential upside of strategic reset is outweighed by near-term execution risks. As noted, “Leadership transitions often come with operational disruptions or shifts in priorities that may delay or impair execution.”</p>
+</li>
+<li>
+<p><strong>Financial Leverage is a Material Risk:</strong><br />
+  The nearly 40 times debt-to-equity ratio is extraordinarily high, heightening vulnerability to any revenue hiccup or interest rate rise. While bull points to $1B cash and solid current ratio, servicing $1.76B debt amid EBITDA volatility and negative free cash flow periods is precarious. “Leverage cuts both ways; it can amplify upside but equally accelerate downside…”</p>
+</li>
+<li>
+<p><strong>Technicals Signal Caution:</strong><br />
+  The stock remains below major moving averages with negative MACD, indicating a persistent downtrend. Oversold RSI alone is insufficient to assume an imminent rebound; oversold conditions can persist, adding risk for buyers. The bear and neutral analysts emphasize waiting for “reclaiming the 50-day SMA and MACD crossover” before adding positions.</p>
+</li>
+<li>
+<p><strong>International Growth is Not Immediate Payoff:</strong><br />
+  Expansion costs are significant, delaying potential margin improvement. The bullish thesis may take longer than anticipated, increasing opportunity cost.</p>
+</li>
+<li>
+<p><strong>Market Reaction Supports Caution:</strong><br />
+  After-hours selloff post-guidance downgrade reflects market skepticism amid uncertain operating environment.</p>
+</li>
+</ul>
+<p><strong>Why Not Hold or Buy?</strong></p>
+<ul>
+<li>Holding without trimming risks capital in a technically deteriorating stock with high leverage and uncertain leadership.  </li>
+<li>Buying now means risking capital prematurely on hoped-for catalysts that are unconfirmed and likely several quarters away.</li>
+</ul>
+<p><strong>Why Not Partial Hold or Hedge Only (Neutral View)?</strong></p>
+<ul>
+<li>While partial trimming and hedging are logical risk management tactics, the preponderance of near-term risks justifies a stronger move to reduce exposure proactively rather than remain heavily invested during uncertainty.</li>
+</ul>
+<hr />
+<h3>3. Refinement of Trader’s Plan</h3>
+<ul>
+<li><strong>Original Plan:</strong> “Sell or significantly trim; avoid new buys until turnaround signs appear.”  </li>
+<li><strong>Refined Plan:</strong>  </li>
+<li><strong>Sell or significantly reduce existing LULU positions promptly to lock in gains or mitigate losses.</strong>  </li>
+<li>Use stop-losses or trailing stops to protect remaining exposure from sudden volatility spikes.  </li>
+<li>Consider hedging residual position (puts or collars) if remaining invested to manage downside risk.  </li>
+<li>Monitor key indicators for potential re-entry:  <ul>
+<li>Definitive CEO appointment and stable leadership structure.  </li>
+<li>Evidence of margin stabilization or growth, especially North America.  </li>
+<li>Debt reduction or refinancing success indicating improved financial flexibility.  </li>
+<li>Technical signals: reclaiming 50- and 200-day moving averages and a positive MACD crossover.  </li>
+</ul>
+</li>
+<li>Avoid initiating new LULU buys until these catalysts manifest clearly.  </li>
+<li>Stay alert to macroeconomic conditions impacting consumer discretionary spending and interest rates.</li>
+</ul>
+<hr />
+<h3>4. Lessons from Past Misjudgments</h3>
+<ul>
+<li><strong>Avoid Ignoring Elevated Leverage:</strong> Past instances in retail and cyclical stocks with high debt have led to severe losses despite strong underlying brands. Financial risk can overwhelm operational strengths when earnings fluctuate.  </li>
+<li><strong>Leadership Uncertainty Is Not Trivial:</strong> Ignoring protracted governance transitions has prolonged recovery timelines historically. Waiting for stable management is prudent.  </li>
+<li><strong>Disregarding Technical Downtrends Invites Losses:</strong> Jumping in solely on oversold conditions without confirmation has caused premature entries and drawdowns. Strong technical reversal signals should guide timing.  </li>
+<li><strong>Balance Aggressive Optimism With Capital Preservation:</strong> Being overly bullish early in turnarounds can miss signs of deeper or prolonged weakness, eroding capital. Patience and risk control have repeatedly paid off for consistent returns.</li>
+</ul>
+<hr />
+<h3><strong>Conclusion</strong></h3>
+<p>Lululemon’s long-term prospects remain promising given brand strength and international opportunity. However, elevated near-term risks—leadership transition, extremely high leverage, margin pressure, bearish technicals, and costly expansion—combine to advise <strong>selling or materially trimming positions now</strong>. This action protects capital from foreseeable downside while allowing the trader to re-enter decisively once clarity and positive technical/fundamental confirmation emerge.</p>
+<p>This recommendation aligns with disciplined risk management, avoids repeating past mistakes of premature buys, and respects the balanced assessments presented by all analysts.</p>
+<hr />
+<p><strong>Recommendation: SELL or SIGNIFICANTLY REDUCE exposure now. Wait for confirmed turnaround signals before re-entering.</strong></p></div></div></section>
+        <footer class="dashboard-footer"><p>Generated at 2026-03-18 15:49 by TradingAgents</p></footer>
+    </main>
+</div>
+
+<script>
+(function() {
+    // ─── Tab Switching (legacy fallback) ────────────
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var container = btn.closest('.tabs-container');
+            var tabId = btn.getAttribute('data-tab');
+            container.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            container.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+            btn.classList.add('active');
+            var panel = container.querySelector('[data-panel="' + tabId + '"]');
+            if (panel) panel.classList.add('active');
+        });
+    });
+
+    // ─── Smooth Scroll from Nav ─────────────────────
+    document.querySelectorAll('.nav-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var id = link.getAttribute('href').slice(1);
+            var el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // ─── IntersectionObserver for Nav Tracking ──────
+    var navLinks = document.querySelectorAll('.nav-link');
+    var sections = [];
+    navLinks.forEach(function(link) {
+        var id = link.getAttribute('data-section');
+        var el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el });
+    });
+
+    if (sections.length && 'IntersectionObserver' in window) {
+        var currentActive = null;
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    currentActive = entry.target.id;
+                }
+            });
+            if (currentActive) {
+                navLinks.forEach(function(l) {
+                    if (l.getAttribute('data-section') === currentActive) {
+                        l.classList.add('active');
+                    } else {
+                        l.classList.remove('active');
+                    }
+                });
+            }
+        }, {
+            rootMargin: '-80px 0px -60% 0px',
+            threshold: 0
+        });
+        sections.forEach(function(s) { observer.observe(s.el); });
+    }
+})();
+</script>
+
+
+
+</body>
+</html>
