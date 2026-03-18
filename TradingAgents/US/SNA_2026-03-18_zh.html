@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNA — BUY | 2026-03-18</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* ─── Custom Properties ─────────────────────────────── */
+:root {
+    --bg-primary: #0b0f19;
+    --bg-secondary: #0f1629;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --bg-inset: #0d1117;
+    --border-subtle: #1e293b;
+    --border-medium: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --signal-color: #10b981;
+    --signal-glow: rgba(16, 185, 129, 0.15);
+    --signal-rgb: 16, 185, 129;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --sidebar-w: 220px;
+    --header-h: 56px;
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ─── Noise Texture ─────────────────────────────────── */
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* ─── Header Bar ────────────────────────────────────── */
+.header-bar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 100;
+    display: flex; align-items: center;
+}
+.header-inner {
+    width: 100%; max-width: 1400px;
+    margin: 0 auto; padding: 0 2rem;
+    display: flex; align-items: center;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+}
+
+/* ─── Signal Pill ───────────────────────────────────── */
+.signal-pill {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.85rem;
+    background: rgba(var(--signal-rgb), 0.15);
+    border: 1px solid rgba(var(--signal-rgb), 0.3);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-weight: 500; font-size: 0.8rem;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* ─── Layout ────────────────────────────────────────── */
+.layout {
+    display: flex; max-width: 1400px;
+    margin: 0 auto; padding-top: var(--header-h);
+    min-height: 100vh;
+}
+
+/* ─── Sidebar ───────────────────────────────────────── */
+.sidebar {
+    position: sticky; top: var(--header-h);
+    width: var(--sidebar-w); flex-shrink: 0;
+    height: calc(100vh - var(--header-h));
+    padding: 1.5rem 0 1.5rem 1.5rem;
+    overflow-y: auto;
+}
+.sidebar-inner {
+    display: flex; flex-direction: column; gap: 0.25rem;
+}
+.nav-link {
+    display: block; padding: 0.5rem 1rem;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500;
+    border-radius: var(--radius-sm);
+    border-left: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+.nav-link:hover {
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.03);
+}
+.nav-link.active {
+    color: var(--signal-color);
+    border-left-color: var(--signal-color);
+    background: rgba(var(--signal-rgb), 0.08);
+}
+
+/* ─── Main Content ──────────────────────────────────── */
+.main-content {
+    flex: 1; min-width: 0;
+    padding: 1.5rem 2rem 3rem 1.5rem;
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+
+/* ─── Hero Card ─────────────────────────────────────── */
+.hero-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    overflow: hidden;
+}
+.hero-mesh {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(var(--signal-rgb), 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(var(--signal-rgb), 0.05) 0%, transparent 40%),
+        radial-gradient(ellipse at 60% 80%, rgba(var(--signal-rgb), 0.03) 0%, transparent 60%);
+    pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-header {
+    display: flex; align-items: center; gap: 1rem;
+    flex-wrap: wrap; margin-bottom: 0.5rem;
+}
+.hero-ticker {
+    font-family: var(--font-heading);
+    font-size: 2.5rem; font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text-primary), var(--signal-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-date {
+    font-family: var(--font-mono);
+    font-size: 0.9rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.hero-card .signal-pill { font-size: 0.9rem; padding: 0.35rem 1rem; }
+
+/* Risk Badge */
+.risk-badge {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 20px; letter-spacing: 0.05em;
+}
+.risk-low    { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+.risk-medium { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+.risk-high   { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+
+/* Reasons */
+.reasons-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.reason {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(var(--signal-rgb), 0.05);
+    border: 1px solid rgba(var(--signal-rgb), 0.1);
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;
+}
+.reason-num {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px;
+    background: rgba(var(--signal-rgb), 0.15);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 50%;
+}
+
+/* ─── Metrics Grid ──────────────────────────────────── */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+.metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+    position: relative; overflow: hidden;
+}
+.metric-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--signal-color); opacity: 0.4;
+    transition: opacity 0.25s ease;
+}
+.metric-card:hover {
+    border-color: rgba(var(--signal-rgb), 0.3);
+    box-shadow: 0 0 20px rgba(var(--signal-rgb), 0.08);
+}
+.metric-card:hover::before { opacity: 1; }
+.metric-label {
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+}
+.metric-value {
+    font-family: var(--font-mono);
+    font-size: 1.35rem; font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* ─── Section Cards ─────────────────────────────────── */
+.section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2rem;
+    transition: border-color 0.25s ease;
+}
+.section-card:hover { border-color: var(--border-medium); }
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.section-title::before {
+    content: ''; display: inline-block;
+    width: 4px; height: 20px;
+    background: var(--signal-color); border-radius: 2px;
+}
+.section-body {
+    color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.section-body h1, .section-body h2, .section-body h3 {
+    font-family: var(--font-heading);
+    color: var(--text-primary); margin: 1.5rem 0 0.75rem;
+}
+.section-body h1 { font-size: 1.2rem; }
+.section-body h2 { font-size: 1.1rem; }
+.section-body h3 { font-size: 1rem; }
+.section-body p { margin-bottom: 0.75rem; }
+.section-body ul, .section-body ol { margin: 0.5rem 0 1rem 1.5rem; }
+.section-body li { margin-bottom: 0.3rem; }
+.section-body strong { color: var(--text-primary); }
+.section-body em { color: var(--text-muted); font-style: italic; }
+
+/* Tables in sections */
+.section-body table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0; font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.section-body thead th {
+    background: rgba(var(--signal-rgb), 0.1);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.78rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.section-body tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.section-body tbody tr:hover { background: rgba(255,255,255,0.02); }
+.section-body tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+
+/* ─── Technical Dashboard ──────────────────────────── */
+.tech-dashboard {
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+.gauges-row {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    justify-content: center; padding: 0.5rem 0;
+}
+.gauge-container {
+    width: 200px; text-align: center;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem 0.5rem 0.75rem;
+}
+.gauge-svg { width: 100%; height: auto; }
+.charts-row {
+    display: grid; grid-template-columns: 1fr; gap: 1rem;
+}
+.chart-container {
+    position: relative; height: 220px;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+
+/* ─── MA Comparison Chart ──────────────────────────── */
+.ma-chart {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.ma-bar-row {
+    display: flex; align-items: center; gap: 0.75rem;
+}
+.ma-label {
+    width: 56px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    color: var(--text-muted); text-align: right;
+}
+.ma-bar-track {
+    flex: 1; height: 24px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px; overflow: hidden;
+}
+.ma-bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 1s ease;
+}
+.ma-value {
+    width: 64px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    color: var(--text-primary); text-align: right;
+}
+
+/* ─── KPI Grid ─────────────────────────────────────── */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.kpi-card {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+.kpi-label {
+    font-size: 0.72rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.3rem;
+}
+.kpi-value {
+    font-family: var(--font-mono);
+    font-size: 1.1rem; font-weight: 600;
+}
+
+/* ─── Sentiment Dashboard ──────────────────────────── */
+.sentiment-summary { margin-bottom: 1.5rem; }
+.sentiment-bar {
+    display: flex; height: 28px;
+    border-radius: 14px; overflow: hidden;
+    background: var(--bg-inset);
+}
+.sent-fill { transition: width 0.8s ease; min-width: 2px; }
+.sent-pos { background: #10b981; }
+.sent-neu { background: #475569; }
+.sent-neg { background: #ef4444; }
+.sentiment-counts {
+    display: flex; justify-content: center;
+    gap: 1.5rem; margin-top: 0.75rem;
+}
+.sent-count {
+    font-family: var(--font-mono); font-size: 0.8rem;
+}
+.sent-count-pos { color: #10b981; }
+.sent-count-neu { color: #64748b; }
+.sent-count-neg { color: #ef4444; }
+.sent-tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem; border-radius: 10px;
+    font-size: 0.78rem; font-weight: 500;
+}
+.sent-tag-positive { background: rgba(16,185,129,0.15); color: #10b981; }
+.sent-tag-negative { background: rgba(239,68,68,0.15); color: #ef4444; }
+.sent-tag-neutral { background: rgba(100,116,139,0.15); color: #94a3b8; }
+.sent-row-positive td:first-child { border-left: 3px solid #10b981; }
+.sent-row-negative td:first-child { border-left: 3px solid #ef4444; }
+.sent-row-neutral td:first-child { border-left: 3px solid #475569; }
+
+/* ─── Indicator Table ──────────────────────────────── */
+.indicator-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.indicator-table thead th {
+    background: rgba(var(--signal-rgb), 0.08);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.indicator-table tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.indicator-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.indicator-table tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+.ind-name {
+    font-family: var(--font-mono); font-weight: 500;
+    color: var(--text-primary);
+}
+.ind-value {
+    font-family: var(--font-mono); color: var(--signal-color);
+}
+
+/* ─── Debate Comparison ────────────────────────────── */
+.debate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; margin-bottom: 1rem;
+}
+.debate-panel {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.debate-panel-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.debate-preview {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    max-height: 200px; overflow: hidden;
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+.debate-preview p { margin-bottom: 0.5rem; }
+.debate-preview strong { color: var(--text-primary); }
+.debate-expand { margin-top: 0.75rem; }
+.debate-expand summary {
+    cursor: pointer; color: var(--signal-color);
+    font-size: 0.85rem; font-weight: 500;
+    padding: 0.4rem 0; user-select: none;
+    list-style: none;
+}
+.debate-expand summary::-webkit-details-marker { display: none; }
+.debate-expand summary::before {
+    content: '\25B8 '; font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+.debate-expand[open] summary::before { transform: rotate(90deg); }
+.debate-full {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    margin-top: 0.75rem;
+    max-height: 600px; overflow-y: auto;
+}
+.debate-full p { margin-bottom: 0.5rem; }
+.debate-full strong { color: var(--text-primary); }
+.debate-full ul, .debate-full ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.debate-full li { margin-bottom: 0.3rem; }
+
+/* ─── Judge Decision ───────────────────────────────── */
+.judge-decision {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    border-left: 3px solid var(--signal-color);
+}
+.judge-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    color: var(--signal-color);
+    margin-bottom: 0.75rem;
+}
+.judge-body {
+    color: var(--text-secondary);
+    font-size: 0.9rem; line-height: 1.7;
+}
+.judge-body p { margin-bottom: 0.5rem; }
+.judge-body strong { color: var(--text-primary); }
+.judge-body ul, .judge-body ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.judge-body li { margin-bottom: 0.3rem; }
+
+/* ─── Tabs (legacy fallback) ───────────────────────── */
+.tab-bar {
+    display: flex; gap: 0.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 1.25rem;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tab-btn {
+    padding: 0.6rem 1.25rem; background: none; border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.88rem; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.tab-btn:hover { color: var(--text-secondary); }
+.tab-btn.active {
+    color: var(--signal-color);
+    border-bottom-color: var(--signal-color);
+}
+.tab-panel {
+    display: none; color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
+.tab-panel p { margin-bottom: 0.75rem; }
+.tab-panel strong { color: var(--text-primary); }
+.tab-panel ul, .tab-panel ol { margin: 0.5rem 0 1rem 1.5rem; }
+.tab-panel li { margin-bottom: 0.3rem; }
+.text-muted { color: var(--text-muted); font-style: italic; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Collapsible Debate Rounds ─────────────────────── */
+.debate-round {
+    margin: 0.5rem 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    overflow: hidden; transition: border-color 0.2s ease;
+}
+.debate-round[open] { border-color: rgba(var(--signal-rgb), 0.2); }
+.debate-round summary {
+    padding: 0.7rem 1rem; background: var(--bg-inset);
+    cursor: pointer; font-weight: 600; font-size: 0.88rem;
+    color: var(--text-secondary); list-style: none;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: all 0.2s ease; user-select: none;
+}
+.debate-round summary::-webkit-details-marker { display: none; }
+.debate-round summary::before {
+    content: '\25B8'; font-size: 0.75rem;
+    color: var(--text-muted); transition: transform 0.2s ease;
+}
+.debate-round[open] summary::before { transform: rotate(90deg); }
+.debate-round summary:hover {
+    background: rgba(255,255,255,0.03); color: var(--text-primary);
+}
+.round-content {
+    padding: 1rem; border-top: 1px solid var(--border-subtle);
+    color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7;
+}
+.round-content p { margin-bottom: 0.6rem; }
+.round-content strong { color: var(--text-primary); }
+.round-content ul, .round-content ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+
+/* ─── Footer ────────────────────────────────────────── */
+.dashboard-footer {
+    text-align: center; padding: 2rem;
+    color: var(--text-muted); font-size: 0.8rem;
+    font-family: var(--font-mono);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 1rem;
+}
+
+/* ─── Responsive ────────────────────────────────────── */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; top: var(--header-h);
+        left: 0; right: 0; width: 100%;
+        height: auto; padding: 0.5rem;
+        background: rgba(11, 15, 25, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-subtle);
+        z-index: 90; overflow-x: auto; overflow-y: hidden;
+    }
+    .sidebar-inner {
+        flex-direction: row; gap: 0; min-width: max-content;
+    }
+    .nav-link {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        padding: 0.4rem 0.75rem; font-size: 0.78rem;
+        white-space: nowrap;
+    }
+    .nav-link.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--signal-color);
+    }
+    html { scroll-padding-top: calc(var(--header-h) + 3.5rem); }
+    .main-content { padding: 4.5rem 1rem 2rem 1rem; }
+    .hero-ticker { font-size: 1.8rem; }
+    .hero-card { padding: 1.5rem; }
+    .section-card { padding: 1.25rem; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .tab-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+    .gauges-row { gap: 0.75rem; }
+    .gauge-container { width: 160px; }
+    .debate-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-container { height: 180px; }
+    .ma-label { width: 48px; font-size: 0.72rem; }
+    .ma-value { width: 52px; font-size: 0.78rem; }
+}
+@media (min-width: 769px) {
+    .main-content { padding-top: 1.5rem; }
+}
+
+/* ─── Print ─────────────────────────────────────────── */
+@media print {
+    body { background: #fff; color: #111; }
+    body::before { display: none; }
+    .header-bar { position: relative; background: #fff; border-bottom: 2px solid #111; }
+    .header-inner { color: #111; }
+    .sidebar { display: none; }
+    .layout { display: block; }
+    .main-content { padding: 1rem; }
+    .hero-card, .section-card, .metric-card, .kpi-card, .gauge-container,
+    .debate-panel, .judge-decision {
+        background: #fff; border-color: #ddd;
+        box-shadow: none; break-inside: avoid;
+    }
+    .hero-mesh { display: none; }
+    .hero-ticker {
+        background: none;
+        -webkit-text-fill-color: #111; color: #111;
+    }
+    .signal-pill {
+        background: #eee; border-color: #ccc; color: #333;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .debate-round { break-inside: avoid; }
+    .debate-round .round-content { display: block; }
+    .debate-preview { max-height: none; mask-image: none; -webkit-mask-image: none; }
+    .debate-full { max-height: none; }
+    .tab-panel { display: block !important; margin-bottom: 1rem; }
+    .tab-bar { display: none; }
+    .section-body, .round-content, .tab-panel, .debate-full,
+    .judge-body { color: #333; }
+    .section-title, .debate-panel-title, .judge-title { color: #111; }
+    .metric-label, .kpi-label { color: #666; }
+    .metric-value, .kpi-value, .ind-value, .ma-value { color: #111; }
+    .reason { background: #f9f9f9; border-color: #ddd; color: #333; }
+    .reason-num { background: #eee; color: #333; }
+    .chart-container { display: none; }
+    .sent-tag { border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<header class="header-bar">
+    <div class="header-inner">SNA — BUY | 2026-03-18</div>
+</header>
+
+<div class="layout">
+    <nav class="sidebar" id="sidebar"><div class="sidebar-inner"><a href="#executive-summary" class="nav-link" data-section="executive-summary">執行摘要</a>
+<a href="#market" class="nav-link" data-section="market">技術面</a>
+<a href="#sentiment" class="nav-link" data-section="sentiment">情緒</a>
+<a href="#news" class="nav-link" data-section="news">新聞</a>
+<a href="#fundamentals" class="nav-link" data-section="fundamentals">基本面</a>
+<a href="#investment-debate" class="nav-link" data-section="investment-debate">投資辯論</a>
+<a href="#trader-plan" class="nav-link" data-section="trader-plan">交易計劃</a>
+<a href="#risk-debate" class="nav-link" data-section="risk-debate">風險辯論</a>
+</div></nav>
+    <main class="main-content">
+        <section id="executive-summary" class="hero-card"><div class="hero-mesh"></div><div class="hero-content"><div class="hero-header"><h1 class="hero-ticker">SNA</h1><span class="signal-pill">BUY</span></div><div class="hero-date">2026-03-18</div></div></section>
+        <section id="market" class="section-card"><h2 class="section-title">技術面分析</h2><div class="tech-dashboard"><table class="indicator-table"><thead><tr><th>指標</th><th>數值</th><th>訊號</th><th>解讀</th></tr></thead><tbody><tr><td class="ind-name">10 EMA</td><td class="ind-value">短期動能下滑，出現看跌訊號</td><td></td><td></td></tr><tr><td class="ind-name">50 SMA</td><td class="ind-value">中期趨勢受測試，目前充當阻力</td><td></td><td></td></tr><tr><td class="ind-name">200 SMA</td><td class="ind-value">長期上升趨勢穩固，現價上方有強支撐</td><td></td><td></td></tr><tr><td class="ind-name">MACD</td><td class="ind-value">動能轉向看跌，確認多頭趨勢疲弱</td><td></td><td></td></tr><tr><td class="ind-name">MACD訊號線</td><td class="ind-value">驗證MACD看跌死叉信號</td><td></td><td></td></tr><tr><td class="ind-name">MACD柱狀圖</td><td class="ind-value">動能減弱視覺化確認</td><td></td><td></td></tr><tr><td class="ind-name">RSI</td><td class="ind-value">買方力量衰退，接近中立偏超賣狀態</td><td></td><td></td></tr><tr><td class="ind-name">ATR</td><td class="ind-value">波動性穩定，無過度風險波動</td><td></td><td></td></tr></tbody></table></div></section>
+        <section id="sentiment" class="section-card"><h2 class="section-title">情緒分析</h2><div class="sentiment-summary"><div class="sentiment-bar"><div class="sent-fill sent-pos" style="width:0.0%"></div><div class="sent-fill sent-neu" style="width:100.0%"></div><div class="sent-fill sent-neg" style="width:0.0%"></div></div><div class="sentiment-counts"><span class="sent-count sent-count-pos">0 正面</span><span class="sent-count sent-count-neu">1 中性</span><span class="sent-count sent-count-neg">0 負面</span></div></div><table class="indicator-table"><thead><tr><th>Date Range</th><th>Source</th><th>Sentiment</th><th>Reasoning</th><th>Narrative Trend</th><th>Sentiment Momentum</th><th>Implications</th></tr></thead><tbody><tr class="sent-row-neutral"><td>2026-03-11 to 18</td><td>Simply Wall St.</td><td><span class="sent-tag sent-tag-neutral">Neutral/ Cautious</span></td><td>聚焦估值與表現歷史的對比，近期回報混合</td><td>估值重新評估與股票表現</td><td>穩定且略帶謹慎</td><td>投資人可能在良好長期回報與短期波動間重新考量估值</td></tr></tbody></table></section>
+        <section id="news" class="section-card"><h2 class="section-title">新聞分析</h2><div class="section-body"><p>以下是一份關於全球交易及宏觀經濟現狀的綜合報告，聚焦於2026年3月11日至3月18日的最新消息，並特別關注Snap-on（SNA）公司及全球市場動態：</p>
+<ol>
+<li>Snap-on（SNA）公司專屬見解：</li>
+<li>Snap-on股票已經取得顯著的多年長期收益，今年迄今回報率為5.4%，過去一年16.7%，三年69.3%，五年達88.8%。</li>
+<li>然而，過去一週股價下跌3.6%，過去一個月僅小幅上漲0.4%，顯示近期出現波動或獲利了結跡象。</li>
+<li>目前交易價格約為369.77美元，引發對估值是否仍具吸引力，或股票已被充分反映的討論。</li>
+<li>
+<p>Snap-on為一家歷史悠久的公司，但投資人因近期表現參差不齊，正重新評估該股票。</p>
+</li>
+<li>
+<p>宏觀及全球市場消息：</p>
+</li>
+<li>全球市場的一大亮點為無人機軟體公司Swarmer的非凡首次公開募股（IPO）表現。</li>
+<li>Swarmer股票首發定價為5美元，但開盤即達12.50美元，首幾天漲幅高達520%-700%，反映市場極大熱忱以及潛在的高估或投機性交易興趣。</li>
+<li>Swarmer IPO的強勁表現顯示投資人對技術創新股，尤其是新興領域如無人機軟體，持續具備高度胃納。</li>
+<li>然而，此類驚人的IPO漲幅也呼籲投資者謹慎，防範可能的投機過熱或波動性市場修正。</li>
+</ol>
+<p>對交易者與宏觀投資人的啟示：<br />
+- 對Snap-on（SNA）而言，目前混合訊號提示需謹慎重新評估未來盈餘潛力與已反映高估值間的平衡。交易者應關注未來財報、指引或工具及設備行業的動態發展。<br />
+- Swarmer首掛所展現的科技業IPO活躍度，反映高成長領域的投資風險胃納，可能影響資金流動、產業輪動及估值走向。<br />
+- 更廣義來看，全球市場保持動態，兼具穩健企業長期成長（如Snap-on長線漲幅）與偶發之投機泡沫（如科技類IPO狂飆）並存。<br />
+- 投資者應在已立足的防禦性大盤股與創新驅動的高成長高風險股票間取得平衡。</p>
+<table>
+<thead>
+<tr>
+<th>關鍵重點</th>
+<th>詳細內容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Snap-on多年表現</td>
+<td>今年迄今+5.4%，一年+16.7%，三年+69.3%，五年+88.8%</td>
+</tr>
+<tr>
+<td>Snap-on近期週/月走勢</td>
+<td>上週下跌3.6%，過去一個月上漲0.4%</td>
+</tr>
+<tr>
+<td>Snap-on當前估值問題</td>
+<td>交易價格約369.77美元，估值是否合理仍有爭議</td>
+</tr>
+<tr>
+<td>Swarmer IPO表現</td>
+<td>IPO定價5美元，數日內漲幅達450%-700%，無人機軟體領域極為亮眼</td>
+</tr>
+<tr>
+<td>市場情緒</td>
+<td>對科技創新股有投資胃納，但需警惕投機風險</td>
+</tr>
+<tr>
+<td>交易啟示</td>
+<td>權衡穩定工業股與高成長科技股，密切注意產業輪動風險</td>
+</tr>
+</tbody>
+</table>
+<p>若需要針對特定產業、公司或全球宏觀趨勢提供更深入見解，歡迎告知。</p></div></section>
+        <section id="fundamentals" class="section-card"><h2 class="section-title">基本面分析</h2><div class="kpi-grid"><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Market Cap</div><div class="kpi-value" style="color:#64748b;">$19.13B</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Revenue</div><div class="kpi-value" style="color:#64748b;">$5.16B</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Profit Margin</div><div class="kpi-value" style="color:#10b981;">19.7%</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">P/E (TTM)</div><div class="kpi-value" style="color:#10b981;">19.15</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EPS</div><div class="kpi-value" style="color:#64748b;">$19.18</div></div><div class="kpi-card" style="border-left:3px solid #ef4444;"><div class="kpi-label">Debt/Equity</div><div class="kpi-value" style="color:#ef4444;">21.71</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Current Ratio</div><div class="kpi-value" style="color:#10b981;">4.79</div></div><div class="kpi-card" style="border-left:3px solid #f59e0b;"><div class="kpi-label">Dividend Yield</div><div class="kpi-value" style="color:#f59e0b;">2.66%</div></div></div><table class="indicator-table"><thead><tr><th>指標</th><th>數值</th><th>備註</th></tr></thead><tbody><tr><td>市值</td><td>$19.13B</td><td>穩健的中大型工業類股</td></tr><tr><td>營收（TTM）</td><td>$5.16B</td><td>持續成長</td></tr><tr><td>淨利（TTM）</td><td>$1.02B</td><td>穩健獲利</td></tr><tr><td>利潤率</td><td>19.7%</td><td>強勁利潤率</td></tr><tr><td>營業利潤率</td><td>25.4%</td><td>營運效率</td></tr><tr><td>市盈率（TTM）</td><td>19.15</td><td>合理估值</td></tr><tr><td>預期市盈率</td><td>17.14</td><td>成長預期</td></tr><tr><td>每股盈餘（TTM）</td><td>$19.18</td><td>穩健盈利</td></tr><tr><td>預期每股盈餘</td><td>$21.44</td><td>正向盈餘展望</td></tr><tr><td>負債對權益比</td><td>21.71</td><td>極高槓桿 - 主要風險點</td></tr><tr><td>流動比率</td><td>4.79</td><td>強勁流動性</td></tr><tr><td>自由現金流（季度平均）</td><td>約 $254M</td><td>強勁現金產生</td></tr><tr><td>股息殖利率</td><td>2.66%</td><td>吸引人的殖利率</td></tr><tr><td>內部人持股比例</td><td>2.36%</td><td>內部持股較低</td></tr><tr><td>機構持股比例</td><td>95.99%</td><td>強大的機構支持</td></tr><tr><td>空頭部位佔流通股比例</td><td>6.60%</td><td>中等空頭部位</td></tr><tr><td>市值與帳面價值溢價</td><td>+221.3%</td><td>高溢價反映成長與獲利能力</td></tr></tbody></table></section>
+        <section id="investment-debate" class="section-card"><h2 class="section-title">投資辯論</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #10b981;"><h3 class="debate-panel-title" style="color:#10b981;">多頭觀點</h3><div class="debate-preview"><p>牛派分析師：沒錯，我很高興能分享為何 Snap-on (SNA) 儘管近期技術面出現波動，且部分市場聲音謹慎，仍是一檔極具吸引力的買進標的。讓我們逐一拆解，既衡量空方的擔憂，也從更宏觀的角度確認 Snap-on 的實力與成長軌跡。</p>
+<hr />
+<h3>先回應空方的主要疑慮</h3>
+<p><strong>疑慮一：近期技術指標呈現看跌動能，股價跌破10日EMA及50日SMA；MACD和RSI也顯示買盤動能減弱。</strong></p>
+<p>短期看來確實如此，不加掩飾——Snap-on 股價從接近 $389 高點回落至約 $367，進入修正階段。但關鍵在於：股價仍遠高於<strong>200日SMA (~$338)</strong>，這是長期趨勢未破裂的重要經典訊號。MACD和RSI等技術指標<em>確認短至中期的調整</em>，但並未發出整體趨勢反轉的訊號。這其實是健康現象——即使頂尖成長股也會出現修正以消化利潤並累積價值。ATR的穩定度顯示波動正常，非恐慌性拋售，意味著聰明的投資人正入場，股價波動井然有序，非混亂。</p>
+<hr />
+<h3>深入剖析成長潛力</h3>
+<p>Snap-on 的<strong>多年績效表現令人印象深刻</strong>：</p>
+<ul>
+<li>今年迄今 +5.4%</li>
+<li>去年 +16.7%</li>
+<li>三年 +...</li>
+</ul></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>牛派分析師：沒錯，我很高興能分享為何 Snap-on (SNA) 儘管近期技術面出現波動，且部分市場聲音謹慎，仍是一檔極具吸引力的買進標的。讓我們逐一拆解，既衡量空方的擔憂，也從更宏觀的角度確認 Snap-on 的實力與成長軌跡。</p>
+<hr />
+<h3>先回應空方的主要疑慮</h3>
+<p><strong>疑慮一：近期技術指標呈現看跌動能，股價跌破10日EMA及50日SMA；MACD和RSI也顯示買盤動能減弱。</strong></p>
+<p>短期看來確實如此，不加掩飾——Snap-on 股價從接近 $389 高點回落至約 $367，進入修正階段。但關鍵在於：股價仍遠高於<strong>200日SMA (~$338)</strong>，這是長期趨勢未破裂的重要經典訊號。MACD和RSI等技術指標<em>確認短至中期的調整</em>，但並未發出整體趨勢反轉的訊號。這其實是健康現象——即使頂尖成長股也會出現修正以消化利潤並累積價值。ATR的穩定度顯示波動正常，非恐慌性拋售，意味著聰明的投資人正入場，股價波動井然有序，非混亂。</p>
+<hr />
+<h3>深入剖析成長潛力</h3>
+<p>Snap-on 的<strong>多年績效表現令人印象深刻</strong>：</p>
+<ul>
+<li>今年迄今 +5.4%</li>
+<li>去年 +16.7%</li>
+<li>三年 +69.3%</li>
+<li>五年 +88.8%</li>
+</ul>
+<p>這是<strong>強勁的複合成長</strong>，讓短期跌幅看似雜訊，而非結構性弱點。</p>
+<p>此外，Snap-on 身處<strong>工業工具及配件產業</strong>，天生具備可擴展性。他們的產品是車輛、航空及重工業關鍵工具，這些產業需求穩定持續成長。製造業自動化崛起、汽車售後服務需求提升、工業工具技術進步，均促成市場持續擴大。</p>
+<p>營收強勁，經過過去十二個月達 $51.6億且持續成長，穩健維持<strong>19.7%利潤率</strong>與<strong>25.4%營業利潤率</strong>，彰顯營運槓桿及定價能力。自由現金流（約每季 $2.54億）支持公司的投資和股東回饋，而非僅是維持現狀。</p>
+<hr />
+<h3>競爭優勢屹立不搖</h3>
+<p>Snap-on 不只是「另一家工具公司」，他們的<strong>品牌為業界最強之一</strong>，贏得全球千萬專業機械師與工業客戶信賴。高品牌忠誠度帶來定價權與客戶轉換成本。</p>
+<p>他們大量投資創新，推出獨家硬體、數位診斷工具及軟體平台，打造<strong>黏著度高的客戶關係並多元化收入來源</strong>，超越一般商品工具市場。</p>
+<p>機構持股約96%，反映 Vanguard、BlackRock 等機構投資者高度信心，與 Snap-on 可持續護城河相呼應。</p>
+<hr />
+<h3>直接面對高債務權益比的問題</h3>
+<p>超高的債務權益比 (21.7) 的確令人皺眉，但不致命：</p>
+<ul>
+<li>Snap-on 儘管槓桿高，仍維持<strong>淨現金正值（約 $3.31億）</strong>，且有強勁季現金流支持。</li>
+<li>公司<strong>流動比率達4.79</strong>，短期償債能力良好。</li>
+<li>利息支出相較 EBITDA 和自由現金流適中，公司負責管理槓桿。</li>
+<li>此槓桿是策略性選擇，用於回購、配息及投資，非魯莽借貸。</li>
+</ul>
+<p>當然，這增加利率及槓桿風險敏感度，投資人應留意宏觀經濟變化，但該風險因 Snap-on 穩定收益與現金流而獲緩解。這是一個<strong>槓桿成長故事</strong>，非財務風險警訊。</p>
+<hr />
+<h3>積極市場情緒與宏觀利多</h3>
+<p>近期媒體報導偏中性至謹慎樂觀，反映成熟穩健的成長股，而非法警訊。估值討論健康——代表市場已消化 Snap-on 強勁前景，但隨著預期EPS增長（前瞻EPS $21.44 對比追蹤EPS $19.18），仍留有上行空間。</p>
+<p>宏觀趨勢也重要：當像 Swarmer 這類科網新股攪動高成長、投機類別熱度時，Snap-on 脫穎而出，是一檔<strong>防禦性卻成長導向的工業股</strong>。對擔憂科技泡沫的投資者而言，Snap-on 提供根植於真實盈餘與現金流的誘人替代選擇。</p>
+<hr />
+<h3>過往經驗教訓如何加持今日牛市論點</h3>
+<p>回顧歷史與 Snap-on 的市場循環：</p>
+<ul>
+<li>基本面強健的股票價格修正非永久損傷，例如 Snap-on 在2018-2019年修正後隨即展開多年反彈。</li>
+<li>無現金流高槓桿風險大，但結合穩定自由現金流與韌性營運數據，槓桿能加速股東回報與投資。</li>
+<li>技術動能有時落後，長期趨勢透過200日SMA確認依舊是黃金標準。</li>
+<li>估值起伏正常，有紀律投資者明白耐久護城河與強勁現金流的價值。</li>
+</ul>
+<hr />
+<h3>總結：為何現在買 Snap-on 是明智之舉</h3>
+<ul>
+<li><strong>長期成長故事完整且持續擴大工業市場機會。</strong></li>
+<li><strong>強大品牌與產品護城河，確保持續經常性收入與價格優勢。</strong></li>
+<li><strong>穩健財務與現金流，支持股息、回購與資本明智配置。</strong></li>
+<li><strong>技術面修正屬健康調整，提供買入良機。</strong></li>
+<li><strong>槓桿風險存在，但受流動性與收益穩健平衡管理。</strong></li>
+<li><strong>估值合理，前瞻EPS增長支持上行潛力。</strong></li>
+</ul>
+<p>空方過度聚焦於短期指標與槓桿風險，牛方則看到 Snap-on 是具有韌性的龍頭，財務優異且客戶高度黏著，具備持續擴張潛力。對追求工業工具領域成長、收益與穩定性的投資人而言，Snap-on 是值得持有且在修正時加碼的標的。</p>
+<hr />
+<p>樂於深入探討任何部分或進行額外情境分析。你怎麼看？空方論點是否正逐漸在 Snap-on 的基本面與長期趨勢面前失去力道？</p></div></details></div><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">空頭觀點</h3><div class="debate-preview"><p>Bear Analyst: 多頭觀點提出了很好的重點——我感謝你對 Snap-on（SNA）長期前景的詳細拆解與信心。但讓我們從一個謹慎的空頭角度更深入探討我看到的風險、挑戰與警示信號。我想直接回應你的論點，並說明為何儘管表面光鮮，現在對該股仍有實質的懷疑理由。</p>
+<hr />
+<h3>關於技術面：修正還是紅旗？</h3>
+<p>你指出價格位於 200 日簡單移動平均線（SMA）之上，顯示長期上升趨勢——我不否認 SNAP 作為傳統工業股的基本面並未崩壞。但技術數據不僅是短期回調，更關乎這波下行動能的<strong>性質與持續性</strong>。</p>
+<ul>
+<li><strong>10 日指數移動平均線（EMA）已明顯下穿 50 SMA</strong>，標示短中期偏空格局。這看似是健康修正，但<strong>價格已在一個月內從近 389 掉至約 367，且下跌日伴隨成交量激增</strong>。這暗示<strong>賣壓正在加速，而非僅是盤整</strong>。</li>
+<li><strong>MACD 已大幅轉為負值（-1.4）並跌破訊號線</strong>，柱狀圖證實動能減弱——這是強烈技術警示，而非小失誤。</li>
+<li><strong>相對強弱指數（RSI）向下滑入 40 低位區間</strong>，意味買方力道減弱；尚未過度賣出，還有進一步下行壓力，真實反彈尚需時日。</li>
+<li>平...</li>
+</ul></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>Bear Analyst: 多頭觀點提出了很好的重點——我感謝你對 Snap-on（SNA）長期前景的詳細拆解與信心。但讓我們從一個謹慎的空頭角度更深入探討我看到的風險、挑戰與警示信號。我想直接回應你的論點，並說明為何儘管表面光鮮，現在對該股仍有實質的懷疑理由。</p>
+<hr />
+<h3>關於技術面：修正還是紅旗？</h3>
+<p>你指出價格位於 200 日簡單移動平均線（SMA）之上，顯示長期上升趨勢——我不否認 SNAP 作為傳統工業股的基本面並未崩壞。但技術數據不僅是短期回調，更關乎這波下行動能的<strong>性質與持續性</strong>。</p>
+<ul>
+<li><strong>10 日指數移動平均線（EMA）已明顯下穿 50 SMA</strong>，標示短中期偏空格局。這看似是健康修正，但<strong>價格已在一個月內從近 389 掉至約 367，且下跌日伴隨成交量激增</strong>。這暗示<strong>賣壓正在加速，而非僅是盤整</strong>。</li>
+<li><strong>MACD 已大幅轉為負值（-1.4）並跌破訊號線</strong>，柱狀圖證實動能減弱——這是強烈技術警示，而非小失誤。</li>
+<li><strong>相對強弱指數（RSI）向下滑入 40 低位區間</strong>，意味買方力道減弱；尚未過度賣出，還有進一步下行壓力，真實反彈尚需時日。</li>
+<li>平均真實波幅（ATR）穩定反映波動性一致，但無拋售恐慌跡象——表示目前賣壓受控，可能意味在見底前會先有更深跌幅。</li>
+</ul>
+<p>技術面上，我看到的是<strong>深度修正或增長停滯的警告信號</strong>，而非多頭所言的短期小幅波動。</p>
+<hr />
+<h3>關於基本面：過高的槓桿風險更需關注</h3>
+<p>你將高企的<strong>債務對股本比率（21.7）稱作「策略選擇」</strong>，但我認為這是<strong>異常危險的信號</strong>。</p>
+<ul>
+<li>21.7 的債務股本比率對於擁有強品牌力的工業公司Snap-on來說是極端偏高——這讓公司<strong>對利率上升或經濟回落高度敏感</strong>。</li>
+<li>雖然自由現金流（約 2.54 億美元/季）強勁，但僅勉強覆蓋債務服務和資本回報。營運利潤或現金流稍有下挫，都可能損害公司履約和股東支付能力。</li>
+<li>此槓桿限制財務彈性——Snap-on 難以大幅增投研發或併購，否則將面臨信用評級調降及再融資風險。</li>
+<li>從宏觀角度看，在<strong>利率仍高以抑制通膨的環境下</strong>，這種高槓桿放大任何政策收緊影響，遠強於低槓桿同行。</li>
+</ul>
+<p>我認為，這並非「管理風險」而是結構性財務脆弱，使 SNA 在市場惡化時風險明顯升高。</p>
+<hr />
+<h3>關於增長和產業風險：遠沒有描繪的那麼牢不可破</h3>
+<p>你提到汽車與工業工具需求廣泛，這在歷史上成立，但我們不要忽視：</p>
+<ul>
+<li><strong>市場飽和和成熟風險。</strong> 專業汽車和航空工具市場高度成熟，成長空間有限。雖有漸進性創新，但競爭者與通用品牌壓價不斷施壓。</li>
+<li><strong>新興技術</strong>——產業面臨增材製造、機器人自動化與數位化等創新威脅，且多來自科技新勢力，而非單純傳統工業。</li>
+<li>對手涵蓋先進診斷工具和軟體平台的敏捷新創與工業物聯網技術巨頭，<strong>威脅逐步侵蝕 Snap-on 的護城河</strong>。</li>
+<li>Snap-on <strong>僅有 2.36% 的內部持股比例，相較 96% 的機構持股</strong>，或許意味著缺乏創業精神，更多被動持有，創新動能有限。</li>
+</ul>
+<p>因此你提及的長期成長順風，其實比多頭所述更脆弱且競爭激烈。</p>
+<hr />
+<h3>關於市場情緒與估值：已價格完美，容錯空間極小</h3>
+<p>謹慎中立的情緒與估值爭論意味深長：</p>
+<ul>
+<li>Snap-on 的<strong>本益比（P/E 19.15）與預估本益比（17.14）表明成長期待適中</strong>，但市場已不容許太大失望。任何盈餘不及預期或宏觀放緩都可能嚴重打擊股價。</li>
+<li><strong>市值較帳面價值高出 221% 的溢價</strong>不算罕見，但代表投資人已為未來成長付出高昂代價。問題是，若成長停滯或利潤率壓縮，估值是否合理？</li>
+<li>雖多頭強調多年漲幅，但<strong>近期下跌（上週-3.6%，上月微升0.4%）顯示獲利了結和重新定價已在進行</strong>，暗示投資人或已在進行價值重新評估。</li>
+</ul>
+<p>總之，Snap-on 股價略帶完美定價，幾乎無容錯餘地。</p>
+<hr />
+<h3>反思與教訓：過度強調優勢會使人忽視風險</h3>
+<p>過去討論與市場週期教我：</p>
+<ul>
+<li>MACD 與 RSI 等技術指標常<strong>領先基本面下跌數周甚至數月</strong>——忽視它們可能晚入場。</li>
+<li>槓桿能<strong>放大利潤但也在衰退時帶來毀滅性打擊</strong>——槓桿合理的公司抗震性更佳。</li>
+<li>歷史長時間的成長不保證未來韌性，尤其在創新與競爭激烈的產業。</li>
+<li>雖然機構持股通常是利多，但情緒變化時亦可能加劇快速賣壓。</li>
+</ul>
+<p>基於此，我勸你在此回調階段不要無條件增加曝險，須嚴肅看待這些風險。</p>
+<hr />
+<h3>空頭觀點總結</h3>
+<ul>
+<li><strong>技術動能強烈偏向短中期進一步疲弱。</strong></li>
+<li><strong>極端高槓桿是顯著財務風險，尤其在當前宏觀環境下。</strong></li>
+<li><strong>市場飽和、競爭威脅及新技術挑戰 Snap-on 的成長前景。</strong></li>
+<li><strong>估值缺乏容錯空間，情緒趨於謹慎暗示投資人重新評估。</strong></li>
+<li>槓桿與動能的歷史教訓顯示，危險信號多於機會。</li>
+</ul>
+<hr />
+<h3>給多頭與投資人的最後思考</h3>
+<p>你說 Snap-on 是<strong>「具韌性的強者……有持續擴張的定位。」</strong>我說它看似強大但逐漸脆弱，面對的逆風和風險可能在短中期超越其成長動能。謹慎做法是等待明確的持續動能回升、槓桿減輕或成長多元化跡象，再投入更多資金。</p>
+<p>你如何調和高槓桿與偏空技術指標，依然認為現在是良好進場時機？鑒於這些風險，你是否考慮縮減持股或進行對沖？</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">裁判決定</h3><div class="judge-body"><p>感謝您詳細且深思熟慮地闡述了 Snap-on (SNA) 的多方與空方觀點。雙方的觀點皆帶來重要見解，但在仔細權衡後，我的建議是現在<strong>買進</strong>該股票，並附帶某些風險管理上的注意事項。</p>
+<p>讓我為您說明背後的理由與行動計劃。</p>
+<hr />
+<p><strong>重點摘要</strong></p>
+<p>從<strong>多方角度</strong>看，最有力的證據包括：</p>
+<ul>
+<li>長期上升趨勢持續，股價位於200日簡單移動平均線之上，多年來股價穩健成長。</li>
+<li>Snap-on 的營運基本面強健：營收持續成長、毛利率穩定、自由現金流穩定，以及策略性適度槓桿使用。</li>
+<li>公司品牌力強大，且在數位工具的創新打造出競爭護城河和經常性客戶收入。</li>
+<li>大型機構持股及充沛的現金流動性帶來穩定性。</li>
+<li>近期股價回調是自然修正，而非趨勢破裂，提供更佳買入點。</li>
+</ul>
+<p>從<strong>空方角度</strong>看，主要擔憂包括：</p>
+<ul>
+<li>技術面短中期指標如MACD、RSI及移動平均線呈現看跌信號，暗示下跌風險仍存。</li>
+<li>極高的負債權益比（約21.7）在利率上升環境下具結構性風險。</li>
+<li>產業風險如市場成熟、飽和及可能被新科技顛覆的挑戰。</li>
+<li>估值偏高，反映市場對持續良好表現的期待，錯誤空間有限。</li>
+<li>機構持股集中與成交量型態顯示投資人態度偏於謹慎。</li>
+</ul>
+<hr />
+<p><strong>為何在空方觀點下仍選擇買進？</strong></p>
+<p>技術指標確實警示短期將有回落，但並不與基本面相違背。技術動能有時會滯後或過度反應，而Snap-on 的長期趨勢支撐與營運實力是放棄該股的有力反證。</p>
+<p>最高警號是超高槓桿，但該公司穩健的季度自由現金流（約2.54億美元）、健康的流動比率（約4.79），及可控的利息負擔降低了即時償債風險。這是利用槓桿穩健成長的故事，藉由負債謹慎加速股東回報，而非魯莽的財務賭博。</p>
+<p>產業風險確實存在，但Snap-on憑藉其穩固市占、創新浪潮與多元產品生態系，在短期內能降低新競爭者及科技顛覆的威脅。</p>
+<p>估值相對合理，不算過度膨脹，近期修正反而建立了安全邊際，特別是新進投資人可將此視為入場良機。</p>
+<p>綜合來看，這描繪出一家具備堅實管理團隊與循環性壓力導致動能暫停，但基本盤穩固且具備策略彈性的公司，有望恢復並持續成長。</p>
+<hr />
+<p><strong>投資計劃</strong></p>
+<ol>
+<li>
+<p><strong>建議：</strong> 於現價水準建立或加碼Snap-on核心持股，將近期回調視為長期成長架構中的戰術性進場點。</p>
+</li>
+<li>
+<p><strong>理由：</strong> 您是在買入具耐久護城河的高品質工業複合型公司，擁有強勁現金流和用於加速股東回報的策略性槓桿。技術面弱勢是短期風險信號，也是先發制人掌握增長潛力前的布局機會。</p>
+</li>
+<li>
+<p><strong>策略行動：</strong></p>
+</li>
+<li><strong>持倉規模：</strong> 初期採中度持股量，不全額配置，平衡潛在上漲與既見風險。</li>
+<li><strong>入場價格目標：</strong> 目前股價約367美元，相較於長期低點及200日均線（約338美元）具吸引力。</li>
+<li><strong>風控措施：</strong> 若走勢惡化，透過設置約入場價下方10-12%的停損限制虧損。</li>
+<li><strong>槓桿與現金流監控：</strong> 密切追蹤Snap-on季度現金流與負債指標，若負債償付能力下滑或現金流大幅變弱，應重新評估持股比重。</li>
+<li><strong>宏觀經濟觀察：</strong> 利率上升或經濟衰退將放大負債風險；若宏觀不利可考慮對沖或減倉。</li>
+<li><strong>逢低加碼：</strong> 利用技術面弱勢（如觸及200日均線或超賣指標）作為次級進場時機，以較佳價格擴大持股。</li>
+<li><strong>股息再投資：</strong> 長期持有者可透過股息再投入以在盤整期間複利增長。</li>
+<li>
+<p><strong>密切關注創新與競爭：</strong> 追蹤Snap-on產品線進展及競爭動態，評估護城河是否堅固或出現突破機會。</p>
+</li>
+<li>
+<p><strong>從過往經驗學習：</strong> 見過過度反應短期技術卻忽略基本面的失誤，本次決策經過全面平衡—非盲目忽視風險，而是在情境中細緻權衡。此外，高槓桿需持續警覺，因此規劃中包含詳細負債監控與風險控管。</p>
+</li>
+</ol>
+<hr />
+<p><strong>總結觀點</strong></p>
+<p>Snap-on 最新修正猶如典型機會，市場技術層面謹慎與企業穩健基本面交會。空方觀點正確提醒槓桿風險與產業挑戰，但這些均無法超越Snap-on強勁現金流與品牌韌性所支撐的吸引力成長前景。</p>
+<p>對於願承擔適中槓桿風險、尋求工業類股成長與收益兼具的投資人，Snap-on 在現價水平以嚴謹風控策略，是明智的買入選擇。</p>
+<p>我相信此決定兼具空方的審慎與多方的信念，為一條可操作且深思熟慮的投資路徑。</p></div></div></section>
+        <section id="trader-plan" class="section-card"><h2 class="section-title">交易者投資計劃</h2><div class="section-body"><p>考慮到所提供的全面分析與均衡觀點：</p>
+<ul>
+<li>公司長期上升趨勢、穩健的基本面、強勁的現金流以及策略性使用槓桿，支持核心買入立場。</li>
+<li>短期技術性疲弱與高槓桿風險雖為合理擔憂，但可透過嚴格風險控管進行管理。</li>
+<li>建議的進場策略、停損點與監控計畫展現審慎做法，有效降低潛在下行風險。</li>
+<li>最近股價在200日均線附近的回調，提供了長期成長框架下的有利進場點位。</li>
+</ul>
+<p>綜合以上各點，最佳策略是逐步建立或增加Snap-on (SNA) 部位，採取適度進場並密切留意債務指標及宏觀經濟變化。此方法可有效平衡風險與報酬。</p>
+<p>最終交易建議：<strong>BUY</strong></p></div></section>
+        <section id="risk-debate" class="section-card"><h2 class="section-title">風險管理辯論</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">進取觀點</h3><div class="debate-preview"><p>積極分析師：讓我們正面回應保守派和中立派的警告，因為他們過度關注短期技術瓶頸和異常的槓桿指標，忽略了這裡強勁的上漲潛力。先從技術面說起——是的，短期動能指標如MACD和10日EMA顯示回調信號，價格最近也跌破了50日SMA。但價格仍遠高於200日SMA（目前約338，而價格接近370），這意味著這是強勁長期上升趨勢中的一個可控修正。保守觀點就止步於此，執著於短期的看跌信號並警告動能減弱。但這次接近200日SMA的回調，對於願意大膽行動的人來說，實際上是一個罕見且具吸引力的建倉機會。</p>
+<p>想像一下，在動能反轉之前以較低的價格鎖定股票——技術指標很可能已經見底，RSI接近超賣區，約42。平均真實波幅（ATR）穩定，意味波動可控；這不是恐慌式拋售，而是有紀律的回調。現在進場或加碼，能讓你抓住下一波上漲趨勢，價格很可能回升至或超過近期高點約389。等待完美信號反而錯失了在修正階段利用市場無效性的良機。</p>
+<p>現在，談談那個被忽視的大問題——21.7的負債對股本比率被視為極端異常。保守派批評者常將此視為致命缺陷。但積極觀點則認為：Snap-on的槓桿是一種戰略武器，而非盲目恐懼的負擔。這種槓桿支持了擴...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>積極分析師：讓我們正面回應保守派和中立派的警告，因為他們過度關注短期技術瓶頸和異常的槓桿指標，忽略了這裡強勁的上漲潛力。先從技術面說起——是的，短期動能指標如MACD和10日EMA顯示回調信號，價格最近也跌破了50日SMA。但價格仍遠高於200日SMA（目前約338，而價格接近370），這意味著這是強勁長期上升趨勢中的一個可控修正。保守觀點就止步於此，執著於短期的看跌信號並警告動能減弱。但這次接近200日SMA的回調，對於願意大膽行動的人來說，實際上是一個罕見且具吸引力的建倉機會。</p>
+<p>想像一下，在動能反轉之前以較低的價格鎖定股票——技術指標很可能已經見底，RSI接近超賣區，約42。平均真實波幅（ATR）穩定，意味波動可控；這不是恐慌式拋售，而是有紀律的回調。現在進場或加碼，能讓你抓住下一波上漲趨勢，價格很可能回升至或超過近期高點約389。等待完美信號反而錯失了在修正階段利用市場無效性的良機。</p>
+<p>現在，談談那個被忽視的大問題——21.7的負債對股本比率被視為極端異常。保守派批評者常將此視為致命缺陷。但積極觀點則認為：Snap-on的槓桿是一種戰略武器，而非盲目恐懼的負擔。這種槓桿支持了擴張、股票回購與股息增長。儘管如此，公司依然保持極強的流動比率，約4.79，具充足流動性緩衝，且有3.31億美元的正淨現金。自由現金流季度平均2.54億美元——這是可觀的內部資本，用於償還債務、投資成長及推動股東回報。</p>
+<p>事實上，這種智慧槓桿在利潤穩健（營業利潤率25.4%、淨利率19.7%）且成長中的公司中，能放大投資者回報。每季約800萬至1400萬美元的利息費用表明債務成本並未壓垮利潤或現金流。與其因為高槓桿而畏縮不前，大膽的投資者會看到這是一種撬動超額收益的槓桿，特別是當一家公司的預期本益比為17.14，且每股盈餘預計從19.18增長至21.44。</p>
+<p>再看市場情緒與更廣泛的市場背景，中立分析師的“謹慎樂觀”忽略了資金流動的變化。儘管Snap-on的估值因最近小幅下跌（過去一週跌3.6%）顯得重新定價，但更廣泛的市場對創新和高成長的渴望正展現無遺——科技創新領域如Swarmer的IPO大熱即為明證。這顯示投資者願意在前瞻性成長故事上做出計算過的押注。Snap-on對槓桿的策略性運用反映了其成長雄心與穩健基本面的結合。保守的猶豫忽略了早期捕捉處於成熟階段卻積極投資未來的公司機會，能帶來非對稱性回報。</p>
+<p>此外，如果讓估值擔憂主導你的思考，就會錯過Snap-on過去三到五年股價表現非凡（分別漲69.3%和88.8%）的根本事實，這證明了公司在市場波動中持續複利增值的能力。何必等待“完美清晰”信號，當你可以現在就做好佈局，採用有紀律的停損和持續監控，在上升趨勢恢復時複利增長？</p>
+<p>所以，確實短期存在噪音和一定風險。但保守和中立觀點低估了這些暫時弱點作為建倉點的力量，低估了Snap-on財務對積極成長策略的支持力度，低估了果斷交易者可獲得的報酬潛力。在這樣的環境下，高回報的戰術買入策略不僅平衡風險與回報，更大幅提高了抓住動能反彈和盈利增長潛力的勝算。</p>
+<p>簡言之：最佳路徑是立刻行動，將短期弱點視為市場折讓，依靠堅實基本面及現金流支撐的強勁長期趨勢，並利用公司的戰略槓桿——同時設置謹慎風控。這裡的獎勵潛力太誘人，無需等待更多謹慎的再評估。這是經典的“逢低買入”場景，勇氣為王。</p></div></details></div><div class="debate-panel" style="border-top:3px solid #3b82f6;"><h3 class="debate-panel-title" style="color:#3b82f6;">保守觀點</h3><div class="debate-preview"><p>保守派分析師：我欣賞激進派和中立派分析師的熱情，但作為保守風險分析師，我必須強調，他們的樂觀忽略了一些可能危及我們公司長期穩定性和資本保全的重大風險。</p>
+<p>從技術面來看，是的，價格仍維持在200日SMA之上，但那只是最低支撐，不是積極入場的綠燈。短期動能指標——10日EMA、MACD轉負以及RSI接近42下滑——並非小事。這些不僅指向輕微回調，也顯示買盤力量減弱，可能會持續一段時間才有真正復甦。下跌日的成交量激增也強化了賣壓存在的事實。這告訴我價格可能會測試更低支撐位，過早進場可能導致資本回吐。以「逢低買入」的論點假設動能將迅速反轉——然而目前沒有任何確定訊號表明反彈迫在眉睫。從保守角度看，等待更明確的技術驗證能降低「接刀」的風險。</p>
+<p>談到槓桿問題，激進派將極高的負債對股本比率（高達21.7）視為「策略武器」。但這數字遠超過審慎範圍。儘管Snap-on目前流動性良好、利息成本可控，此一槓桿水平卻大幅增加了脆弱性。利率上升、信用市場緊縮或經濟衰退，可能迅速推高債務負擔並壓縮現金流。公司暴露於財務風險，可能削弱營運實力或迫使於不利時機去槓桿，影響股價與信用評級。保守看法是：別指望穩定現金流，...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>保守派分析師：我欣賞激進派和中立派分析師的熱情，但作為保守風險分析師，我必須強調，他們的樂觀忽略了一些可能危及我們公司長期穩定性和資本保全的重大風險。</p>
+<p>從技術面來看，是的，價格仍維持在200日SMA之上，但那只是最低支撐，不是積極入場的綠燈。短期動能指標——10日EMA、MACD轉負以及RSI接近42下滑——並非小事。這些不僅指向輕微回調，也顯示買盤力量減弱，可能會持續一段時間才有真正復甦。下跌日的成交量激增也強化了賣壓存在的事實。這告訴我價格可能會測試更低支撐位，過早進場可能導致資本回吐。以「逢低買入」的論點假設動能將迅速反轉——然而目前沒有任何確定訊號表明反彈迫在眉睫。從保守角度看，等待更明確的技術驗證能降低「接刀」的風險。</p>
+<p>談到槓桿問題，激進派將極高的負債對股本比率（高達21.7）視為「策略武器」。但這數字遠超過審慎範圍。儘管Snap-on目前流動性良好、利息成本可控，此一槓桿水平卻大幅增加了脆弱性。利率上升、信用市場緊縮或經濟衰退，可能迅速推高債務負擔並壓縮現金流。公司暴露於財務風險，可能削弱營運實力或迫使於不利時機去槓桿，影響股價與信用評級。保守看法是：別指望穩定現金流，在波動、通膨或地緣政治衝擊無法避免下，哪怕是最堅實公司也會受挫。宜降低曝險或謹慎進場並嚴格資金配置，直至債務減少路徑明確。</p>
+<p>至於市場情緒與科技股Swarmer的IPO熱潮，我認為這是一把雙刃劍。確實創新需求強烈，但過度投機與泡沫風險亦隨之升高，尤其伴隨極端IPO價格飆升。這可能導致波動加劇和產業資金輪動，吸引資金遠離像Snap-on這樣的工業龍頭，施加估值下行壓力。中立派分析師「謹慎樂觀」的立場較貼近現實——投資人需觀察資金流向變化，而非假設穩定流入成熟產業如Snap-on。</p>
+<p>最後，雖然Snap-on歷史表現在優秀，但過去成績無法保證未來不會動盪。近期技術弱勢與高槓桿環境下3.6%的周跌幅，顯示公司估值可能已充分甚至過高。即便中立報告也質疑Snap-on當前股價是否合理反映潛在風險。從資本保護角度，該不宜在此不確定環境追逐報酬。取而代之，應優先穩健成長並在安全邊際框架下操作——等待動能指標改善、估值趨穩及槓桿風險降低。</p>
+<p>總結來說，激進策略低估了動能減弱、過度槓桿與市場波動間相互作用造成的風險。中立立場雖認可這些，但未充分強調謹慎必要。我們公司紀律要求，在高債務和技術脆弱的背景下避免過早買入以保護資產。謹慎進場或持有並嚴格風險控管，比直接大舉買進更能保障資本且符合可持續成長目標。長期成功取決於首先保全本金，而非追逐槓桿增高且動能衰退個股中的不確定潛在報酬。</p></div></details></div><div class="debate-panel" style="border-top:3px solid #f59e0b;"><h3 class="debate-panel-title" style="color:#f59e0b;">中立觀點</h3><div class="debate-preview"><p>中立分析師：積極與保守兩派分析師皆提出了有說服力的觀點，但雙方各自帶有的偏見若過於僵化地採用，可能會帶來問題。積極觀點正確地強調 Snap-on 穩健的長期上升趨勢及強勁的基本面，這確實為「逢低買入」策略提供了支撐。但此熱情可能會淡化近期技術面與財務風險的真實存在。相反地，保守立場正確指出短期看空動能及極高槓桿帶來的重大風險，但其過度謹慎的風險規避可能讓嚴謹的投資者錯過及時入場的機會。</p>
+<p>先從積極分析師的觀點談起：是的，股價持續位於 200 日簡單移動平均線上方，這是意義重大的長期看多指標，公司盈利能力、現金流創造及股息殖利率也勾勒出強健的圖景。維持的流動性與正面的淨現金狀況有助緩衝槓桿風險，且自由現金流健康。然而，積極分析師對於令人警醒的技術訊號有所忽略：MACD 明顯轉負，RSI 從超買區下滑至中性至超賣區間，近期股價則跌破 50 日 SMA 與 10 日 EMA，這些都是中短期看空動能的有力跡象。此外，伴隨跌勢的成交量激增顯示真實賣壓，而非僅是受控修正。整體環境頗為微妙——雖然 200 日 SMA 有做為支撐，但回到前高並非保證或迅速可成。</p>
+<p>再者，積極觀點將 Snap-on 極...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>中立分析師：積極與保守兩派分析師皆提出了有說服力的觀點，但雙方各自帶有的偏見若過於僵化地採用，可能會帶來問題。積極觀點正確地強調 Snap-on 穩健的長期上升趨勢及強勁的基本面，這確實為「逢低買入」策略提供了支撐。但此熱情可能會淡化近期技術面與財務風險的真實存在。相反地，保守立場正確指出短期看空動能及極高槓桿帶來的重大風險，但其過度謹慎的風險規避可能讓嚴謹的投資者錯過及時入場的機會。</p>
+<p>先從積極分析師的觀點談起：是的，股價持續位於 200 日簡單移動平均線上方，這是意義重大的長期看多指標，公司盈利能力、現金流創造及股息殖利率也勾勒出強健的圖景。維持的流動性與正面的淨現金狀況有助緩衝槓桿風險，且自由現金流健康。然而，積極分析師對於令人警醒的技術訊號有所忽略：MACD 明顯轉負，RSI 從超買區下滑至中性至超賣區間，近期股價則跌破 50 日 SMA 與 10 日 EMA，這些都是中短期看空動能的有力跡象。此外，伴隨跌勢的成交量激增顯示真實賣壓，而非僅是受控修正。整體環境頗為微妙——雖然 200 日 SMA 有做為支撐，但回到前高並非保證或迅速可成。</p>
+<p>再者，積極觀點將 Snap-on 極高的負債股本比率視為驅動成長及報酬的戰略槓桿，但這種槓桿水準極端到不容輕忽。負債股本比超過 20 是非常罕見的，若現金流減緩、利率上升或宏觀經濟環境急劇轉變會帶來實質財務風險。目前因自由現金流而使利息支出尚屬可控，但任何干擾都可能迅速加劇財務壓力。即使當前流動性強勁，但若出現長期不景氣，仍可能不足以應付。故此槓桿所帶來的風險層面相當重大，值得比簡單一笑置之更多的重視。</p>
+<p>從保守分析師的角度看：堅持等待更明確的技術確認才開始或增加部位，是謹慎且有助避免追高未成形動能的情緒陷阱。關注持續賣壓與測試支撐的呼籲體現了良好的風險管理。對於市場情緒因科技 IPO 等投機熱潮（此處以 Swarmer 為例）而轉向的擔憂，是可行的宏觀考量，可能影響資金流向像 Snap-on 這類成熟工業股。</p>
+<p>然而，保守論點恐怕過於偏重因害怕「落刀」而放棄獲利。股價站穩 200 日 SMA，現金流穩健，且像 Snap-on 這樣的成熟企業常見回檔後恢復上升趨勢。無限期等待完美訊號可能造成機會成本，尤以 Snap-on 強勁的多年報酬及合理估值指標而言更是如此。此外，對槓桿的極端謹慎忽略了資本密集產業公司若經營得宜，經常有效運用債務的現實——當然，這種經營風險須被承認，但並非自動成為決策終結者。</p>
+<p>那該如何兼顧兩者呢？較為中立且平衡的做法應該是：</p>
+<ul>
+<li>承認 Snap-on 長期看多的基本面背景——穩健的盈餘、現金流與機構支持形成堅實基礎，支持核心買入立場。</li>
+<li>同時尊重中短期技術警告訊號：動能仍疲弱，股價暫時位於 10 日 EMA 與 50 日 SMA 下方，下跌日的成交量提示賣方仍活躍。這意味著入場要謹慎且有紀律，而非激進或全力壓注。</li>
+<li>必須密切監控由極高槓桿帶來的財務風險。僅說流動性可緩衝尚不足夠，投資人須假設利率上升或經濟放緩情境，並以停損或持倉規模控制曝險。此風險因素反對初期持倉過大。</li>
+<li>宏觀經濟與市場情緒因素增添複雜性。科技 IPO 等新興產業吸引注意與資金，成熟工業股則具防禦及收益價值——在投資組合中平衡兩者能對抗產業輪動風險。針對 Snap-on，其他領域的投機熱度波動可能製造逆風，故需留意該產業資金流向及信貸市場狀況更新。</li>
+</ul>
+<p>總結來說，折衷策略建議在靠近 200 日 SMA 的有利技術「回調」處，先以較小且受控的持倉規模入場，等待 10 日 EMA 與 MACD 動能開始穩定或轉好，再考慮顯著增加曝險。應制定嚴格停損規則，以防止持續下跌。同時密切關注債務服務指標、季度現金流趨勢和宏觀指標（如利率與信用息差），定期重新評估槓桿風險。</p>
+<p>此平衡策略兼顧積極分析師青睞的上漲捕捉潛力，也融合保守分析師的謹慎以保護資本，面對不確定性保持資產防守與攻勢兼備。它尊重 Snap-on 的基本面實力，同時警覺技術訊號與槓桿弱點——在動態市場環境中達成攻防合一，為持續前行鋪就一條不忽視風險也不放棄機會的可行之路。</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">裁判決定</h3><div class="judge-body"><p>在對激進、中立及保守風險分析師間的辯論進行仔細且詳細的評估後，我提供以下建議：</p>
+<hr />
+<h3><strong>建議：買入</strong>（配合紀律性風險控管的進場與監控）</h3>
+<hr />
+<h3><strong>關鍵論點摘要</strong></h3>
+<h4>激進分析師（看多觀點）：</h4>
+<ul>
+<li>Snap-on 保持在<strong>強勁的長期上升趨勢</strong>，股價遠高於200日簡單移動平均線（約338美元，現價367美元）。</li>
+<li>近期下跌為<strong>健康的回調</strong>，創造了吸引人的進場點。</li>
+<li>營運基本面穩健：高利潤率（約25.4%營業利潤率）、強勁的自由現金流（每季約2.54億美元）、並以策略性槓桿推動成長與股東回報。</li>
+<li>負債對股東權益比率（約21.7）是<strong>策略性成長槓桿</strong>，非負擔，且得益於充足流動性（流動比率約4.79）及可控的利息費用。</li>
+<li>機構持股比例及穩定的現金狀況增強穩定性。</li>
+<li>動能指標如RSI接近超賣區（約42）暗示短期可能見底。</li>
+<li>相較成長前景，估值合理（預期本益比約17.14）。</li>
+<li>有信心在回檔時買進，能抓住預期的動能反彈機會。</li>
+</ul>
+<h4>保守分析師（看空觀點）：</h4>
+<ul>
+<li><strong>短期技術趨勢疲弱：</strong> MACD為負，股價低於50日SMA及10日EMA，成交量於下跌日激增，存在進一步下跌風險。</li>
+<li>極高<strong>槓桿風險顯著</strong>：負債對股東權益比率21.7十分極端，增加利率上升或經濟放緩時的脆弱性。</li>
+<li>強勁的流動性目前充足，但可能無法承受長期壓力或宏觀衝擊。</li>
+<li>市場情緒謹慎，資金轉向投機性科技IPO或降低工業板塊估值。</li>
+<li>歷史報酬不保證未來表現，當前估值或有被高估風險。</li>
+<li>建議等待更明確的技術信號與/或減槓桿後再進入或加碼。</li>
+<li>著重資本保全與風險限制，避免追逐不確定的上行。</li>
+</ul>
+<h4>中立分析師（平衡觀點）：</h4>
+<ul>
+<li>肯定Snap-on強勁的基本面及長期趨勢，但警告<strong>中短期呈現看跌動能</strong>跡象。</li>
+<li>承認重大槓桿風險，需密切監控。</li>
+<li>建議在接近200日SMA回檔時<strong>謹慎進場</strong>，配合嚴格風控，如保守的部位規模與停損。</li>
+<li>建議密切關注宏觀條件（利率、信用利差）及產業動態。</li>
+<li>採取分階段累積策略：初期小量進場，隨技術面改善再增加曝險。</li>
+<li>認為完全避險可能錯失戰術性機會，但警告不要過度投入。</li>
+<li>建議結合進攻（逢低買進）與防守（紀律與監控）。</li>
+</ul>
+<hr />
+<h3><strong>買入決策理由</strong></h3>
+<p>辯論明顯指出，雖然Snap-on面臨非凡風險—尤其因極高槓桿及較弱短期技術訊號—公司強健的基本面、穩定現金流、品牌護城河及維持充足流動性，都為持續成長提供了堅實基礎。</p>
+<ul>
+<li>
+<p><strong>長期趨勢與基本面優於短期噪音：</strong> 股價仍在重要長期均線（200日SMA）之上，屬典型技術支撐。激進派的「受控修正」觀點獲中立派認可為良好風險報酬，目前短期訊號雖警示但尚未確立趨勢反轉。</p>
+</li>
+<li>
+<p><strong>槓桿是風險但非決定性障礙：</strong> 保守派正確點出負債權益比過高為警示，但應結合公司穩健的季自由現金流、強勁流動比率和可控利息費用平衡判斷。負債看似策略性利用於成長與股東回報非無節制借貸。應透過嚴密監控與風控（停損、部位控管）應對，而非完全避險。</p>
+</li>
+<li>
+<p><strong>估值與市場環境：</strong> 股價近期軟化，改善購買水準。估值倍數合理，符合盈餘成長預期與股息率。雖有投機性科技IPO分流資金，如Swarmer，Snap-on成熟工業定位及現金產生能力在多元化投組中具防禦價值。</p>
+</li>
+<li>
+<p><strong>風險報酬及戰術機會：</strong> 現在買入可抓住自近期高點（約389美元）及長期低點（約338美元）間的回檔機會。激進派「逢低買進」策略結合理性停損，與中立派策略吻合：謹慎小幅進場、遇回調加碼、警戒技術或基本面惡化時果斷止損。</p>
+</li>
+</ul>
+<hr />
+<h3><strong>精煉交易計畫（綜合各分析師見解）</strong></h3>
+<ol>
+<li>
+<p><strong>操作行動：</strong> 於現價附近（約367美元）啟動或加碼<strong>中等規模部位</strong>，押注長期成長與穩定性，趁回調時布局。</p>
+</li>
+<li>
+<p><strong>部位規模：</strong> 採取<em>節制配置</em>，降低槓桿與技術面不確定風險，避免一次全額投入。</p>
+</li>
+<li>
+<p><strong>進場策略：</strong> 利用200日SMA上方現價回檔作為機會進場點；僅當動能指標如MACD、10日EMA穩定或轉正時進一步加碼。</p>
+</li>
+<li>
+<p><strong>風險控管：</strong></p>
+</li>
+<li><strong>停損：</strong> 設10-12%下方停損以限制下行風險，當下跌趨勢加劇時使用。</li>
+<li><strong>負債與現金流監控：</strong> 密切關注季報，警覺自由現金流減弱或流動性惡化跡象。</li>
+<li>
+<p><strong>宏觀警示：</strong> 留意利率上升及衰退指標，可能加劇負債風險；情況惡化時考慮對沖或減碼。</p>
+</li>
+<li>
+<p><strong>持續評估：</strong></p>
+</li>
+<li>留意創新與競爭環境變化，偵測護城河是否受侵蝕。</li>
+<li>
+<p>觀察成交量與股價於技術支撐位的表現，以作確認或否定反彈。</p>
+</li>
+<li>
+<p><strong>股息再投資：</strong> 如長期持有，建議股息再投資以提升整體複利回報，特別在盤整期。</p>
+</li>
+</ol>
+<hr />
+<h3><strong>從過去錯誤中學習</strong></h3>
+<ul>
+<li>避免<strong>孤立過度反應短期技術訊號或槓桿數據</strong>；應結合基本面與市場環境脈絡評估。</li>
+<li>理解<strong>過度謹慎可能錯過機會</strong>，需取得平衡。</li>
+<li>實施<strong>結構化風控</strong>以防止波動中重大損失。</li>
+<li>保持<strong>靈活性</strong>根據技術動能、現金流穩定性及宏觀變化修正持倉，避免死守固定位。</li>
+</ul>
+<hr />
+<h3><strong>最終結論</strong></h3>
+<p>這場全面辯論凸顯Snap-on當前呈現平衡的風險報酬輪廓：強韌基本面支撐買入理由，並以合理管控因短期技術及槓桿帶來的風險。最佳策略為<strong>謹慎進場、積極停損並嚴密監控</strong>，利用當前修正作為戰術進場點，納入有序管理的長期成長投資架構。</p>
+<hr />
+<p><strong>決策：</strong> 現階段以嚴密風控措施買入 Snap-on（SNA）股份。</p></div></div></section>
+        <footer class="dashboard-footer"><p>由 TradingAgents 於 2026-03-18 14:45 產生</p></footer>
+    </main>
+</div>
+
+<script>
+(function() {
+    // ─── Tab Switching (legacy fallback) ────────────
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var container = btn.closest('.tabs-container');
+            var tabId = btn.getAttribute('data-tab');
+            container.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            container.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+            btn.classList.add('active');
+            var panel = container.querySelector('[data-panel="' + tabId + '"]');
+            if (panel) panel.classList.add('active');
+        });
+    });
+
+    // ─── Smooth Scroll from Nav ─────────────────────
+    document.querySelectorAll('.nav-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var id = link.getAttribute('href').slice(1);
+            var el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // ─── IntersectionObserver for Nav Tracking ──────
+    var navLinks = document.querySelectorAll('.nav-link');
+    var sections = [];
+    navLinks.forEach(function(link) {
+        var id = link.getAttribute('data-section');
+        var el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el });
+    });
+
+    if (sections.length && 'IntersectionObserver' in window) {
+        var currentActive = null;
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    currentActive = entry.target.id;
+                }
+            });
+            if (currentActive) {
+                navLinks.forEach(function(l) {
+                    if (l.getAttribute('data-section') === currentActive) {
+                        l.classList.add('active');
+                    } else {
+                        l.classList.remove('active');
+                    }
+                });
+            }
+        }, {
+            rootMargin: '-80px 0px -60% 0px',
+            threshold: 0
+        });
+        sections.forEach(function(s) { observer.observe(s.el); });
+    }
+})();
+</script>
+
+
+
+</body>
+</html>
