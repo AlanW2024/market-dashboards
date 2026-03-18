@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORCL — BUY | 2026-03-18</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+/* ─── Custom Properties ─────────────────────────────── */
+:root {
+    --bg-primary: #0b0f19;
+    --bg-secondary: #0f1629;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --bg-inset: #0d1117;
+    --border-subtle: #1e293b;
+    --border-medium: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --signal-color: #10b981;
+    --signal-glow: rgba(16, 185, 129, 0.15);
+    --signal-rgb: 16, 185, 129;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --sidebar-w: 220px;
+    --header-h: 56px;
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+/* ─── Reset ─────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 1rem); }
+body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+/* ─── Noise Texture ─────────────────────────────────── */
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* ─── Header Bar ────────────────────────────────────── */
+.header-bar {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 100;
+    display: flex; align-items: center;
+}
+.header-inner {
+    width: 100%; max-width: 1400px;
+    margin: 0 auto; padding: 0 2rem;
+    display: flex; align-items: center;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+}
+
+/* ─── Signal Pill ───────────────────────────────────── */
+.signal-pill {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.85rem;
+    background: rgba(var(--signal-rgb), 0.15);
+    border: 1px solid rgba(var(--signal-rgb), 0.3);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-weight: 500; font-size: 0.8rem;
+    border-radius: 20px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* ─── Layout ────────────────────────────────────────── */
+.layout {
+    display: flex; max-width: 1400px;
+    margin: 0 auto; padding-top: var(--header-h);
+    min-height: 100vh;
+}
+
+/* ─── Sidebar ───────────────────────────────────────── */
+.sidebar {
+    position: sticky; top: var(--header-h);
+    width: var(--sidebar-w); flex-shrink: 0;
+    height: calc(100vh - var(--header-h));
+    padding: 1.5rem 0 1.5rem 1.5rem;
+    overflow-y: auto;
+}
+.sidebar-inner {
+    display: flex; flex-direction: column; gap: 0.25rem;
+}
+.nav-link {
+    display: block; padding: 0.5rem 1rem;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500;
+    border-radius: var(--radius-sm);
+    border-left: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+.nav-link:hover {
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.03);
+}
+.nav-link.active {
+    color: var(--signal-color);
+    border-left-color: var(--signal-color);
+    background: rgba(var(--signal-rgb), 0.08);
+}
+
+/* ─── Main Content ──────────────────────────────────── */
+.main-content {
+    flex: 1; min-width: 0;
+    padding: 1.5rem 2rem 3rem 1.5rem;
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+
+/* ─── Hero Card ─────────────────────────────────────── */
+.hero-card {
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    overflow: hidden;
+}
+.hero-mesh {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(var(--signal-rgb), 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(var(--signal-rgb), 0.05) 0%, transparent 40%),
+        radial-gradient(ellipse at 60% 80%, rgba(var(--signal-rgb), 0.03) 0%, transparent 60%);
+    pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; }
+.hero-header {
+    display: flex; align-items: center; gap: 1rem;
+    flex-wrap: wrap; margin-bottom: 0.5rem;
+}
+.hero-ticker {
+    font-family: var(--font-heading);
+    font-size: 2.5rem; font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--text-primary), var(--signal-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-date {
+    font-family: var(--font-mono);
+    font-size: 0.9rem; color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+.hero-card .signal-pill { font-size: 0.9rem; padding: 0.35rem 1rem; }
+
+/* Risk Badge */
+.risk-badge {
+    display: inline-flex; align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 20px; letter-spacing: 0.05em;
+}
+.risk-low    { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+.risk-medium { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+.risk-high   { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+
+/* Reasons */
+.reasons-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.reason {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(var(--signal-rgb), 0.05);
+    border: 1px solid rgba(var(--signal-rgb), 0.1);
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;
+}
+.reason-num {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px;
+    background: rgba(var(--signal-rgb), 0.15);
+    color: var(--signal-color);
+    font-family: var(--font-mono);
+    font-size: 0.75rem; font-weight: 500;
+    border-radius: 50%;
+}
+
+/* ─── Metrics Grid ──────────────────────────────────── */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+}
+.metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    transition: all 0.25s ease;
+    position: relative; overflow: hidden;
+}
+.metric-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--signal-color); opacity: 0.4;
+    transition: opacity 0.25s ease;
+}
+.metric-card:hover {
+    border-color: rgba(var(--signal-rgb), 0.3);
+    box-shadow: 0 0 20px rgba(var(--signal-rgb), 0.08);
+}
+.metric-card:hover::before { opacity: 1; }
+.metric-label {
+    font-size: 0.75rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+}
+.metric-value {
+    font-family: var(--font-mono);
+    font-size: 1.35rem; font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* ─── Section Cards ─────────────────────────────────── */
+.section-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: 2rem;
+    transition: border-color 0.25s ease;
+}
+.section-card:hover { border-color: var(--border-medium); }
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1.25rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.section-title::before {
+    content: ''; display: inline-block;
+    width: 4px; height: 20px;
+    background: var(--signal-color); border-radius: 2px;
+}
+.section-body {
+    color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.section-body h1, .section-body h2, .section-body h3 {
+    font-family: var(--font-heading);
+    color: var(--text-primary); margin: 1.5rem 0 0.75rem;
+}
+.section-body h1 { font-size: 1.2rem; }
+.section-body h2 { font-size: 1.1rem; }
+.section-body h3 { font-size: 1rem; }
+.section-body p { margin-bottom: 0.75rem; }
+.section-body ul, .section-body ol { margin: 0.5rem 0 1rem 1.5rem; }
+.section-body li { margin-bottom: 0.3rem; }
+.section-body strong { color: var(--text-primary); }
+.section-body em { color: var(--text-muted); font-style: italic; }
+
+/* Tables in sections */
+.section-body table {
+    width: 100%; border-collapse: collapse;
+    margin: 1rem 0; font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.section-body thead th {
+    background: rgba(var(--signal-rgb), 0.1);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.78rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.section-body tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.section-body tbody tr:hover { background: rgba(255,255,255,0.02); }
+.section-body tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+
+/* ─── Technical Dashboard ──────────────────────────── */
+.tech-dashboard {
+    display: flex; flex-direction: column; gap: 1.5rem;
+}
+.gauges-row {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    justify-content: center; padding: 0.5rem 0;
+}
+.gauge-container {
+    width: 200px; text-align: center;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem 0.5rem 0.75rem;
+}
+.gauge-svg { width: 100%; height: auto; }
+.charts-row {
+    display: grid; grid-template-columns: 1fr; gap: 1rem;
+}
+.chart-container {
+    position: relative; height: 220px;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+
+/* ─── MA Comparison Chart ──────────────────────────── */
+.ma-chart {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.ma-bar-row {
+    display: flex; align-items: center; gap: 0.75rem;
+}
+.ma-label {
+    width: 56px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.78rem;
+    color: var(--text-muted); text-align: right;
+}
+.ma-bar-track {
+    flex: 1; height: 24px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px; overflow: hidden;
+}
+.ma-bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 1s ease;
+}
+.ma-value {
+    width: 64px; flex-shrink: 0;
+    font-family: var(--font-mono); font-size: 0.85rem;
+    color: var(--text-primary); text-align: right;
+}
+
+/* ─── KPI Grid ─────────────────────────────────────── */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.kpi-card {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+}
+.kpi-label {
+    font-size: 0.72rem; font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 0.3rem;
+}
+.kpi-value {
+    font-family: var(--font-mono);
+    font-size: 1.1rem; font-weight: 600;
+}
+
+/* ─── Sentiment Dashboard ──────────────────────────── */
+.sentiment-summary { margin-bottom: 1.5rem; }
+.sentiment-bar {
+    display: flex; height: 28px;
+    border-radius: 14px; overflow: hidden;
+    background: var(--bg-inset);
+}
+.sent-fill { transition: width 0.8s ease; min-width: 2px; }
+.sent-pos { background: #10b981; }
+.sent-neu { background: #475569; }
+.sent-neg { background: #ef4444; }
+.sentiment-counts {
+    display: flex; justify-content: center;
+    gap: 1.5rem; margin-top: 0.75rem;
+}
+.sent-count {
+    font-family: var(--font-mono); font-size: 0.8rem;
+}
+.sent-count-pos { color: #10b981; }
+.sent-count-neu { color: #64748b; }
+.sent-count-neg { color: #ef4444; }
+.sent-tag {
+    display: inline-block;
+    padding: 0.15rem 0.5rem; border-radius: 10px;
+    font-size: 0.78rem; font-weight: 500;
+}
+.sent-tag-positive { background: rgba(16,185,129,0.15); color: #10b981; }
+.sent-tag-negative { background: rgba(239,68,68,0.15); color: #ef4444; }
+.sent-tag-neutral { background: rgba(100,116,139,0.15); color: #94a3b8; }
+.sent-row-positive td:first-child { border-left: 3px solid #10b981; }
+.sent-row-negative td:first-child { border-left: 3px solid #ef4444; }
+.sent-row-neutral td:first-child { border-left: 3px solid #475569; }
+
+/* ─── Indicator Table ──────────────────────────────── */
+.indicator-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm); overflow: hidden;
+}
+.indicator-table thead th {
+    background: rgba(var(--signal-rgb), 0.08);
+    color: var(--signal-color);
+    padding: 0.6rem 0.8rem; text-align: left;
+    font-weight: 600; font-family: var(--font-mono);
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.indicator-table tbody tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+.indicator-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.indicator-table tbody td {
+    padding: 0.5rem 0.8rem; color: var(--text-secondary);
+}
+.ind-name {
+    font-family: var(--font-mono); font-weight: 500;
+    color: var(--text-primary);
+}
+.ind-value {
+    font-family: var(--font-mono); color: var(--signal-color);
+}
+
+/* ─── Debate Comparison ────────────────────────────── */
+.debate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; margin-bottom: 1rem;
+}
+.debate-panel {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.25rem;
+}
+.debate-panel-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.debate-preview {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    max-height: 200px; overflow: hidden;
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+.debate-preview p { margin-bottom: 0.5rem; }
+.debate-preview strong { color: var(--text-primary); }
+.debate-expand { margin-top: 0.75rem; }
+.debate-expand summary {
+    cursor: pointer; color: var(--signal-color);
+    font-size: 0.85rem; font-weight: 500;
+    padding: 0.4rem 0; user-select: none;
+    list-style: none;
+}
+.debate-expand summary::-webkit-details-marker { display: none; }
+.debate-expand summary::before {
+    content: '\25B8 '; font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+.debate-expand[open] summary::before { transform: rotate(90deg); }
+.debate-full {
+    color: var(--text-secondary);
+    font-size: 0.88rem; line-height: 1.7;
+    margin-top: 0.75rem;
+    max-height: 600px; overflow-y: auto;
+}
+.debate-full p { margin-bottom: 0.5rem; }
+.debate-full strong { color: var(--text-primary); }
+.debate-full ul, .debate-full ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.debate-full li { margin-bottom: 0.3rem; }
+
+/* ─── Judge Decision ───────────────────────────────── */
+.judge-decision {
+    background: var(--bg-inset);
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    border-left: 3px solid var(--signal-color);
+}
+.judge-title {
+    font-family: var(--font-heading);
+    font-size: 1rem; font-weight: 600;
+    color: var(--signal-color);
+    margin-bottom: 0.75rem;
+}
+.judge-body {
+    color: var(--text-secondary);
+    font-size: 0.9rem; line-height: 1.7;
+}
+.judge-body p { margin-bottom: 0.5rem; }
+.judge-body strong { color: var(--text-primary); }
+.judge-body ul, .judge-body ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+.judge-body li { margin-bottom: 0.3rem; }
+
+/* ─── Tabs (legacy fallback) ───────────────────────── */
+.tab-bar {
+    display: flex; gap: 0.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 1.25rem;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tab-btn {
+    padding: 0.6rem 1.25rem; background: none; border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.88rem; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.tab-btn:hover { color: var(--text-secondary); }
+.tab-btn.active {
+    color: var(--signal-color);
+    border-bottom-color: var(--signal-color);
+}
+.tab-panel {
+    display: none; color: var(--text-secondary);
+    font-size: 0.92rem; line-height: 1.8;
+}
+.tab-panel.active { display: block; animation: fadeIn 0.3s ease; }
+.tab-panel p { margin-bottom: 0.75rem; }
+.tab-panel strong { color: var(--text-primary); }
+.tab-panel ul, .tab-panel ol { margin: 0.5rem 0 1rem 1.5rem; }
+.tab-panel li { margin-bottom: 0.3rem; }
+.text-muted { color: var(--text-muted); font-style: italic; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Collapsible Debate Rounds ─────────────────────── */
+.debate-round {
+    margin: 0.5rem 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    overflow: hidden; transition: border-color 0.2s ease;
+}
+.debate-round[open] { border-color: rgba(var(--signal-rgb), 0.2); }
+.debate-round summary {
+    padding: 0.7rem 1rem; background: var(--bg-inset);
+    cursor: pointer; font-weight: 600; font-size: 0.88rem;
+    color: var(--text-secondary); list-style: none;
+    display: flex; align-items: center; gap: 0.5rem;
+    transition: all 0.2s ease; user-select: none;
+}
+.debate-round summary::-webkit-details-marker { display: none; }
+.debate-round summary::before {
+    content: '\25B8'; font-size: 0.75rem;
+    color: var(--text-muted); transition: transform 0.2s ease;
+}
+.debate-round[open] summary::before { transform: rotate(90deg); }
+.debate-round summary:hover {
+    background: rgba(255,255,255,0.03); color: var(--text-primary);
+}
+.round-content {
+    padding: 1rem; border-top: 1px solid var(--border-subtle);
+    color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7;
+}
+.round-content p { margin-bottom: 0.6rem; }
+.round-content strong { color: var(--text-primary); }
+.round-content ul, .round-content ol { margin: 0.5rem 0 0.75rem 1.5rem; }
+
+/* ─── Footer ────────────────────────────────────────── */
+.dashboard-footer {
+    text-align: center; padding: 2rem;
+    color: var(--text-muted); font-size: 0.8rem;
+    font-family: var(--font-mono);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: 1rem;
+}
+
+/* ─── Responsive ────────────────────────────────────── */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; top: var(--header-h);
+        left: 0; right: 0; width: 100%;
+        height: auto; padding: 0.5rem;
+        background: rgba(11, 15, 25, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border-subtle);
+        z-index: 90; overflow-x: auto; overflow-y: hidden;
+    }
+    .sidebar-inner {
+        flex-direction: row; gap: 0; min-width: max-content;
+    }
+    .nav-link {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        padding: 0.4rem 0.75rem; font-size: 0.78rem;
+        white-space: nowrap;
+    }
+    .nav-link.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--signal-color);
+    }
+    html { scroll-padding-top: calc(var(--header-h) + 3.5rem); }
+    .main-content { padding: 4.5rem 1rem 2rem 1rem; }
+    .hero-ticker { font-size: 1.8rem; }
+    .hero-card { padding: 1.5rem; }
+    .section-card { padding: 1.25rem; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .tab-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+    .gauges-row { gap: 0.75rem; }
+    .gauge-container { width: 160px; }
+    .debate-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-container { height: 180px; }
+    .ma-label { width: 48px; font-size: 0.72rem; }
+    .ma-value { width: 52px; font-size: 0.78rem; }
+}
+@media (min-width: 769px) {
+    .main-content { padding-top: 1.5rem; }
+}
+
+/* ─── Print ─────────────────────────────────────────── */
+@media print {
+    body { background: #fff; color: #111; }
+    body::before { display: none; }
+    .header-bar { position: relative; background: #fff; border-bottom: 2px solid #111; }
+    .header-inner { color: #111; }
+    .sidebar { display: none; }
+    .layout { display: block; }
+    .main-content { padding: 1rem; }
+    .hero-card, .section-card, .metric-card, .kpi-card, .gauge-container,
+    .debate-panel, .judge-decision {
+        background: #fff; border-color: #ddd;
+        box-shadow: none; break-inside: avoid;
+    }
+    .hero-mesh { display: none; }
+    .hero-ticker {
+        background: none;
+        -webkit-text-fill-color: #111; color: #111;
+    }
+    .signal-pill {
+        background: #eee; border-color: #ccc; color: #333;
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+    .debate-round { break-inside: avoid; }
+    .debate-round .round-content { display: block; }
+    .debate-preview { max-height: none; mask-image: none; -webkit-mask-image: none; }
+    .debate-full { max-height: none; }
+    .tab-panel { display: block !important; margin-bottom: 1rem; }
+    .tab-bar { display: none; }
+    .section-body, .round-content, .tab-panel, .debate-full,
+    .judge-body { color: #333; }
+    .section-title, .debate-panel-title, .judge-title { color: #111; }
+    .metric-label, .kpi-label { color: #666; }
+    .metric-value, .kpi-value, .ind-value, .ma-value { color: #111; }
+    .reason { background: #f9f9f9; border-color: #ddd; color: #333; }
+    .reason-num { background: #eee; color: #333; }
+    .chart-container { display: none; }
+    .sent-tag { border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<header class="header-bar">
+    <div class="header-inner">ORCL — BUY | 2026-03-18</div>
+</header>
+
+<div class="layout">
+    <nav class="sidebar" id="sidebar"><div class="sidebar-inner"><a href="#executive-summary" class="nav-link" data-section="executive-summary">執行摘要</a>
+<a href="#market" class="nav-link" data-section="market">技術面</a>
+<a href="#sentiment" class="nav-link" data-section="sentiment">情緒</a>
+<a href="#news" class="nav-link" data-section="news">新聞</a>
+<a href="#fundamentals" class="nav-link" data-section="fundamentals">基本面</a>
+<a href="#investment-debate" class="nav-link" data-section="investment-debate">投資辯論</a>
+<a href="#trader-plan" class="nav-link" data-section="trader-plan">交易計劃</a>
+<a href="#risk-debate" class="nav-link" data-section="risk-debate">風險辯論</a>
+</div></nav>
+    <main class="main-content">
+        <section id="executive-summary" class="hero-card"><div class="hero-mesh"></div><div class="hero-content"><div class="hero-header"><h1 class="hero-ticker">ORCL</h1><span class="signal-pill">BUY</span></div><div class="hero-date">2026-03-18</div></div></section>
+        <section id="market" class="section-card"><h2 class="section-title">技術面分析</h2><div class="tech-dashboard"><div class="gauges-row"><div class="gauge-container"><svg viewBox="0 0 200 130" class="gauge-svg"><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#1e293b" stroke-width="12" stroke-linecap="round"/><path d="M 20 110 A 70 70 0 0 1 180 110" fill="none" stroke="#10b981" stroke-width="12" stroke-linecap="round" stroke-dasharray="219.9" stroke-dashoffset="114.4" style="transition: stroke-dashoffset 1s ease;"/><text x="100" y="95" text-anchor="middle" fill="#10b981" font-family="'DM Mono', monospace" font-size="28" font-weight="600">48</text><text x="100" y="125" text-anchor="middle" fill="#64748b" font-family="'Outfit', sans-serif" font-size="13">RSI</text></svg></div></div><div class="charts-row"><div class="chart-container"><canvas id="macdChart"></canvas></div></div><table class="indicator-table"><thead><tr><th>指標</th><th>數值</th><th>訊號</th><th>解讀</th></tr></thead><tbody><tr><td class="ind-name">50 SMA</td><td class="ind-value">~164.88</td><td>價格低於 SMA 顯示中期看跌</td><td>價格低於 SMA 顯示中期看跌</td></tr><tr><td class="ind-name">200 SMA</td><td class="ind-value">~219.51</td><td>遠低於 SMA 顯示長期看跌</td><td>遠低於 SMA 顯示長期看跌</td></tr><tr><td class="ind-name">10 EMA</td><td class="ind-value">~154.71</td><td>接近價格，反映短期走勢</td><td>接近價格，反映短期走勢</td></tr><tr><td class="ind-name">MACD</td><td class="ind-value">~-1.78</td><td>負值但上升 - 空頭動能減弱</td><td>負值但上升 - 空頭動能減弱</td></tr><tr><td class="ind-name">RSI</td><td class="ind-value">~48</td><td>中性，略偏弱</td><td>中性，略偏弱</td></tr><tr><td class="ind-name">布林帶中軸</td><td class="ind-value">~151.96</td><td>價格於中軸附近</td><td>價格於中軸附近</td></tr><tr><td class="ind-name">布林帶上軸</td><td class="ind-value">~162.27</td><td>上軸阻力</td><td>上軸阻力</td></tr><tr><td class="ind-name">布林帶下軸</td><td class="ind-value">~141.65</td><td>下軸支撐</td><td>下軸支撐</td></tr></tbody></table></div></section>
+        <section id="sentiment" class="section-card"><h2 class="section-title">情緒分析</h2><div class="sentiment-summary"><div class="sentiment-bar"><div class="sent-fill sent-pos" style="width:55.6%"></div><div class="sent-fill sent-neu" style="width:33.3%"></div><div class="sent-fill sent-neg" style="width:11.1%"></div></div><div class="sentiment-counts"><span class="sent-count sent-count-pos">5 正面</span><span class="sent-count sent-count-neu">3 中性</span><span class="sent-count sent-count-neg">1 負面</span></div></div><table class="indicator-table"><thead><tr><th>方面</th><th>詳細內容</th><th>情緒</th></tr></thead><tbody><tr class="sent-row-positive"><td>Java 26 AI 及安全性</td><td>發布具備AI能力，強化Oracle技術領導力</td><td>正面</td></tr><tr class="sent-row-positive"><td>嵌入式金融合作夥伴</td><td>與Alviere建立多年合作，將金融服務嵌入Oracle應用</td><td>正面</td></tr><tr class="sent-row-positive"><td>醫療AI擴展</td><td>AI代理在醫院急診/住院環境現場部署</td><td>正面</td></tr><tr class="sent-row-positive"><td>財報超預期</td><td>收入172億美元對比預期169億，雲端IaaS成長84%</td><td>正面</td></tr><tr class="sent-row-positive"><td>德意志銀行評級</td><td>重申買入評級與300美元目標價</td><td>正面</td></tr><tr class="sent-row-negative"><td>重組成本</td><td>高出預期5億美元，引發成本擔憂</td><td>負面</td></tr><tr class="sent-row-neutral"><td>AI投資風險</td><td>500億美元AI支出被視為風險或高明之舉</td><td>混合</td></tr><tr class="sent-row-neutral"><td>估值與回報</td><td>短期回報混合，長期表現強勁</td><td>中立</td></tr><tr class="sent-row-neutral"><td>TikTok投資提及</td><td>參議員質詢TikTok投資者，其中包括Oracle</td><td>中立</td></tr></tbody></table></section>
+        <section id="news" class="section-card"><h2 class="section-title">新聞分析</h2><div class="section-body"><p>以下是一份關於當前全球交易及宏觀經濟狀況的綜合報告，特別聚焦於甲骨文公司（Oracle，代碼：ORCL）及過去一週相關科技產業的發展：</p>
+<hr />
+<h3>甲骨文公司（Oracle，ORCL）焦點：</h3>
+<p>本週甲骨文積極推進人工智慧（AI）技術並擴展在多個領域的業務版圖。主要發展包括：</p>
+<ul>
+<li><strong>人工智慧及軟體創新</strong>：甲骨文推出Java 26版本，強調AI工作負載、密碼學及開發者生產力的提升。此版本支援甲骨文將AI更深度整合到其軟體生態系中，尤其針對雲端及企業應用。</li>
+<li><strong>嵌入式金融合作</strong>：甲骨文與Alviere建立多年全球合作夥伴關係，將支付及金融工作流程整合至甲骨文的行業應用中。此舉與金融科技大趨勢契合，充分利用甲骨文龐大的企業通路。</li>
+<li><strong>醫療AI擴展</strong>：甲骨文針對醫院的AI代理已在AtlantiCare正式啟用，提供急診及住院環境的AI工作流程，鞏固其在醫療科技領域的地位。</li>
+<li><strong>財務表現及市場反應</strong>：甲骨文公布超出預期的業績，收入達172億美元，受惠於基礎設施即服務（IaaS）收入成長84%。德意志銀行基於此強勁表現重申買入評級，目標價300美元。</li>
+<li><strong>重組成本隱憂</strong>：甲骨文披露重組成本比初步預估多出5億美元，儘管長期成長前景樂觀，短期仍可能引起投資者謹慎。</li>
+<li><strong>AI投資策略</strong>：甲骨文在AI技術上的押注達500億美元。部分人士視為潛在的高招，但也擔憂其高現金燃燒率，因甲骨文積極追求AI的高速成長。</li>
+<li><strong>監管背景</strong>：甲骨文是TikTok美國業務投資聯盟成員之一，面臨參議員關注該交易向美國財政部支付總額達100億美元的款項，凸顯科技投資的監管風險日益提升。</li>
+</ul>
+<p>這些發展顯示甲骨文正積極定位為AI及雲端基礎設施的關鍵玩家，覆蓋多項重要行業，但短期須承受較高的成本及重組支出。</p>
+<hr />
+<h3>廣泛科技與AI產業趨勢：</h3>
+<ul>
+<li><strong>龐大AI支出</strong>：預計科技產業至2026年將在AI領域投資約7200億美元，Nvidia與甲骨文等公司處於此波浪潮前端。Nvidia近期營收達680億美元，反映AI硬體與平台的強勁需求。</li>
+<li><strong>科技裁員與成本控管</strong>：儘管AI投資熱絡，Meta等公司仍減少約20%員工數，以管理成本並因應AI開發壓力加劇，顯見科技勞動市場的策略調整。</li>
+<li><strong>首次公開募股（IPO）市場動態</strong>：無人機軟體公司Swarmer IPO表現亮眼，股價暴漲超過520%，顯示投資人對AI與科技相關新創的強烈興趣，即便宏觀經濟環境不穩。</li>
+</ul>
+<hr />
+<h3>宏觀與市場環境：</h3>
+<ul>
+<li>市場參與者正在評估Nebius Group等AI基礎設施公司新資金募集計劃，但同時關注槓桿與股權稀釋風險。</li>
+<li>工業部門呈現分歧，如Fastenal與DNOW的盈餘差異，反映非科技領域經濟狀況不均。</li>
+<li>監管與政治動態，例如對TikTok投資者支付款項及美國財政部資金流向的審視，可能影響科技產業整體治理。</li>
+</ul>
+<hr />
+<h3>主要重點摘要表</h3>
+<table>
+<thead>
+<tr>
+<th>主題</th>
+<th>細節</th>
+<th>含意</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>甲骨文AI與軟體創新</td>
+<td>Java 26發布、嵌入式金融合作、醫療AI擴展</td>
+<td>強化甲骨文在AI及雲端的市場定位</td>
+</tr>
+<tr>
+<td>甲骨文第四季業績與展望</td>
+<td>172億美元營收、IaaS增長84%、德意志銀行買入評級</td>
+<td>基本面利多，分析師看多</td>
+</tr>
+<tr>
+<td>甲骨文重組成本</td>
+<td>重組費用增加5億美元</td>
+<td>可能短期壓縮利潤率</td>
+</tr>
+<tr>
+<td>甲骨文AI投資</td>
+<td>500億美元AI押注，伴隨高現金消耗</td>
+<td>長期成長潛力與短期風險並存</td>
+</tr>
+<tr>
+<td>TikTok美國投資者付款</td>
+<td>參議院調查TikTok美國合資公司向財政部支付100億美元款項，甲骨文為投資聯盟成員之一</td>
+<td>監管風險升高</td>
+</tr>
+<tr>
+<td>產業整體AI支出</td>
+<td>2026年預計7200億美元AI投資，Nvidia營收大幅成長</td>
+<td>AI投資熱潮持續</td>
+</tr>
+<tr>
+<td>科技裁員</td>
+<td>Meta因AI需求裁減20%員工</td>
+<td>產業內成本調整進行中</td>
+</tr>
+<tr>
+<td>市場IPO活動</td>
+<td>Swarmer IPO暴漲超過520%</td>
+<td>風險投資熱衷於AI新創企業</td>
+</tr>
+<tr>
+<td>宏觀環境</td>
+<td>工業盈餘參差與科技金融監管壓力增加</td>
+<td>經濟環境不均，情緒謹慎</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>此分析表明甲骨文正大力把握AI與雲端成長機會，藉由強勁的近期業績及策略合作推動公司發展，惟較高的重組費用與現金燒耗需持續關注。整體科技產業處於密集AI投資階段，但亦面臨成本及監管壓力，恐影響短期估值及市場情緒。</p>
+<p>如需甲骨文或同業深入分析及交易建議，敬請告知。</p></div></section>
+        <section id="fundamentals" class="section-card"><h2 class="section-title">基本面分析</h2><div class="kpi-grid"><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Market Cap</div><div class="kpi-value" style="color:#64748b;">4449億美元</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">Revenue</div><div class="kpi-value" style="color:#64748b;">641億美元</div></div><div class="kpi-card" style="border-left:3px solid #64748b;"><div class="kpi-label">EPS</div><div class="kpi-value" style="color:#64748b;">5.57美元</div></div><div class="kpi-card" style="border-left:3px solid #f59e0b;"><div class="kpi-label">P/E (TTM)</div><div class="kpi-value" style="color:#f59e0b;">27.77</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">Profit Margin</div><div class="kpi-value" style="color:#10b981;">32.7%</div></div><div class="kpi-card" style="border-left:3px solid #10b981;"><div class="kpi-label">ROE</div><div class="kpi-value" style="color:#10b981;">57.6%</div></div><div class="kpi-card" style="border-left:3px solid #f59e0b;"><div class="kpi-label">Dividend Yield</div><div class="kpi-value" style="color:#f59e0b;">1.29%</div></div></div><table class="indicator-table"><thead><tr><th>指標</th><th>數值</th><th>評論/洞見</th></tr></thead><tbody><tr><td>市值</td><td>4449億美元</td><td>科技領域大盤龍頭</td></tr><tr><td>營收（TTM）</td><td>641億美元</td><td>穩健的營收基礎</td></tr><tr><td>淨利（TTM）</td><td>162億美元</td><td>強勁的獲利能力</td></tr><tr><td>每股盈餘（TTM）</td><td>5.57美元</td><td>適中的過去盈餘表現</td></tr><tr><td>預測每股盈餘</td><td>7.97美元</td><td>預期正向盈餘成長</td></tr><tr><td>本益比（TTM）</td><td>27.77</td><td>在成長考量下合理的估值</td></tr><tr><td>預測本益比</td><td>19.4</td><td>相較於TTM本益比更具吸引力</td></tr><tr><td>債務對權益比</td><td>415.3</td><td>極高槓桿風險</td></tr><tr><td>自由現金流（TTM）</td><td>-223億美元</td><td>高資本支出導致負值</td></tr><tr><td>資本支出（最新季）</td><td>186億美元</td><td>對基礎建設的大量投資</td></tr><tr><td>營業利潤率</td><td>32.7%</td><td>強勁的營運效率</td></tr><tr><td>股東權益報酬率（ROE）</td><td>57.6%</td><td>高回報率，部分受槓桿推動</td></tr><tr><td>有形帳面價值</td><td>-324億美元</td><td>負值，反映無形資產主導</td></tr><tr><td>內部人持股比例</td><td>40.6%</td><td>內部人高度信心</td></tr><tr><td>機構持股比例</td><td>44.3%</td><td>廣泛機構支持</td></tr><tr><td>空頭比例</td><td>1.84%</td><td>空頭情緒偏低</td></tr><tr><td>股息殖利率</td><td>1.29%</td><td>為投資人提供適度收入</td></tr></tbody></table></section>
+        <section id="investment-debate" class="section-card"><h2 class="section-title">投資辯論</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #10b981;"><h3 class="debate-panel-title" style="color:#10b981;">多頭觀點</h3><div class="debate-preview"><p>Bull Analyst: 完全正確，讓我們深入探討 Oracle (ORCL) 為何準備好迎接成長，以及這個多頭論點不僅合理，更具吸引力——尤其當我們考慮到其策略布局、競爭護城河與市場定位時。</p>
+<hr />
+<h3>首先，成長潛力：</h3>
+<p>Oracle 積極推進 <strong>AI 和雲端基礎設施</strong>，這不只是流行語——它正轉化為 <strong>實質營收成長</strong>，尤其是其基礎設施即服務（IaaS）部門年增長達 84%，近期推動營收達 172 億美元，超越分析師預期。鑒於 AI 支出於 2026 年預計超過 7000 億美元的大型長期趨勢，這種雲端成長至關重要。Oracle 投資 500 億美元於 AI，雖然數字龐大，卻讓它與 Nvidia 等 AI 巨頭並駕齊驅，成為企業軟體和雲端 AI 應用的強大力量。</p>
+<p>更重要的是，Oracle 正積極 <strong>多元化進入嵌入式金融與醫療 AI</strong>，這些行業正處於數位轉型的黃金期。透過與 Alviere 的嵌入式金融多年合作，以及在醫院部署現實世界 AI 代理人等，開啟了寶貴且不易被商品化的新營收管道。因此，市場買入的不僅是「傳統科技公司」，而是一個具有可規模化企業應用且動...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>Bull Analyst: 完全正確，讓我們深入探討 Oracle (ORCL) 為何準備好迎接成長，以及這個多頭論點不僅合理，更具吸引力——尤其當我們考慮到其策略布局、競爭護城河與市場定位時。</p>
+<hr />
+<h3>首先，成長潛力：</h3>
+<p>Oracle 積極推進 <strong>AI 和雲端基礎設施</strong>，這不只是流行語——它正轉化為 <strong>實質營收成長</strong>，尤其是其基礎設施即服務（IaaS）部門年增長達 84%，近期推動營收達 172 億美元，超越分析師預期。鑒於 AI 支出於 2026 年預計超過 7000 億美元的大型長期趨勢，這種雲端成長至關重要。Oracle 投資 500 億美元於 AI，雖然數字龐大，卻讓它與 Nvidia 等 AI 巨頭並駕齊驅，成為企業軟體和雲端 AI 應用的強大力量。</p>
+<p>更重要的是，Oracle 正積極 <strong>多元化進入嵌入式金融與醫療 AI</strong>，這些行業正處於數位轉型的黃金期。透過與 Alviere 的嵌入式金融多年合作，以及在醫院部署現實世界 AI 代理人等，開啟了寶貴且不易被商品化的新營收管道。因此，市場買入的不僅是「傳統科技公司」，而是一個具有可規模化企業應用且動能強勁的 AI/雲端平台。其長遠發展路線遠超一般科技競爭者。</p>
+<hr />
+<h3>第二，競爭優勢：</h3>
+<p>Oracle 的護城河堅固——不只是品牌，還有生態系統與策略，而這些坦白說不僅限於軟體：</p>
+<ul>
+<li><strong>Java 26 版本新增 AI 與安全強化功能</strong>，使 Oracle 深植於數千家企業軟體開發的核心，隨著組織走向現代化，Oracle 在 AI 工作負載中不可或缺。</li>
+<li>其 <strong>高達 40.6% 的內部人持股</strong>，是最了解公司者對未來充滿信心的強烈訊號。沒有人會持有如此大量股份，除非信賴公司的發展方向。</li>
+<li>Oracle <strong>龐大的既有企業用戶基礎</strong>，從金融到醫療，提供黏性高且持續的營收，這是雲端初創公司與利基廠商無法匹敵的。</li>
+<li>大規模的雲端基礎設施投資雖現階段成本高昂，但建立起高門檻，形成強有力的競爭優勢。</li>
+</ul>
+<hr />
+<h3>第三，正面市場與財務指標：</h3>
+<p>當然，50 日與 200 日簡單移動平均線（SMA）暗示中長期股價阻力，但這些技術指標可能落後於實際業績。我們 <em>看到</em> 短期動能正在穩定——MACD 從 -9.4 改善至 -1.78，RSI 維持中性約 48。股價持續在布林帶中軸附近震盪，典型的盤整格局，為突破約 165 美元的 50 日 SMA 阻力做準備。</p>
+<p>財務方面，Oracle 呈現 <strong>高獲利能力，營業利潤率達 32.7%、淨利率 25.3%</strong>，此在重金投資狀況下相當罕見。預期每股盈餘由 5.57 上升至 7.97，成長幅度高達 <strong>43%</strong>，帶來合理前瞻本益比 19.4。市場常低估積極投資成長的公司；在此，營運利潤率與前瞻盈餘的提升非常關鍵。別忘了，<strong>像 Vanguard 和 Blackrock 這樣的大型機構股東持有大量股份</strong>，且空方持股比例極低（1.84%），顯示目前空頭投機壓力有限。</p>
+<hr />
+<h3>回應空頭疑慮——高負債與現金流燒錢</h3>
+<p>確實，Oracle 負債與權益比高達 415.3，自由現金流因資本支出龐大（上季約 186 億美元）呈現負值。但情勢與教訓在此彌足珍貴：</p>
+<ul>
+<li>Oracle 的負債用於建置具可擴展性的雲基礎設施，該基礎設施正帶來 <strong>迅速成長的營收</strong>，未來有望顯著改善利潤率並創造自由現金流。資產負債表顯示持有 390 億美元現金，加上本季產生 71.5 億美元營運現金流，意味著投資期有充分流動性緩衝。</li>
+<li>類似亞馬遜的歷程具啟發性（曾長期負自由現金流建設 AWS），大量前期投入帶來選擇權及市場領導地位。</li>
+<li>高內部持股與機構支持反映市場對管理層資本運用策略的信心。</li>
+<li>估外支出 5 億美元重組費用及 AI 投資風險是合理的警示，但屬短期且達成規模所必需。</li>
+</ul>
+<p>過往雲端業界類似案例展示，<strong>早期資本支出與負債常觸發空頭情緒，但專注長期價值與成長故事的投資人均獲豐厚回報</strong>。</p>
+<hr />
+<h3>為何現在是進場的時機，而非退出</h3>
+<p>Oracle 當前價格低於 SMA 並非全部故事，這事實上是典型的「築底階段」，常見於重大上漲趨勢前。MACD 上揚，RSI 穩定接近 50，股價在布林中軸附近盤整，暗示空頭恐慌可能接近尾聲。</p>
+<p>加上堅實公司基本面、對 AI 的策略押注、不斷成長的雲端營收與積極分析師評級（德意志銀行重申買入，目標價 300 美元），這意謂低風險切入高成長故事。耐心與信念或將在未來市場對 Oracle 優異盈餘成長與 AI/雲端領導地位正確估值時帶來豐厚報酬。</p>
+<hr />
+<h3>總結——Oracle 是一台成長巨獸，耐心打造基礎建設，擴大 AI/雲端優勢，擁有強勁基本面與聰明資本運用，儘管短期技術面疲弱與成本逆風。空頭過度關注當前結構性風險，忽略更大畫面：可擴展營收成長、競爭護城河及驚人 AI/雲端市場機會，將推動 Oracle 長期倍數擴張。</h3>
+<p>歡迎分享您的看法——讓我們辯論這些觀點，以進一步統一對 Oracle 強大多頭論點的共識！</p></div></details></div><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">空頭觀點</h3><div class="debate-preview"><p>Bear Analyst: 對於 Oracle 的成長野心和近期執行力，你提出了很好的觀點，但讓我們更仔細地觀察那些勾勒出更謹慎，甚至偏空的風險與逆風——特別是在估值、槓桿、競爭壓力，以及此投資論點的長期可行性方面。</p>
+<hr />
+<h3>1. 成長與營收：代價是什麼？</h3>
+<p>你正確指出 Oracle 那令人印象深刻的 84% IaaS 成長及以 172 億美元的季度營收優於預期，但在這個頭條數字背後，對投資人來說卻是個具挑戰性的局面。這成長是由 <strong>龐大的資本支出（上季度達到 186 億美元）</strong> 及 <strong>債務發行（267 億美元）</strong> 所推動，導致 <strong>過去十二個月的自由現金流為負 223 億美元</strong>。這意味著成長基本上是靠燒錢和堆疊債務來融資，而非有機的營運現金流，這讓人對可持續性與財務健康度產生疑慮。</p>
+<p>龐大的支出和債務帶來實際成本：</p>
+<ul>
+<li>Oracle 的 <strong>負債權益比高達驚人的 415.3</strong>，在利率和信用條件可能收緊的宏觀環境中，使其面臨高額利息支出與再融資風險。</li>
+<li>市值為 4449 億美元，而股東權益只有 385 億美元，且 <strong>有負面有形帳面價值 -324 億美元</strong>，...</li>
+</ul></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>Bear Analyst: 對於 Oracle 的成長野心和近期執行力，你提出了很好的觀點，但讓我們更仔細地觀察那些勾勒出更謹慎，甚至偏空的風險與逆風——特別是在估值、槓桿、競爭壓力，以及此投資論點的長期可行性方面。</p>
+<hr />
+<h3>1. 成長與營收：代價是什麼？</h3>
+<p>你正確指出 Oracle 那令人印象深刻的 84% IaaS 成長及以 172 億美元的季度營收優於預期，但在這個頭條數字背後，對投資人來說卻是個具挑戰性的局面。這成長是由 <strong>龐大的資本支出（上季度達到 186 億美元）</strong> 及 <strong>債務發行（267 億美元）</strong> 所推動，導致 <strong>過去十二個月的自由現金流為負 223 億美元</strong>。這意味著成長基本上是靠燒錢和堆疊債務來融資，而非有機的營運現金流，這讓人對可持續性與財務健康度產生疑慮。</p>
+<p>龐大的支出和債務帶來實際成本：</p>
+<ul>
+<li>Oracle 的 <strong>負債權益比高達驚人的 415.3</strong>，在利率和信用條件可能收緊的宏觀環境中，使其面臨高額利息支出與再融資風險。</li>
+<li>市值為 4449 億美元，而股東權益只有 385 億美元，且 <strong>有負面有形帳面價值 -324 億美元</strong>，顯示股價主要是基於無形資產、商譽及期望來定價，而非真實的清算價值或具體的資產負債表強度。</li>
+<li>雖然你關於亞馬遜早期資本支出的類比值得注意，但 <strong>亞馬遜的 AWS 建立了具有類別定義性的護城河，擁有明確且高度可擴展的雲端基礎設施</strong>，而 Oracle 的雲業務仍在對抗根深蒂固的作為傳統基礎設施／軟體供應商的印象，且面臨一個快速成長且資金雄厚的競爭生態系（Microsoft、AWS、Google）的激烈挑戰。</li>
+</ul>
+<hr />
+<h3>2. 競爭弱點與市場趨勢</h3>
+<p>Oracle 作為雲端與 AI 角色的位置，並不像你所說的那麼明確或主導。</p>
+<ul>
+<li><strong>AI 市場競爭激烈且資本密集</strong>，像亞馬遜、微軟和谷歌等超大規模廠商積極投資，規模更大且產品生態系持續迅速演進。</li>
+<li>Oracle 仍佔很大收入基礎的傳統軟體業務，面臨 <strong>市場飽和與商品化壓力</strong>，尤其是在企業逐步轉向更靈活的雲原生解決方案，而非本地部署方案。</li>
+<li><strong>Java 生態系統領導地位的論點正在削弱</strong>，因為開源替代方案與雲廠商的 AI 平台正在迅速獲得市場接受及企業心智份額。</li>
+<li>對 AI 投入 500 億美元的押注雖大膽，但同時代表有 <strong>顯著現金燒毀風險且無保證回報</strong>。市場已表現出懷疑態度，從你提及的分析師對 AI 支出風險的質疑評論可見一斑。</li>
+</ul>
+<hr />
+<h3>3. 技術面與市場情緒現實</h3>
+<p>你對 MACD 改善及 RSI 穩定於 48 附近的樂觀值得肯定，但：</p>
+<ul>
+<li>Oracle <strong>股價遠低於 50 日均線（約 164.88 美元）和 200 日均線（約 219.51 美元）</strong>，顯示明確的長期下跌趨勢，短期動能震盪未能扭轉局面。</li>
+<li>布林帶顯示股價在中軸附近整合，卻無突破嘗試或明確強勢信號。該股基本上呈區間震盪，沒有確定訊號指向可持續的向上動能。</li>
+<li>雖然空頭比例低，但這也代表反向「反彈潛力」有限，機構持股者很可能一旦債務與資本支出問題浮現，便將減少曝險。</li>
+</ul>
+<hr />
+<h3>4. 財務脆弱及估值風險</h3>
+<p>Oracle 的 <strong>前瞻本益比（19.4）僅在激進成長實現支撐下才有吸引力</strong>。但：</p>
+<ul>
+<li><strong>龐大的重組費用（超出預期 5 億美元）</strong> 透露出營運困難及執行風險，即使公司正嘗試轉型並擴大 AI／雲端新營收。</li>
+<li><strong>自由現金流仍深度負值</strong>，意味著 Oracle 的成長依然是種押注——依賴公司能將這些龐大的 AI 與雲端投資轉換成獲利的盈利，然後才可能改善現金流生成。</li>
+<li>Oracle 的 <strong>高利潤率雖令人印象深刻，但若公司面臨來自競爭加劇和債務成本上升的壓力，利潤率可能収縮</strong>，尤其當成長放緩或投資者情緒轉向時。</li>
+</ul>
+<hr />
+<h3>5. 類似情況的教訓與反思</h3>
+<p>歷史上，那些投入龐大資本支出並承擔巨大槓桿來追逐技術成長的公司未必總是獲勝：</p>
+<ul>
+<li>回想 <strong>網路泡沫時代</strong>，許多科技巨頭看似有前景，卻在難以承受不可能成長期待和財務風險的重壓下崩潰。</li>
+<li>甚至更近期，<strong>並非所有雲端營運策略獲得成功</strong> — 許多企業難以用可持續獲利來證明其募資和投資的合理性。</li>
+<li>教訓很明確：<strong>資本密集與槓桿操作在競爭激烈且快速變動的市場中構成脆弱局面，需完美的執行與有利的宏觀環境支持</strong>。Oracle 的高負債和缺乏實體資產使得錯誤空間極為有限。</li>
+</ul>
+<hr />
+<h3>總結：為何你應該保持看空——或至少保持謹慎</h3>
+<p>多頭論點嚴重依賴于</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">裁判決定</h3><div class="judge-body"><p>好，對 Oracle 這家公司，我們有兩個截然不同的強烈觀點。看多的分析師強調 Oracle 在 AI 及雲端基礎設施方面積極且具潛力的成長，強調近期大量投資及負債負擔是轉型科技公司打造市場主導地位的典型現象——類似亞馬遜早期經營 AWS 的階段。他們突出穩健的財務指標，例如高營運利潤率、內部人及機構持股比例高、透過合作夥伴關係多角化布局至醫療 AI 及嵌入式金融，且技術指標顯示基礎形成，將迎來突破。</p>
+<p>反之，悲觀分析師則描繪出嚴重的財務風險及可持續性存疑的畫面。Oracle 負債對股本比率超過 400%，且出現大規模負的自由現金流，這引發對成長是否以健康方式資金運作的警示。看空理由指出，Oracle 的雲端業務仍面臨作為傳統廠商與資本及生態系更強的超大型雲端業者（AWS、Microsoft、Google）競爭的困境。他們也提到技術面信號仍偏向下跌趨勢，加上持續的重組費用及利潤率風險可能擠壓獲利，令目前估值具有投機性，未來成長是否能兌現尚不明朗。</p>
+<p>經過權衡，我強烈認為看多分析師的論點較為說服力。龐大的負債及資本支出固然令人擔憂，但看起來是 Oracle 對其 AI/雲端未來的有意識策略性投資，類似歷史上成功的科技策略，回報給了有耐心的投資人。Oracle 在關鍵的 AI/雲端長期成長市場展現真實營收增長，擁有強大安裝基礎及相對同行優異的利潤率，展現韌性與長期價值創造潛力。悲觀者警告逆風，但可說低估了 Oracle 的規模、多元化（嵌入式金融、醫療 AI）及技術面積蓄力的動能。</p>
+<p>因此，我的最終投資建議是 買入。</p>
+<hr />
+<p>以下是我為交易者拆解的投資理據與計畫：</p>
+<p><strong>建議：</strong> 買入 Oracle (ORCL) 股票。</p>
+<p><strong>理據：</strong><br />
+Oracle 正處於資本密集型轉型期，大量投資 AI/雲端基礎設施，導致自由現金流下滑及負債增加，但奠定未來大幅成長及利潤率提升的基礎。公司 84% 的基礎設施即服務（IaaS）增長、斥資 500 億美元的策略性 AI 佈局及新興產業合作夥伴關係，顯示多重強勁成長動能，非傳統業務主導。營運利潤率依舊堅挺，內部人與機構持股顯示深知內情者的信心。技術指標表明盤整期，常為上漲突破前奏，提供適時的進場機會。雖具槓桿與執行風險，但歷史證明大規模且執行良好的技術轉型可回報耐心投資者。</p>
+<p><strong>策略行動：</strong><br />
+1. <strong>逐步建立核心持倉，</strong> 考慮當前盤整階段及 165 美元附近的技術阻力，不宜一次到位，分批進場以管控時機風險。<br />
+2. <strong>密切追蹤季度雲端營收成長及自由現金流趨勢。</strong> 投資人應留意持續的營收成長與利潤率改善、現金流燒錢減緩，檢驗多頭論點的轉型階段是否持續。<br />
+3. <strong>設置入場價 10% 下方的追蹤停損點，</strong> 以防範意外的科技股整體賣壓或公司特定負面事件，鑑於槓桿高及轉型階段風險。<br />
+4. <strong>關注 AI 市場動態及 Oracle 策略合作拓展，</strong> 如嵌入式金融新案或醫院 AI 成功導入等利多催化，具備提前加碼的條件。<br />
+5. <strong>避免僅憑短期技術面投機操作。</strong> Oracle 適合耐心持有的長線成長投資人，理解宏觀 AI/雲端趨勢與公司規模優勢。<br />
+6. <strong>於未來 2-4 季後重新評估，</strong> 特別是重組費用是否正常化及自由現金流向正向發展，視情況調整持倉比例。</p>
+<hr />
+<p>回顧過去錯誤，我常因雙方看法各有道理且缺乏信心而過於保守持股。此處多頭關於持續結構性成長的證據，加上目前價格盤整與強勁基本面，勝過看空傳遞的高風險警告。我避免採取持有不動，因為風險報酬已傾向長期成長，與 Oracle 生態系下巨大的 AI/雲端機會相呼應。</p>
+<p>因此，懷抱學習與果斷精神：Oracle 是現階段值得買入的股票，適合願意忍受短期波動、以參與本年代最具影響力的企業科技轉型之一的耐心投資者。</p></div></div></section>
+        <section id="trader-plan" class="section-card"><h2 class="section-title">交易者投資計劃</h2><div class="section-body"><p>對 Oracle (ORCL) 的深入分析突顯了其由大型 AI 和雲端投資驅動的細膩且資本密集的成長階段。看多的見解強調了其轉型潛力、強勁的利潤率、策略性多元化，以及技術面布局顯示可能的突破。看空的觀點則正確地警告了高負債、負自由現金流和競爭壓力，但這些似乎是有意識的策略定位的一部分，而非草率的管理失誤。</p>
+<p>鑑於 Oracle 展現出的 84% IaaS 成長、重大 AI 投資，以及嵌入式金融和醫療 AI 等高成長領域中不斷擴大的合作夥伴關係，基本成長軌跡看來相當穩健。更重要的是，內部人士和機構的信心信號表明他們相信長期的價值創造。建議的投資策略是逐步加碼，密切監控雲端營收及現金流改善情況，並採用有紀律的風險管理策略（如追蹤停損），這是審慎的做法。</p>
+<p>反思自己為避免在有充分信念時猶豫不決的學習過程，並考慮到 Oracle 的規模和轉型動能，風險／報酬明顯傾向於現在建立部位，以從預期成長中受益。</p>
+<p>最終交易建議：<strong>BUY</strong></p></div></section>
+        <section id="risk-debate" class="section-card"><h2 class="section-title">風險管理辯論</h2><div class="debate-grid"><div class="debate-panel" style="border-top:3px solid #ef4444;"><h3 class="debate-panel-title" style="color:#ef4444;">進取觀點</h3><div class="debate-preview"><p>積極分析師：讓我們深入探討並拆解目前圍繞購買Oracle的保守及中立猶豫。首先，針對任何指出高負債水平或負自由現金流為致命缺陷的人——這是對策略與魯莽的典型誤解。Oracle <em>選擇</em> 大幅槓桿並燒錢，因為它正積極投資於市場強烈呼喚的方向：人工智慧與雲端基礎設施。這筆500億美元的AI押注不僅是支出；它是Oracle宣示自己作為AI驅動企業未來的主導者地位。這種大膽的投資才是帶來多年成長奇蹟的關鍵，不是那種按季度逐步增長的謹慎態度。</p>
+<p>看市場數據，是的，股價低於50日和200日移動平均線，且動能指標如MACD仍為負。但MACD正在<em>改善</em>——從約-9.44升到-1.78，且RSI穩定在48附近。這些指標顯示下跌動能減弱，這通常是突破的前兆。經歷大幅下跌後的修正或盤整階段，正是高信念買入的最佳時機，能領先市場大眾。等到形成完整多頭交叉或RSI超過50時，意味著你是在漲勢大多已完成後才開始買進。</p>
+<p>此外，布林帶顯示價格徘徊在中軸附近，暗示盤整區間狹窄，準備展開波動。這是呼喚紀律嚴明的交易者現在就開始建倉並設置止損的訊號，而不是等候可能早已反映在價格中的確認信號。</p>
+<p>要求估值細節的中立分析師...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>積極分析師：讓我們深入探討並拆解目前圍繞購買Oracle的保守及中立猶豫。首先，針對任何指出高負債水平或負自由現金流為致命缺陷的人——這是對策略與魯莽的典型誤解。Oracle <em>選擇</em> 大幅槓桿並燒錢，因為它正積極投資於市場強烈呼喚的方向：人工智慧與雲端基礎設施。這筆500億美元的AI押注不僅是支出；它是Oracle宣示自己作為AI驅動企業未來的主導者地位。這種大膽的投資才是帶來多年成長奇蹟的關鍵，不是那種按季度逐步增長的謹慎態度。</p>
+<p>看市場數據，是的，股價低於50日和200日移動平均線，且動能指標如MACD仍為負。但MACD正在<em>改善</em>——從約-9.44升到-1.78，且RSI穩定在48附近。這些指標顯示下跌動能減弱，這通常是突破的前兆。經歷大幅下跌後的修正或盤整階段，正是高信念買入的最佳時機，能領先市場大眾。等到形成完整多頭交叉或RSI超過50時，意味著你是在漲勢大多已完成後才開始買進。</p>
+<p>此外，布林帶顯示價格徘徊在中軸附近，暗示盤整區間狹窄，準備展開波動。這是呼喚紀律嚴明的交易者現在就開始建倉並設置止損的訊號，而不是等候可能早已反映在價格中的確認信號。</p>
+<p>要求估值細節的中立分析師錯失了更大故事。Oracle未來每股收益7.97美元對比過去5.57美元，預示43％的成長躍升，顯著可期。搭配19.4倍的前瞻本益比對比27.7倍的過去本益比，表示市場有<em>空間</em>隨著盈利改善而重新評價Oracle的股價。保守觀點僅聚焦於高槓桿，但未看到Oracle強大的390億美元現金持有量及上季70億美元的營運現金流，為其流動性風險提供實質緩衝，助力度過這投資密集期。</p>
+<p>懷疑的聲音也聚焦於重組費用和現金消耗。但重組是轉型必要之痛，非弱勢象徵。超出預算5億美元，相對Oracle 4440億美元市值及這些投資所帶來的龐大彈藥而言，微不足道。別忘了，德意志銀行剛在財報後重申買進評級，目標價300美元，因為他們看到Oracle的AI和雲端策略正在釋放巨大價值。</p>
+<p>Oracle策略性多元化布局至嵌入式金融與醫療AI——兩個爆發性增長的領域，開啟了傳統軟體授權之外巨大的新營收管道。這些合作並非陳腐的防禦手法，而是讓Oracle成為現在就搶占未來高利潤市場的創新者。</p>
+<p>另外，超過40％的內部人持股發出強烈訊號：最瞭解Oracle前景的人全力看好。機構持股如Vanguard與Blackrock也並非袖手旁觀。低於2％的空頭比例凸顯專業市場參與者對Oracle走勢的懷疑有限。</p>
+<p>是的，存在風險。這不是安全又溫吞的買入選擇。但在這個競爭激烈、快速變革的科技領域，AI居霸主地位，過度謹慎可能錯失顛覆性漲勢。Oracle積極策略借助其規模和強勁利潤率，推動克服短期不適感，換取超額長期報酬。坐觀旁邊等完美動能確認或債務還清，就是將優質阿爾法拱手讓人。</p>
+<p>結論：此處機會在於搶佔AI與雲端基礎設施領導者地位，伴隨證明成長力道的收入激增（IaaS增長84％！）、強勁新技術發布（Java 26）及多元產業拓展先鋒。採用“逐步加碼”且嚴控風險的交易策略，是一種智慧作法，能有效管理風險同時最大化收益。Oracle已準備好大幅突破，豐厚回報證明此刻大膽領先布局正當其時。</p></div></details></div><div class="debate-panel" style="border-top:3px solid #3b82f6;"><h3 class="debate-panel-title" style="color:#3b82f6;">保守觀點</h3><div class="debate-preview"><p>保守派分析師：我欣賞對 Oracle 以 AI 推動的轉型及雲端成長潛力所展現的信心與熱情，但從保守風險的角度來看，我必須強調多項多頭論調所忽略的紅旗與脆弱性，以及為何採取更謹慎的立場，才能保護資產並確保可持續的成長。</p>
+<p>首先，被標榜為策略性「大膽」的激進投資方式，實際上是一項龐大的槓桿風險。Oracle 的負債對權益比率超過 400，極為高昂——這不僅是「高槓桿」，而是在承擔極其沉重的財務負擔。如此槓桿使公司在執行成長計畫出現任何差錯、獲利改善延遲或資本市場趨緊時，將面臨嚴重壓力。負的自由現金流每年超過 220 億美元，且由每季近 190 億美元的資本支出驅動，即便營運現金流為正仍在大量燒錢。直白說，這是靠發債驅動的現金消耗，若沒有穩定且強勁的現金流入與利潤率擴大，絕非永續之道。若 AI 投資未能如預期產生回報，或市場狀況惡化，Oracle 的流動性和信用狀況可能迅速吃緊。</p>
+<p>談到市場狀況，依賴如 MACD 走弱或 RSI 在 50 以下徘徊的技術指標來證明現在進場合理，是一場風險下注。股價仍遠低於主要移動平均線，無明顯動能反轉或突破確認。太早買進未成熟的信號，意味著公司面臨更深跌勢...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>保守派分析師：我欣賞對 Oracle 以 AI 推動的轉型及雲端成長潛力所展現的信心與熱情，但從保守風險的角度來看，我必須強調多項多頭論調所忽略的紅旗與脆弱性，以及為何採取更謹慎的立場，才能保護資產並確保可持續的成長。</p>
+<p>首先，被標榜為策略性「大膽」的激進投資方式，實際上是一項龐大的槓桿風險。Oracle 的負債對權益比率超過 400，極為高昂——這不僅是「高槓桿」，而是在承擔極其沉重的財務負擔。如此槓桿使公司在執行成長計畫出現任何差錯、獲利改善延遲或資本市場趨緊時，將面臨嚴重壓力。負的自由現金流每年超過 220 億美元，且由每季近 190 億美元的資本支出驅動，即便營運現金流為正仍在大量燒錢。直白說，這是靠發債驅動的現金消耗，若沒有穩定且強勁的現金流入與利潤率擴大，絕非永續之道。若 AI 投資未能如預期產生回報，或市場狀況惡化，Oracle 的流動性和信用狀況可能迅速吃緊。</p>
+<p>談到市場狀況，依賴如 MACD 走弱或 RSI 在 50 以下徘徊的技術指標來證明現在進場合理，是一場風險下注。股價仍遠低於主要移動平均線，無明顯動能反轉或突破確認。太早買進未成熟的信號，意味著公司面臨更深跌勢或長期盤整的風險。所謂「現買入，趁趨勢尚未結束」的建議，風險在於追逐可能還未形成的底部。從風險管理的角度來看，未有明確反轉驗證，便介入一個長期看跌趨勢，並非審慎，而是投機。</p>
+<p>支持強勁未來 EPS 成長及重評價潛力的樂觀論述，忽略大量期望已基於高度樂觀且必須完全實現的預測。前瞻估計通常未充分考慮龐大重組成本、因負債增加導致的利息費用上升，或圍繞 Oracle 參與 TikTok 美國業務的潛在監管壓力。額外 5 億美元的重組費用——雖說相較市值屬輕微，但顯示轉型痛苦持續，且可能加劇。基本現實是 Oracle 的有形帳面價值已為負，估值中很大一部分是商譽和無形資產。無形資產占比高的資產負債表在經濟低迷時尤為脆弱，因資產減值會嚴重衝擊股本和借貸能力。</p>
+<p>關於內部人及機構持股，雖然高內部持股在某種程度上代表信心，但同時也意味內部人深度押注一個激進成長策略，若計畫失敗，則加劇外部投資者風險。今日的低空頭比率不能保證股價不會因財報不佳或宏觀震盪而迅速失去投資者信心。</p>
+<p>最後，近期的市場及宏觀環境顯示波動性上升、嚴格監管及成本壓力加劇，這不僅限於 Oracle，整體大型科技巨頭都面臨挑戰。科技業正在應對高度不確定的環境，裁員、估值謹慎以及地緣政治風險不斷變化。Oracle 500 億美元的 AI 投資必須置於上述高度風險背景下評估，而非孤立看作必勝的投資。</p>
+<p>總結來說，激進與中立觀點低估了 Oracle 面臨的重大槓桿風險、現金流壓力和持續營運風險。從保守風險角度出發，最佳策略是等待明確的動能穩定信號、更明顯的持續現金流回升證據及部分去槓桿化之後再投入資金。逐步加碼並設置追蹤停損是可行策略，但即便如此也假設市場穩定，而此一點 Oracle 目前無法保證。在這個昂貴且資本密集的成長階段，資本保全及避免不必要暴露，才能確保公司度過波動期，攫取真正去風險化的機會。保護下行風險，必須是我們在此複雜局勢中第一要務。</p></div></details></div><div class="debate-panel" style="border-top:3px solid #f59e0b;"><h3 class="debate-panel-title" style="color:#f59e0b;">中立觀點</h3><div class="debate-preview"><p>中立分析師：這裡的積極與保守觀點各自提供了重要見解，但都稍微偏向某一端。讓我解析各方可能過度或不足評估的關鍵因素，以及為何採取審慎的方式或許更明智。</p>
+<p>從積極角度出發：毫無疑問，Oracle大規模的AI和雲端投資使其處於利用長期成長趨勢的有利位置，內部人士信心和看多分析師評級無疑支持策略性持股。等待完美技術突破可能錯過上行空間的說法，反映出動能指標往往落後於價格變動的現實。此外，上季龐大的現金儲備和強勁的營運現金流也提供緩衝，緩和了立即的流動性擔憂。</p>
+<p>然而，積極立場在某種程度上低估了Oracle槓桿規模和負自由現金流的嚴重性。債務權益比超過400不僅是一個小瑕疵——它實質上放大了風險。即使現金餘額龐大，但每年燒掉數百億自由現金流，要求成長預期必須非常精準地兌現，才能避免未來信貸收緊或被迫減債。雖然大膽投資在AI領先地位是必要的，但如此龐大的資金流出代表，時間點與市場條件若不利，可能導致痛苦修正，尤其是當預期落空或整體科技情緒轉差。此外，將改善但仍為負的MACD和略低於50的RSI解讀為可自信買入的訊號，風險在於錯誤將看跌動能減弱誤認為即將突破。股票可能會繼續盤整，甚至在真正反轉前測試...</p></div><details class="debate-expand"><summary>展開完整分析</summary><div class="debate-full"><p>中立分析師：這裡的積極與保守觀點各自提供了重要見解，但都稍微偏向某一端。讓我解析各方可能過度或不足評估的關鍵因素，以及為何採取審慎的方式或許更明智。</p>
+<p>從積極角度出發：毫無疑問，Oracle大規模的AI和雲端投資使其處於利用長期成長趨勢的有利位置，內部人士信心和看多分析師評級無疑支持策略性持股。等待完美技術突破可能錯過上行空間的說法，反映出動能指標往往落後於價格變動的現實。此外，上季龐大的現金儲備和強勁的營運現金流也提供緩衝，緩和了立即的流動性擔憂。</p>
+<p>然而，積極立場在某種程度上低估了Oracle槓桿規模和負自由現金流的嚴重性。債務權益比超過400不僅是一個小瑕疵——它實質上放大了風險。即使現金餘額龐大，但每年燒掉數百億自由現金流，要求成長預期必須非常精準地兌現，才能避免未來信貸收緊或被迫減債。雖然大膽投資在AI領先地位是必要的，但如此龐大的資金流出代表，時間點與市場條件若不利，可能導致痛苦修正，尤其是當預期落空或整體科技情緒轉差。此外，將改善但仍為負的MACD和略低於50的RSI解讀為可自信買入的訊號，風險在於錯誤將看跌動能減弱誤認為即將突破。股票可能會繼續盤整，甚至在真正反轉前測試更低支撐，因此現在重倉進場而沒有至少部分動能回暖的證據，涉及顯著的下行風險。</p>
+<p>相對地，保守觀點正確強調了槓桿和現金流疑慮，及持續的營運和重組成本對短期基本面的壓力。強調帳面中充斥無形資產和龐大商譽、且負債偏高，彰顯脆弱性是審慎的。在快速變化的AI產業以及可能波動的宏觀和監管環境下，對未來獲利過度樂觀必須審慎檢驗執行風險。此外，堅持技術面確認才入場，有助避免過早介入長期下跌或修正階段。</p>
+<p>然而，保守立場或許過於謹慎，低估了Oracle長期戰略動能及其規模優勢。等待槓桿下降或現金流穩定的完美明朗，可能錯失由強勁AI/Cloud執行驅動的部分回升或估值重估。它也似乎淡化了內部人士和機構堅定信心信號，以及整個行業對龐大AI相關投資的正面情緒。同時，該論點往往假設最壞狀況的流動性緊縮，卻未充分考慮Oracle龐大的營運現金流與現金儲備，這些為其提供了因應暫時逆風的運行空間。</p>
+<p>那麼，我們應如何取捨？平衡策略會承認在AI與雲端的基本面和戰略定位之多頭催化劑，值得建立至少適度部位以參與潛在上行。但也必須尊重Oracle資本結構與當前估值環境蘊含的重大財務風險。這意味著需要分階段投入——或許採取分批建倉而非一次性重倉，並執行嚴謹風控，比如設定緊湊的移動止損，特別是在缺乏中長期技術面確認時。</p>
+<p>持續關注即將公布的財報、現金流走勢、債務到期和宏觀反應，對於靈活調整持倉規模至關重要。審慎的策略也為基本面改善或多頭動能確認留下增倉空間，而非盲目追價。藉此，交易者能夠在不過度擴張進入由槓桿和整體產業不確定性引發的潛在劇烈修正期的情況下，受益於Oracle在AI領域的轉型成長前景。</p>
+<p>簡言之，今日的全然無畏重倉或鑑於風險完全不參與，都不完全合理。最佳策略是在這兩極間謹慎穿梭——以中等規模、風險控管的入場，反映Oracle獨特的潛在上升動力與資本密集度風險的結合。這種平衡手法，有望為耐心投資者在動盪但充滿希望的AI/雲端技術轉型期，帶來最可持續的回報表現。</p></div></details></div></div><div class="judge-decision"><h3 class="judge-title">裁判決定</h3><div class="judge-body"><p><strong>最終建議：</strong> 買入 Oracle (ORCL) 股票，採取有紀律、逐步加碼的策略，並結合嚴格的風險管理。</p>
+<hr />
+<h3>1. 關鍵論點摘要</h3>
+<p><strong>積極分析師：</strong><br />
+- Oracle 正在執行大膽且具轉型性的 AI 與雲端投資策略（500 億美元的 AI 投資），短期內需承擔高杠槓與負自由現金流，但有望帶來多年持續成長。<br />
+- 技術指標改善（MACD、RSI 接近 50）與盤整訊號支持提前布局，在預期突破前建立部位。<br />
+- 基本面強勁：高營運利潤率、IaaS 成長 84%、內部持股超過 40% 以及機構投資者信心（Vanguard、Blackrock）。<br />
+- 策略性多元布局於嵌入式金融與醫療 AI 領域，開拓新營收來源。<br />
+- 市場估值（遠期本益比 19.4 對比過去 27.7）顯示隨獲利改善仍有重新評價空間。<br />
+- 建議逐步加碼並設置停損，聚焦長期成長機會而非追求短期完美時機。</p>
+<p><strong>保守分析師：</strong><br />
+- Oracle 杠槓異常高（負債對權益比超過 400%），在負自由現金流年逾 220 億美元的情況下產生嚴重財務風險與流動性疑慮。<br />
+- 技術信號依舊疲軟——股價低於重要均線且無確認的動能反轉，暗示可能下跌或長期盤整風險。<br />
+- 遠期收益預估可能過於樂觀，考量重組、利潤率壓力及宏觀/監管挑戰。<br />
+- 資產負債表無形資產比例高，提高減值與信貸緊縮風險。<br />
+- 主張謹慎觀望：等待去杠槓、現金流穩定以及更明確的技術確認後再買入。<br />
+- 強調在科技產業不確定環境中資本保全的重要性。</p>
+<p><strong>中立分析師：</strong><br />
+- 承認 Oracle 的 AI/雲端戰略投資為合理催化因素，但強調重杠槓與現金燒耗帶來的執行與財務風險仍高。<br />
+- 認可動能指標有所改善但仍負值，建議進場時機宜適度避免追高。<br />
+- 建議以小部位切入，配合完善風險控管（移動停損），並在營運進展確認後逐步加碼。<br />
+- 警示避免極端操作：既非全力投入亦非完全回避。<br />
+- 呼籲積極監控財報、自由現金流趨勢及技術信號，動態調整持倉規模。</p>
+<hr />
+<h3>2. 支持買入的理由</h3>
+<p>您的原始計劃正確指出核心議題：Oracle 正進行資本密集的轉型，目標是在 AI 與雲端計算領域取得領先地位——「猶如亞馬遜 AWS 創立初期」。這解釋了其負債與現金流現況，本質上是策略性的非魯莽行為。</p>
+<ul>
+<li><strong>財務基本面支持：</strong> 雖負債龐大，Oracle 持有 390 億美元現金與 70 億美元營運現金流，為流動性風險提供緩衝，且營運利潤率依然堅挺。  </li>
+<li><strong>成長動能具體：</strong> 84%基礎設施成長、500 億美元 AI 投資，及擴展至高成長的嵌入式金融與醫療 AI 市場，展現多元且前瞻的營收基礎。  </li>
+<li><strong>技術指標：</strong> 雖仍低於主要均線，MACD 從 -9.44 改善至 -1.78，RSI 穩定於 48 附近，符合基底形成早期階段，具備突破潛力——支持現階段逐步進場而非等待完整技術確認。  </li>
+<li><strong>市場心理與持股：</strong> 內部持股超過 40%、機構投資者信心強，且空頭興趣低，這些均為超越價格行為的重要樂觀驗證。  </li>
+<li><strong>風險管理：</strong> 採用逐步加碼策略並設置約 10% 的移動停損，有效平衡曝險與下行保護。  </li>
+<li><strong>糾正過往錯誤：</strong> 與以往混合訊號時默認持有不同，此決策明確偏向長期成長敘事並結合明確風險控管，避免分析癱瘓。</li>
+</ul>
+<hr />
+<h3>3. 針對交易者的精煉投資計劃</h3>
+<p><strong>建議：</strong> 現在買入 Oracle 股票，從適度核心部位開始。</p>
+<p><strong>策略行動：</strong><br />
+1. <strong>逐步進場：</strong> 以部分部位捕捉 AI/雲端轉型所帶動的上行空間，並根據正面進展逐步加碼，不一次性全買。<br />
+2. <strong>風險控管：</strong> 設定約比購買價格低 10% 的移動停損，避免杠槓與執行風險帶來的下行衝擊。<br />
+3. <strong>監控關鍵指標：</strong> 密切注意季度雲端營收成長、自由現金流變化、利潤率進展與重組費用，確定由投資期轉向獲利增長。<br />
+4. <strong>對催化劑反應：</strong> 若 Oracle 獲得嵌入式金融新合約、擴大醫療 AI 部署或財報超預期，準備加碼以捕捉加速成長。<br />
+5. <strong>避免技術噪音過度交易：</strong> 利用技術指標判斷階段，而非做投機一次性操作。將 Oracle 視為耐心且有策略的成長投資。<br />
+6. <strong>2-4 季度回顧：</strong> 重新評估基本面，尤其是負債水平、現金流趨勢和利潤率穩定度，適時調整曝險，平衡報酬風險。</p>
+<hr />
+<h3>4. 決策反思與經驗應用</h3>
+<ul>
+<li>本次決策避免了過往猶豫不決，透過確信的長期成長潛力與戰術風險控管，果斷支持買入。  </li>
+<li>看漲論點的充分證據勝過看跌擔憂，考量 Oracle 規模、AI 轉型及內部與機構的強烈認同。  </li>
+<li>保守警示充當安全欄杆而非阻礙，故停損及逐步加碼為關鍵風險緩解手段。  </li>
+<li>技術動能尚未完美但已足夠暗示，且與基本面進展契合，支持早期而有節制參與。  </li>
+<li>避免默認持有，提高資本參與 AI/雲端長趨勢，改進以往過度謹慎決策。</li>
+</ul>
+<hr />
+<p><strong>綜合來看：</strong></p>
+<p>Oracle 是少見的、大規模技術轉型機會，短期財務壓力可由長期在 AI 與雲端基礎設施領導地位的潛能所抵消。多方論點與謹慎的風險管理強烈支持現階段買入建議。</p>
+<p><strong>行動：</strong> 逐步買入 Oracle 股票並設置停損，持續關注執行進展，隨基本面與技術確認成長軌跡時適時加碼。</p></div></div></section>
+        <footer class="dashboard-footer"><p>由 TradingAgents 於 2026-03-18 14:24 產生</p></footer>
+    </main>
+</div>
+
+<script>
+(function() {
+    // ─── Tab Switching (legacy fallback) ────────────
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var container = btn.closest('.tabs-container');
+            var tabId = btn.getAttribute('data-tab');
+            container.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            container.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+            btn.classList.add('active');
+            var panel = container.querySelector('[data-panel="' + tabId + '"]');
+            if (panel) panel.classList.add('active');
+        });
+    });
+
+    // ─── Smooth Scroll from Nav ─────────────────────
+    document.querySelectorAll('.nav-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            var id = link.getAttribute('href').slice(1);
+            var el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // ─── IntersectionObserver for Nav Tracking ──────
+    var navLinks = document.querySelectorAll('.nav-link');
+    var sections = [];
+    navLinks.forEach(function(link) {
+        var id = link.getAttribute('data-section');
+        var el = document.getElementById(id);
+        if (el) sections.push({ id: id, el: el });
+    });
+
+    if (sections.length && 'IntersectionObserver' in window) {
+        var currentActive = null;
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    currentActive = entry.target.id;
+                }
+            });
+            if (currentActive) {
+                navLinks.forEach(function(l) {
+                    if (l.getAttribute('data-section') === currentActive) {
+                        l.classList.add('active');
+                    } else {
+                        l.classList.remove('active');
+                    }
+                });
+            }
+        }, {
+            rootMargin: '-80px 0px -60% 0px',
+            threshold: 0
+        });
+        sections.forEach(function(s) { observer.observe(s.el); });
+    }
+})();
+</script>
+
+<script>document.addEventListener("DOMContentLoaded", function() {  if (typeof Chart === "undefined") return;  var ctx = document.getElementById("macdChart");  if (!ctx) return;  new Chart(ctx, {    type: "bar",    data: {      labels: ["MACD", "Signal", "Histogram"],      datasets: [{        data: [-1.78, 0, 0],        backgroundColor: ["#ef4444", "#8b5cf6", "#10b981"],        borderRadius: 4,        barThickness: 40      }]    },    options: {      responsive: true,      maintainAspectRatio: false,      plugins: { legend: { display: false } },      scales: {        y: {          grid: { color: "#1e293b" },          ticks: { color: "#64748b", font: { family: "DM Mono" } }        },        x: {          grid: { display: false },          ticks: { color: "#64748b", font: { family: "DM Mono" } }        }      }    }  });});</script>
+
+</body>
+</html>
