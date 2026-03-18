@@ -55,16 +55,17 @@ body::before {
   padding: 2rem 1.5rem 4rem;
 }
 
-.header {
+/* ========== MARKET DATA HEADER ========== */
+.market-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
   padding-bottom: 2rem;
   border-bottom: 1px solid var(--border);
   position: relative;
   animation: fadeIn 0.8s ease-out;
 }
 
-.header::after {
+.market-header::after {
   content: '';
   position: absolute;
   bottom: -1px;
@@ -85,6 +86,423 @@ body::before {
   color: var(--gold);
   margin-bottom: 0.75rem;
   opacity: 0.8;
+}
+
+.header-subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+.market-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+}
+
+/* ========== HERO METRICS ========== */
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.1s both;
+}
+
+.hero-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  transition: border-color 0.3s, transform 0.3s;
+}
+
+.hero-card:hover {
+  border-color: var(--border-gold);
+  transform: translateY(-2px);
+}
+
+.hero-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.5rem;
+}
+
+.hero-value {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 0.3rem;
+}
+
+.hero-change {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.hero-change.up { color: var(--bullish); }
+.hero-change.down { color: var(--bearish); }
+
+/* ========== SECONDARY METRICS ========== */
+.secondary-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.15s both;
+}
+
+.sec-metric {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+}
+
+.sec-metric .sec-name {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.sec-metric .sec-val {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin: 0 0.4rem;
+}
+
+.sec-metric .sec-chg {
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+.sec-metric .sec-chg.up { color: var(--bullish); }
+.sec-metric .sec-chg.down { color: var(--bearish); }
+
+/* ========== HEATMAP ========== */
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.2s both;
+}
+
+.heatmap-tile {
+  border-radius: 10px;
+  padding: 0.9rem 0.75rem;
+  text-align: center;
+  border: 1px solid var(--border);
+  transition: transform 0.2s;
+}
+
+.heatmap-tile:hover { transform: scale(1.03); }
+
+.heatmap-tile .ht-name {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.heatmap-tile .ht-chg {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* Heat colors */
+.heat-strong-up { background: rgba(74, 222, 128, 0.18); }
+.heat-strong-up .ht-chg { color: #4ade80; }
+
+.heat-up { background: rgba(74, 222, 128, 0.10); }
+.heat-up .ht-chg { color: #86efac; }
+
+.heat-mild-up { background: rgba(74, 222, 128, 0.05); }
+.heat-mild-up .ht-chg { color: #a7f3d0; }
+
+.heat-mild-down { background: rgba(248, 113, 113, 0.05); }
+.heat-mild-down .ht-chg { color: #fca5a5; }
+
+.heat-down { background: rgba(248, 113, 113, 0.10); }
+.heat-down .ht-chg { color: #fca5a5; }
+
+.heat-strong-down { background: rgba(248, 113, 113, 0.18); }
+.heat-strong-down .ht-chg { color: #f87171; }
+
+/* ========== FX ROW ========== */
+.fx-row {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 0.9rem 0;
+  margin-bottom: 1.5rem;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  animation: slideUp 0.6s ease-out 0.25s both;
+}
+
+.fx-row .fx-pair {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.fx-row .fx-label { color: var(--text-dim); font-weight: 500; }
+.fx-row .fx-val { color: var(--text-primary); font-weight: 600; }
+
+/* ========== NEWS TIMELINE ========== */
+.news-timeline {
+  margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.3s both;
+}
+
+.news-timeline .section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.news-timeline .section-title::before {
+  content: '';
+  width: 3px;
+  height: 1.1em;
+  background: var(--gold);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.news-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.news-item:last-child { border-bottom: none; }
+
+.news-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.news-tag.fed { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+.news-tag.energy { background: rgba(251, 146, 60, 0.15); color: #fb923c; }
+.news-tag.positive { background: var(--bullish-bg); color: var(--bullish); }
+.news-tag.risk { background: var(--bearish-bg); color: var(--bearish); }
+.news-tag.watch { background: var(--neutral-bg); color: var(--neutral); }
+
+/* ========== TECH GRID ========== */
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.35s both;
+}
+
+.tech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.tech-card .tc-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.4rem;
+}
+
+.tech-card .tc-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.tech-card .tc-note {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ========== MACRO GRID ========== */
+.macro-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  animation: slideUp 0.6s ease-out 0.4s both;
+}
+
+.macro-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.macro-card .mc-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.4rem;
+}
+
+.macro-card .mc-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: 0.2rem;
+}
+
+.macro-card .mc-note {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+/* ========== SECTION DIVIDER ========== */
+.section-divider {
+  position: relative;
+  text-align: center;
+  margin: 3rem 0 2.5rem;
+  padding: 1.5rem 0;
+}
+
+.section-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  box-shadow: 0 0 12px var(--gold-glow);
+}
+
+.section-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 16px var(--gold-glow);
+}
+
+.divider-label {
+  position: relative;
+  display: inline-block;
+  background: var(--bg-primary);
+  padding: 0.4rem 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ========== DEBATE HEADER ========== */
+.debate-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.debate-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 1px;
+  background: var(--gold);
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+
+.debate-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.4rem, 4vw, 1.8rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+/* ========== EXISTING DEBATE SECTION CSS ========== */
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 1px;
+  background: var(--gold);
+  box-shadow: 0 0 20px var(--gold-glow);
 }
 
 .header h1 {
@@ -661,6 +1079,13 @@ td.changed { color: var(--gold); font-weight: 600; }
 
 @media (max-width: 640px) {
   .container { padding: 1.25rem 1rem 3rem; }
+  .hero-metrics { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+  .hero-value { font-size: 1.2rem; }
+  .secondary-metrics { grid-template-columns: 1fr; }
+  .heatmap-grid { grid-template-columns: repeat(2, 1fr); }
+  .tech-grid { grid-template-columns: repeat(2, 1fr); }
+  .macro-grid { grid-template-columns: 1fr; }
+  .fx-row { flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
   .action-card { padding: 1.25rem; }
   .action-verb { font-size: 1.5rem; }
   .action-main { flex-direction: column; gap: 0.5rem; }
@@ -680,10 +1105,214 @@ td.changed { color: var(--gold); font-weight: 600; }
 
 <div class="container">
 
-  <!-- HEADER -->
-  <header class="header">
-    <div class="header-eyebrow">Investment Committee</div>
+  <!-- ============================================================ -->
+  <!-- TOP HALF: MARKET DATA                                        -->
+  <!-- ============================================================ -->
+
+  <!-- MARKET HEADER -->
+  <header class="market-header">
+    <div class="header-eyebrow">Market Overview</div>
     <h1>美股盤後日報 — 2026-03-17</h1>
+    <div class="header-subtitle">NYSE Close 16:00 ET &middot; Data as of 2026-03-17</div>
+  </header>
+
+  <!-- HERO METRICS (4 cards) -->
+  <div class="hero-metrics">
+    <div class="hero-card">
+      <div class="hero-label">S&amp;P 500</div>
+      <div class="hero-value">6,716.09</div>
+      <div class="hero-change up">+0.25%</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-label">VIX</div>
+      <div class="hero-value">22.37</div>
+      <div class="hero-change down">-4.85%</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-label">WTI Crude</div>
+      <div class="hero-value">$94.27</div>
+      <div class="hero-change down">-1.82%</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-label">10Y Yield</div>
+      <div class="hero-value">4.20%</div>
+      <div class="hero-change down">-0.43%</div>
+    </div>
+  </div>
+
+  <!-- SECONDARY METRICS -->
+  <div class="secondary-metrics">
+    <div class="sec-metric">
+      <span class="sec-name">Nasdaq</span>
+      <span class="sec-val">22,479</span>
+      <span class="sec-chg up">+0.47%</span>
+    </div>
+    <div class="sec-metric">
+      <span class="sec-name">Dow</span>
+      <span class="sec-val">46,993</span>
+      <span class="sec-chg up">+0.10%</span>
+    </div>
+    <div class="sec-metric">
+      <span class="sec-name">Russell</span>
+      <span class="sec-val">2,500</span>
+      <span class="sec-chg up">+0.60%</span>
+    </div>
+    <div class="sec-metric">
+      <span class="sec-name">Gold</span>
+      <span class="sec-val">$5,003.60</span>
+      <span class="sec-chg down">-0.53%</span>
+    </div>
+    <div class="sec-metric">
+      <span class="sec-name">DXY</span>
+      <span class="sec-val">99.61</span>
+      <span class="sec-chg down">-0.32%</span>
+    </div>
+  </div>
+
+  <!-- SECTOR HEATMAP -->
+  <div style="margin-bottom:1rem; animation: slideUp 0.6s ease-out 0.2s both;">
+    <div class="section-title">板塊表現</div>
+  </div>
+  <div class="heatmap-grid">
+    <div class="heatmap-tile heat-strong-up">
+      <div class="ht-name">非必需消費</div>
+      <div class="ht-chg">+1.19%</div>
+    </div>
+    <div class="heatmap-tile heat-strong-up">
+      <div class="ht-name">能源</div>
+      <div class="ht-chg">+0.93%</div>
+    </div>
+    <div class="heatmap-tile heat-up">
+      <div class="ht-name">科技</div>
+      <div class="ht-chg">+0.53%</div>
+    </div>
+    <div class="heatmap-tile heat-mild-up">
+      <div class="ht-name">原材料</div>
+      <div class="ht-chg">+0.36%</div>
+    </div>
+    <div class="heatmap-tile heat-mild-up">
+      <div class="ht-name">金融</div>
+      <div class="ht-chg">+0.26%</div>
+    </div>
+    <div class="heatmap-tile heat-mild-down">
+      <div class="ht-name">公用事業</div>
+      <div class="ht-chg">-0.11%</div>
+    </div>
+    <div class="heatmap-tile heat-down">
+      <div class="ht-name">必需消費</div>
+      <div class="ht-chg">-0.59%</div>
+    </div>
+    <div class="heatmap-tile heat-strong-down">
+      <div class="ht-name">醫療</div>
+      <div class="ht-chg">-0.89%</div>
+    </div>
+  </div>
+
+  <!-- FX ROW -->
+  <div class="fx-row">
+    <div class="fx-pair">
+      <span class="fx-label">USD/EUR</span>
+      <span class="fx-val">0.867</span>
+    </div>
+    <div class="fx-pair">
+      <span class="fx-label">USD/JPY</span>
+      <span class="fx-val">158.95</span>
+    </div>
+    <div class="fx-pair">
+      <span class="fx-label">USD/CNY</span>
+      <span class="fx-val">6.89</span>
+    </div>
+  </div>
+
+  <!-- NEWS TIMELINE -->
+  <div class="news-timeline">
+    <div class="section-title">重大新聞</div>
+    <div class="news-item">
+      <span class="news-tag fed">聯儲</span>
+      <span>FOMC 兩日會議今日開始，明日公佈利率決定</span>
+    </div>
+    <div class="news-item">
+      <span class="news-tag energy">能源</span>
+      <span>Brent 升 3% 企 $100+，WTI 回落至 $94.27</span>
+    </div>
+    <div class="news-item">
+      <span class="news-tag positive">利好</span>
+      <span>航空股強勢 — Delta 同 American Airlines 強勁收入指引</span>
+    </div>
+    <div class="news-item">
+      <span class="news-tag risk">風險</span>
+      <span>Trade Desk 暴跌 7% — Publicis 唔再推薦</span>
+    </div>
+    <div class="news-item">
+      <span class="news-tag watch">關注</span>
+      <span>Nebius Group 籌資 $37.5 億</span>
+    </div>
+  </div>
+
+  <!-- TECHNICAL PANEL -->
+  <div style="margin-bottom:0.75rem;">
+    <div class="section-title">技術訊號</div>
+  </div>
+  <div class="tech-grid">
+    <div class="tech-card">
+      <div class="tc-label">RSI (14)</div>
+      <div class="tc-value" style="color:var(--neutral)">42.3</div>
+      <div class="tc-note">中性偏弱</div>
+    </div>
+    <div class="tech-card">
+      <div class="tc-label">MACD</div>
+      <div class="tc-value" style="color:var(--bearish)">熊叉</div>
+      <div class="tc-note">柱狀圖收窄</div>
+    </div>
+    <div class="tech-card">
+      <div class="tc-label">短期趨勢</div>
+      <div class="tc-value" style="color:var(--bullish)">反彈中</div>
+      <div class="tc-note">技術性修正</div>
+    </div>
+    <div class="tech-card">
+      <div class="tc-label">中期趨勢</div>
+      <div class="tc-value" style="color:var(--text-secondary)">未反轉</div>
+      <div class="tc-note">等待確認</div>
+    </div>
+  </div>
+
+  <!-- MACRO SUMMARY -->
+  <div style="margin-bottom:0.75rem; margin-top:1.5rem;">
+    <div class="section-title">宏觀概覽</div>
+  </div>
+  <div class="macro-grid">
+    <div class="macro-card">
+      <div class="mc-label">Fed Funds</div>
+      <div class="mc-value">3.75%</div>
+      <div class="mc-note">FOMC 明日公佈</div>
+    </div>
+    <div class="macro-card">
+      <div class="mc-label">10Y / Brent</div>
+      <div class="mc-value">4.20% / $100+</div>
+      <div class="mc-note">油價通脹壓力</div>
+    </div>
+    <div class="macro-card">
+      <div class="mc-label">市場焦點</div>
+      <div class="mc-value">DXY 99.61</div>
+      <div class="mc-note">dot plot + Powell</div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- GOLD DIVIDER                                                 -->
+  <!-- ============================================================ -->
+  <div class="section-divider">
+    <span class="divider-label">Investment Committee</span>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- BOTTOM HALF: DEBATE SECTION (PRESERVED)                      -->
+  <!-- ============================================================ -->
+
+  <!-- HEADER -->
+  <header class="debate-header">
+    <div class="header-eyebrow">Investment Committee</div>
+    <div class="debate-title">投資委員會辯論結果</div>
     <div class="vote-summary">
       <span class="num-bull">4</span><span class="sep">:</span>
       <span class="num-bear">2</span><span class="sep">:</span>
