@@ -30,6 +30,8 @@ declare -a DIRS=(
   "美股/盤後"
   "港股/盤前"
   "港股/盤後"
+  "日股/盤前"
+  "日股/盤後"
   "TradingAgents"
   "TradingAgents/US"
 )
@@ -54,6 +56,8 @@ declare -a SECTIONS=(
   "🇺🇸 美股盤後:美股/盤後"
   "🇭🇰 港股盤前:港股/盤前"
   "🇭🇰 港股盤後:港股/盤後"
+  "🇯🇵 日股盤前:日股/盤前"
+  "🇯🇵 日股盤後:日股/盤後"
   "📈 個股分析:TradingAgents"
   "📈 個股分析 (US):TradingAgents/US"
 )
