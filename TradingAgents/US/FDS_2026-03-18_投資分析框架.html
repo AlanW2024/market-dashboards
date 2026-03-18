@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FDS 投資分析框架</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-soft: #1e293b;
+      --border: rgba(148, 163, 184, 0.18);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #10b981;
+      --glow: rgba(16,185,129,0.18);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 36%),
+        radial-gradient(circle at top right, var(--glow), transparent 30%),
+        linear-gradient(180deg, #020617 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+    .hero {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.32);
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    h1 {
+      margin: 10px 0 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .metric {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .metric-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .metric-value {
+      margin-top: 6px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .summary-card {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+      margin-bottom: 24px;
+    }
+    .summary-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .summary-title::before {
+      content: '';
+      width: 4px;
+      height: 22px;
+      background: var(--accent);
+      border-radius: 999px;
+    }
+    .summary-list {
+      display: grid;
+      gap: 14px;
+    }
+    .summary-item {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      align-items: center;
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 18px;
+      padding: 16px 18px;
+    }
+    .summary-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .summary-text {
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+    .content {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+    }
+    .content h1, .content h2, .content h3 {
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.25;
+    }
+    .content h1 { font-size: 2rem; margin-top: 0; }
+    .content h2 {
+      font-size: 1.35rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .content h3 { font-size: 1.1rem; margin-top: 1.4rem; }
+    .content p, .content li { color: var(--text); }
+    .content strong { color: #f8fafc; }
+    .content code {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 0.15em 0.45em;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.92em;
+    }
+    .content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.7);
+    }
+    .content th, .content td {
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .content th {
+      background: rgba(30, 41, 59, 0.95);
+      color: #f8fafc;
+    }
+    .content blockquote {
+      margin: 16px 0;
+      padding: 14px 18px;
+      border-left: 4px solid var(--accent);
+      background: rgba(15, 23, 42, 0.75);
+      border-radius: 0 14px 14px 0;
+    }
+    a { color: #7dd3fc; }
+    .footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="eyebrow">Tier 3 Final Verdict</div>
+      <h1>FDS 投資分析框架</h1>
+      <div class="hero-grid">
+        <div class="metric">
+          <div class="metric-label">最終行動</div>
+          <div class="metric-value">BUY</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">信心分數</div>
+          <div class="metric-value">80.0</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">裁決模式</div>
+          <div class="metric-value">cheap</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">交易日</div>
+          <div class="metric-value">2026-03-18</div>
+        </div>
+      </div>
+    </section>
+    <section class="summary-card">
+      <div class="summary-title">執行摘要</div>
+      <div class="summary-list">
+        <div class="summary-item"><div class="summary-number">1</div><div class="summary-text">FDS具短線底部信號與強基本面，配合機構持續加碼與AI成長動力，適合階段性買入。</div></div><div class="summary-item"><div class="summary-number">2</div><div class="summary-text">MACD與RSI顯示技術指標有改善跡象，加上機構大幅增持與AI成長催化劑，具備漸進建倉機會。</div></div><div class="summary-item"><div class="summary-number">3</div><div class="summary-text">分批於目前約210美元附近介入，設置嚴格止損於185-190美元之間，待MACD突破訊號線、RSI穩定突破50且股價突破50日均線後加碼。</div></div>
+      </div>
+    </section>
+    <section class="content">
+      <h2>快速結論</h2>
+<ul>
+<li><strong>最終行動：</strong> BUY</li>
+<li><strong>信心分數：</strong> 80.0/100</li>
+<li><strong>TradingAgents 初步判斷：</strong> BUY</li>
+<li><strong>裁決模式：</strong> cheap</li>
+<li><strong>需要人工複核：</strong> 否</li>
+<li><strong>下一步執行：</strong> 分批於目前約210美元附近介入，設置嚴格止損於185-190美元之間，待MACD突破訊號線、RSI穩定突破50且股價突破50日均線後加碼。</li>
+</ul>
+<h2>為什麼現在做</h2>
+<p>MACD與RSI顯示技術指標有改善跡象，加上機構大幅增持與AI成長催化劑，具備漸進建倉機會。</p>
+<h2>為什麼現在不做</h2>
+<p>中長期仍受50與200日均線壓制，且高負債與負有形帳面價值帶來潛在風險，技術沒突破前須謹慎。</p>
+<h2>最終行動計畫</h2>
+<p><strong>決策理由：</strong> 兩個獨立判決小組均看好FDS短期技術底部與強勁基本面，支持分批建倉但強調嚴格風險控制。</p>
+<p><strong>進場或執行計畫：</strong> 分批於目前約210美元附近介入，設置嚴格止損於185-190美元之間，待MACD突破訊號線、RSI穩定突破50且股價突破50日均線後加碼。</p>
+<p><strong>風險控制計畫：</strong> 密切監控技術指標及價格支撐位，嚴守止損價防止資金過度暴露，並關注負債狀況與宏觀環境變化。</p>
+<p><strong>重新檢查觸發點：</strong><br />
+- MACD未突破訊號線且RSI無法持續超過50<br />
+- 價格跌破10日EMA與中間布林帶，跌破210美元支撐位</p>
+<h2>TradingAgents 摘要</h2>
+<ul>
+<li><strong>Tier 1 分數：</strong> 0</li>
+<li><strong>Tier 2 綜合分：</strong> 0</li>
+<li><strong>板塊：</strong> N/A</li>
+<li><strong>風險標記：</strong> Medium</li>
+<li><strong>Structured log：</strong> <code>/Users/yeehowong/Desktop/Project/sp500_pipeline/eval_results/FDS/TradingAgentsStrategy_logs/full_states_log_2026-03-18.json</code></li>
+</ul>
+<h2>投資框架投票</h2>
+<table>
+<thead>
+<tr>
+<th>框架</th>
+<th>票向</th>
+<th>信心</th>
+<th>核心論點</th>
+<th>建議動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Howard Marks + Ray Dalio</td>
+<td>BUY</td>
+<td>80</td>
+<td>FDS exhibits early technical bottoming signs combined with solid fundamentals and institutional backing, justifying a phased buy with disciplined risk controls.</td>
+<td>Initiate a phased buy near current price (~$210) with a tight stop loss around $185-$190; add exposure upon confirmed technical breakout above the 50-day SMA (~$237) and continued fundamental improvement, while closely monitoring leverage metrics and competitive developments.</td>
+</tr>
+<tr>
+<td>George Soros + Stanley Druckenmiller</td>
+<td>BUY</td>
+<td>80</td>
+<td>FDS shows early signs of short-term technical stabilization and forward EPS growth driven by AI initiatives, offering a non-symmetrical upside against a medium-term downtrend with strong institutional backing and dividend support.</td>
+<td>Initiate a phased buy near current levels (~$210) with a stop loss around $185-$190 to limit downside, and consider adding on confirmations such as sustained technical breakouts above 50-day SMA (~237) and further fundamental validation.</td>
+</tr>
+</tbody>
+</table>
+<h2>投資框架觀點</h2>
+<h3>Howard Marks + Ray Dalio</h3>
+<ul>
+<li><strong>票向：</strong> BUY</li>
+<li><strong>信心：</strong> 80.0/100</li>
+<li><strong>核心論點：</strong> FDS exhibits early technical bottoming signs combined with solid fundamentals and institutional backing, justifying a phased buy with disciplined risk controls.</li>
+<li><strong>建議動作：</strong> Initiate a phased buy near current price (~$210) with a tight stop loss around $185-$190; add exposure upon confirmed technical breakout above the 50-day SMA (~$237) and continued fundamental improvement, while closely monitoring leverage metrics and competitive developments.</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- Technical momentum is improving with MACD rising from -23.3 to -5.7 and RSI recovering from oversold (~22.9) to 43, signaling potential trend reversal despite longer-term downtrends.<br />
+- Robust fundamentals: strong forward EPS growth (~20%), high operating margin (32.6%), ROE (28.8%), positive free cash flow, and an attractive forward P/E of 11.06 support sustainable earnings expansion.<br />
+- Significant institutional confidence shown by Bamco’s $838 million stake increase and rollout of AI-driven compliance tools pointing to growth catalysts.</p>
+<p><strong>主要風險：</strong><br />
+- Persisting medium- and long-term downtrend pressure reflected by 50- and 200-day SMAs well above the current price.<br />
+- Very high debt-to-equity ratio (~72) with negative tangible book value signals leverage and potential goodwill impairment risks under uncertain macro conditions.</p>
+<p><strong>失效條件：</strong><br />
+- MACD fails to cross above the signal line and RSI does not break and sustain above 50, indicating no confirmed bullish trend.<br />
+- Sustained breakdown below the 10-day EMA or middle Bollinger Band leading to renewed downward momentum undercutting price support near $210.</p>
+<h3>George Soros + Stanley Druckenmiller</h3>
+<ul>
+<li><strong>票向：</strong> BUY</li>
+<li><strong>信心：</strong> 80.0/100</li>
+<li><strong>核心論點：</strong> FDS shows early signs of short-term technical stabilization and forward EPS growth driven by AI initiatives, offering a non-symmetrical upside against a medium-term downtrend with strong institutional backing and dividend support.</li>
+<li><strong>建議動作：</strong> Initiate a phased buy near current levels (~$210) with a stop loss around $185-$190 to limit downside, and consider adding on confirmations such as sustained technical breakouts above 50-day SMA (~237) and further fundamental validation.</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- MACD improving from deeply negative levels and RSI recovering from oversold suggest weakening bearish momentum and potential bottoming.<br />
+- Forward EPS growth (~20%) and AI-driven compliance tools provide scalable earnings catalysts amid solid profitability margins (32.6% operating margin, 28.8% ROE).<br />
+- Institutional conviction via Bamco’s $838M stake increase and stable free cash flow support downside risk, while dividend yield (~2.12%) adds income buffer.</p>
+<p><strong>主要風險：</strong><br />
+- The entrenched medium- and long-term downtrend as per 50- and 200-day SMAs remain dominant, risking extended price weakness if momentum fades.<br />
+- Extremely high debt-to-equity ratio (~72) with negative tangible book value introduces goodwill impairment risk if macro or competitive pressures intensify.</p>
+<p><strong>失效條件：</strong><br />
+- Failure of MACD to cross above signal line or RSI to break sustainably above 50, confirming no effective bullish momentum shift.<br />
+- Price closing decisively below current support zone near 10-day EMA (~210) and middle Bollinger band, indicating renewed downtrend acceleration.</p>
+<h2>最終裁決摘要</h2>
+<ul>
+<li><strong>主論點：</strong> FDS具短線底部信號與強基本面，配合機構持續加碼與AI成長動力，適合階段性買入。</li>
+<li><strong>framework 多數票：</strong> BUY</li>
+<li><strong>一致度：</strong> 2/2</li>
+</ul>
+<p><strong>主要風險：</strong><br />
+- 中長期跌勢持續壓制股價反彈空間<br />
+- 極高負債比例與負有形帳面價值可能引發資產減損風險</p>
+<hr />
+<p><em>由 SP500 Pipeline Tier 3 產生 — 2026-03-18 21:44</em></p>
+      <div class="footer">Generated at 2026-03-18 21:44</div>
+    </section>
+  </div>
+</body>
+</html>
