@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ORCL 投資分析框架</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-soft: #1e293b;
+      --border: rgba(148, 163, 184, 0.18);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #10b981;
+      --glow: rgba(16,185,129,0.18);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 36%),
+        radial-gradient(circle at top right, var(--glow), transparent 30%),
+        linear-gradient(180deg, #020617 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+    .hero {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.32);
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    h1 {
+      margin: 10px 0 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .metric {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .metric-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .metric-value {
+      margin-top: 6px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .summary-card {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+      margin-bottom: 24px;
+    }
+    .summary-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .summary-title::before {
+      content: '';
+      width: 4px;
+      height: 22px;
+      background: var(--accent);
+      border-radius: 999px;
+    }
+    .summary-list {
+      display: grid;
+      gap: 14px;
+    }
+    .summary-item {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      align-items: center;
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 18px;
+      padding: 16px 18px;
+    }
+    .summary-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .summary-text {
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+    .content {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+    }
+    .content h1, .content h2, .content h3 {
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.25;
+    }
+    .content h1 { font-size: 2rem; margin-top: 0; }
+    .content h2 {
+      font-size: 1.35rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .content h3 { font-size: 1.1rem; margin-top: 1.4rem; }
+    .content p, .content li { color: var(--text); }
+    .content strong { color: #f8fafc; }
+    .content code {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 0.15em 0.45em;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.92em;
+    }
+    .content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.7);
+    }
+    .content th, .content td {
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .content th {
+      background: rgba(30, 41, 59, 0.95);
+      color: #f8fafc;
+    }
+    .content blockquote {
+      margin: 16px 0;
+      padding: 14px 18px;
+      border-left: 4px solid var(--accent);
+      background: rgba(15, 23, 42, 0.75);
+      border-radius: 0 14px 14px 0;
+    }
+    a { color: #7dd3fc; }
+    .footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="eyebrow">Tier 3 Final Verdict</div>
+      <h1>ORCL 投資分析框架</h1>
+      <div class="hero-grid">
+        <div class="metric">
+          <div class="metric-label">最終行動</div>
+          <div class="metric-value">BUY</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">信心分數</div>
+          <div class="metric-value">59.5</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">裁決模式</div>
+          <div class="metric-value">cheap</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">交易日</div>
+          <div class="metric-value">2026-03-18</div>
+        </div>
+      </div>
+    </section>
+    <section class="summary-card">
+      <div class="summary-title">執行摘要</div>
+      <div class="summary-list">
+        <div class="summary-item"><div class="summary-number">1</div><div class="summary-text">Oracle的AI與雲端高成長潛力在穩定的技術底部支撐下，提供了合理的長期買入機會。</div></div><div class="summary-item"><div class="summary-number">2</div><div class="summary-text">技術面顯示股價處於整理基底，AI及雲端營收強勁增長帶來明確成長驅動，是適合分階段建倉的時機。</div></div><div class="summary-item"><div class="summary-number">3</div><div class="summary-text">採取分階段低位有限買入策略，設定嚴格停損點，保持倉位靈活調整，重點監控技術指標突破與現金流改善情況。</div></div>
+      </div>
+    </section>
+    <section class="content">
+      <h2>快速結論</h2>
+<ul>
+<li><strong>最終行動：</strong> BUY</li>
+<li><strong>信心分數：</strong> 59.5/100</li>
+<li><strong>TradingAgents 初步判斷：</strong> BUY</li>
+<li><strong>裁決模式：</strong> cheap</li>
+<li><strong>需要人工複核：</strong> 否</li>
+<li><strong>下一步執行：</strong> 採取分階段低位有限買入策略，設定嚴格停損點，保持倉位靈活調整，重點監控技術指標突破與現金流改善情況。</li>
+</ul>
+<h2>為什麼現在做</h2>
+<p>技術面顯示股價處於整理基底，AI及雲端營收強勁增長帶來明確成長驅動，是適合分階段建倉的時機。</p>
+<h2>為什麼現在不做</h2>
+<p>高達415倍的負債比與持續負自由現金流存在顯著財務風險，若無改善將可能引發信用及流動性危機。</p>
+<h2>最終行動計畫</h2>
+<p><strong>決策理由：</strong> 兩組framework judges均支持買入，雖然高槓桿和負現金流帶來財務風險，但成長潛力與技術指標底部跡象形成一致看多基礎。</p>
+<p><strong>進場或執行計畫：</strong> 採取分階段低位有限買入策略，設定嚴格停損點，保持倉位靈活調整，重點監控技術指標突破與現金流改善情況。</p>
+<p><strong>風險控制計畫：</strong> 設立明確風險指標（MACD突破零軸、RSI穩定於50以上、自由現金流改善），若多項指標失守則迅速調整或平倉，限制最大資金曝險。</p>
+<p><strong>重新檢查觸發點：</strong><br />
+- MACD未能突破零軸且持續走弱<br />
+- 自由現金流和負債水平未見改善<br />
+- 技術指標長期未突破關鍵均線</p>
+<h2>TradingAgents 摘要</h2>
+<ul>
+<li><strong>Tier 1 分數：</strong> 0</li>
+<li><strong>Tier 2 綜合分：</strong> 0</li>
+<li><strong>板塊：</strong> N/A</li>
+<li><strong>風險標記：</strong> Medium</li>
+<li><strong>Structured log：</strong> <code>/Users/yeehowong/Desktop/Project/sp500_pipeline/eval_results/ORCL/TradingAgentsStrategy_logs/full_states_log_2026-03-18.json</code></li>
+</ul>
+<h2>投資框架投票</h2>
+<table>
+<thead>
+<tr>
+<th>框架</th>
+<th>票向</th>
+<th>信心</th>
+<th>核心論點</th>
+<th>建議動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Howard Marks + Ray Dalio</td>
+<td>BUY</td>
+<td>8</td>
+<td>Oracle's strategic AI/cloud investments coupled with improving momentum and strong fundamentals justify a cautiously scaled Buy despite high leverage risks.</td>
+<td>Initiate a disciplined, gradually scaled long position with strict risk management and stop-losses, closely monitoring technical signals and cash flow developments for confirmation or need for adjustment</td>
+</tr>
+<tr>
+<td>George Soros + Stanley Druckenmiller</td>
+<td>BUY</td>
+<td>80</td>
+<td>Oracle 正處於轉弱趨勢進入穩定整理階段，AI與雲端投資帶來長期非對稱成長潛力，短期負債與技術指標不足以壓制其中長期價值。</td>
+<td>分階段建倉入場，訂立嚴格停損點並密切追蹤技術指標和財報動態，控制持股比重於資金可承受範圍內，為AI及雲端成長鋪陳長期布局。</td>
+</tr>
+</tbody>
+</table>
+<h2>投資框架觀點</h2>
+<h3>Howard Marks + Ray Dalio</h3>
+<ul>
+<li><strong>票向：</strong> BUY</li>
+<li><strong>信心：</strong> 8.0/100</li>
+<li><strong>核心論點：</strong> Oracle's strategic AI/cloud investments coupled with improving momentum and strong fundamentals justify a cautiously scaled Buy despite high leverage risks.</li>
+<li><strong>建議動作：</strong> Initiate a disciplined, gradually scaled long position with strict risk management and stop-losses, closely monitoring technical signals and cash flow developments for confirmation or need for adjustment</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- Oracle's $50 billion AI investment and cloud infrastructure growth are driving strong revenue increases, exemplified by an 84% IaaS revenue growth and EPS forward estimate rising 43%<br />
+- Technical indicators show weakening bearish momentum with MACD improving from -9.44 to -1.78 and RSI stabilizing near 48, signaling a potential base formation ahead of breakout<br />
+- High insider ownership (40.6%) and institutional support (44.3%), plus positive analyst sentiment including Deutsche Bank's Buy rating and $300 target, underpin confidence in growth prospects</p>
+<p><strong>主要風險：</strong><br />
+- Extremely high debt-to-equity ratio (415.3) and sustained negative free cash flow (-$22.3 billion TTM) raise liquidity and financial risk concerns<br />
+- Technical trend remains below key moving averages (50- and 200-SMA) with restructuring costs exceeding initial estimates, which could pressure profitability and delay recovery</p>
+<p><strong>失效條件：</strong><br />
+- Failure to achieve momentum reversal confirmed by MACD crossover above zero and sustained RSI above 50<br />
+- Significant deterioration in free cash flow metrics or debt levels without signs of deleveraging or operational improvements</p>
+<h3>George Soros + Stanley Druckenmiller</h3>
+<ul>
+<li><strong>票向：</strong> BUY</li>
+<li><strong>信心：</strong> 80.0/100</li>
+<li><strong>核心論點：</strong> Oracle 正處於轉弱趨勢進入穩定整理階段，AI與雲端投資帶來長期非對稱成長潛力，短期負債與技術指標不足以壓制其中長期價值。</li>
+<li><strong>建議動作：</strong> 分階段建倉入場，訂立嚴格停損點並密切追蹤技術指標和財報動態，控制持股比重於資金可承受範圍內，為AI及雲端成長鋪陳長期布局。</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- 長短期技術指標顯示股價在歷史熊勢後趨於穩定，MACD負值收斂但尚未明顯反轉，RSI中性略偏弱但無超賣跡象，形成基底準備反彈。<br />
+- Oracle報告84% IaaS營收成長，多項AI及嵌入式金融、醫療AI合作加速業務多元化並提升市場競爭力，反映成長故事逐步驗證。<br />
+- 雖負債比高達415倍與負自由現金流低迷，但高營運利潤率（約32.7%）和內部持股40.6%、機構持股44.3%提供穩定支撐與信心。<br />
+- 市場前瞻本益比19.4低於歷史27.7，顯示估值有調整空間；且德意志銀行買入評級與$300目標價反映外部肯定及潛在價格非對稱性。</p>
+<p><strong>主要風險：</strong><br />
+- 超高槓桿可能導致未來資金壓力加劇，若AI與雲端投資的回報不及預期，可能衝擊流動性與信用評級。<br />
+- 技術面尚未形成明確突破或多頭轉折，股價可能在阻力區域反覆，短期波動和結構性調整風險依然存在。</p>
+<p><strong>失效條件：</strong><br />
+- MACD持續大幅下挫且無法穩定收斂，RSI長期跌破30反映轉入加速跌勢，技術面完全失去反彈機會。<br />
+- 公司自由現金流長期無法改善且高槓桿引發違約或資本重組風險，伴隨營運及淨利率快速惡化趨勢。</p>
+<h2>最終裁決摘要</h2>
+<ul>
+<li><strong>主論點：</strong> Oracle的AI與雲端高成長潛力在穩定的技術底部支撐下，提供了合理的長期買入機會。</li>
+<li><strong>framework 多數票：</strong> BUY</li>
+<li><strong>一致度：</strong> 2/2</li>
+</ul>
+<p><strong>主要風險：</strong><br />
+- 極高槓桿與持續負自由現金流帶來流動性及信用風險<br />
+- 技術面尚未完全反轉，短期價格可能波動並面臨阻力</p>
+<hr />
+<p><em>由 SP500 Pipeline Tier 3 產生 — 2026-03-18 21:46</em></p>
+      <div class="footer">Generated at 2026-03-18 21:46</div>
+    </section>
+  </div>
+</body>
+</html>
