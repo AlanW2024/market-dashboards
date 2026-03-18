@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSFT 投資分析框架</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-soft: #1e293b;
+      --border: rgba(148, 163, 184, 0.18);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #10b981;
+      --glow: rgba(16,185,129,0.18);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 36%),
+        radial-gradient(circle at top right, var(--glow), transparent 30%),
+        linear-gradient(180deg, #020617 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+    .hero {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.32);
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    h1 {
+      margin: 10px 0 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .metric {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .metric-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .metric-value {
+      margin-top: 6px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .summary-card {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+      margin-bottom: 24px;
+    }
+    .summary-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .summary-title::before {
+      content: '';
+      width: 4px;
+      height: 22px;
+      background: var(--accent);
+      border-radius: 999px;
+    }
+    .summary-list {
+      display: grid;
+      gap: 14px;
+    }
+    .summary-item {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      align-items: center;
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 18px;
+      padding: 16px 18px;
+    }
+    .summary-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .summary-text {
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+    .content {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+    }
+    .content h1, .content h2, .content h3 {
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.25;
+    }
+    .content h1 { font-size: 2rem; margin-top: 0; }
+    .content h2 {
+      font-size: 1.35rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .content h3 { font-size: 1.1rem; margin-top: 1.4rem; }
+    .content p, .content li { color: var(--text); }
+    .content strong { color: #f8fafc; }
+    .content code {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 0.15em 0.45em;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.92em;
+    }
+    .content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.7);
+    }
+    .content th, .content td {
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .content th {
+      background: rgba(30, 41, 59, 0.95);
+      color: #f8fafc;
+    }
+    .content blockquote {
+      margin: 16px 0;
+      padding: 14px 18px;
+      border-left: 4px solid var(--accent);
+      background: rgba(15, 23, 42, 0.75);
+      border-radius: 0 14px 14px 0;
+    }
+    a { color: #7dd3fc; }
+    .footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="eyebrow">Tier 3 Final Verdict</div>
+      <h1>MSFT 投資分析框架</h1>
+      <div class="hero-grid">
+        <div class="metric">
+          <div class="metric-label">最終行動</div>
+          <div class="metric-value">BUY</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">信心分數</div>
+          <div class="metric-value">60.5</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">裁決模式</div>
+          <div class="metric-value">cheap</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">交易日</div>
+          <div class="metric-value">2026-03-18</div>
+        </div>
+      </div>
+    </section>
+    <section class="summary-card">
+      <div class="summary-title">執行摘要</div>
+      <div class="summary-list">
+        <div class="summary-item"><div class="summary-number">1</div><div class="summary-text">MSFT具AI和雲端領先優勢，基本面與技術面正逐步改善，已充分反映短期風險，是具非對稱回報機會的買點。</div></div><div class="summary-item"><div class="summary-number">2</div><div class="summary-text">技術指標短期轉強，基本面與AI領先地位穩固，且股價已修正充分，風險回報比具吸引力。</div></div><div class="summary-item"><div class="summary-number">3</div><div class="summary-text">分批買入，初期低位逐步建倉，設置嚴格止損點於短期支撐附近，隨技術確認及法律風險釐清適度加碼。</div></div>
+      </div>
+    </section>
+    <section class="content">
+      <h2>快速結論</h2>
+<ul>
+<li><strong>最終行動：</strong> BUY</li>
+<li><strong>信心分數：</strong> 60.5/100</li>
+<li><strong>TradingAgents 初步判斷：</strong> BUY</li>
+<li><strong>裁決模式：</strong> cheap</li>
+<li><strong>需要人工複核：</strong> 否</li>
+<li><strong>下一步執行：</strong> 分批買入，初期低位逐步建倉，設置嚴格止損點於短期支撐附近，隨技術確認及法律風險釐清適度加碼。</li>
+</ul>
+<h2>為什麼現在做</h2>
+<p>技術指標短期轉強，基本面與AI領先地位穩固，且股價已修正充分，風險回報比具吸引力。</p>
+<h2>為什麼現在不做</h2>
+<p>仍未完全突破關鍵均線且法律糾紛仍存不確定性，可能導致股價反覆或大幅波動。</p>
+<h2>最終行動計畫</h2>
+<p><strong>決策理由：</strong> 四位頂級judge均贊成買入且底層趨勢與基本面良好，但技術阻力與法律風險需嚴格控管以免反轉。</p>
+<p><strong>進場或執行計畫：</strong> 分批買入，初期低位逐步建倉，設置嚴格止損點於短期支撐附近，隨技術確認及法律風險釐清適度加碼。</p>
+<p><strong>風險控制計畫：</strong> 嚴守止損，密切監控10日EMA及法律進展，若股價跌破短期均線且法律風險惡化即嚴格減倉或退出。</p>
+<p><strong>重新檢查觸發點：</strong><br />
+- 股價未突破且持續跌破10日EMA<br />
+- 法律糾紛有重大不利消息<br />
+- 基本面出現嚴重惡化信號</p>
+<h2>TradingAgents 摘要</h2>
+<ul>
+<li><strong>Tier 1 分數：</strong> 0</li>
+<li><strong>Tier 2 綜合分：</strong> 0</li>
+<li><strong>板塊：</strong> N/A</li>
+<li><strong>風險標記：</strong> Medium</li>
+<li><strong>Structured log：</strong> <code>/Users/yeehowong/Desktop/Project/sp500_pipeline/eval_results/MSFT/TradingAgentsStrategy_logs/full_states_log_2026-03-18.json</code></li>
+</ul>
+<h2>投資框架投票</h2>
+<table>
+<thead>
+<tr>
+<th>框架</th>
+<th>票向</th>
+<th>信心</th>
+<th>核心論點</th>
+<th>建議動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Howard Marks + Ray Dalio</td>
+<td>BUY</td>
+<td>85</td>
+<td>Microsoft’s entrenched AI/cloud leadership and improving short-term technical momentum validate a buy despite legal and technical headwinds.</td>
+<td>Initiate a phased buy position with disciplined risk controls and stop-losses near support levels; monitor technical breakout and legal developments closely to scale exposure accordingly.</td>
+</tr>
+<tr>
+<td>George Soros + Stanley Druckenmiller</td>
+<td>BUY</td>
+<td>7</td>
+<td>MSFT正處於長期修正底部，中短期技術指標顯示動能改善，加上強大基本面及AI領導地位，短期調整風險有限，具備非對稱風險回報。</td>
+<td>建議分批買入MSFT股票，設置嚴格止損控管風險，密切關注技術指標突破及法律動態，待確認止跌回升後逐步加碼。</td>
+</tr>
+</tbody>
+</table>
+<h2>投資框架觀點</h2>
+<h3>Howard Marks + Ray Dalio</h3>
+<ul>
+<li><strong>票向：</strong> BUY</li>
+<li><strong>信心：</strong> 85.0/100</li>
+<li><strong>核心論點：</strong> Microsoft’s entrenched AI/cloud leadership and improving short-term technical momentum validate a buy despite legal and technical headwinds.</li>
+<li><strong>建議動作：</strong> Initiate a phased buy position with disciplined risk controls and stop-losses near support levels; monitor technical breakout and legal developments closely to scale exposure accordingly.</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- Short-term momentum indicators show improvement: MACD histogram positive and rising, RSI recovering from oversold, ATR declining indicating stabilization.<br />
+- Strong fundamentals with $305B revenue, 34.4% ROE, robust EPS growth (~18%), and abundant cash reserves (~$90B) support resilience and growth investments.<br />
+- AI leadership restructuring and market position provide a significant growth runway, with the 30% stock correction having likely priced in near-term risks.</p>
+<p><strong>主要風險：</strong><br />
+- Ongoing legal dispute with AWS-OpenAI could materially impair Azure’s AI/cloud growth and strategic partnerships.<br />
+- Stock trading below key 50 and 200-day moving averages indicates prevailing medium- to long-term bearishness and potential resistance ahead.</p>
+<p><strong>失效條件：</strong><br />
+- Stock fails to break and sustain above the short-term 10 EMA (~401.7) and continues downward momentum without meaningful technical confirmation.<br />
+- Material negative outcomes from the legal dispute with OpenAI-AWS emerge, significantly eroding Microsoft’s AI cloud market share or revenue.</p>
+<h3>George Soros + Stanley Druckenmiller</h3>
+<ul>
+<li><strong>票向：</strong> BUY</li>
+<li><strong>信心：</strong> 7.0/100</li>
+<li><strong>核心論點：</strong> MSFT正處於長期修正底部，中短期技術指標顯示動能改善，加上強大基本面及AI領導地位，短期調整風險有限，具備非對稱風險回報。</li>
+<li><strong>建議動作：</strong> 建議分批買入MSFT股票，設置嚴格止損控管風險，密切關注技術指標突破及法律動態，待確認止跌回升後逐步加碼。</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- MACD雖為負但持續上升且柱狀圖轉正，顯示下跌動能減弱並有反彈潛力。<br />
+- RSI從低位42.5回升，價格在10日EMA附近蓄勢，有突破反轉可能。<br />
+- 基本面強勁，2025財報顯示營收3055億美元，ROE高達34.4%，EPS預期成長約18%，現金充裕約895億美元，風險可控。<br />
+- 市場認同其AI重組和創新領導，且30%修正已部分反映法務與競爭風險。<br />
+- 波動率(ATR)下降至9.0，價格趨於穩定，利於逐步建倉。</p>
+<p><strong>主要風險：</strong><br />
+- 與OpenAI-AWS的雲端獨家協議法律糾紛可能對Azure AI生態構成嚴重威脅。<br />
+- 股價仍遠低於50及200日均線，短期突破不確定，存在技術阻力及震盪風險。</p>
+<p><strong>失效條件：</strong><br />
+- 股價未能有效突破10日EMA（約401.7）並持續下跌，動能反轉失敗。<br />
+- 法律糾紛惡化導致雲端市場份額大幅流失或基本面預期被實質打擊。</p>
+<h2>最終裁決摘要</h2>
+<ul>
+<li><strong>主論點：</strong> MSFT具AI和雲端領先優勢，基本面與技術面正逐步改善，已充分反映短期風險，是具非對稱回報機會的買點。</li>
+<li><strong>framework 多數票：</strong> BUY</li>
+<li><strong>一致度：</strong> 2/2</li>
+</ul>
+<p><strong>主要風險：</strong><br />
+- AI雲端法律糾紛可能限制未來增長<br />
+- 股價未穩定突破關鍵均線存在調整風險</p>
+<hr />
+<p><em>由 SP500 Pipeline Tier 3 產生 — 2026-03-18 21:46</em></p>
+      <div class="footer">Generated at 2026-03-18 21:46</div>
+    </section>
+  </div>
+</body>
+</html>
