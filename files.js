@@ -67,6 +67,7 @@ const FILES = {
     {"name":"ORCL_2026-03-18_投資分析框架.html","path":"TradingAgents/US/ORCL_2026-03-18_投資分析框架.html","dir":"TradingAgents/US"},
     {"name":"ORCL_2026-03-18_zh.html","path":"TradingAgents/US/ORCL_2026-03-18_zh.html","dir":"TradingAgents/US"},
     {"name":"ORCL_2026-03-18.html","path":"TradingAgents/US/ORCL_2026-03-18.html","dir":"TradingAgents/US"},
+    {"name":"SNA_2026-03-18_投資分析框架.html","path":"TradingAgents/US/SNA_2026-03-18_投資分析框架.html","dir":"TradingAgents/US"},
     {"name":"SNA_2026-03-18_zh.html","path":"TradingAgents/US/SNA_2026-03-18_zh.html","dir":"TradingAgents/US"},
     {"name":"SNA_2026-03-18.html","path":"TradingAgents/US/SNA_2026-03-18.html","dir":"TradingAgents/US"},
     {"name":"TTD_2026-03-18_zh.html","path":"TradingAgents/US/TTD_2026-03-18_zh.html","dir":"TradingAgents/US"},

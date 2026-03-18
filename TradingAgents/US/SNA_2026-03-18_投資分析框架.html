@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SNA 投資分析框架</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-soft: #1e293b;
+      --border: rgba(148, 163, 184, 0.18);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #10b981;
+      --glow: rgba(16,185,129,0.18);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 36%),
+        radial-gradient(circle at top right, var(--glow), transparent 30%),
+        linear-gradient(180deg, #020617 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+    .hero {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.32);
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    h1 {
+      margin: 10px 0 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .metric {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .metric-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .metric-value {
+      margin-top: 6px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .summary-card {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+      margin-bottom: 24px;
+    }
+    .summary-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .summary-title::before {
+      content: '';
+      width: 4px;
+      height: 22px;
+      background: var(--accent);
+      border-radius: 999px;
+    }
+    .summary-list {
+      display: grid;
+      gap: 14px;
+    }
+    .summary-item {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      align-items: center;
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 18px;
+      padding: 16px 18px;
+    }
+    .summary-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .summary-text {
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+    .content {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+    }
+    .content h1, .content h2, .content h3 {
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.25;
+    }
+    .content h1 { font-size: 2rem; margin-top: 0; }
+    .content h2 {
+      font-size: 1.35rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .content h3 { font-size: 1.1rem; margin-top: 1.4rem; }
+    .content p, .content li { color: var(--text); }
+    .content strong { color: #f8fafc; }
+    .content code {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 0.15em 0.45em;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.92em;
+    }
+    .content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.7);
+    }
+    .content th, .content td {
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .content th {
+      background: rgba(30, 41, 59, 0.95);
+      color: #f8fafc;
+    }
+    .content blockquote {
+      margin: 16px 0;
+      padding: 14px 18px;
+      border-left: 4px solid var(--accent);
+      background: rgba(15, 23, 42, 0.75);
+      border-radius: 0 14px 14px 0;
+    }
+    a { color: #7dd3fc; }
+    .footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="eyebrow">Tier 3 Final Verdict</div>
+      <h1>SNA 投資分析框架</h1>
+      <div class="hero-grid">
+        <div class="metric">
+          <div class="metric-label">最終行動</div>
+          <div class="metric-value">BUY</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">信心分數</div>
+          <div class="metric-value">20.0</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">裁決模式</div>
+          <div class="metric-value">cheap</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">交易日</div>
+          <div class="metric-value">2026-03-18</div>
+        </div>
+      </div>
+    </section>
+    <section class="summary-card">
+      <div class="summary-title">執行摘要</div>
+      <div class="summary-list">
+        <div class="summary-item"><div class="summary-number">1</div><div class="summary-text">Snap-on具備穩健的長期上升趨勢及良好基礎財務體質，短期調整提供低風險買入窗口。</div></div><div class="summary-item"><div class="summary-number">2</div><div class="summary-text">股價雖短期回調但仍高於200日均線，技術及基本面均顯示長期趨勢未變，當前點位具備逢低進場的機會。</div></div><div class="summary-item"><div class="summary-number">3</div><div class="summary-text">於股價下探但仍守住200日均線區域時分批進場，嚴守止損設定以控制風險，並密切追蹤技術指標與財務健康狀況。</div></div>
+      </div>
+    </section>
+    <section class="content">
+      <h2>快速結論</h2>
+<ul>
+<li><strong>最終行動：</strong> BUY</li>
+<li><strong>信心分數：</strong> 20.0/100</li>
+<li><strong>TradingAgents 初步判斷：</strong> BUY</li>
+<li><strong>裁決模式：</strong> cheap</li>
+<li><strong>需要人工複核：</strong> 否</li>
+<li><strong>下一步執行：</strong> 於股價下探但仍守住200日均線區域時分批進場，嚴守止損設定以控制風險，並密切追蹤技術指標與財務健康狀況。</li>
+</ul>
+<h2>為什麼現在做</h2>
+<p>股價雖短期回調但仍高於200日均線，技術及基本面均顯示長期趨勢未變，當前點位具備逢低進場的機會。</p>
+<h2>為什麼現在不做</h2>
+<p>極高負債比率帶來財務風險，短期技術指標偏弱，可能還有回調風險。</p>
+<h2>最終行動計畫</h2>
+<p><strong>決策理由：</strong> 兩組知名投資大師均支持在技術和基本面長期多頭趨勢下逢低佈局，風險可控且現價有吸引力。</p>
+<p><strong>進場或執行計畫：</strong> 於股價下探但仍守住200日均線區域時分批進場，嚴守止損設定以控制風險，並密切追蹤技術指標與財務健康狀況。</p>
+<p><strong>風險控制計畫：</strong> 設置200日均線作為關鍵止損點，限制投入資金規模，監控負債風險及現金流變化，並避免在利率上升或經濟惡化快速擴張倉位。</p>
+<p><strong>重新檢查觸發點：</strong><br />
+- 股價跌破並持續無法回上200日均線<br />
+- 現金流或流動性惡化跡象<br />
+- 技術指標出現持續惡化如MACD及RSI明顯下破關鍵支撐</p>
+<h2>TradingAgents 摘要</h2>
+<ul>
+<li><strong>Tier 1 分數：</strong> 0</li>
+<li><strong>Tier 2 綜合分：</strong> 0</li>
+<li><strong>板塊：</strong> N/A</li>
+<li><strong>風險標記：</strong> Medium</li>
+<li><strong>Structured log：</strong> <code>/Users/yeehowong/Desktop/Project/sp500_pipeline/eval_results/SNA/TradingAgentsStrategy_logs/full_states_log_2026-03-18.json</code></li>
+</ul>
+<h2>投資框架投票</h2>
+<table>
+<thead>
+<tr>
+<th>框架</th>
+<th>票向</th>
+<th>信心</th>
+<th>核心論點</th>
+<th>建議動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Howard Marks + Ray Dalio</td>
+<td>BUY</td>
+<td>8</td>
+<td>Snap-on maintains a robust long-term fundamental and technical uptrend despite short-term bearish corrections, offering an attractive risk-managed entry point supported by healthy cash flow and strong liquidity.</td>
+<td>Initiate or add to position on current price dips with strict stop-losses below key technical support (especially below 200-day SMA), continuously monitor leverage risks and technical momentum for signs of trend change, and consider scaling exposure as conditions improve.</td>
+</tr>
+<tr>
+<td>George Soros + Stanley Druckenmiller</td>
+<td>BUY</td>
+<td>7</td>
+<td>Snap-on’s strong long-term uptrend and robust fundamentals combined with a controlled short-term correction create a favorable asymmetric risk/reward setup for a disciplined buy.</td>
+<td>Initiate a buy on weakness with disciplined position sizing and monitor technical signals closely; scale in gradually while watching for confirmation of momentum stabilization and maintain risk controls given leverage exposure.</td>
+</tr>
+</tbody>
+</table>
+<h2>投資框架觀點</h2>
+<h3>Howard Marks + Ray Dalio</h3>
+<ul>
+<li><strong>票向：</strong> BUY</li>
+<li><strong>信心：</strong> 8.0/100</li>
+<li><strong>核心論點：</strong> Snap-on maintains a robust long-term fundamental and technical uptrend despite short-term bearish corrections, offering an attractive risk-managed entry point supported by healthy cash flow and strong liquidity.</li>
+<li><strong>建議動作：</strong> Initiate or add to position on current price dips with strict stop-losses below key technical support (especially below 200-day SMA), continuously monitor leverage risks and technical momentum for signs of trend change, and consider scaling exposure as conditions improve.</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- Price remains well above the 200-day SMA (~$338), confirming a strong long-term uptrend despite a short-term pullback below 10-day EMA and 50-day SMA.<br />
+- Operational fundamentals are solid with strong margins (operating margin ~25.4%), robust quarterly free cash flow (~$254M), and expected EPS growth, supporting valuation at forward P/E ~17.14.<br />
+- Healthy liquidity indicated by current ratio of ~4.79 and positive net cash position (~$331M) mitigate risks associated with extremely high debt-to-equity ratio (~21.7).</p>
+<p><strong>主要風險：</strong><br />
+- Extremely high debt-to-equity ratio (~21.7) raises financial risk exposure, especially in a rising interest rate or economic downturn environment.<br />
+- Short- to medium-term bearish technical momentum signals (negative MACD, declining RSI, price below short- and medium-term moving averages) may lead to further downside or consolidation.</p>
+<p><strong>失效條件：</strong><br />
+- Sustained breach and failure to recover above 200-day SMA, signaling a potential long-term trend reversal.<br />
+- Significant deterioration in liquidity or free cash flow metrics that undermines the company’s ability to service high leverage.</p>
+<h3>George Soros + Stanley Druckenmiller</h3>
+<ul>
+<li><strong>票向：</strong> BUY</li>
+<li><strong>信心：</strong> 7.0/100</li>
+<li><strong>核心論點：</strong> Snap-on’s strong long-term uptrend and robust fundamentals combined with a controlled short-term correction create a favorable asymmetric risk/reward setup for a disciplined buy.</li>
+<li><strong>建議動作：</strong> Initiate a buy on weakness with disciplined position sizing and monitor technical signals closely; scale in gradually while watching for confirmation of momentum stabilization and maintain risk controls given leverage exposure.</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- Price remains above the 200-day SMA (~338) confirming long-term bullish trend despite recent pullback to ~367.<br />
+- Operational fundamentals strong: solid margins (25.4% operating margin), steady free cash flow (~$254M quarterly), and revenue growth.<br />
+- Valuation reasonable: forward P/E around 17.14 with expected EPS growth, offering decent entry after recent price correction.<br />
+- Liquidity ample with high current ratio (~4.79) cushioning high leverage (debt-to-equity ~21.7) so risk is mitigated in the near term.<br />
+- Technical indicators (RSI ~42) signal nearing oversold conditions, suggesting short-term downside limited and potential momentum rebound.</p>
+<p><strong>主要風險：</strong><br />
+- Extremely high debt-to-equity ratio (~21.7) exposes company to financial stress if interest rates rise or economic conditions weaken.<br />
+- Short- and medium-term momentum is bearish (MACD negative, price below 10 EMA and 50 SMA), so price may continue downward before rebounding.</p>
+<p><strong>失效條件：</strong><br />
+- Sustained price drop below the 200-day SMA signaling a breakdown of the long-term uptrend.<br />
+- Material deterioration in cash flow or liquidity that amplifies financial risk from leverage.</p>
+<h2>最終裁決摘要</h2>
+<ul>
+<li><strong>主論點：</strong> Snap-on具備穩健的長期上升趨勢及良好基礎財務體質，短期調整提供低風險買入窗口。</li>
+<li><strong>framework 多數票：</strong> BUY</li>
+<li><strong>一致度：</strong> 2/2</li>
+</ul>
+<p><strong>主要風險：</strong><br />
+- 極高負債比率可能帶來財務壓力<br />
+- 短期技術面指標偏弱恐有更多回調空間</p>
+<hr />
+<p><em>由 SP500 Pipeline Tier 3 產生 — 2026-03-18 21:46</em></p>
+      <div class="footer">Generated at 2026-03-18 21:46</div>
+    </section>
+  </div>
+</body>
+</html>
