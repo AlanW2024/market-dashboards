@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TTD 投資分析框架</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel-soft: #1e293b;
+      --border: rgba(148, 163, 184, 0.18);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #ef4444;
+      --glow: rgba(239,68,68,0.18);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 36%),
+        radial-gradient(circle at top right, var(--glow), transparent 30%),
+        linear-gradient(180deg, #020617 0%, var(--bg) 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+    .shell {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+    .hero {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.32);
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    h1 {
+      margin: 10px 0 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .metric {
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .metric-label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .metric-value {
+      margin-top: 6px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .summary-card {
+      background: linear-gradient(160deg, rgba(15,23,42,0.94), rgba(30,41,59,0.88));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+      margin-bottom: 24px;
+    }
+    .summary-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .summary-title::before {
+      content: '';
+      width: 4px;
+      height: 22px;
+      background: var(--accent);
+      border-radius: 999px;
+    }
+    .summary-list {
+      display: grid;
+      gap: 14px;
+    }
+    .summary-item {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      align-items: center;
+      gap: 16px;
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      border-radius: 18px;
+      padding: 16px 18px;
+    }
+    .summary-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+    .summary-text {
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+    .content {
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 18px 50px rgba(2, 6, 23, 0.28);
+    }
+    .content h1, .content h2, .content h3 {
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.25;
+    }
+    .content h1 { font-size: 2rem; margin-top: 0; }
+    .content h2 {
+      font-size: 1.35rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
+    }
+    .content h3 { font-size: 1.1rem; margin-top: 1.4rem; }
+    .content p, .content li { color: var(--text); }
+    .content strong { color: #f8fafc; }
+    .content code {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 0.15em 0.45em;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.92em;
+    }
+    .content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: rgba(15, 23, 42, 0.7);
+    }
+    .content th, .content td {
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .content th {
+      background: rgba(30, 41, 59, 0.95);
+      color: #f8fafc;
+    }
+    .content blockquote {
+      margin: 16px 0;
+      padding: 14px 18px;
+      border-left: 4px solid var(--accent);
+      background: rgba(15, 23, 42, 0.75);
+      border-radius: 0 14px 14px 0;
+    }
+    a { color: #7dd3fc; }
+    .footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="eyebrow">Tier 3 Final Verdict</div>
+      <h1>TTD 投資分析框架</h1>
+      <div class="hero-grid">
+        <div class="metric">
+          <div class="metric-label">最終行動</div>
+          <div class="metric-value">SELL</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">信心分數</div>
+          <div class="metric-value">60.0</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">裁決模式</div>
+          <div class="metric-value">cheap</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">交易日</div>
+          <div class="metric-value">2026-03-18</div>
+        </div>
+      </div>
+    </section>
+    <section class="summary-card">
+      <div class="summary-title">執行摘要</div>
+      <div class="summary-list">
+        <div class="summary-item"><div class="summary-number">1</div><div class="summary-text">高治理及審計風險配合疲弱技術走勢令短中期下行壓力加劇。</div></div><div class="summary-item"><div class="summary-number">2</div><div class="summary-text">若未等到審計問題解決與技術動能明確反轉，持續持有將面臨顯著下跌風險。</div></div><div class="summary-item"><div class="summary-number">3</div><div class="summary-text">逐步賣出或大幅減碼現有持倉，並密切關注治理問題及技術指標變化。</div></div>
+      </div>
+    </section>
+    <section class="content">
+      <h2>快速結論</h2>
+<ul>
+<li><strong>最終行動：</strong> SELL</li>
+<li><strong>信心分數：</strong> 60.0/100</li>
+<li><strong>TradingAgents 初步判斷：</strong> SELL</li>
+<li><strong>裁決模式：</strong> cheap</li>
+<li><strong>需要人工複核：</strong> 是</li>
+<li><strong>下一步執行：</strong> 逐步賣出或大幅減碼現有持倉，並密切關注治理問題及技術指標變化。</li>
+</ul>
+<h2>為什麼現在做</h2>
+<p>當前審計爭議及技術指標皆呈現負面態勢，短期風險高，宜立即減碼防範損失。</p>
+<h2>為什麼現在不做</h2>
+<p>若未等到審計問題解決與技術動能明確反轉，持續持有將面臨顯著下跌風險。</p>
+<h2>最終行動計畫</h2>
+<p><strong>決策理由：</strong> 兩組頂尖裁決者均明確建議賣出，治理及審計風險和技術面弱勢構成顯著下行風險。</p>
+<p><strong>進場或執行計畫：</strong> 逐步賣出或大幅減碼現有持倉，並密切關注治理問題及技術指標變化。</p>
+<p><strong>風險控制計畫：</strong> 嚴控持倉比重，避免在不確定治理與技術信號下追入，設定嚴格停損點以防範突發負面事件。</p>
+<p><strong>重新檢查觸發點：</strong><br />
+- 審計及治理問題獲得正式澄清並改善<br />
+- 股價有效突破50日及200日均線並持穩<br />
+- MACD指標出現明顯多頭交叉</p>
+<h2>TradingAgents 摘要</h2>
+<ul>
+<li><strong>Tier 1 分數：</strong> 0</li>
+<li><strong>Tier 2 綜合分：</strong> 0</li>
+<li><strong>板塊：</strong> N/A</li>
+<li><strong>風險標記：</strong> Medium</li>
+<li><strong>Structured log：</strong> <code>/Users/yeehowong/Desktop/Project/sp500_pipeline/eval_results/TTD/TradingAgentsStrategy_logs/full_states_log_2026-03-18.json</code></li>
+</ul>
+<h2>投資框架投票</h2>
+<table>
+<thead>
+<tr>
+<th>框架</th>
+<th>票向</th>
+<th>信心</th>
+<th>核心論點</th>
+<th>建議動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Howard Marks + Ray Dalio</td>
+<td>SELL</td>
+<td>85</td>
+<td>儘管公司基本面與創新潛力具吸引力，但嚴重的審計爭議與治理風險，配合疲弱技術面和市場負面情緒，令短中期投資風險過高。</td>
+<td>立即賣出或大幅減碼持倉，以資本保護為主，等待治理風險釐清及技術趨勢反轉跡象後再作重新評估。</td>
+</tr>
+<tr>
+<td>George Soros + Stanley Druckenmiller</td>
+<td>SELL</td>
+<td>85</td>
+<td>TTD目前受治理風險與技術盤弱勢壓制，上行動能不足，應保守減碼以控制風險。</td>
+<td>現階段建議賣出或大幅減碼持股，等待審計與治理問題有實質改善及技術面穩定訊號後再考慮重新介入。</td>
+</tr>
+</tbody>
+</table>
+<h2>投資框架觀點</h2>
+<h3>Howard Marks + Ray Dalio</h3>
+<ul>
+<li><strong>票向：</strong> SELL</li>
+<li><strong>信心：</strong> 85.0/100</li>
+<li><strong>核心論點：</strong> 儘管公司基本面與創新潛力具吸引力，但嚴重的審計爭議與治理風險，配合疲弱技術面和市場負面情緒，令短中期投資風險過高。</li>
+<li><strong>建議動作：</strong> 立即賣出或大幅減碼持倉，以資本保護為主，等待治理風險釐清及技術趨勢反轉跡象後再作重新評估。</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- 技術面呈明顯長期與中期空頭趨勢，股價遠低於50日和200日均線，短期10日EMA亦呈下跌，短中期動能偏弱。<br />
+- 負面情緒聚焦於Publicis的第三方審計失敗，涉及收費及AI工具問題，引發客戶信任危機與董事辭職，直接導致股價單周跌幅達6.7%-9.4%。<br />
+- 基本面雖有收入及盈利成長預期，且CEO大額內部買進與人工智慧戰略展望為正面信號，但高槓桿比率（D/E 17.56）削弱財務安全度，治理及審計問題尚未解決。</p>
+<p><strong>主要風險：</strong><br />
+- 監管及治理問題若快速獲得妥善處理，改善客戶信任。<br />
+- 技術指標若出現確實的動能反轉（MACD突破訊號線、價格突破50日均線以上）。</p>
+<p><strong>失效條件：</strong><br />
+- Publicis及其他重要客戶恢復合作信心，審計與帳務問題獲得正式澄清並解決。<br />
+- 技術面明顯轉強，股價有效突破且持穩在主要均線以上，顯示空頭趨勢結束。</p>
+<h3>George Soros + Stanley Druckenmiller</h3>
+<ul>
+<li><strong>票向：</strong> SELL</li>
+<li><strong>信心：</strong> 85.0/100</li>
+<li><strong>核心論點：</strong> TTD目前受治理風險與技術盤弱勢壓制，上行動能不足，應保守減碼以控制風險。</li>
+<li><strong>建議動作：</strong> 現階段建議賣出或大幅減碼持股，等待審計與治理問題有實質改善及技術面穩定訊號後再考慮重新介入。</li>
+</ul>
+<p><strong>支持證據：</strong><br />
+- 長期與中期技術指標均呈現明顯下跌趨勢，股價遠低於50日及200日均線。<br />
+- Publicis第三方審計失敗引發客戶信任與治理問題，導致股價大幅下跌且董事會成員離職。<br />
+- CEO大額內部買股及AI/CTV拓展雖有積極信號，但不足以抵銷市場的負面情緒與結構性風險。</p>
+<p><strong>主要風險：</strong><br />
+- 治理與審計問題若持續惡化，可能進一步損害客戶關係與營運穩定。<br />
+- 高槓桿水平雖有淨現金緩衝，但财务风险仍存在，若經營表現低於預期可能加劇壓力。</p>
+<p><strong>失效條件：</strong><br />
+- MACD出現明顯多頭交叉並突破信號線，確認動能反轉。<br />
+- 股價成功站穩並持續上升至50日及200日均線之上。<br />
+- 審計與治理爭議明顯緩解，客戶信任恢復且負面新聞減少。</p>
+<h2>最終裁決摘要</h2>
+<ul>
+<li><strong>主論點：</strong> 高治理及審計風險配合疲弱技術走勢令短中期下行壓力加劇。</li>
+<li><strong>framework 多數票：</strong> SELL</li>
+<li><strong>一致度：</strong> 2/2</li>
+</ul>
+<p><strong>主要風險：</strong><br />
+- 審計及治理問題惡化導致信任危機擴大<br />
+- 技術指標持續疲弱，無法反彈<br />
+- 高槓桿帶來財務壓力</p>
+<hr />
+<p><em>由 SP500 Pipeline Tier 3 產生 — 2026-03-18 21:47</em></p>
+      <div class="footer">Generated at 2026-03-18 21:47</div>
+    </section>
+  </div>
+</body>
+</html>
