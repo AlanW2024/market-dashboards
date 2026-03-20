@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>盤前日報 — 2026-03-20</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #D4AF37;
+  --gold-dim: rgba(212, 175, 55, 0.15);
+  --gold-glow: rgba(212, 175, 55, 0.30);
+  --bg-primary: #0a0a0f;
+  --bg-card: #12121a;
+  --bg-card-hover: #1a1a26;
+  --text-primary: #e8e6e1;
+  --text-secondary: #8a8a9a;
+  --text-dim: #5a5a6a;
+  --border: rgba(255,255,255,0.06);
+  --border-gold: rgba(212,175,55,0.3);
+  --bullish: #4ade80;
+  --bearish: #f87171;
+  --neutral: #fbbf24;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Noto Sans TC', sans-serif;
+  line-height: 1.6;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+.container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+.eyebrow, .metric-label, .tag, .meta-line, .action-label, .divider-label {
+  font-family: 'JetBrains Mono', monospace;
+}
+.header {
+  text-align: center;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+  position: relative;
+}
+.header::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 1px;
+  background: var(--gold);
+  box-shadow: 0 0 18px var(--gold-glow);
+}
+.eyebrow {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  font-size: 0.72rem;
+  margin-bottom: 0.75rem;
+}
+h1, h2, .metric-value, .action-verb {
+  font-family: 'DM Serif Display', serif;
+  font-weight: 400;
+}
+h1 {
+  font-size: clamp(1.9rem, 5vw, 2.8rem);
+  line-height: 1.15;
+}
+.subhead {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  margin-top: 0.5rem;
+}
+.hero-grid, .secondary-grid, .two-col, .stance-grid {
+  display: grid;
+  gap: 1rem;
+}
+.hero-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 1rem;
+}
+.secondary-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 1.5rem;
+}
+.two-col {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 1.5rem;
+}
+.metric, .panel, .stance-card, .action-card, .vote-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.metric {
+  padding: 1rem;
+  text-align: center;
+}
+.metric-label {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.45rem;
+}
+.metric-value {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+.up { color: var(--bullish); }
+.down { color: var(--bearish); }
+.neutral { color: var(--neutral); }
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.1rem;
+  margin-bottom: 0.9rem;
+}
+.section-title::before {
+  content: "";
+  width: 3px;
+  height: 1.05em;
+  background: var(--gold);
+  border-radius: 2px;
+}
+.panel {
+  padding: 1.1rem 1.15rem;
+}
+.panel + .panel {
+  margin-top: 1rem;
+}
+.panel ul, .panel ol {
+  padding-left: 1.15rem;
+}
+.panel li + li {
+  margin-top: 0.45rem;
+}
+.tag {
+  display: inline-block;
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  margin-bottom: 0.65rem;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.table th, .table td {
+  padding: 0.72rem 0.65rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+.table th {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.timeline-item {
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.timeline-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.timeline-item strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+.divider {
+  position: relative;
+  margin: 2.25rem 0 1.5rem;
+  text-align: center;
+}
+.divider::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.divider-label {
+  position: relative;
+  display: inline-block;
+  padding: 0 0.75rem;
+  background: var(--bg-primary);
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.68rem;
+}
+.vote-box {
+  padding: 1.1rem 1.15rem;
+  margin-bottom: 1rem;
+}
+.vote-summary {
+  font-size: 1.55rem;
+  margin-bottom: 0.4rem;
+}
+.action-card {
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border-color: var(--border-gold);
+  box-shadow: inset 0 1px 0 rgba(212,175,55,0.12);
+}
+.action-label {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.68rem;
+  margin-bottom: 0.65rem;
+}
+.action-verb {
+  font-size: 1.8rem;
+  margin-bottom: 0.35rem;
+}
+.action-reason {
+  color: var(--text-secondary);
+  margin-bottom: 0.85rem;
+}
+.action-list li {
+  margin-top: 0.3rem;
+}
+.stance-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.stance-card {
+  padding: 0.95rem;
+}
+.stance-card h3 {
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+.stance-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+details {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+}
+summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+details p, details li {
+  color: var(--text-secondary);
+}
+details ul {
+  padding-left: 1.1rem;
+  margin-top: 0.85rem;
+}
+@media (max-width: 920px) {
+  .hero-grid, .secondary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .stance-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .container { padding: 1.25rem 1rem 3rem; }
+  .hero-grid, .secondary-grid, .two-col { grid-template-columns: 1fr; }
+  .table { font-size: 0.84rem; }
+  .table th, .table td { padding: 0.6rem 0.45rem; }
+  .action-verb { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="header">
+    <div class="eyebrow">US Pre-Market</div>
+    <h1>盤前日報 — 2026-03-20</h1>
+    <div class="subhead meta-line">油價與利率重新搶回話語權，AI 利多仍在，但未足以自動帶動全面 risk-on</div>
+  </header>
+
+  <section class="hero-grid">
+    <div class="metric"><div class="metric-label">ES Futures</div><div class="metric-value">6,666.75</div><div class="down">-0.05%</div></div>
+    <div class="metric"><div class="metric-label">NQ Futures</div><div class="metric-value">24,577.50</div><div class="down">-0.12%</div></div>
+    <div class="metric"><div class="metric-label">VIX</div><div class="metric-value">23.83</div><div class="down">-1.00%</div></div>
+    <div class="metric"><div class="metric-label">WTI</div><div class="metric-value">$94.36</div><div class="up">+0.58%</div></div>
+  </section>
+
+  <section class="secondary-grid">
+    <div class="metric"><div class="metric-label">10Y</div><div class="metric-value">4.28%</div><div class="up">+0.52%</div></div>
+    <div class="metric"><div class="metric-label">DXY</div><div class="metric-value">99.32</div><div class="down">-0.12%</div></div>
+    <div class="metric"><div class="metric-label">BTC</div><div class="metric-value">71,134</div><div class="up">+1.71%</div></div>
+    <div class="metric"><div class="metric-label">ETH</div><div class="metric-value">2,165</div><div class="up">+1.24%</div></div>
+  </section>
+
+  <section class="two-col">
+    <div class="panel">
+      <div class="tag">Yesterday Handoff</div>
+      <div class="section-title">昨日盤後交棒</div>
+      <table class="table">
+        <thead><tr><th>項目</th><th>隔夜更新</th><th>今日影響</th></tr></thead>
+        <tbody>
+          <tr><td>油價壓力</td><td>WTI 仍企穩 94 上方，油品與運費報價再創高位</td><td>通脹與估值壓力未退</td></tr>
+          <tr><td>Micron 擴散</td><td>AI 記憶體故事仍在，但期指未有接力</td><td>AI 仍係局部強勢，不等於大市安全</td></tr>
+          <tr><td>SPY 關鍵位</td><td>現貨 659.80，仍未有效站回 663</td><td>先睇反彈質素，再講突破</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="panel">
+      <div class="tag">Vs Yesterday Premarket</div>
+      <div class="section-title">對比前一日盤前</div>
+      <ul>
+        <li>昨日主線係 Micron 帶動 AI 反彈；今朝則變成 AI 仍在，但油價與利率重新搶戲。</li>
+        <li>昨日屬「高開後會否守得住」；今朝直接進化成「連高開都冇，市場仲肯唔肯接」。</li>
+        <li>宏觀逆風由 Fed + 強美元，升級成 Fed + 油價 + 地緣 headline 三線同壓。</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="panel" style="margin-bottom:1.5rem;">
+    <div class="tag">Sector Outlook</div>
+    <div class="section-title">板塊前瞻</div>
+    <table class="table">
+      <thead><tr><th>優先級</th><th>板塊</th><th>判斷</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>能源 / LNG</td><td>地緣與供應風險令相對強勢最清晰</td></tr>
+        <tr><td>2</td><td>科技 / AI 記憶體</td><td>Micron 主線未死，但要見 Nasdaq 止跌先算確認</td></tr>
+        <tr><td>3</td><td>醫療 / 防守</td><td>若市場只想避震，防守板塊更易抗跌</td></tr>
+        <tr><td>10</td><td>工業</td><td>Boeing 與全球增長壓力令其難帶頭</td></tr>
+        <tr><td>11</td><td>原材料 / 必需消費</td><td>盤前排序偏後，亦受混合宏觀訊號壓住</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="two-col">
+    <div class="panel">
+      <div class="tag">News</div>
+      <div class="section-title">重大新聞</div>
+      <div class="timeline-item"><strong>[新發展] 油品與燃料運價再創高位</strong>市場開始擔心唔止油價，而係高油價停留時間會否重新推高通脹預期。</div>
+      <div class="timeline-item"><strong>[新發展] LNG 鏈受追捧</strong>Qatar 基建受襲後，LNG 相關股份成為資金對沖方向之一。</div>
+      <div class="timeline-item"><strong>[延續主線] Micron 餘波未完</strong>AI 記憶體仍係最硬基本面故事，但未自動擴散成整個科技板塊全面 risk-on。</div>
+      <div class="timeline-item"><strong>[情緒角度] 超賣反彈被討論</strong>戰術性反彈可以發生，但不代表結構性壓力已經消失。</div>
+    </div>
+    <div class="panel">
+      <div class="tag">Macro</div>
+      <div class="section-title">宏觀概覽</div>
+      <ul>
+        <li>Fed 有效利率：3.64</li>
+        <li>10Y / 2Y：4.26 / 3.76，利差 +0.50</li>
+        <li>美元 30 日內對 EUR / JPY / GBP 都偏強</li>
+        <li>今日宏觀日程相對清淡，headline 影響會更大</li>
+        <li>SPY 支撐 / 阻力：約 655 / 663</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="divider"><span class="divider-label">Investment Committee</span></div>
+
+  <section class="vote-box">
+    <div class="eyebrow" style="margin-bottom:0.4rem;">Today Strategy</div>
+    <div class="vote-summary"><span class="up">3</span> : <span class="down">4</span> : <span class="neutral">2</span></div>
+    <div class="subhead">看多 : 看空 : 觀望 | 綜合信心 6.4 / 10（偏防守）</div>
+  </section>
+
+  <section class="action-card">
+    <div class="action-label">Action Card</div>
+    <div class="action-verb neutral">先觀察，再決定</div>
+    <div class="action-reason">今朝核心唔係估市場最終升跌，而係確認油價、利率同 AI 兩條敘事邊一條先有能力主導開盤後的資金流向。</div>
+    <ul class="action-list">
+      <li>標的：能源 / LNG、AI 記憶體、相對防守醫療</li>
+      <li>關鍵位：SPY 663 反彈確認；655 防守支撐</li>
+      <li>風險：WTI 抽升、10Y 企穩 4.30 以上、VIX 重返 25 上方</li>
+    </ul>
+  </section>
+
+  <section class="panel" style="margin-bottom:1rem;">
+    <div class="tag">Today Predictions</div>
+    <div class="section-title">今日預測</div>
+    <table class="table">
+      <thead><tr><th>項目</th><th>預測</th></tr></thead>
+      <tbody>
+        <tr><td>大市方向</td><td>低開後震盪，偏弱收市</td></tr>
+        <tr><td>最強板塊</td><td>能源 / LNG</td></tr>
+        <tr><td>最弱板塊</td><td>工業 / 原材料</td></tr>
+        <tr><td>VIX 方向</td><td>高位橫行偏上</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="two-col">
+    <div class="panel">
+      <div class="tag">Disputes</div>
+      <div class="section-title">關鍵分歧</div>
+      <ul>
+        <li>Micron 的 AI 利多是否仍足以壓過油價與戰事風險？</li>
+        <li>crypto 反彈與 VIX 小回，係企穩前兆定假平靜？</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <div class="tag">Takeaway</div>
+      <div class="section-title">一句話結論</div>
+      <p style="color:var(--text-secondary);">今日唔係先問「買唔買」，而係先問「邊條敘事值得相信」；若市場只獎勵能源與 AI，咁就只跟最強，唔好外推成全場安全。</p>
+    </div>
+  </section>
+
+  <section class="panel" style="margin-bottom:1rem;">
+    <div class="tag">Stances</div>
+    <div class="section-title">各方立場速覽</div>
+    <div class="stance-grid">
+      <div class="stance-card"><h3>Druckenmiller</h3><p><span class="up">看多 6</span><br>AI 仍可做，但只做最強主線。</p></div>
+      <div class="stance-card"><h3>Howard Marks</h3><p><span class="neutral">觀望 6</span><br>可以買贏家，唔好買整個市場幻想。</p></div>
+      <div class="stance-card"><h3>宏觀策略師</h3><p><span class="down">看空 8</span><br>今朝真正老細仍然係 headline、油價同利率。</p></div>
+    </div>
+  </section>
+
+  <details>
+    <summary>展開辯論重點</summary>
+    <ul>
+      <li>多頭共識：如果今日要做多，只應做 Micron / AI 記憶體或能源 / LNG 呢類有基本面或地緣邏輯支持的主線。</li>
+      <li>空頭共識：期指冇接力昨日劇本，代表 broad market 仍未畀確認。</li>
+      <li>執行共識：先觀察開盤 30-60 分鐘，再決定是否由防守模式調高風險。</li>
+    </ul>
+  </details>
+</div>
+</body>
+</html>
