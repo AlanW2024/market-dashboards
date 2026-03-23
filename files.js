@@ -5,6 +5,7 @@ const FILES = {
     {"name":"2026-03-19 盤前Dashboard.html","path":"美股/盤前/2026-03-19 盤前Dashboard.html","dir":"美股/盤前"},
     {"name":"2026-03-20 盤前Dashboard.html","path":"美股/盤前/2026-03-20 盤前Dashboard.html","dir":"美股/盤前"},
     {"name":"2026-03-21 盤前Dashboard.html","path":"美股/盤前/2026-03-21 盤前Dashboard.html","dir":"美股/盤前"},
+    {"name":"2026-03-23 盤前Dashboard.html","path":"美股/盤前/2026-03-23 盤前Dashboard.html","dir":"美股/盤前"},
   ],
   "🇺🇸 美股盤後": [
     {"name":"2026-03-16 盤後Dashboard.html","path":"美股/盤後/2026-03-16 盤後Dashboard.html","dir":"美股/盤後"},
@@ -28,11 +29,13 @@ const FILES = {
     {"name":"2026-03-21 港股盤後Dashboard.html","path":"港股/盤後/2026-03-21 港股盤後Dashboard.html","dir":"港股/盤後"},
   ],
   "🇯🇵 日股盤前": [
+    {"name":"2026-03-23 日股盤前Dashboard.html","path":"日股/盤前/2026-03-23 日股盤前Dashboard.html","dir":"日股/盤前"},
   ],
   "🇯🇵 日股盤後": [
     {"name":"2026-03-18 日股盤後Dashboard.html","path":"日股/盤後/2026-03-18 日股盤後Dashboard.html","dir":"日股/盤後"},
     {"name":"2026-03-20 日股盤後Dashboard.html","path":"日股/盤後/2026-03-20 日股盤後Dashboard.html","dir":"日股/盤後"},
     {"name":"2026-03-20.html","path":"日股/盤後/2026-03-20.html","dir":"日股/盤後"},
+    {"name":"2026-03-23 日股盤後Dashboard.html","path":"日股/盤後/2026-03-23 日股盤後Dashboard.html","dir":"日股/盤後"},
   ],
   "📈 個股分析": [
     {"name":"MSTR_2026-03-16_zh.html","path":"TradingAgents/MSTR_2026-03-16_zh.html","dir":"TradingAgents"},
