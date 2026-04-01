@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026-03-20 日股盤後報告</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #121212; --surface: #1E1E1E; --text: #E0E0E0; --accent: #D4AF37;
+            --up: #43A047; --down: #E53935; --border: #333; --holiday: #2CA8FF;
+        }
+        body { font-family: 'DM Serif Display', serif; background-color: var(--bg); color: var(--text); padding: 20px; line-height: 1.6; }
+        h1, h2, h3 { font-weight: normal; margin-bottom: 0.5em; }
+        .data { font-family: 'JetBrains Mono', monospace; }
+        .accent { color: var(--accent); }
+        .down { color: var(--down); }
+        .holiday { color: var(--holiday); }
+        .card { background: var(--surface); border: 1px solid var(--border); padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .metric { font-size: 2em; }
+        .divider { border-top: 2px solid var(--accent); margin: 40px 0; }
+        .collapsible { background-color: var(--surface); color: var(--text); cursor: pointer; padding: 18px; width: 100%; border: none; text-align: left; outline: none; font-size: 1.2em; font-family: 'DM Serif Display', serif; border-bottom: 1px solid var(--border); }
+        .active, .collapsible:hover { background-color: #2a2a2a; }
+        .content { padding: 0 18px; max-height: 0; overflow: hidden; transition: max-height 0.2s ease-out; background-color: var(--bg); }
+        .progress-bar { background-color: #333; height: 20px; border-radius: 10px; margin-bottom: 10px; display: flex; overflow: hidden; }
+        .progress-up { background-color: var(--up); height: 100%; }
+        .progress-neutral { background-color: #888; height: 100%; }
+        .progress-down { background-color: var(--down); height: 100%; }
+    </style>
+</head>
+<body>
+    <h1>2026-03-20 <span class="accent">日股盤後市場日報</span></h1>
+    
+    <h2>PART 1: 市場數據</h2>
+    <div class="grid">
+        <div class="card">
+            <h3>日經 225 (Nikkei 225)</h3>
+            <div class="data metric holiday">休市 (Market Closed)</div>
+            <div class="data">春分之日公眾假期</div>
+        </div>
+        <div class="card">
+            <h3>前日收市基準 (03-19)</h3>
+            <div class="data metric down">~53,370</div>
+            <div class="data down">-3.00%</div>
+        </div>
+        <div class="card">
+            <h3>宏觀焦點</h3>
+            <p>BOJ 憂慮通脹升溫，但利率不變。市場受前日美國高企 PPI 及減息落空影響，加上地緣政治陰霾，呈現避險趨勢。</p>
+        </div>
+    </div>
+    
+    <div class="divider"></div>
+    
+    <h2 class="accent">PART 2: Investment Committee (投資委員會)</h2>
+    <div class="card">
+        <h3>Action Card 建議行動</h3>
+        <p><strong>伺機而動：</strong> 今日休市提供緩衝。需密切關注今夜美股表現及下週一日股開市嘅補跌壓力，暫時不宜盲目撈貨。</p>
+    </div>
+    
+    <h3>投票結果與信心分佈 (Confidence 50%)</h3>
+    <div class="progress-bar">
+        <div class="progress-up" style="width: 10%;"></div>
+        <div class="progress-neutral" style="width: 60%;"></div>
+        <div class="progress-down" style="width: 30%;"></div>
+    </div>
+    <div class="data" style="display:flex; justify-content:space-between;">
+        <span>看好 10%</span><span>中性觀望 60%</span><span>看淡 30%</span>
+    </div>
+    
+    <br>
+    <button class="collapsible">▶ 展開辯論錄音紀錄 Full Transcript</button>
+    <div class="content">
+        <p><strong>Analyst A (宏觀):</strong> 「BOJ 會議雖然禁住冇加息，但係委員反對聲音大咗，證明能源通脹壓力已經不容忽視，日圓有升值隱憂。」</p>
+        <p><strong>Analyst B (美日聯動):</strong> 「美國 PPI 爆冷搞到 Wall Street 跌，日股噚日已經跌咗 3%，今日好彩休市避過一劫，但下週一好大機會有震盪。」</p>
+        <p><strong>Analyst C (政治):</strong> 「地緣政治同美國大選嘅言論增加咗不確定性，軍工同防守板塊值得關注。」</p>
+        <p><strong>CIO 總結:</strong> 「今日休戰，大家趁週末重新梳理日本央行潛在政策轉向嘅影響，下週一盯實關鍵位。」</p>
+    </div>
+
+    <script>
+        var coll = document.getElementsByClassName("collapsible");
+        for (var i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                    this.textContent = "▶ 展開辯論錄音紀錄 Full Transcript";
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    this.textContent = "▼ 收起辯論錄音紀錄 Full Transcript";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -39,11 +39,22 @@ declare -a DIRS=(
 count=0
 for dir in "${DIRS[@]}"; do
   mkdir -p "$REPO/$dir"
+  # Sync HTML files in root of directory
   if ls "$VAULT/$dir/"*.html 1>/dev/null 2>&1; then
     rsync -u "$VAULT/$dir/"*.html "$REPO/$dir/"
     n=$(ls "$REPO/$dir/"*.html 2>/dev/null | wc -l | tr -d ' ')
     count=$((count + n))
   fi
+  # Sync monthly archive subfolders (e.g., 2026-03/)
+  for subdir in "$VAULT/$dir"/20[0-9][0-9]-[0-9][0-9]; do
+    if [ -d "$subdir" ] && ls "$subdir/"*.html 1>/dev/null 2>&1; then
+      month=$(basename "$subdir")
+      mkdir -p "$REPO/$dir/$month"
+      rsync -u "$subdir/"*.html "$REPO/$dir/$month/"
+      n=$(ls "$REPO/$dir/$month/"*.html 2>/dev/null | wc -l | tr -d ' ')
+      count=$((count + n))
+    fi
+  done
 done
 
 # Generate files.js for index.html
@@ -66,13 +77,25 @@ for entry in "${SECTIONS[@]}"; do
   label="${entry%%:*}"
   dir="${entry##*:}"
   echo "  \"$label\": [" >> "$REPO/files.js"
+  # Current month files (root of directory)
   if ls "$REPO/$dir/"*.html 1>/dev/null 2>&1; then
-    for f in "$REPO/$dir/"*.html; do
+    for f in $(ls -r "$REPO/$dir/"*.html); do
       name=$(basename "$f")
       path="$dir/$name"
       echo "    {\"name\":\"$name\",\"path\":\"$path\",\"dir\":\"$dir\"}," >> "$REPO/files.js"
     done
   fi
+  # Monthly archive files (subfolders like 2026-03/)
+  for subdir in $(ls -dr "$REPO/$dir"/20[0-9][0-9]-[0-9][0-9] 2>/dev/null); do
+    month=$(basename "$subdir")
+    if ls "$subdir/"*.html 1>/dev/null 2>&1; then
+      for f in $(ls -r "$subdir/"*.html); do
+        name=$(basename "$f")
+        path="$dir/$month/$name"
+        echo "    {\"name\":\"$name\",\"path\":\"$path\",\"dir\":\"$dir/$month\",\"month\":\"$month\"}," >> "$REPO/files.js"
+      done
+    fi
+  done
   echo "  ]," >> "$REPO/files.js"
 done
 
