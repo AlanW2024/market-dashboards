@@ -78,18 +78,16 @@ for entry in "${SECTIONS[@]}"; do
   dir="${entry##*:}"
   echo "  \"$label\": [" >> "$REPO/files.js"
   # Current month files (root of directory)
-  if ls "$REPO/$dir/"*.html 1>/dev/null 2>&1; then
-    for f in $(ls -r "$REPO/$dir/"*.html); do
-      name=$(basename "$f")
-      path="$dir/$name"
-      echo "    {\"name\":\"$name\",\"path\":\"$path\",\"dir\":\"$dir\"}," >> "$REPO/files.js"
-    done
-  fi
+  find "$REPO/$dir" -maxdepth 1 -name '*.html' -print0 2>/dev/null | sort -rz | while IFS= read -r -d '' f; do
+    name=$(basename "$f")
+    path="$dir/$name"
+    echo "    {\"name\":\"$name\",\"path\":\"$path\",\"dir\":\"$dir\"}," >> "$REPO/files.js"
+  done
   # Monthly archive files (subfolders like 2026-03/)
-  for subdir in $(ls -dr "$REPO/$dir"/20[0-9][0-9]-[0-9][0-9] 2>/dev/null); do
-    month=$(basename "$subdir")
-    if ls "$subdir/"*.html 1>/dev/null 2>&1; then
-      for f in $(ls -r "$subdir/"*.html); do
+  for subdir in "$REPO/$dir"/20[0-9][0-9]-[0-9][0-9]; do
+    if [ -d "$subdir" ]; then
+      month=$(basename "$subdir")
+      find "$subdir" -maxdepth 1 -name '*.html' -print0 2>/dev/null | sort -rz | while IFS= read -r -d '' f; do
         name=$(basename "$f")
         path="$dir/$month/$name"
         echo "    {\"name\":\"$name\",\"path\":\"$path\",\"dir\":\"$dir/$month\",\"month\":\"$month\"}," >> "$REPO/files.js"
