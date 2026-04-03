@@ -1,5 +1,7 @@
 const FILES = {
   "🇺🇸 美股盤前": [
+    {"name":"2026-04-02","path":"美股/盤前/2026-04-02","dir":"美股/盤前"},
+    {"name":"盤前Dashboard.html","path":"美股/盤前/盤前Dashboard.html","dir":"美股/盤前"},
     {"name":"2026-04-01","path":"美股/盤前/2026-04-01","dir":"美股/盤前"},
     {"name":"盤前Dashboard.html","path":"美股/盤前/盤前Dashboard.html","dir":"美股/盤前"},
     {"name":"2026-03-27","path":"美股/盤前/2026-03-27","dir":"美股/盤前"},
@@ -46,6 +48,10 @@ const FILES = {
     {"name":"盤前Dashboard.html","path":"美股/盤前/2026-03/盤前Dashboard.html","dir":"美股/盤前/2026-03","month":"2026-03"},
   ],
   "🇺🇸 美股盤後": [
+    {"name":"2026-04-02","path":"美股/盤後/2026-04-02","dir":"美股/盤後"},
+    {"name":"美股盤後Dashboard.html","path":"美股/盤後/美股盤後Dashboard.html","dir":"美股/盤後"},
+    {"name":"2026-04-01","path":"美股/盤後/2026-04-01","dir":"美股/盤後"},
+    {"name":"美股盤後Dashboard.html","path":"美股/盤後/美股盤後Dashboard.html","dir":"美股/盤後"},
     {"name":"2026-03-26","path":"美股/盤後/2026-03-26","dir":"美股/盤後"},
     {"name":"美股盤後Dashboard.html","path":"美股/盤後/美股盤後Dashboard.html","dir":"美股/盤後"},
     {"name":"2026-03-25","path":"美股/盤後/2026-03-25","dir":"美股/盤後"},
@@ -94,6 +100,8 @@ const FILES = {
     {"name":"盤後Dashboard.html","path":"美股/盤後/2026-03/盤後Dashboard.html","dir":"美股/盤後/2026-03","month":"2026-03"},
   ],
   "🇭🇰 港股盤前": [
+    {"name":"2026-04-02","path":"港股/盤前/2026-04-02","dir":"港股/盤前"},
+    {"name":"港股盤前Dashboard.html","path":"港股/盤前/港股盤前Dashboard.html","dir":"港股/盤前"},
     {"name":"2026-04-01","path":"港股/盤前/2026-04-01","dir":"港股/盤前"},
     {"name":"港股盤前Dashboard.html","path":"港股/盤前/港股盤前Dashboard.html","dir":"港股/盤前"},
     {"name":"2026-03-27","path":"港股/盤前/2026-03-27","dir":"港股/盤前"},
@@ -134,6 +142,8 @@ const FILES = {
     {"name":"港股盤前Dashboard.html","path":"港股/盤前/2026-03/港股盤前Dashboard.html","dir":"港股/盤前/2026-03","month":"2026-03"},
   ],
   "🇭🇰 港股盤後": [
+    {"name":"2026-04-02","path":"港股/盤後/2026-04-02","dir":"港股/盤後"},
+    {"name":"港股盤後Dashboard.html","path":"港股/盤後/港股盤後Dashboard.html","dir":"港股/盤後"},
     {"name":"2026-03-27","path":"港股/盤後/2026-03-27","dir":"港股/盤後"},
     {"name":"港股盤後Dashboard.html","path":"港股/盤後/港股盤後Dashboard.html","dir":"港股/盤後"},
     {"name":"2026-03-26","path":"港股/盤後/2026-03-26","dir":"港股/盤後"},
