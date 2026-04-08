@@ -1,5 +1,6 @@
 const FILES = {
   "🇺🇸 美股盤前": [
+    {"name":"2026-04-09 盤前Dashboard.html","path":"美股/盤前/2026-04-09 盤前Dashboard.html","dir":"美股/盤前"},
     {"name":"2026-04-08 盤前Dashboard.html","path":"美股/盤前/2026-04-08 盤前Dashboard.html","dir":"美股/盤前"},
     {"name":"2026-04-07 盤前Dashboard.html","path":"美股/盤前/2026-04-07 盤前Dashboard.html","dir":"美股/盤前"},
     {"name":"2026-04-02 盤前Dashboard.html","path":"美股/盤前/2026-04-02 盤前Dashboard.html","dir":"美股/盤前"},
