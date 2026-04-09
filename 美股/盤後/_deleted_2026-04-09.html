@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股盤後日報 — 2026-04-09</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #D4AF37;
+  --gold-dim: rgba(212, 175, 55, 0.15);
+  --gold-glow: rgba(212, 175, 55, 0.3);
+  --bg-primary: #0a0a0f;
+  --bg-card: #12121a;
+  --bg-card-hover: #1a1a26;
+  --bg-elevated: #1e1e2a;
+  --text-primary: #e8e6e1;
+  --text-secondary: #8a8a9a;
+  --text-dim: #5a5a6a;
+  --border: rgba(255,255,255,0.06);
+  --border-gold: rgba(212, 175, 55, 0.3);
+  --bullish: #4ade80;
+  --bearish: #f87171;
+  --neutral: #fbbf24;
+  --bullish-bg: rgba(74, 222, 128, 0.08);
+  --bearish-bg: rgba(248, 113, 113, 0.08);
+  --neutral-bg: rgba(251, 191, 36, 0.08);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Noto Sans TC', 'JetBrains Mono', sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+.container { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+.market-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  animation: fadeIn 0.8s ease-out;
+}
+.market-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 50%;
+  transform: translateX(-50%);
+  width: 120px; height: 1px;
+  background: var(--gold);
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+.header-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; font-weight: 500;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.75rem; opacity: 0.8;
+}
+.header-subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+.market-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+}
+
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.1s both;
+}
+.hero-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.hero-card:hover { border-color: var(--border-gold); transform: translateY(-2px); }
+.hero-card.warn { border-color: var(--neutral); box-shadow: 0 0 12px rgba(251, 191, 36, 0.15); }
+.hero-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 0.5rem;
+}
+.hero-value {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  line-height: 1.2; margin-bottom: 0.3rem;
+}
+.hero-change {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem; font-weight: 600;
+}
+.hero-change.up { color: var(--bullish); }
+.hero-change.down { color: var(--bearish); }
+.hero-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--text-dim); margin-top: 0.25rem;
+}
+
+.secondary-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.15s both;
+}
+.sec-metric {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+}
+.sec-metric .sec-name { color: var(--text-secondary); font-weight: 500; }
+.sec-metric .sec-val { color: var(--text-primary); font-weight: 600; margin: 0 0.4rem; }
+.sec-metric .sec-chg { font-weight: 600; font-size: 0.78rem; }
+.sec-metric .sec-chg.up { color: var(--bullish); }
+.sec-metric .sec-chg.down { color: var(--bearish); }
+
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.section-title::before {
+  content: '';
+  width: 3px; height: 1.1em;
+  background: var(--gold);
+  border-radius: 2px; flex-shrink: 0;
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.2s both;
+}
+.heatmap-tile {
+  border-radius: 10px;
+  padding: 0.9rem 0.75rem;
+  text-align: center;
+  border: 1px solid var(--border);
+  transition: transform 0.2s;
+}
+.heatmap-tile:hover { transform: scale(1.03); }
+.heatmap-tile .ht-name { font-size: 0.78rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0.25rem; }
+.heatmap-tile .ht-chg { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700; }
+.heat-strong-up { background: rgba(74, 222, 128, 0.18); }
+.heat-strong-up .ht-chg { color: #4ade80; }
+.heat-up { background: rgba(74, 222, 128, 0.10); }
+.heat-up .ht-chg { color: #86efac; }
+.heat-mild-up { background: rgba(74, 222, 128, 0.05); }
+.heat-mild-up .ht-chg { color: #a7f3d0; }
+.heat-flat { background: rgba(255, 255, 255, 0.02); }
+.heat-flat .ht-chg { color: var(--text-secondary); }
+.heat-mild-down { background: rgba(248, 113, 113, 0.05); }
+.heat-mild-down .ht-chg { color: #fca5a5; }
+.heat-down { background: rgba(248, 113, 113, 0.10); }
+.heat-down .ht-chg { color: #fca5a5; }
+.heat-strong-down { background: rgba(248, 113, 113, 0.18); }
+.heat-strong-down .ht-chg { color: #f87171; }
+
+.fx-row {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 0.9rem 0;
+  margin-bottom: 1.5rem;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  animation: slideUp 0.6s ease-out 0.25s both;
+}
+.fx-row .fx-pair { display: flex; align-items: baseline; gap: 0.4rem; }
+.fx-row .fx-label { color: var(--text-dim); font-weight: 500; }
+.fx-row .fx-val { color: var(--text-primary); font-weight: 600; }
+.fx-row .fx-chg { font-size: 0.72rem; font-weight: 500; }
+.fx-row .fx-chg.up { color: var(--bullish); }
+.fx-row .fx-chg.down { color: var(--bearish); }
+
+.news-timeline { margin-bottom: 1.5rem; animation: slideUp 0.6s ease-out 0.3s both; }
+.news-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.news-item:last-child { border-bottom: none; }
+.news-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0; margin-top: 0.15rem;
+}
+.news-tag.fed { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+.news-tag.energy { background: rgba(251, 146, 60, 0.15); color: #fb923c; }
+.news-tag.positive { background: var(--bullish-bg); color: var(--bullish); }
+.news-tag.risk { background: var(--bearish-bg); color: var(--bearish); }
+.news-tag.watch { background: var(--neutral-bg); color: var(--neutral); }
+.news-tag.tech { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+.news-tag.geopolitics { background: rgba(236, 72, 153, 0.15); color: #ec4899; }
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.35s both;
+}
+.tech-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+}
+.tech-card .tc-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 0.4rem;
+}
+.tech-card .tc-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem; font-weight: 600;
+  color: var(--text-primary); margin-bottom: 0.25rem;
+}
+.tech-card .tc-note { font-size: 0.72rem; color: var(--text-secondary); line-height: 1.4; }
+
+.macro-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  animation: slideUp 0.6s ease-out 0.4s both;
+}
+.macro-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+.macro-card .mc-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 0.4rem;
+}
+.macro-card .mc-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.05rem; font-weight: 600;
+  color: var(--gold); margin-bottom: 0.2rem;
+}
+.macro-card .mc-note { font-size: 0.72rem; color: var(--text-secondary); }
+
+.cross-market {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.42s both;
+}
+.cross-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.5rem;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+}
+.cross-card .cc-name { font-size: 0.65rem; color: var(--text-dim); font-weight: 500; margin-bottom: 0.2rem; }
+.cross-card .cc-val { font-size: 0.82rem; font-weight: 600; color: var(--text-primary); }
+.cross-card .cc-chg { font-size: 0.72rem; font-weight: 600; }
+.cross-card .cc-chg.up { color: var(--bullish); }
+.cross-card .cc-chg.down { color: var(--bearish); }
+
+.section-divider {
+  position: relative;
+  text-align: center;
+  margin: 3rem 0 2.5rem;
+  padding: 1.5rem 0;
+}
+.section-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  box-shadow: 0 0 12px var(--gold-glow);
+}
+.section-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 16px var(--gold-glow);
+}
+.divider-label {
+  position: relative;
+  display: inline-block;
+  background: var(--bg-primary);
+  padding: 0.4rem 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* Credit & Breadth */
+.credit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.22s both;
+}
+.credit-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+}
+.credit-card .cr-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 0.4rem;
+}
+.credit-card .cr-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.1rem; font-weight: 600;
+  color: var(--text-primary); margin-bottom: 0.15rem;
+}
+.credit-card .cr-chg {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem; font-weight: 600;
+}
+.credit-card .cr-note { font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.25rem; line-height: 1.4; }
+
+.regime-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.24s both;
+}
+.regime-bar .rb-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.75rem;
+}
+.regime-bar .rb-track {
+  height: 28px;
+  background: linear-gradient(90deg, #f87171 0%, #fbbf24 35%, #4ade80 65%, #f87171 100%);
+  border-radius: 6px;
+  position: relative;
+  margin-bottom: 0.5rem;
+  opacity: 0.25;
+}
+.regime-bar .rb-marker {
+  position: absolute;
+  top: -4px;
+  width: 4px; height: 36px;
+  background: var(--text-primary);
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(255,255,255,0.4);
+}
+.regime-bar .rb-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text-dim);
+}
+.regime-bar .rb-summary {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  line-height: 1.5;
+}
+
+/* Debate */
+.debate-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  animation: fadeIn 0.8s ease-out;
+}
+.debate-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 50%;
+  transform: translateX(-50%);
+  width: 120px; height: 1px;
+  background: var(--gold);
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+.debate-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.4rem, 4vw, 1.8rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+.vote-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem;
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: var(--bg-card);
+}
+.vote-summary .num-bull { color: var(--bullish); font-weight: 600; }
+.vote-summary .num-bear { color: var(--bearish); font-weight: 600; }
+.vote-summary .num-neut { color: var(--neutral); font-weight: 600; }
+.vote-summary .sep { color: var(--text-dim); }
+.confidence-badge {
+  display: block;
+  margin-top: 0.75rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.confidence-badge strong { color: var(--neutral); font-weight: 600; }
+
+/* Action Card */
+.action-card {
+  position: relative;
+  border: 1px solid var(--border-gold);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+  background: linear-gradient(135deg, rgba(212,175,55,0.04) 0%, rgba(212,175,55,0.01) 100%);
+  overflow: hidden;
+  animation: slideUp 0.6s ease-out 0.2s both;
+}
+.action-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.action-card-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.action-card-label::before { content: '\25C6'; font-size: 0.5rem; }
+.action-main {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.action-verb {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem;
+  line-height: 1;
+}
+.action-verb.neutral { color: var(--neutral); }
+.action-reason {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  border-left: 2px solid var(--border-gold);
+  padding-left: 1rem;
+}
+.action-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.action-detail-item {
+  padding: 0.75rem 1rem;
+  background: rgba(0,0,0,0.25);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.action-detail-item .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 500;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 0.25rem;
+}
+.action-detail-item .value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem; font-weight: 500;
+  color: var(--text-primary);
+}
+.action-detail-item .value.trigger { color: var(--gold); }
+.action-detail-item .value.stop { color: var(--bearish); }
+
+.section { margin-bottom: 2.5rem; animation: slideUp 0.6s ease-out both; }
+.vote-bar-wrap {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+}
+.vote-bar {
+  display: flex;
+  height: 40px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+.vote-bar > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem; font-weight: 600;
+  transition: flex 1s ease-out;
+}
+.vb-bull { background: linear-gradient(135deg, #22c55e, #4ade80); color: #052e16; }
+.vb-bear { background: linear-gradient(135deg, #dc2626, #f87171); color: #450a0a; }
+.vb-neut { background: linear-gradient(135deg, #d97706, #fbbf24); color: #451a03; }
+.vote-legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  font-size: 0.8rem;
+}
+.vote-legend span { display: flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.legend-dot.bull { background: var(--bullish); }
+.legend-dot.bear { background: var(--bearish); }
+.legend-dot.neut { background: var(--neutral); }
+
+.conf-chart {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+}
+.conf-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 40px;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.conf-row:last-child { border-bottom: none; }
+.conf-name { font-size: 0.82rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.conf-bar-track { height: 24px; background: rgba(255,255,255,0.03); border-radius: 6px; overflow: hidden; }
+.conf-bar-fill { height: 100%; border-radius: 6px; transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
+.conf-score { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 600; text-align: right; }
+
+/* Risk Veto Banner */
+.risk-veto {
+  background: var(--bearish-bg);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--bearish);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.footer {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 640px) {
+  .hero-metrics { grid-template-columns: repeat(2, 1fr); }
+  .heatmap-grid { grid-template-columns: repeat(3, 1fr); }
+  .tech-grid { grid-template-columns: repeat(2, 1fr); }
+  .macro-grid { grid-template-columns: 1fr; }
+  .cross-market { grid-template-columns: repeat(3, 1fr); }
+  .credit-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ===== HEADER ===== -->
+<div class="market-header">
+  <div class="header-eyebrow">Post-Market Report</div>
+  <h1>US Equities Close</h1>
+  <div class="header-subtitle">2026-04-09 (Thu) &mdash; Ceasefire Day 2 / FOMC Digest / CPI Eve</div>
+</div>
+
+<!-- ===== HERO METRICS ===== -->
+<div class="hero-metrics">
+  <div class="hero-card">
+    <div class="hero-label">S&P 500</div>
+    <div class="hero-value">676.01</div>
+    <div class="hero-change up">+0.35%</div>
+    <div class="hero-sub">50MA 673.54 &bull; Confirmed</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">Nasdaq 100</div>
+    <div class="hero-value">606.09</div>
+    <div class="hero-change up">+0.16%</div>
+    <div class="hero-sub">Week +3.73%</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">Dow Jones</div>
+    <div class="hero-value">479.16</div>
+    <div class="hero-change up">+0.85%</div>
+    <div class="hero-sub">Week +2.94%</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">VIX</div>
+    <div class="hero-value">21.04</div>
+    <div class="hero-change down">-18.26%</div>
+    <div class="hero-sub">VIX9D 19.16 (-29.7%)</div>
+  </div>
+</div>
+
+<!-- ===== SECONDARY METRICS ===== -->
+<div class="secondary-metrics">
+  <div class="sec-metric">
+    <span class="sec-name">10Y Yield</span>
+    <span class="sec-val">4.29%</span>
+    <span class="sec-chg down">-1.20%</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">WTI Oil</span>
+    <span class="sec-val">$97.79</span>
+    <span class="sec-chg up">+1.36%</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">Gold</span>
+    <span class="sec-val">$4,740.90</span>
+    <span class="sec-chg down">-1.81%</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">DXY</span>
+    <span class="sec-val">99.10</span>
+    <span class="sec-chg up">+0.13%</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">BTC</span>
+    <span class="sec-val">~$72,000</span>
+    <span class="sec-chg up">+0.1%</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">Russell 2000</span>
+    <span class="sec-val">260.47</span>
+    <span class="sec-chg down">-0.38%</span>
+  </div>
+</div>
+
+<!-- ===== CREDIT & RATES ===== -->
+<div class="section-title">Credit & Rates</div>
+<div class="credit-grid">
+  <div class="credit-card">
+    <div class="cr-label">HY OAS</div>
+    <div class="cr-value">3.12%</div>
+    <div class="cr-chg" style="color: var(--bearish);">+7bp</div>
+    <div class="cr-note">信用利差微升 — 信用市場未跟隨股市樂觀</div>
+  </div>
+  <div class="credit-card">
+    <div class="cr-label">IG OAS</div>
+    <div class="cr-value">0.86%</div>
+    <div class="cr-chg" style="color: var(--bearish);">+1bp</div>
+    <div class="cr-note">投資級穩定，機構信用無壓力</div>
+  </div>
+  <div class="credit-card">
+    <div class="cr-label">2s10s Spread</div>
+    <div class="cr-value">+0.50%</div>
+    <div class="cr-chg" style="color: var(--bearish);">-2bp</div>
+    <div class="cr-note">正常曲線，略微平坦化</div>
+  </div>
+  <div class="credit-card">
+    <div class="cr-label">VIX Term Structure</div>
+    <div class="cr-value">0.93</div>
+    <div class="cr-chg" style="color: var(--bullish);">Contango</div>
+    <div class="cr-note">深度 Contango — 恐慌結構瓦解</div>
+  </div>
+</div>
+
+<!-- ===== BREADTH & REGIME ===== -->
+<div class="section-title">Breadth & Regime</div>
+<div class="regime-bar">
+  <div class="rb-title">Market Breadth: 55/100 (Cautious-Healthy)</div>
+  <div class="rb-track" style="position:relative;">
+    <div class="rb-marker" style="left: 55%;"></div>
+  </div>
+  <div class="rb-labels">
+    <span>0 Danger</span>
+    <span>30 Warning</span>
+    <span>50 Cautious</span>
+    <span>65 Healthy</span>
+    <span>100 Overbought</span>
+  </div>
+  <div class="rb-summary">SPY 企穩 50MA (673.54) 上方。RSI 58.9 中性偏強。MACD 牛叉 histogram 3.13 動量增強。強勢牛市排列確認（價格 > 50MA > 200MA）</div>
+</div>
+<div class="regime-bar">
+  <div class="rb-title">Macro Regime: Late-Cycle Transitional (55/100)</div>
+  <div class="rb-track" style="position:relative;">
+    <div class="rb-marker" style="left: 55%;"></div>
+  </div>
+  <div class="rb-labels">
+    <span>0 Crisis</span>
+    <span>30 Contraction</span>
+    <span>50 Late-Cycle</span>
+    <span>70 Expansion</span>
+    <span>100</span>
+  </div>
+  <div class="rb-summary">FOMC hawkish hold (3.50-3.75%)。年內僅 1 次 25bp 減息預期。停火令 Stagflation 退潮但結構性問題仍在：失業 4.3%、明日 CPI headline 3.1%</div>
+</div>
+
+<!-- ===== SECTOR HEATMAP ===== -->
+<div class="section-title">Sector Heatmap</div>
+<div class="heatmap-grid">
+  <div class="heatmap-tile heat-up">
+    <div class="ht-name">Energy</div>
+    <div class="ht-chg">+1.66%</div>
+  </div>
+  <div class="heatmap-tile heat-up">
+    <div class="ht-name">Materials</div>
+    <div class="ht-chg">+1.47%</div>
+  </div>
+  <div class="heatmap-tile heat-up">
+    <div class="ht-name">Industrials</div>
+    <div class="ht-chg">+1.13%</div>
+  </div>
+  <div class="heatmap-tile heat-mild-up">
+    <div class="ht-name">Healthcare</div>
+    <div class="ht-chg">+0.99%</div>
+  </div>
+  <div class="heatmap-tile heat-mild-up">
+    <div class="ht-name">Staples</div>
+    <div class="ht-chg">+0.83%</div>
+  </div>
+  <div class="heatmap-tile heat-mild-up">
+    <div class="ht-name">Financials</div>
+    <div class="ht-chg">+0.79%</div>
+  </div>
+  <div class="heatmap-tile heat-mild-up">
+    <div class="ht-name">Real Estate</div>
+    <div class="ht-chg">+0.73%</div>
+  </div>
+  <div class="heatmap-tile heat-flat">
+    <div class="ht-name">Comm Svcs</div>
+    <div class="ht-chg">+0.43%</div>
+  </div>
+  <div class="heatmap-tile heat-flat">
+    <div class="ht-name">Utilities</div>
+    <div class="ht-chg">+0.36%</div>
+  </div>
+  <div class="heatmap-tile heat-flat">
+    <div class="ht-name">Cons Disc</div>
+    <div class="ht-chg">+0.12%</div>
+  </div>
+  <div class="heatmap-tile heat-mild-down">
+    <div class="ht-name">Tech</div>
+    <div class="ht-chg">-0.09%</div>
+  </div>
+</div>
+
+<!-- ===== FX ROW ===== -->
+<div class="fx-row">
+  <div class="fx-pair">
+    <span class="fx-label">EUR/USD</span>
+    <span class="fx-val">1.1706</span>
+  </div>
+  <div class="fx-pair">
+    <span class="fx-label">USD/JPY</span>
+    <span class="fx-val">158.15</span>
+  </div>
+  <div class="fx-pair">
+    <span class="fx-label">GBP/USD</span>
+    <span class="fx-val">1.3472</span>
+  </div>
+  <div class="fx-pair">
+    <span class="fx-label">USD/CNY</span>
+    <span class="fx-val">6.8297</span>
+  </div>
+</div>
+
+<!-- ===== TECHNICALS ===== -->
+<div class="section-title">SPY Technicals</div>
+<div class="tech-grid">
+  <div class="tech-card">
+    <div class="tc-label">RSI (14)</div>
+    <div class="tc-value" style="color: var(--bullish);">58.9</div>
+    <div class="tc-note">中性偏強 &bull; 充足上行至 70</div>
+  </div>
+  <div class="tech-card">
+    <div class="tc-label">MACD Signal</div>
+    <div class="tc-value" style="color: var(--bullish);">Bull Cross</div>
+    <div class="tc-note">Hist +3.13 &bull; 動量增強</div>
+  </div>
+  <div class="tech-card">
+    <div class="tc-label">50 / 200 MA</div>
+    <div class="tc-value">673.54 / 660.16</div>
+    <div class="tc-note">價格 > 50MA > 200MA &bull; 牛排列</div>
+  </div>
+  <div class="tech-card">
+    <div class="tc-label">Bollinger</div>
+    <div class="tc-value">679.28 / 634.09</div>
+    <div class="tc-note">中軌上方 &bull; 上軌阻力 679</div>
+  </div>
+</div>
+
+<!-- ===== MACRO ===== -->
+<div class="section-title">Macro Snapshot</div>
+<div class="macro-grid">
+  <div class="macro-card">
+    <div class="mc-label">Fed Funds Rate</div>
+    <div class="mc-value">3.64%</div>
+    <div class="mc-note">Hawkish hold &bull; 1 cut in Dec</div>
+  </div>
+  <div class="macro-card">
+    <div class="mc-label">Unemployment</div>
+    <div class="mc-value">4.3%</div>
+    <div class="mc-note">Improved from 4.4%</div>
+  </div>
+  <div class="macro-card">
+    <div class="mc-label">CPI (Feb)</div>
+    <div class="mc-value">327.46</div>
+    <div class="mc-note">Mar CPI tomorrow 8:30am</div>
+  </div>
+</div>
+
+<!-- ===== NEWS ===== -->
+<div class="section-title">Key Headlines</div>
+<div class="news-timeline">
+  <div class="news-item">
+    <span class="news-tag positive">TECH</span>
+    <span>SPY 企穩 50MA (673.54) 上方 — 強勢牛市排列確認。RSI 58.9、MACD 牛叉持續。Breakout + retest 確認</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag fed">FED</span>
+    <span>FOMC 3月紀要：Hawkish hold 3.50-3.75%。年內 1 次 25bp 減息。Powell 推返近期減息預期。Miran 唯一鴿派</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag risk">RISK</span>
+    <span>以色列大規模空襲黎巴嫩 250+ 死 — 伊朗威脅因黎巴嫩重新關閉荷姆茲。停火 72h 內可能崩潰</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag watch">CPI</span>
+    <span>明日 8:30am 3月 CPI — BofA 估 headline 3.1% y/y、能源 +10.6% m/m。核心 2.7% y/y 係關鍵</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag geopolitics">GEO</span>
+    <span>巴基斯坦和談明日舉行 — 伊朗開價制裁解除 + 核權利 + 賠償。差距巨大。Trump 不太可能全部接受</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag energy">OIL</span>
+    <span>WTI +1.36% 至 $97.79 — 昨日超跌後技術反彈。荷姆茲「協調通行」≠ 自由通航，復航進度慢</span>
+  </div>
+</div>
+
+<!-- ===== DIVIDER ===== -->
+<div class="section-divider">
+  <span class="divider-label">Investment Committee</span>
+</div>
+
+<!-- ===== RISK VETO ===== -->
+<div class="risk-veto">
+  <span style="font-size: 1.2rem;">&#9888;</span>
+  <span>RISK VETO TRIGGERED &mdash; Taleb 8/10. Israel-Lebanon escalation threatens ceasefire within 72h. All positions must be hedged with SPY puts.</span>
+</div>
+
+<!-- ===== VOTE BAR ===== -->
+<div class="section">
+  <div class="section-title">Debate Vote</div>
+  <div class="vote-bar-wrap">
+    <div class="vote-bar">
+      <div class="vb-bull" style="flex: 4;">4 Bull</div>
+      <div class="vb-bear" style="flex: 3;">3 Bear</div>
+      <div class="vb-neut" style="flex: 2;">2 Wait</div>
+    </div>
+    <div class="vote-legend">
+      <span><span class="legend-dot bull"></span>Bullish (4)</span>
+      <span><span class="legend-dot bear"></span>Bearish (3)</span>
+      <span><span class="legend-dot neut"></span>Neutral (2)</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CONFIDENCE CHART ===== -->
+<div class="section">
+  <div class="section-title">Conviction Chart</div>
+  <div class="conf-chart">
+    <div class="conf-row">
+      <span class="conf-name" style="color: var(--bearish);">Taleb</span>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width: 80%; background: linear-gradient(90deg, #dc2626, #f87171);"></div></div>
+      <span class="conf-score" style="color: var(--bearish);">8</span>
+    </div>
+    <div class="conf-row">
+      <span class="conf-name" style="color: var(--bearish);">Macro Strat</span>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width: 70%; background: linear-gradient(90deg, #dc2626, #f87171);"></div></div>
+      <span class="conf-score" style="color: var(--bearish);">7</span>
+    </div>
+    <div class="conf-row">
+      <span class="conf-name" style="color: var(--neutral);">Marks</span>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width: 70%; background: linear-gradient(90deg, #d97706, #fbbf24);"></div></div>
+      <span class="conf-score" style="color: var(--neutral);">7</span>
+    </div>
+    <div class="conf-row">
+      <span class="conf-name" style="color: var(--bullish);">WSB</span>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width: 70%; background: linear-gradient(90deg, #22c55e, #4ade80);"></div></div>
+      <span class="conf-score" style="color: var(--bullish);">7</span>
+    </div>
+    <div class="conf-row">
+      <span class="conf-name" style="color: var(--bullish);">Druckenmiller</span>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width: 60%; background: linear-gradient(90deg, #22c55e, #4ade80);"></div></div>
+      <span class="conf-score" style="color: var(--bullish);">6</span>
+    </div>
+    <div class="conf-row">
+      <span class="conf-name" style="color: var(--bearish);">Soros</span>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width: 60%; background: linear-gradient(90deg, #dc2626, #f87171);"></div></div>
+      <span class="conf-score" style="color: var(--bearish);">6</span>
+    </div>
+    <div class="conf-row">
+      <span class="conf-name" style="color: var(--bullish);">Quant</span>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width: 60%; background: linear-gradient(90deg, #22c55e, #4ade80);"></div></div>
+      <span class="conf-score" style="color: var(--bullish);">6</span>
+    </div>
+    <div class="conf-row">
+      <span class="conf-name" style="color: var(--bullish);">Lynch</span>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width: 60%; background: linear-gradient(90deg, #22c55e, #4ade80);"></div></div>
+      <span class="conf-score" style="color: var(--bullish);">6</span>
+    </div>
+    <div class="conf-row">
+      <span class="conf-name" style="color: var(--bullish);">Dalio</span>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width: 50%; background: linear-gradient(90deg, #22c55e, #4ade80);"></div></div>
+      <span class="conf-score" style="color: var(--bullish);">5</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ACTION CARD ===== -->
+<div class="action-card">
+  <div class="action-card-label">Action Card</div>
+  <div class="action-main">
+    <span class="action-verb neutral">WAIT</span>
+    <span class="action-reason">Risk Veto triggered. CPI + Islamabad talks = dual binary risk tomorrow. Hold cash 75-80%.</span>
+  </div>
+  <div class="action-details">
+    <div class="action-detail-item">
+      <div class="label">If CPI OK</div>
+      <div class="value trigger">Core &le;2.7% &rarr; Long QQQ 10%, target 680-690</div>
+    </div>
+    <div class="action-detail-item">
+      <div class="label">If CPI Hot</div>
+      <div class="value stop">Headline >3.5% &rarr; Close all longs. SPY 655-665</div>
+    </div>
+    <div class="action-detail-item">
+      <div class="label">Hedge (Mandatory)</div>
+      <div class="value stop">SPY 4/18 650P + GLD</div>
+    </div>
+    <div class="action-detail-item">
+      <div class="label">Stop Loss</div>
+      <div class="value stop">All longs: SPY &lt; 670</div>
+    </div>
+    <div class="action-detail-item">
+      <div class="label">Position Size</div>
+      <div class="value">Cash 75-80% / Offense &le;10% / Defense 10-15%</div>
+    </div>
+    <div class="action-detail-item">
+      <div class="label">Time Frame</div>
+      <div class="value trigger">Ultra-short 24-48h</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<div class="footer">
+  <p>Generated 2026-04-09 &bull; v2.1 &bull; Data: yfinance, FRED, Treasury.gov, Finnhub</p>
+  <p style="margin-top: 0.5rem;">Confidence: 5.5/10 &bull; Risk Veto: ACTIVE (Taleb 8/10)</p>
+</div>
+
+</div>
+</body>
+</html>
