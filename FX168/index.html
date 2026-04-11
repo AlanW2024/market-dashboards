@@ -32,7 +32,30 @@
     .hero-value{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--gold);line-height:1.1;}
     .hero-value.small{font-size:1.1rem;font-family:'Noto Sans TC',sans-serif;}
     /* Sparkline */
-    svg#sparkline{width:100%;height:60px;}
+    svg#sparkline{display:block;width:100%;height:70px;max-width:100%;}
+    /* Weekly events widget */
+    #weekly-events{display:flex;flex-direction:column;gap:.45rem;}
+    .event-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:.7rem .9rem;display:flex;align-items:center;gap:.85rem;transition:border-color .15s;}
+    .event-card:hover{border-color:var(--gold);}
+    .event-card.past{opacity:.42;}
+    .event-date{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold);min-width:70px;line-height:1.35;}
+    .event-date b{display:block;color:var(--text-primary);font-size:.82rem;font-weight:600;}
+    .event-body{flex:1;min-width:0;}
+    .event-row1{display:flex;align-items:center;gap:.55rem;margin-bottom:.2rem;flex-wrap:wrap;}
+    .event-stars{color:var(--gold);font-size:.72rem;letter-spacing:.5px;}
+    .event-country{font-size:.7rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;}
+    .event-source{font-size:.62rem;color:var(--text-dim);background:var(--bg-hover);padding:.05rem .4rem;border-radius:3px;letter-spacing:.05em;}
+    .event-name{font-size:.88rem;color:var(--text-primary);line-height:1.35;}
+    .event-values{font-size:.68rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace;margin-top:.25rem;}
+    .event-empty{text-align:center;padding:1.5rem;color:var(--text-dim);font-size:.82rem;background:var(--bg-card);border:1px dashed var(--border);border-radius:8px;}
+    /* Analysis navigator */
+    .nav-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;margin-bottom:.75rem;}
+    .nav-card h3{font-family:'DM Serif Display',serif;color:var(--gold);font-size:1.05rem;font-weight:400;margin-bottom:.3rem;}
+    .nav-card .nav-meta{font-size:.7rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace;margin-bottom:.4rem;}
+    .nav-card p{font-size:.82rem;color:var(--text-secondary);line-height:1.5;margin-bottom:.35rem;}
+    .nav-card code{background:var(--bg-hover);padding:.08rem .35rem;border-radius:3px;font-size:.72rem;color:var(--gold);}
+    .nav-card ul{margin:.3rem 0 .1rem 1.1rem;font-size:.78rem;color:var(--text-secondary);line-height:1.55;}
+    .nav-card ul li{margin-bottom:.15rem;}
     /* Sentiment bar */
     .sentiment-bar{display:flex;height:38px;border-radius:8px;overflow:hidden;border:1px solid var(--border);}
     .sentiment-bar > div{display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#0a0a0f;font-weight:700;overflow:hidden;white-space:nowrap;padding:0 2px;}
@@ -106,8 +129,14 @@
   </section>
 
   <section>
+    <h2 class="section-title">本週重大事件</h2>
+    <div id="weekly-events"></div>
+    <div class="muted" id="weekly-events-note" style="margin-top:.5rem"></div>
+  </section>
+
+  <section>
     <h2 class="section-title">近 7 日發文量</h2>
-    <svg id="sparkline" viewBox="0 0 200 60" preserveAspectRatio="none"></svg>
+    <svg id="sparkline"></svg>
   </section>
 
   <section>
@@ -134,12 +163,48 @@
     <div id="article-list"></div>
   </section>
 
+  <section>
+    <h2 class="section-title">📚 分析深度導航</h2>
+    <p class="muted" style="margin-bottom:.9rem">FX168 vault 內設有三層分析，對應不同閱讀時長與深度需求。檔案位於本機 Obsidian vault，未部署至公開 GitHub Pages。</p>
+
+    <div class="nav-card">
+      <h3>1️⃣ 快速摘要（約 5 分鐘）</h3>
+      <div class="nav-meta">Phase 2 · 2026-04-10 · 58 篇精選</div>
+      <p>58 篇精選 curated 文章，手動篩選 top news + 熱榜 + 分析師欄。作為伊朗戰爭五連反應（油價／黃金／股市／美元／比特幣）的 fast briefing。</p>
+      <p>檔案：<code>07-分析/2026-04-10 深度分析.md</code></p>
+    </div>
+
+    <div class="nav-card">
+      <h3>2️⃣ 全景綜合（約 15 分鐘）</h3>
+      <div class="nav-meta">Phase 3C · 2026-04-11 · 942 篇 Map-Reduce</div>
+      <p>942 篇全覆蓋 → 9 主題 cluster → 跨主題綜合。包含 Master Narrative、Action Matrix、Dissent Signals 與統計維度。</p>
+      <ul>
+        <li><code>00-綜合分析.md</code>：跨主題綜合（3,500 字）+ 四情境 Action Matrix</li>
+        <li><code>01-主題聚類/</code>：9 份 cluster summary 報告</li>
+        <li><code>02-統計/</code>：Sentiment distribution、Theme timeline、Divergent views</li>
+      </ul>
+      <p>檔案：<code>07-分析/全覆蓋 2026-04-11/</code></p>
+    </div>
+
+    <div class="nav-card">
+      <h3>3️⃣ 深度研究（約 30+ 分鐘）</h3>
+      <div class="nav-meta">Phase 3D · 2026-04-11 · 源自 942 篇全文，按 cluster 拆解</div>
+      <p>同一批 942 篇，但按主題 cluster 分解成每主題獨立深度報告。四大優先 cluster 各有 4 份 MD（總覽／時間線／分析師觀點／關鍵數據），其餘 4 個 supporting cluster 各有單份深度報告。</p>
+      <ul>
+        <li>油價與霍爾木茲（282 篇）· 黃金雙向撕裂（95 篇）</li>
+        <li>美股滯脹困局（66 篇）· 伊朗戰爭政治（42 篇）</li>
+        <li>美聯儲兩難 · 加密貨幣 · AI與監管 · 港股A股</li>
+      </ul>
+      <p>檔案：<code>07-分析/主題深度 2026-04-11/</code></p>
+    </div>
+  </section>
+
   <section style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center">
     <div class="muted">
-      深度分析喺本機 Obsidian vault：<br>
-      <code>07-分析/全覆蓋 2026-04-11/</code> · <code>07-分析/主題深度 2026-04-11/</code><br>
+      本 Dashboard：每日爬取最近 14 日文章 · AI 結構化摘要 · 主題/情緒追蹤<br>
       資料來源：<a href="https://www.fx168news.com/" style="color:var(--gold)">fx168news.com</a> ·
-      每日 09:00 HKT 自動更新
+      每日 09:00 HKT 自動更新 · 經濟日曆同步 regenerate<br>
+      深度分析檔案位於本機 Obsidian vault
     </div>
   </section>
 
@@ -189,17 +254,79 @@ function sentimentType(s){
   return "neutral";
 }
 
-// ── Sparkline ─────────────────────────────────────────────────────────
+// ── Weekly events ────────────────────────────────────────────────────
+function renderWeeklyEvents(){
+  const container = document.getElementById("weekly-events");
+  const note = document.getElementById("weekly-events-note");
+  const cal = D.calendar || { events: [] };
+  const events = cal.events || [];
+
+  if(events.length === 0){
+    container.innerHTML = `<div class="event-empty">本週暫無中度以上事件（star ≥ 2）。下一次 fetch 會更新。</div>`;
+    if(note){ note.textContent = cal.fetched_at ? `來源 FX168 財經日曆 · 同步於 ${cal.fetched_at.slice(0,16).replace('T',' ')}` : ""; }
+    return;
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const srcLabel = { central_bank:"央行", finance:"財經", events:"指標", holiday:"假期" };
+
+  container.innerHTML = events.map(e => {
+    const past = e.pub_date < today;
+    const stars = "★".repeat(Math.max(e.star || 0, 0));
+    const time = (e.is_pub_time && e.pub_time && e.pub_time !== "00:00") ? e.pub_time : "";
+    const values = [];
+    if(e.pre_value) values.push(`前 ${e.pre_value}`);
+    if(e.estimate_value) values.push(`預 ${e.estimate_value}`);
+    if(e.pub_value) values.push(`實 ${e.pub_value}`);
+    return `<div class="event-card${past ? ' past' : ''}">
+      <div class="event-date">
+        <b>${e.pub_date.slice(5)}</b>
+        ${time || '—'}
+      </div>
+      <div class="event-body">
+        <div class="event-row1">
+          <span class="event-stars">${stars}</span>
+          <span class="event-country">${escapeHtml(e.country || '—')}</span>
+          <span class="event-source">${srcLabel[e.source] || e.source}</span>
+        </div>
+        <div class="event-name">${escapeHtml(e.event_name || '')}</div>
+        ${values.length ? `<div class="event-values">${values.join(' · ')}</div>` : ''}
+      </div>
+    </div>`;
+  }).join("");
+  if(note){
+    const ts = cal.fetched_at ? ` · 同步於 ${cal.fetched_at.slice(0,16).replace('T',' ')}` : "";
+    note.textContent = `共 ${events.length} 個事件（star ≥ 2，-3 至 +7 日）${ts}`;
+  }
+}
+
+// ── Sparkline (dynamic viewBox, no anisotropic stretch) ─────────────
 function renderSparkline(){
   const svg = document.getElementById("sparkline");
   const dates = Object.keys(D.sparkline_7d).sort();
   if(dates.length < 2){ svg.innerHTML=""; return; }
+
+  // Use actual rendered width so coordinates match pixels.
+  // Fallback to 600 when clientWidth is unreliable (mobile first-paint).
+  const W = Math.max(svg.clientWidth || 600, 280);
+  const H = 70;                       // leave room for date labels
+  const plotTop = 6, plotBottom = 52; // polyline vertical range
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("width", W);
+  svg.setAttribute("height", H);
+
   const vals = dates.map(d => D.sparkline_7d[d]);
   const max = Math.max(...vals, 1);
-  const stepX = 200 / (dates.length - 1);
-  const points = vals.map((v,i) => `${(i*stepX).toFixed(1)},${(54 - v/max*48).toFixed(1)}`).join(" ");
-  const lastX = (vals.length-1)*stepX;
-  const lastY = 54 - vals[vals.length-1]/max*48;
+  const stepX = W / (dates.length - 1);
+  const pts = vals.map((v,i) => {
+    const x = (i * stepX).toFixed(1);
+    const y = (plotBottom - (v/max) * (plotBottom - plotTop)).toFixed(1);
+    return `${x},${y}`;
+  });
+  const points = pts.join(" ");
+  const lastX = parseFloat(pts[pts.length-1].split(",")[0]);
+  const lastY = parseFloat(pts[pts.length-1].split(",")[1]);
+
   svg.innerHTML = `
     <defs>
       <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
@@ -207,10 +334,18 @@ function renderSparkline(){
         <stop offset="100%" stop-color="#D4AF37" stop-opacity="0"/>
       </linearGradient>
     </defs>
-    <polygon points="0,60 ${points} 200,60" fill="url(#sparkGrad)"/>
+    <polygon points="0,${plotBottom} ${points} ${W},${plotBottom}" fill="url(#sparkGrad)"/>
     <polyline points="${points}" fill="none" stroke="#D4AF37" stroke-width="2"/>
     <circle cx="${lastX}" cy="${lastY}" r="3" fill="#D4AF37"/>
-    ${dates.map((d,i) => `<text x="${i*stepX}" y="60" font-size="6" fill="#6b7280" text-anchor="middle" font-family="JetBrains Mono">${d.slice(5)}</text>`).join("")}
+    ${dates.map((d,i) => {
+      const x = (i * stepX).toFixed(1);
+      return `<text x="${x}" y="${H-4}" font-size="10" fill="#8a8a9a" text-anchor="middle" font-family="'JetBrains Mono',monospace">${d.slice(5)}</text>`;
+    }).join("")}
+    ${vals.map((v,i) => {
+      const x = (i * stepX).toFixed(1);
+      const y = (plotBottom - (v/max) * (plotBottom - plotTop) - 4).toFixed(1);
+      return `<text x="${x}" y="${y}" font-size="9" fill="#D4AF37" text-anchor="middle" font-family="'JetBrains Mono',monospace">${v}</text>`;
+    }).join("")}
   `;
 }
 
@@ -391,11 +526,21 @@ function init(){
   document.getElementById("total-count").textContent = D.total ?? "—";
   document.getElementById("top-theme").textContent = D.top_themes?.[0]?.[0] || "—";
 
-  renderSparkline();
+  try { renderWeeklyEvents(); } catch(e){ console.warn('weekly events render failed', e); }
+  try { renderSparkline(); } catch(e){ console.warn('sparkline render failed', e); }
   renderSentimentBar();
   renderThemeCloud();
   renderFilters();
   renderList();
+
+  // Re-render sparkline on window resize so viewBox tracks clientWidth
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      try { renderSparkline(); } catch(e){}
+    }, 150);
+  });
 
   document.getElementById("search").addEventListener("input", e => {
     state.query = e.target.value.toLowerCase().trim();
