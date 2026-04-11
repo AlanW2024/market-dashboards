@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FX168 News Intelligence</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Noto+Sans+TC:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-primary:#0a0a0f; --bg-card:#12121a; --bg-hover:#1a1a28;
+      --border:#2a2a36; --border-light:#3a3a48;
+      --text-primary:#e5e5ea; --text-secondary:#9ca3af; --text-dim:#6b7280;
+      --gold:#D4AF37; --gold-dim:rgba(212,175,55,.15);
+      --bullish:#34d399; --bearish:#f87171; --neutral:#fbbf24;
+      --accent-blue:#60a5fa; --accent-purple:#a78bfa;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{background:var(--bg-primary);color:var(--text-primary);font-family:'Noto Sans TC',sans-serif;line-height:1.5;min-height:100vh;}
+    .container{max-width:1200px;margin:0 auto;padding:2rem 1.25rem 4rem;}
+    .market-header{text-align:center;padding:1.5rem 0 2rem;border-bottom:1px solid var(--border);margin-bottom:2rem;}
+    .header-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--gold);letter-spacing:.35em;margin-bottom:.5rem;}
+    h1{font-family:'DM Serif Display',serif;font-size:2.4rem;font-weight:400;background:linear-gradient(135deg,var(--gold) 0%,#F7DC6F 50%,var(--gold) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .header-subtitle{font-size:.82rem;color:var(--text-secondary);margin-top:.5rem;font-family:'JetBrains Mono',monospace;}
+    h2.section-title{font-family:'DM Serif Display',serif;font-size:1.3rem;font-weight:400;color:var(--gold);margin-bottom:.75rem;padding-bottom:.4rem;border-bottom:1px solid var(--border);}
+    section{margin-bottom:2rem;}
+    .muted{font-size:.75rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace;}
+    /* Hero metrics */
+    .hero-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+    .hero-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;transition:border-color .2s,transform .2s;}
+    .hero-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+    .hero-label{font-size:.7rem;color:var(--text-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.5rem;font-family:'JetBrains Mono',monospace;}
+    .hero-value{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--gold);line-height:1.1;}
+    .hero-value.small{font-size:1.1rem;font-family:'Noto Sans TC',sans-serif;}
+    /* Sparkline */
+    svg#sparkline{width:100%;height:60px;}
+    /* Sentiment bar */
+    .sentiment-bar{display:flex;height:38px;border-radius:8px;overflow:hidden;border:1px solid var(--border);}
+    .sentiment-bar > div{display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#0a0a0f;font-weight:700;overflow:hidden;white-space:nowrap;padding:0 2px;}
+    .sentiment-legend{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.6rem;font-size:.7rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;}
+    .sentiment-legend .dot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle;}
+    /* Theme cloud */
+    #theme-cloud{display:flex;flex-wrap:wrap;gap:.4rem;}
+    .theme-chip{display:inline-block;padding:.25rem .6rem;background:var(--bg-card);border:1px solid var(--border);color:var(--text-secondary);border-radius:20px;font-size:.72rem;cursor:pointer;transition:all .15s;user-select:none;font-family:'JetBrains Mono',monospace;}
+    .theme-chip:hover{border-color:var(--gold);color:var(--gold);}
+    .theme-chip.active{background:var(--gold-dim);color:var(--gold);border-color:var(--gold);}
+    .theme-chip .count{opacity:.6;margin-left:.25rem;}
+    /* Search + filters */
+    .search-box{width:100%;padding:.85rem 1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;color:var(--text-primary);font-family:inherit;font-size:1rem;transition:border-color .2s;}
+    .search-box:focus{outline:none;border-color:var(--gold);}
+    .filter-bar{display:flex;gap:.4rem;flex-wrap:wrap;margin:.75rem 0;}
+    .filter-btn{padding:.3rem .75rem;border:1px solid var(--border);border-radius:18px;background:var(--bg-card);color:var(--text-secondary);cursor:pointer;font-size:.7rem;font-family:'JetBrains Mono',monospace;transition:all .15s;}
+    .filter-btn:hover{border-color:var(--border-light);}
+    .filter-btn.active{color:var(--gold);border-color:var(--gold);background:var(--gold-dim);}
+    /* Article card */
+    #article-list{display:flex;flex-direction:column;gap:.75rem;}
+    .article-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;cursor:pointer;transition:border-color .15s,background .15s;}
+    .article-card:hover{border-color:var(--gold);background:var(--bg-hover);}
+    .article-card.duplicate{opacity:.55;}
+    .article-title{font-weight:500;margin-bottom:.35rem;line-height:1.35;}
+    .article-meta{font-size:.7rem;color:var(--text-dim);display:flex;gap:.9rem;font-family:'JetBrains Mono',monospace;flex-wrap:wrap;}
+    .article-meta .sentiment{color:var(--gold);}
+    .article-claim{color:var(--text-secondary);font-size:.82rem;margin-top:.4rem;line-height:1.4;}
+    .article-chips{margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.3rem;}
+    .mini-chip{display:inline-block;padding:.1rem .45rem;background:var(--gold-dim);color:var(--gold);border-radius:4px;font-size:.65rem;font-family:'JetBrains Mono',monospace;}
+    .mini-chip.sentiment-bullish{background:rgba(52,211,153,.15);color:var(--bullish);}
+    .mini-chip.sentiment-bearish{background:rgba(248,113,113,.15);color:var(--bearish);}
+    .mini-chip.sentiment-neutral{background:rgba(251,191,36,.15);color:var(--neutral);}
+    /* Modal */
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;z-index:100;padding:1rem;overflow-y:auto;}
+    .modal.open{display:block;}
+    .modal-content{max-width:720px;margin:2rem auto;background:var(--bg-card);border:1px solid var(--gold);border-radius:14px;padding:1.75rem;position:relative;}
+    .modal-close{position:absolute;top:.85rem;right:1rem;background:none;border:none;color:var(--text-secondary);font-size:1.4rem;cursor:pointer;width:32px;height:32px;border-radius:50%;transition:background .15s;}
+    .modal-close:hover{background:var(--bg-hover);color:var(--gold);}
+    .modal h3{font-family:'DM Serif Display',serif;color:var(--gold);font-size:1.3rem;margin-bottom:.5rem;padding-right:2rem;}
+    .modal-meta{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--text-dim);margin-bottom:1rem;display:flex;gap:.75rem;flex-wrap:wrap;}
+    .modal-section{margin-top:1rem;}
+    .modal-section-label{font-size:.7rem;color:var(--gold);text-transform:uppercase;letter-spacing:.15em;margin-bottom:.35rem;font-family:'JetBrains Mono',monospace;}
+    .modal-section-body{color:var(--text-primary);font-size:.92rem;line-height:1.55;}
+    .modal-link{display:inline-block;margin-top:1.25rem;padding:.55rem 1rem;background:var(--gold);color:#0a0a0f;border-radius:8px;font-weight:600;text-decoration:none;font-size:.82rem;}
+    .modal-link:hover{background:#f7dc6f;}
+    /* Responsive */
+    @media(max-width:720px){
+      .container{padding:1rem .75rem 3rem;}
+      h1{font-size:1.7rem;}
+      .hero-metrics{grid-template-columns:repeat(2,1fr);gap:.6rem;}
+      .hero-card{padding:.9rem;}
+      .hero-value{font-size:1.5rem;}
+      .modal-content{margin:1rem .5rem;padding:1.25rem;}
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header class="market-header">
+    <div class="header-eyebrow">FX168 NEWS INTELLIGENCE</div>
+    <h1>金融市場新聞情報</h1>
+    <div class="header-subtitle" id="header-subtitle">—</div>
+  </header>
+
+  <section class="hero-metrics">
+    <div class="hero-card"><div class="hero-label">今日新增</div><div class="hero-value" id="today-count">—</div></div>
+    <div class="hero-card"><div class="hero-label">近 14 日</div><div class="hero-value" id="recent-count">—</div></div>
+    <div class="hero-card"><div class="hero-label">總文章</div><div class="hero-value" id="total-count">—</div></div>
+    <div class="hero-card"><div class="hero-label">熱門主題</div><div class="hero-value small" id="top-theme">—</div></div>
+  </section>
+
+  <section>
+    <h2 class="section-title">近 7 日發文量</h2>
+    <svg id="sparkline" viewBox="0 0 200 60" preserveAspectRatio="none"></svg>
+  </section>
+
+  <section>
+    <h2 class="section-title">近 14 日情緒分布</h2>
+    <div class="sentiment-bar" id="sentiment-bar"></div>
+    <div class="sentiment-legend" id="sentiment-legend"></div>
+  </section>
+
+  <section>
+    <h2 class="section-title">熱門主題</h2>
+    <div id="theme-cloud"></div>
+    <div class="muted" style="margin-top:.5rem">點 chip 即可過濾文章列表</div>
+  </section>
+
+  <section>
+    <h2 class="section-title">搜尋與過濾</h2>
+    <input type="text" class="search-box" id="search" placeholder="🔍 搜尋標題 / 核心論點...">
+    <div class="filter-bar" id="sentiment-filters"></div>
+    <div class="muted">顯示中：<span id="result-count">0</span> 篇（近 14 日）</div>
+  </section>
+
+  <section>
+    <h2 class="section-title">文章列表</h2>
+    <div id="article-list"></div>
+  </section>
+
+  <section style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);text-align:center">
+    <div class="muted">
+      深度分析喺本機 Obsidian vault：<br>
+      <code>07-分析/全覆蓋 2026-04-11/</code> · <code>07-分析/主題深度 2026-04-11/</code><br>
+      資料來源：<a href="https://www.fx168news.com/" style="color:var(--gold)">fx168news.com</a> ·
+      每日 09:00 HKT 自動更新
+    </div>
+  </section>
+
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+const D = window.FX168_DATA || {articles:[],sentiment_dist:{},top_themes:[],sparkline_7d:{}};
+const state = { query:"", sentiments:new Set(), themes:new Set() };
+let filteredCache = [];
+
+// ── Sentiment color map ───────────────────────────────────────────────
+const SENTI_COLOR = {
+  bullish_gold:"#FFD700", bullish_silver:"#C0C0C0", bullish_oil:"#F59E0B",
+  bullish_btc:"#F97316", bullish_crypto:"#FB923C", bullish_usd:"#4ADE80",
+  bullish_cny:"#EF4444", bullish_jpy:"#DC2626", bullish_eur:"#60A5FA",
+  bullish_us_stocks:"#22C55E", bullish_hk_stocks:"#16A34A",
+  bullish_a_shares:"#15803D", bullish_jp_stocks:"#059669",
+  bullish_ai:"#A78BFA", bullish_cycle:"#34D399", bullish_nvidia:"#A855F7",
+  risk_on:"#10B981",
+  bearish_gold:"#FCA5A5", bearish_silver:"#F3F4F6", bearish_oil:"#EF4444",
+  bearish_btc:"#991B1B", bearish_crypto:"#B91C1C", bearish_usd:"#F87171",
+  bearish_cny:"#9F1239", bearish_jpy:"#BE123C", bearish_eur:"#3B82F6",
+  bearish_us_stocks:"#DC2626", bearish_hk_stocks:"#B91C1C",
+  bearish_a_shares:"#991B1B", bearish_jp_stocks:"#7F1D1D",
+  bearish_cycle:"#F87171", bearish_nvidia:"#7C3AED",
+  bearish_bonds:"#DC2626", bearish_wheat:"#78350F",
+  risk_off:"#B91C1C",
+  stagflation_warning:"#F97316", recession_warning:"#EA580C",
+  neutral:"#FBBF24"
+};
+
+function clr(sentiment){ return SENTI_COLOR[sentiment] || "#6B7280"; }
+
+function sentimentType(s){
+  if(!s) return "";
+  if(s.startsWith("bullish") || s === "risk_on") return "bullish";
+  if(s.startsWith("bearish") || s === "risk_off" || s.endsWith("_warning")) return "bearish";
+  return "neutral";
+}
+
+// ── Sparkline ─────────────────────────────────────────────────────────
+function renderSparkline(){
+  const svg = document.getElementById("sparkline");
+  const dates = Object.keys(D.sparkline_7d).sort();
+  if(dates.length < 2){ svg.innerHTML=""; return; }
+  const vals = dates.map(d => D.sparkline_7d[d]);
+  const max = Math.max(...vals, 1);
+  const stepX = 200 / (dates.length - 1);
+  const points = vals.map((v,i) => `${(i*stepX).toFixed(1)},${(54 - v/max*48).toFixed(1)}`).join(" ");
+  const lastX = (vals.length-1)*stepX;
+  const lastY = 54 - vals[vals.length-1]/max*48;
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#D4AF37" stop-opacity=".4"/>
+        <stop offset="100%" stop-color="#D4AF37" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <polygon points="0,60 ${points} 200,60" fill="url(#sparkGrad)"/>
+    <polyline points="${points}" fill="none" stroke="#D4AF37" stroke-width="2"/>
+    <circle cx="${lastX}" cy="${lastY}" r="3" fill="#D4AF37"/>
+    ${dates.map((d,i) => `<text x="${i*stepX}" y="60" font-size="6" fill="#6b7280" text-anchor="middle" font-family="JetBrains Mono">${d.slice(5)}</text>`).join("")}
+  `;
+}
+
+// ── Sentiment bar ─────────────────────────────────────────────────────
+function renderSentimentBar(){
+  const bar = document.getElementById("sentiment-bar");
+  const legend = document.getElementById("sentiment-legend");
+  const dist = D.sentiment_dist;
+  const entries = Object.entries(dist).sort((a,b)=>b[1]-a[1]);
+  const total = entries.reduce((s,[,v])=>s+v, 0) || 1;
+  bar.innerHTML = entries.map(([k,v]) => {
+    const pct = (v/total*100).toFixed(1);
+    return `<div style="width:${pct}%;background:${clr(k)}" title="${k}: ${v} (${pct}%)">${pct > 8 ? k.replace("bullish_","↑").replace("bearish_","↓") : ""}</div>`;
+  }).join("");
+  legend.innerHTML = entries.slice(0,8).map(([k,v]) =>
+    `<span><span class="dot" style="background:${clr(k)}"></span>${k} ${v}</span>`
+  ).join("");
+}
+
+// ── Theme cloud ───────────────────────────────────────────────────────
+function renderThemeCloud(){
+  const div = document.getElementById("theme-cloud");
+  div.innerHTML = D.top_themes.map(([t,c]) =>
+    `<span class="theme-chip" data-theme="${t}" onclick="toggleTheme('${t}')">${t}<span class="count">${c}</span></span>`
+  ).join("");
+  syncThemeChipStyles();
+}
+
+function syncThemeChipStyles(){
+  document.querySelectorAll(".theme-chip").forEach(el => {
+    el.classList.toggle("active", state.themes.has(el.dataset.theme));
+  });
+}
+
+function toggleTheme(t){
+  state.themes.has(t) ? state.themes.delete(t) : state.themes.add(t);
+  syncThemeChipStyles();
+  renderList();
+}
+
+// ── Sentiment filters ─────────────────────────────────────────────────
+function renderFilters(){
+  const sf = document.getElementById("sentiment-filters");
+  const groups = ["all", "bullish", "bearish", "neutral"];
+  sf.innerHTML = groups.map(g =>
+    `<button class="filter-btn ${state.sentiments.size===0&&g==='all'?'active':''}" data-group="${g}" onclick="toggleSentimentGroup('${g}')">${g}</button>`
+  ).join("");
+}
+
+function toggleSentimentGroup(g){
+  if(g === "all"){ state.sentiments.clear(); }
+  else {
+    if(state.sentiments.has(g)){ state.sentiments.delete(g); }
+    else { state.sentiments.add(g); }
+  }
+  document.querySelectorAll("#sentiment-filters .filter-btn").forEach(b => {
+    if(b.dataset.group === "all"){
+      b.classList.toggle("active", state.sentiments.size === 0);
+    } else {
+      b.classList.toggle("active", state.sentiments.has(b.dataset.group));
+    }
+  });
+  renderList();
+}
+
+// ── Article list ──────────────────────────────────────────────────────
+function parseJsonField(v){
+  if(!v) return [];
+  try{ return JSON.parse(v); }catch(e){ return []; }
+}
+
+function renderList(){
+  const list = document.getElementById("article-list");
+  const filtered = D.articles.filter(a => {
+    if(state.query){
+      const hay = ((a.title||"") + " " + (a.core_claim||"")).toLowerCase();
+      if(!hay.includes(state.query)) return false;
+    }
+    if(state.sentiments.size){
+      const t = sentimentType(a.sentiment);
+      if(!state.sentiments.has(t)) return false;
+    }
+    if(state.themes.size){
+      const ts = parseJsonField(a.themes);
+      if(!ts.some(t => state.themes.has(t))) return false;
+    }
+    return true;
+  });
+  filteredCache = filtered;
+  document.getElementById("result-count").textContent = filtered.length;
+
+  const MAX = 250;
+  list.innerHTML = filtered.slice(0, MAX).map((a, i) => {
+    const themes = parseJsonField(a.themes).slice(0,5).map(t=>`<span class="mini-chip">${t}</span>`).join("");
+    const stype = sentimentType(a.sentiment);
+    const senti = a.sentiment
+      ? `<span class="mini-chip sentiment-${stype}">${a.sentiment}</span>`
+      : "";
+    const dup = a.is_duplicate_news ? " duplicate" : "";
+    return `<div class="article-card${dup}" onclick="showModal(${i})">
+      <div class="article-title">${escapeHtml(a.title||"")}</div>
+      <div class="article-meta">
+        <span>📅 ${(a.published_at||"").slice(0,16)}</span>
+        ${a.author ? `<span>✍ ${escapeHtml(a.author)}</span>` : ""}
+        ${a.clicks ? `<span>👁 ${a.clicks}</span>` : ""}
+      </div>
+      ${a.core_claim ? `<div class="article-claim">${escapeHtml(a.core_claim)}</div>` : ""}
+      <div class="article-chips">${senti} ${themes}</div>
+    </div>`;
+  }).join("");
+  if(filtered.length > MAX){
+    list.insertAdjacentHTML("beforeend",
+      `<div class="muted" style="text-align:center;padding:1rem">…另有 ${filtered.length - MAX} 篇未顯示，請用過濾收窄範圍</div>`);
+  }
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c]));
+}
+
+// ── Modal ────────────────────────────────────────────────────────────
+function showModal(idx){
+  const a = filteredCache[idx];
+  if(!a) return;
+  const themes = parseJsonField(a.themes);
+  const keyNums = parseJsonField(a.key_numbers);
+  const dissent = parseJsonField(a.dissent_signals);
+  const body = document.getElementById("modal-body");
+  const sw = a.source_weight != null ? `權重 ${a.source_weight.toFixed(2)}` : "";
+  body.innerHTML = `
+    <h3>${escapeHtml(a.title||"")}</h3>
+    <div class="modal-meta">
+      <span>${(a.published_at||"").slice(0,16)}</span>
+      ${a.author ? `<span>${escapeHtml(a.author)}</span>` : ""}
+      ${sw ? `<span>${sw}</span>` : ""}
+      ${a.sentiment ? `<span>${a.sentiment}</span>` : ""}
+    </div>
+    ${a.core_claim ? `
+      <div class="modal-section">
+        <div class="modal-section-label">核心論點</div>
+        <div class="modal-section-body">${escapeHtml(a.core_claim)}</div>
+      </div>` : ""}
+    ${themes.length ? `
+      <div class="modal-section">
+        <div class="modal-section-label">主題標籤</div>
+        <div class="modal-section-body">${themes.map(t=>`<span class="mini-chip">${t}</span>`).join(" ")}</div>
+      </div>` : ""}
+    ${keyNums.length ? `
+      <div class="modal-section">
+        <div class="modal-section-label">關鍵數字</div>
+        <div class="modal-section-body">${keyNums.map(escapeHtml).join(" · ")}</div>
+      </div>` : ""}
+    ${dissent.length ? `
+      <div class="modal-section">
+        <div class="modal-section-label">反向觀點</div>
+        <div class="modal-section-body">${dissent.map(d=>"• "+escapeHtml(d)).join("<br>")}</div>
+      </div>` : ""}
+    ${a.actionable ? `
+      <div class="modal-section">
+        <div class="modal-section-label">可操作建議</div>
+        <div class="modal-section-body">${escapeHtml(a.actionable)}</div>
+      </div>` : ""}
+    <a class="modal-link" href="https://www.fx168news.com/article/${encodeURIComponent(a.url_code||"")}" target="_blank" rel="noopener">讀全文 ↗</a>
+  `;
+  document.getElementById("modal").classList.add("open");
+}
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("open");
+}
+
+// ── Init ─────────────────────────────────────────────────────────────
+function init(){
+  const header = `生成於 ${D.generated_at||"—"} · 今日 +${D.today||0} · 總 ${D.total||0} 篇`;
+  document.getElementById("header-subtitle").textContent = header;
+  document.getElementById("today-count").textContent = D.today ?? "—";
+  document.getElementById("recent-count").textContent = D.recent_count ?? "—";
+  document.getElementById("total-count").textContent = D.total ?? "—";
+  document.getElementById("top-theme").textContent = D.top_themes?.[0]?.[0] || "—";
+
+  renderSparkline();
+  renderSentimentBar();
+  renderThemeCloud();
+  renderFilters();
+  renderList();
+
+  document.getElementById("search").addEventListener("input", e => {
+    state.query = e.target.value.toLowerCase().trim();
+    renderList();
+  });
+  document.addEventListener("keydown", e => {
+    if(e.key === "Escape") closeModal();
+  });
+}
+
+document.readyState === "loading"
+  ? document.addEventListener("DOMContentLoaded", init)
+  : init();
+</script>
+</body>
+</html>
