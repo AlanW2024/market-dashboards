@@ -79,6 +79,48 @@
     .card-title { font-size: 0.9rem; }
     .section-title { font-size: 0.7rem; }
   }
+  /* FX168 featured card */
+  .featured-section { margin-bottom: 1.75rem; }
+  .featured-card {
+    display: block;
+    background: linear-gradient(135deg, #12121a 0%, #1a1a2e 100%);
+    border: 1px solid #D4AF37;
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+    text-decoration: none;
+    color: #e0e0e0;
+    transition: all 0.2s;
+    box-shadow: 0 0 16px rgba(212, 175, 55, 0.08);
+  }
+  .featured-card:hover, .featured-card:active {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.22);
+  }
+  .featured-eyebrow {
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    color: #D4AF37;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+    font-family: 'SF Mono', Menlo, monospace;
+  }
+  .featured-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #D4AF37;
+    margin-bottom: 0.25rem;
+  }
+  .featured-subtitle { font-size: 0.78rem; color: #999; }
+  .featured-stats {
+    display: flex;
+    gap: 0.9rem;
+    margin-top: 0.7rem;
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 0.68rem;
+    color: #777;
+    flex-wrap: wrap;
+  }
+  .featured-stats span { white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -86,7 +128,37 @@
 <h1>📊 Market Dashboards</h1>
 <p class="subtitle">手機瀏覽器打開即可查看互動版報告</p>
 
+<div class="featured-section">
+  <div class="section-title">🌐 News Intelligence</div>
+  <a href="FX168/" class="featured-card">
+    <div class="featured-eyebrow">FX168 NEWS INTELLIGENCE</div>
+    <div class="featured-title">金融市場新聞情報</div>
+    <div class="featured-subtitle">每日自動抓取 · AI 結構化摘要 · 主題/情緒追蹤</div>
+    <div class="featured-stats">
+      <span id="fx168-total">—</span>
+      <span id="fx168-today">—</span>
+      <span id="fx168-updated">—</span>
+    </div>
+  </a>
+</div>
+
 <div id="file-list"></div>
+
+<script>
+  // Populate FX168 card live stats by parsing FX168/data.js
+  fetch('FX168/data.js').then(r => r.ok ? r.text() : null).then(text => {
+    if (!text) return;
+    try {
+      const m = text.match(/window\.FX168_DATA\s*=\s*(\{[\s\S]*?\});?\s*$/);
+      if (!m) return;
+      const d = JSON.parse(m[1]);
+      document.getElementById('fx168-total').textContent = `總 ${d.total} 篇`;
+      document.getElementById('fx168-today').textContent = `今日 +${d.today || 0}`;
+      const ts = (d.generated_at || '').slice(0, 16).replace('T', ' ');
+      document.getElementById('fx168-updated').textContent = ts ? `更新於 ${ts}` : '';
+    } catch (e) { /* silent */ }
+  }).catch(() => {});
+</script>
 
 <script src="files.js"></script>
 <script>
