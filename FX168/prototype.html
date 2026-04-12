@@ -171,39 +171,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-mono);overflo
   </div>
 </div>
 
-
-<!-- ROW 4: MARKET REPORTS -->
-<div class="grid grid-3">
-  <div class="panel">
-    <div class="panel-title">L1 Quick Brief</div>
-    <div style="border:1px solid var(--border);padding:8px">
-      <div style="color:var(--amber);font-size:13px;font-family:var(--font-sans);font-weight:600">快速摘要</div>
-      <div style="color:var(--text-muted);font-size:11px;margin-top:4px">58 篇 curated · ~5 min read</div>
-      <div style="color:var(--text-dim);font-size:10px;margin-top:6px">2026-04-10 深度分析.md</div>
-      <div style="color:var(--cyan);font-size:10px;margin-top:2px">伊朗戰爭五連反應 fast briefing</div>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-title">L2 Full Coverage</div>
-    <div style="border:1px solid var(--border);padding:8px">
-      <div style="color:var(--amber);font-size:13px;font-family:var(--font-sans);font-weight:600">全景綜合</div>
-      <div style="color:var(--text-muted);font-size:11px;margin-top:4px">942 篇 Map-Reduce · ~15 min</div>
-      <div style="color:var(--text-dim);font-size:10px;margin-top:6px">全覆蓋 2026-04-11/</div>
-      <div style="color:var(--cyan);font-size:10px;margin-top:2px">00-綜合分析 + 9 clusters + 統計</div>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-title">L3 Deep Research</div>
-    <div style="border:1px solid var(--border);padding:8px">
-      <div style="color:var(--amber);font-size:13px;font-family:var(--font-sans);font-weight:600">深度研究</div>
-      <div style="color:var(--text-muted);font-size:11px;margin-top:4px">20 份 per-cluster · ~30+ min</div>
-      <div style="color:var(--text-dim);font-size:10px;margin-top:6px">主題深度 2026-04-11/</div>
-      <div style="color:var(--cyan);font-size:10px;margin-top:2px">油價·黃金·美股·伊朗 + 4 supporting</div>
-    </div>
-  </div>
-</div>
-
-<!-- ROW 5: ARTICLE TABLE -->
+<!-- ROW 4: ARTICLE TABLE -->
 <div class="grid">
   <div class="panel panel-full">
     <div class="panel-title">Articles Feed</div>
@@ -243,20 +211,12 @@ const $ = s => document.getElementById(s);
 $('headerTime').textContent = D.generated_at?.replace('T',' ') || '';
 $('footerTime').textContent = D.generated_at?.replace('T',' ') || '';
 
-// ── TICKER (market indices) ──
+// ── TICKER ──
 (function(){
-  const indices = D.market_indices||[];
+  const themes = (D.top_themes||[]).slice(0,15);
   let html = '';
-  if(indices.length){
-    for(const m of indices){
-      const color = m.change>=0?'var(--green)':'var(--red)';
-      const sign = m.change>=0?'+':'';
-      html += `<span class="item"><span class="label">${m.name}</span><span class="val">${m.price.toLocaleString()}</span> <span style="color:${color}">${sign}${m.change_pct}%</span></span>`;
-    }
-  } else {
-    // fallback: show themes if no market data
-    for(const [t,c] of (D.top_themes||[]).slice(0,15)) html += `<span class="item"><span class="label">${t.toUpperCase()}</span><span class="val">${c}</span></span>`;
-  }
+  for(const [t,c] of themes) html += `<span class="item"><span class="label">${t.toUpperCase()}</span><span class="val">${c}</span></span>`;
+  // duplicate for seamless loop
   $('ticker').innerHTML = html + html;
 })();
 
@@ -335,39 +295,30 @@ $('footerTime').textContent = D.generated_at?.replace('T',' ') || '';
   }).join('');
 })();
 
-// ── FILTER HELPER ──
-function filterBy(type, value){
-  if(type==='sentiment') $('sentFilter').value = value;
-  else if(type==='theme') $('themeFilter').value = value;
-  else if(type==='search'){$('searchInput').value = value; $('sentFilter').value=''; $('themeFilter').value='';}
-  renderArticles();
-  $('articleBody').parentElement.parentElement.scrollIntoView({behavior:'smooth'});
-}
-
-// ── SENTIMENT (clickable) ──
+// ── SENTIMENT ──
 (function(){
   const sd = D.sentiment_dist||{};
   const sorted = Object.entries(sd).sort((a,b)=>b[1]-a[1]).slice(0,20);
   $('sentRow').innerHTML = sorted.map(([s,c])=>{
     const cls = s.includes('bullish')?'bull':s.includes('bearish')||s.includes('warning')?'bear':'';
-    return `<span class="sent-chip ${cls}" style="cursor:pointer" onclick="filterBy('sentiment','${s}')"><span class="cnt">${c}</span>${s.replace(/_/g,' ')}</span>`;
+    return `<span class="sent-chip ${cls}"><span class="cnt">${c}</span>${s.replace(/_/g,' ')}</span>`;
   }).join('');
 })();
 
-// ── THEMES (clickable) ──
+// ── THEMES ──
 (function(){
   const th = D.top_themes||[];
   $('themeRow').innerHTML = th.slice(0,25).map(([t,c])=>
-    `<span class="theme-tag" style="cursor:pointer" onclick="filterBy('theme','${t}')">${t}<span class="n">${c}</span></span>`
+    `<span class="theme-tag">${t}<span class="n">${c}</span></span>`
   ).join('');
 })();
 
-// ── CLUSTERS (clickable → search by cluster name) ──
+// ── CLUSTERS ──
 (function(){
   const cl = D.clusters||{};
   $('clusterList').innerHTML = Object.entries(cl).map(([name,info])=>{
     const topSent = Object.entries(info.sentiment||{}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([s,c])=>s.replace(/_/g,' ')).join(', ');
-    return `<div class="cluster-card" style="cursor:pointer" onclick="filterBy('search','${name}')"><span class="cl-name">${name}</span><span class="cl-count">${info.count||0}</span><div class="cl-sent">${topSent}</div></div>`;
+    return `<div class="cluster-card"><span class="cl-name">${name}</span><span class="cl-count">${info.count||0}</span><div class="cl-sent">${topSent}</div></div>`;
   }).join('');
 })();
 
@@ -438,4 +389,3 @@ renderArticles();
 </script>
 </body>
 </html>
-
