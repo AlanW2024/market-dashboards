@@ -2,147 +2,445 @@
 <html lang="zh-HK">
 <head>
 <meta charset="UTF-8">
-<title>SR Monitor Dashboard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SR Monitor — Structural Risk Watchdog</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  body { font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-          background: #0f172a; color: #e2e8f0;
-          max-width: 1200px; margin: 0 auto; padding: 24px; }
-  h1, h2 { color: #f1f5f9; margin-top: 32px; }
-  .hero { background: #1e293b; padding: 32px; border-radius: 12px;
-           border: 1px solid #334155; text-align: center; margin-bottom: 24px; }
-  .score { font-size: 72px; font-weight: 800; color: #4ade80; }
-  .status { font-size: 24px; margin-top: 8px; }
-  .meta { color: #94a3b8; font-size: 14px; margin-top: 12px; }
-  .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
-               margin: 24px 0; }
-  .cat-card { background: #1e293b; padding: 20px; border-radius: 10px;
-               border: 1px solid #334155; }
-  .cat-name { color: #94a3b8; font-size: 13px; }
-  .cat-score { font-size: 36px; font-weight: 700; margin: 4px 0; }
-  table { width: 100%; border-collapse: collapse; background: #1e293b;
-           border-radius: 8px; overflow: hidden; margin-top: 16px; }
-  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #334155; }
-  th { background: #334155; color: #f1f5f9; }
-  .chart-container { background: #1e293b; padding: 24px; border-radius: 12px;
-                      border: 1px solid #334155; margin: 24px 0; height: 420px; }
-  a { color: #60a5fa; }
+:root {
+  --gold: #D4AF37;
+  --gold-dim: rgba(212, 175, 55, 0.15);
+  --gold-glow: rgba(212, 175, 55, 0.3);
+  --bg-primary: #0a0a0f;
+  --bg-card: #12121a;
+  --bg-card-hover: #1a1a26;
+  --bg-elevated: #1e1e2a;
+  --text-primary: #e8e6e1;
+  --text-secondary: #8a8a9a;
+  --text-dim: #5a5a6a;
+  --border: rgba(255,255,255,0.06);
+  --border-gold: rgba(212, 175, 55, 0.3);
+  --bullish: #4ade80;
+  --bearish: #f87171;
+  --neutral: #fbbf24;
+  --bullish-bg: rgba(74, 222, 128, 0.08);
+  --bearish-bg: rgba(248, 113, 113, 0.08);
+  --neutral-bg: rgba(251, 191, 36, 0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Sans TC', -apple-system, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence baseFrequency='0.9' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.03; pointer-events: none; z-index: 9999;
+}
+.container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+/* Header */
+.hdr { border-bottom: 1px solid var(--border); padding-bottom: 1.2rem; margin-bottom: 2rem;
+       position: relative; }
+.hdr::after {
+  content: ''; position: absolute; bottom: -1px; left: 0;
+  width: 120px; height: 2px; background: var(--gold);
+}
+.hdr-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; color: var(--gold);
+  text-transform: uppercase; letter-spacing: 0.25em;
+  margin-bottom: 0.5rem;
+}
+.hdr h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 400; line-height: 1.1;
+}
+.hdr-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem; color: var(--text-secondary);
+  margin-top: 0.6rem;
+}
+
+/* Hero score */
+.hero {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 2.5rem 2rem; text-align: center;
+  margin-bottom: 2.2rem; position: relative; overflow: hidden;
+}
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; color: var(--text-secondary);
+  text-transform: uppercase; letter-spacing: 0.3em;
+  margin-bottom: 0.8rem;
+}
+.hero-score {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(4rem, 12vw, 6rem);
+  font-weight: 400; line-height: 1;
+  letter-spacing: -0.02em;
+}
+.hero-status {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.95rem; font-weight: 500;
+  margin-top: 0.8rem; text-transform: uppercase; letter-spacing: 0.2em;
+}
+.hero-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem; color: var(--text-dim);
+  margin-top: 1.2rem;
+}
+
+/* Category cards */
+.section-title {
+  font-family: 'DM Serif Display', serif; font-size: 1.4rem;
+  margin: 2.5rem 0 1rem; color: var(--text-primary);
+  border-left: 3px solid var(--gold); padding-left: 0.8rem;
+}
+.cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+            margin-bottom: 1rem; }
+@media (max-width: 768px) { .cat-grid { grid-template-columns: repeat(2, 1fr); } }
+.cat-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.3rem 1.2rem;
+  transition: all 0.2s;
+}
+.cat-card:hover { background: var(--bg-card-hover); border-color: var(--border-gold); }
+.cat-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; color: var(--gold);
+  letter-spacing: 0.15em; margin-bottom: 0.3rem;
+}
+.cat-name {
+  font-size: 0.85rem; color: var(--text-secondary);
+  margin-bottom: 0.8rem;
+}
+.cat-score-row { display: flex; align-items: baseline; gap: 0.6rem; }
+.cat-score {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.4rem; font-weight: 400; line-height: 1;
+}
+.cat-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 600;
+  padding: 0.3rem 0.6rem; border-radius: 4px;
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+/* Chart */
+.chart-box {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.5rem;
+  height: 440px; position: relative;
+}
+
+/* Indicator table */
+.tbl { width: 100%; border-collapse: collapse; background: var(--bg-card);
+       border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.tbl thead { background: var(--bg-elevated); }
+.tbl th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--text-secondary); padding: 0.9rem 1rem; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.tbl td {
+  padding: 0.85rem 1rem; font-size: 0.88rem;
+  border-bottom: 1px solid var(--border);
+}
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover { background: var(--bg-card-hover); }
+.tbl .code { font-family: 'JetBrains Mono', monospace; color: var(--gold);
+             font-size: 0.78rem; }
+.state-pill {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 600;
+  padding: 0.25rem 0.6rem; border-radius: 4px;
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+/* Alerts */
+.alerts-box {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.2rem 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem; color: var(--text-secondary);
+  max-height: 200px; overflow-y: auto;
+}
+.alerts-box .alert-line {
+  padding: 0.35rem 0; border-bottom: 1px solid var(--border);
+}
+.alerts-box .alert-line:last-child { border: none; }
+
+/* Divider */
+.gold-divider {
+  height: 1px; background: linear-gradient(90deg,
+    transparent, var(--gold), transparent);
+  margin: 3rem 0; opacity: 0.5;
+}
+
+/* Footer */
+.ft { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+      color: var(--text-dim); text-align: center; }
+.ft a { color: var(--gold); text-decoration: none; margin: 0 0.5rem; }
+.ft a:hover { color: var(--gold); text-shadow: 0 0 8px var(--gold-glow); }
 </style>
 </head>
 <body>
+<div class="container">
 
-<div class="hero">
-  <div style="color:#94a3b8;font-size:14px;">Structural Risk Monitor</div>
-  <div class="score">17.7</div>
-  <div class="status" style="color:#4ade80;">🟢 Normal / 100</div>
-  <div class="meta">Last update: 2026-04-15T16:13:45</div>
-</div>
+  <header class="hdr">
+    <div class="hdr-eyebrow">Structural Risk Monitor</div>
+    <h1>系統性風險監察</h1>
+    <div class="hdr-sub">Top 3 SR + Top 3 Blindspot · 18 indicators · FRED + yfinance</div>
+  </header>
 
-<h2>6 類別評分</h2>
-<div class="cat-grid">
-  <div class="cat-card">
-    <div class="cat-name">SR1: 國債 Clearing Mandate</div>
-    <div class="cat-score" style="color:#4ade80;">10.0</div>
+  <div class="hero">
+    <div class="hero-eyebrow">Composite Score</div>
+    <div class="hero-score" style="color:var(--bullish)">18</div>
+    <div class="hero-status" style="color:var(--bullish)">NORMAL · 17.7/100</div>
+    <div class="hero-meta">Last update · 2026-04-15T16:13 HKT</div>
   </div>
-  <div class="cat-card">
-    <div class="cat-name">SR2: CLO LME 掏空</div>
-    <div class="cat-score" style="color:#4ade80;">20.0</div>
-  </div>
-  <div class="cat-card">
-    <div class="cat-name">SR3: 日本光阻劑掐脖</div>
-    <div class="cat-score" style="color:#4ade80;">26.0</div>
-  </div>
-  <div class="cat-card">
-    <div class="cat-name">B1: 日本資金回流</div>
-    <div class="cat-score" style="color:#4ade80;">30.0</div>
-  </div>
-  <div class="cat-card">
-    <div class="cat-name">B2: 法國 r-g 陷阱</div>
-    <div class="cat-score" style="color:#4ade80;">10.0</div>
-  </div>
-  <div class="cat-card">
-    <div class="cat-name">B3: 歐洲銀行 Basel IV</div>
-    <div class="cat-score" style="color:#4ade80;">10.0</div>
+
+  <h2 class="section-title">6 類別評分</h2>
+  <div class="cat-grid">
+<div class="cat-card">
+  <div class="cat-id">SR1</div>
+  <div class="cat-name">國債 Clearing Mandate</div>
+  <div class="cat-score-row">
+    <span class="cat-score" style="color:var(--bullish)">10</span>
+    <span class="cat-badge" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span>
   </div>
 </div>
-
-<h2>趨勢圖（過去 3 個 snapshot）</h2>
-<div class="chart-container">
-  <canvas id="trendChart"></canvas>
+<div class="cat-card">
+  <div class="cat-id">SR2</div>
+  <div class="cat-name">CLO LME 掏空</div>
+  <div class="cat-score-row">
+    <span class="cat-score" style="color:var(--bullish)">20</span>
+    <span class="cat-badge" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span>
+  </div>
 </div>
+<div class="cat-card">
+  <div class="cat-id">SR3</div>
+  <div class="cat-name">日本光阻劑掐脖</div>
+  <div class="cat-score-row">
+    <span class="cat-score" style="color:var(--bullish)">26</span>
+    <span class="cat-badge" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span>
+  </div>
+</div>
+<div class="cat-card">
+  <div class="cat-id">B1</div>
+  <div class="cat-name">日本資金回流</div>
+  <div class="cat-score-row">
+    <span class="cat-score" style="color:var(--bullish)">30</span>
+    <span class="cat-badge" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span>
+  </div>
+</div>
+<div class="cat-card">
+  <div class="cat-id">B2</div>
+  <div class="cat-name">法國 r-g 陷阱</div>
+  <div class="cat-score-row">
+    <span class="cat-score" style="color:var(--bullish)">10</span>
+    <span class="cat-badge" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span>
+  </div>
+</div>
+<div class="cat-card">
+  <div class="cat-id">B3</div>
+  <div class="cat-name">歐洲銀行 Basel IV</div>
+  <div class="cat-score-row">
+    <span class="cat-score" style="color:var(--bullish)">10</span>
+    <span class="cat-badge" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span>
+  </div>
+</div></div>
 
-<h2>當前指標狀態</h2>
-<table>
-<thead><tr><th>Indicator</th><th>State</th><th>Reason</th><th>Since</th></tr></thead>
-<tbody>
-<tr><td>R10_ShinEtsu</td><td><span style="color:#fbbf24;font-weight:bold">● warning</span></td><td>6.2% above 20MA</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R11_TokyoOhka</td><td><span style="color:#fbbf24;font-weight:bold">● warning</span></td><td>12.1% above 20MA</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R12_SMIC</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>+5.5% vs 20MA</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R13_HuaHong</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>+3.4% vs 20MA</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R14_USDJPY</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R15_JGB10Y</td><td><span style="color:#fbbf24;font-weight:bold">● warning</span></td><td>level 2.11 in warning zone (>2.0)</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R16_OATBund</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R17_EUFN</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R18_EUFN_volume</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>volume 1.56x</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R1_SOFR</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R2_2s10s</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R3_UST30Y</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R4_TIPS10Y</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R5_HY_OAS</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R6_CCC_spread</td><td><span style="color:#fbbf24;font-weight:bold">● warning</span></td><td>level 9.58 in warning zone (>8.0)</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R7_BKLN</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R8_SRLN</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
-<tr><td>R9_Resonac</td><td><span style="color:#fbbf24;font-weight:bold">● warning</span></td><td>11.2% above 20MA</td><td>2026-04-15T16:06</td></tr>
-</tbody>
-</table>
+  <div class="gold-divider"></div>
 
-<p style="margin-top:32px;color:#64748b;font-size:13px;">
-  Auto-generated by <code>sr_monitor/dashboard.py</code>. Raw data:
-  <a href="history.json">history.json</a> ·
-  <a href="state_tracker.json">state_tracker.json</a> ·
-  <a href="alerts.log">alerts.log</a>
-</p>
+  <h2 class="section-title">歷史趨勢 · 3 snapshots</h2>
+  <div class="chart-box"><canvas id="trend"></canvas></div>
+
+  <h2 class="section-title">指標狀態明細</h2>
+  <table class="tbl">
+    <thead><tr>
+      <th>Indicator</th><th>State</th><th>Reason</th><th>Since</th>
+    </tr></thead>
+    <tbody>
+<tr>
+  <td class="code">R10_ShinEtsu</td>
+  <td><span class="state-pill" style="background:var(--neutral-bg);color:var(--neutral)">WARNING</span></td>
+  <td>6.2% above 20MA</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R11_TokyoOhka</td>
+  <td><span class="state-pill" style="background:var(--neutral-bg);color:var(--neutral)">WARNING</span></td>
+  <td>12.1% above 20MA</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R12_SMIC</td>
+  <td><span class="state-pill" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span></td>
+  <td>+5.5% vs 20MA</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R13_HuaHong</td>
+  <td><span class="state-pill" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span></td>
+  <td>+3.4% vs 20MA</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R14_USDJPY</td>
+  <td><span class="state-pill" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span></td>
+  <td>within range</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R15_JGB10Y</td>
+  <td><span class="state-pill" style="background:var(--neutral-bg);color:var(--neutral)">WARNING</span></td>
+  <td>level 2.11 in warning zone (>2.0)</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R16_OATBund</td>
+  <td><span class="state-pill" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span></td>
+  <td>within range</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R17_EUFN</td>
+  <td><span class="state-pill" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span></td>
+  <td>within range</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R18_EUFN_volume</td>
+  <td><span class="state-pill" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span></td>
+  <td>volume 1.56x</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R1_SOFR</td>
+  <td><span class="state-pill" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span></td>
+  <td>within range</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R2_2s10s</td>
+  <td><span class="state-pill" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span></td>
+  <td>within range</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R3_UST30Y</td>
+  <td><span class="state-pill" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span></td>
+  <td>within range</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R4_TIPS10Y</td>
+  <td><span class="state-pill" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span></td>
+  <td>within range</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R5_HY_OAS</td>
+  <td><span class="state-pill" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span></td>
+  <td>within range</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R6_CCC_spread</td>
+  <td><span class="state-pill" style="background:var(--neutral-bg);color:var(--neutral)">WARNING</span></td>
+  <td>level 9.58 in warning zone (>8.0)</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R7_BKLN</td>
+  <td><span class="state-pill" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span></td>
+  <td>within range</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R8_SRLN</td>
+  <td><span class="state-pill" style="background:var(--bullish-bg);color:var(--bullish)">NORMAL</span></td>
+  <td>within range</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr>
+<tr>
+  <td class="code">R9_Resonac</td>
+  <td><span class="state-pill" style="background:var(--neutral-bg);color:var(--neutral)">WARNING</span></td>
+  <td>11.2% above 20MA</td>
+  <td class="code" style="color:var(--text-dim)">2026-04-15T16:06</td>
+</tr></tbody>
+  </table>
+
+  <h2 class="section-title">Alert Log · 最近 10 次轉換</h2>
+  <div class="alerts-box"><div class='alert-line'>2026-04-15T16:07:05 | R5_HY_OAS | 🟡 warning ↑ 🔴 alert | TEST ALERT — synthetic event for pipeline validation</div></div>
+
+  <div class="ft">
+    Auto-generated by <code>sr_monitor/dashboard.py</code> ·
+    <a href="history.json">history.json</a>
+    <a href="state_tracker.json">state_tracker.json</a>
+    <a href="alerts.log">alerts.log</a>
+  </div>
+</div>
 
 <script>
-const timestamps = ["2026-04-15", "2026-04-15", "2026-04-15"];
-const compositeData = [17.7, 17.7, 17.7];
-const catDatasets = [{"label": "SR1: \u570b\u50b5 Clearing Mandate", "data": [10.0, 10.0, 10.0], "borderColor": "#60a5fa", "backgroundColor": "#60a5fa33", "tension": 0.2, "fill": false}, {"label": "SR2: CLO LME \u638f\u7a7a", "data": [20.0, 20.0, 20.0], "borderColor": "#a78bfa", "backgroundColor": "#a78bfa33", "tension": 0.2, "fill": false}, {"label": "SR3: \u65e5\u672c\u5149\u963b\u5291\u6390\u8116", "data": [26.0, 26.0, 26.0], "borderColor": "#f472b6", "backgroundColor": "#f472b633", "tension": 0.2, "fill": false}, {"label": "B1: \u65e5\u672c\u8cc7\u91d1\u56de\u6d41", "data": [30.0, 30.0, 30.0], "borderColor": "#34d399", "backgroundColor": "#34d39933", "tension": 0.2, "fill": false}, {"label": "B2: \u6cd5\u570b r-g \u9677\u9631", "data": [10.0, 10.0, 10.0], "borderColor": "#fbbf24", "backgroundColor": "#fbbf2433", "tension": 0.2, "fill": false}, {"label": "B3: \u6b50\u6d32\u9280\u884c Basel IV", "data": [10.0, 10.0, 10.0], "borderColor": "#fb7185", "backgroundColor": "#fb718533", "tension": 0.2, "fill": false}];
-
-const ctx = document.getElementById('trendChart').getContext('2d');
+const ctx = document.getElementById('trend').getContext('2d');
 new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: timestamps,
-        datasets: [
-            {
-                label: 'Composite',
-                data: compositeData,
-                borderColor: '#f1f5f9',
-                backgroundColor: 'rgba(241, 245, 249, 0.1)',
-                tension: 0.2,
-                fill: true,
-                borderWidth: 3,
-            },
-            ...catDatasets,
-        ],
+  type: 'line',
+  data: {
+    labels: ["2026-04-15", "2026-04-15", "2026-04-15"],
+    datasets: [
+      {
+        label: 'Composite',
+        data: [17.7, 17.7, 17.7],
+        borderColor: '#D4AF37',
+        backgroundColor: 'rgba(212,175,55,0.15)',
+        borderWidth: 2.5,
+        tension: 0.3,
+        pointRadius: 0,
+        fill: true,
+      },
+      ...[{"label": "SR1", "data": [10.0, 10.0, 10.0], "borderColor": "#60a5fa", "backgroundColor": "#60a5fa22", "borderWidth": 1.5, "tension": 0.3, "pointRadius": 0, "fill": false}, {"label": "SR2", "data": [20.0, 20.0, 20.0], "borderColor": "#a78bfa", "backgroundColor": "#a78bfa22", "borderWidth": 1.5, "tension": 0.3, "pointRadius": 0, "fill": false}, {"label": "SR3", "data": [26.0, 26.0, 26.0], "borderColor": "#f472b6", "backgroundColor": "#f472b622", "borderWidth": 1.5, "tension": 0.3, "pointRadius": 0, "fill": false}, {"label": "B1", "data": [30.0, 30.0, 30.0], "borderColor": "#34d399", "backgroundColor": "#34d39922", "borderWidth": 1.5, "tension": 0.3, "pointRadius": 0, "fill": false}, {"label": "B2", "data": [10.0, 10.0, 10.0], "borderColor": "#fbbf24", "backgroundColor": "#fbbf2422", "borderWidth": 1.5, "tension": 0.3, "pointRadius": 0, "fill": false}, {"label": "B3", "data": [10.0, 10.0, 10.0], "borderColor": "#fb7185", "backgroundColor": "#fb718522", "borderWidth": 1.5, "tension": 0.3, "pointRadius": 0, "fill": false}]
+    ],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: { color: '#e8e6e1', font: { family: 'JetBrains Mono', size: 11 } },
+        position: 'top',
+      },
+      tooltip: {
+        backgroundColor: 'rgba(18,18,26,0.95)',
+        titleColor: '#D4AF37',
+        bodyColor: '#e8e6e1',
+        borderColor: 'rgba(212,175,55,0.3)',
+        borderWidth: 1,
+      }
     },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { labels: { color: '#e2e8f0' } },
-        },
-        scales: {
-            x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
-            y: {
-                min: 0, max: 100,
-                ticks: { color: '#94a3b8' },
-                grid: { color: '#334155' }
-            },
-        },
+    scales: {
+      x: {
+        ticks: { color: '#8a8a9a', font: { family: 'JetBrains Mono', size: 10 }, maxTicksLimit: 10 },
+        grid: { color: 'rgba(255,255,255,0.04)' },
+      },
+      y: {
+        min: 0, max: 100,
+        ticks: { color: '#8a8a9a', font: { family: 'JetBrains Mono', size: 10 } },
+        grid: { color: 'rgba(255,255,255,0.04)' },
+      },
     },
+  },
 });
 </script>
-
 </body>
 </html>
