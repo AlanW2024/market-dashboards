@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<title>SR Monitor Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+          background: #0f172a; color: #e2e8f0;
+          max-width: 1200px; margin: 0 auto; padding: 24px; }
+  h1, h2 { color: #f1f5f9; margin-top: 32px; }
+  .hero { background: #1e293b; padding: 32px; border-radius: 12px;
+           border: 1px solid #334155; text-align: center; margin-bottom: 24px; }
+  .score { font-size: 72px; font-weight: 800; color: #4ade80; }
+  .status { font-size: 24px; margin-top: 8px; }
+  .meta { color: #94a3b8; font-size: 14px; margin-top: 12px; }
+  .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+               margin: 24px 0; }
+  .cat-card { background: #1e293b; padding: 20px; border-radius: 10px;
+               border: 1px solid #334155; }
+  .cat-name { color: #94a3b8; font-size: 13px; }
+  .cat-score { font-size: 36px; font-weight: 700; margin: 4px 0; }
+  table { width: 100%; border-collapse: collapse; background: #1e293b;
+           border-radius: 8px; overflow: hidden; margin-top: 16px; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #334155; }
+  th { background: #334155; color: #f1f5f9; }
+  .chart-container { background: #1e293b; padding: 24px; border-radius: 12px;
+                      border: 1px solid #334155; margin: 24px 0; height: 420px; }
+  a { color: #60a5fa; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div style="color:#94a3b8;font-size:14px;">Structural Risk Monitor</div>
+  <div class="score">17.7</div>
+  <div class="status" style="color:#4ade80;">🟢 Normal / 100</div>
+  <div class="meta">Last update: 2026-04-15T16:13:45</div>
+</div>
+
+<h2>6 類別評分</h2>
+<div class="cat-grid">
+  <div class="cat-card">
+    <div class="cat-name">SR1: 國債 Clearing Mandate</div>
+    <div class="cat-score" style="color:#4ade80;">10.0</div>
+  </div>
+  <div class="cat-card">
+    <div class="cat-name">SR2: CLO LME 掏空</div>
+    <div class="cat-score" style="color:#4ade80;">20.0</div>
+  </div>
+  <div class="cat-card">
+    <div class="cat-name">SR3: 日本光阻劑掐脖</div>
+    <div class="cat-score" style="color:#4ade80;">26.0</div>
+  </div>
+  <div class="cat-card">
+    <div class="cat-name">B1: 日本資金回流</div>
+    <div class="cat-score" style="color:#4ade80;">30.0</div>
+  </div>
+  <div class="cat-card">
+    <div class="cat-name">B2: 法國 r-g 陷阱</div>
+    <div class="cat-score" style="color:#4ade80;">10.0</div>
+  </div>
+  <div class="cat-card">
+    <div class="cat-name">B3: 歐洲銀行 Basel IV</div>
+    <div class="cat-score" style="color:#4ade80;">10.0</div>
+  </div>
+</div>
+
+<h2>趨勢圖（過去 3 個 snapshot）</h2>
+<div class="chart-container">
+  <canvas id="trendChart"></canvas>
+</div>
+
+<h2>當前指標狀態</h2>
+<table>
+<thead><tr><th>Indicator</th><th>State</th><th>Reason</th><th>Since</th></tr></thead>
+<tbody>
+<tr><td>R10_ShinEtsu</td><td><span style="color:#fbbf24;font-weight:bold">● warning</span></td><td>6.2% above 20MA</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R11_TokyoOhka</td><td><span style="color:#fbbf24;font-weight:bold">● warning</span></td><td>12.1% above 20MA</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R12_SMIC</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>+5.5% vs 20MA</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R13_HuaHong</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>+3.4% vs 20MA</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R14_USDJPY</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R15_JGB10Y</td><td><span style="color:#fbbf24;font-weight:bold">● warning</span></td><td>level 2.11 in warning zone (>2.0)</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R16_OATBund</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R17_EUFN</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R18_EUFN_volume</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>volume 1.56x</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R1_SOFR</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R2_2s10s</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R3_UST30Y</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R4_TIPS10Y</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R5_HY_OAS</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R6_CCC_spread</td><td><span style="color:#fbbf24;font-weight:bold">● warning</span></td><td>level 9.58 in warning zone (>8.0)</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R7_BKLN</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R8_SRLN</td><td><span style="color:#4ade80;font-weight:bold">● normal</span></td><td>within range</td><td>2026-04-15T16:06</td></tr>
+<tr><td>R9_Resonac</td><td><span style="color:#fbbf24;font-weight:bold">● warning</span></td><td>11.2% above 20MA</td><td>2026-04-15T16:06</td></tr>
+</tbody>
+</table>
+
+<p style="margin-top:32px;color:#64748b;font-size:13px;">
+  Auto-generated by <code>sr_monitor/dashboard.py</code>. Raw data:
+  <a href="history.json">history.json</a> ·
+  <a href="state_tracker.json">state_tracker.json</a> ·
+  <a href="alerts.log">alerts.log</a>
+</p>
+
+<script>
+const timestamps = ["2026-04-15", "2026-04-15", "2026-04-15"];
+const compositeData = [17.7, 17.7, 17.7];
+const catDatasets = [{"label": "SR1: \u570b\u50b5 Clearing Mandate", "data": [10.0, 10.0, 10.0], "borderColor": "#60a5fa", "backgroundColor": "#60a5fa33", "tension": 0.2, "fill": false}, {"label": "SR2: CLO LME \u638f\u7a7a", "data": [20.0, 20.0, 20.0], "borderColor": "#a78bfa", "backgroundColor": "#a78bfa33", "tension": 0.2, "fill": false}, {"label": "SR3: \u65e5\u672c\u5149\u963b\u5291\u6390\u8116", "data": [26.0, 26.0, 26.0], "borderColor": "#f472b6", "backgroundColor": "#f472b633", "tension": 0.2, "fill": false}, {"label": "B1: \u65e5\u672c\u8cc7\u91d1\u56de\u6d41", "data": [30.0, 30.0, 30.0], "borderColor": "#34d399", "backgroundColor": "#34d39933", "tension": 0.2, "fill": false}, {"label": "B2: \u6cd5\u570b r-g \u9677\u9631", "data": [10.0, 10.0, 10.0], "borderColor": "#fbbf24", "backgroundColor": "#fbbf2433", "tension": 0.2, "fill": false}, {"label": "B3: \u6b50\u6d32\u9280\u884c Basel IV", "data": [10.0, 10.0, 10.0], "borderColor": "#fb7185", "backgroundColor": "#fb718533", "tension": 0.2, "fill": false}];
+
+const ctx = document.getElementById('trendChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: timestamps,
+        datasets: [
+            {
+                label: 'Composite',
+                data: compositeData,
+                borderColor: '#f1f5f9',
+                backgroundColor: 'rgba(241, 245, 249, 0.1)',
+                tension: 0.2,
+                fill: true,
+                borderWidth: 3,
+            },
+            ...catDatasets,
+        ],
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { labels: { color: '#e2e8f0' } },
+        },
+        scales: {
+            x: { ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+            y: {
+                min: 0, max: 100,
+                ticks: { color: '#94a3b8' },
+                grid: { color: '#334155' }
+            },
+        },
+    },
+});
+</script>
+
+</body>
+</html>
