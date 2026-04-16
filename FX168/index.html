@@ -3,234 +3,324 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FX168 Terminal</title>
+<title>FX168 &lt;GO&gt;</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
 
-*{margin:0;padding:0;box-sizing:border-box}
+*{margin:0;padding:0;box-sizing:border-box;border-radius:0!important}
 :root{
-  --bg:#020617;--bg-panel:#0a0f1e;--bg-card:#0e1223;--bg-hover:#141b30;
-  --border:#1e293b;--border-hi:#334155;
-  --text:#e2e8f0;--text-muted:#64748b;--text-dim:#475569;
-  --green:#22c55e;--red:#ef4444;--amber:#ffb000;--blue:#3b82f6;--cyan:#06b6d4;
-  --font-mono:'JetBrains Mono',monospace;--font-sans:'Inter',sans-serif;
-}
-html{font-size:13px}
-body{background:var(--bg);color:var(--text);font-family:var(--font-mono);overflow-x:hidden}
+  /* Bloomberg Terminal palette */
+  --bg:#000;
+  --bg-panel:#000;
+  --bg-card:#0a0a0a;
+  --bg-hover:#1a1200;
+  --bg-header:#1a1a1a;
 
-/* ── TICKER BAR ── */
-.ticker-bar{background:#000;border-bottom:1px solid var(--amber);padding:4px 0;overflow:hidden;white-space:nowrap}
-.ticker-bar .track{display:inline-block;animation:scroll 40s linear infinite}
-.ticker-bar .item{display:inline-block;padding:0 24px;font-size:11px;letter-spacing:.5px}
-.ticker-bar .item .label{color:var(--amber);margin-right:6px}
-.ticker-bar .item .val{color:var(--text)}
+  --border:#2a2a2a;
+  --border-hi:#ff9900;
+
+  --text:#e8e8e8;
+  --text-dim:#999;
+  --text-muted:#666;
+
+  /* Bloomberg accents */
+  --amber:#ff9900;          /* primary accent — headers, keys, labels */
+  --amber-dim:#aa6600;
+  --amber-hi:#ffb84d;
+  --cyan:#00d4ff;           /* data values, tickers */
+  --green:#00d26a;          /* bullish, up moves */
+  --red:#ff4444;            /* bearish, down moves */
+  --yellow:#ffd700;         /* warnings, alerts */
+  --white:#fff;             /* prices, critical values */
+
+  --font-mono:'IBM Plex Mono','Consolas','Menlo',monospace;
+}
+html{font-size:12px}
+body{background:var(--bg);color:var(--text);font-family:var(--font-mono);font-weight:400;overflow-x:hidden;letter-spacing:.02em}
+
+/* ═══ COMMAND BAR (top, Bloomberg-style) ═══ */
+.cmdbar{background:var(--amber);color:#000;padding:3px 10px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:14px;letter-spacing:.05em;text-transform:uppercase}
+.cmdbar .brand{font-weight:700}
+.cmdbar .go{background:#000;color:var(--amber);padding:1px 6px;font-weight:600}
+.cmdbar .divider{opacity:.5}
+.cmdbar .spacer{flex:1}
+.cmdbar .live{color:#000;background:#fff;padding:1px 6px;font-weight:700;animation:blink 1.2s infinite}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:.4}}
+
+/* ═══ FUNCTION KEYS STRIP ═══ */
+.fkeys{background:#111;border-bottom:1px solid var(--border);padding:2px 10px;display:flex;gap:16px;font-size:10px;color:var(--text-muted);letter-spacing:.03em}
+.fkeys span b{color:var(--amber);margin-right:3px;font-weight:600}
+
+/* ═══ TICKER ═══ */
+.ticker-bar{background:#000;border-bottom:1px solid var(--amber);padding:5px 0;overflow:hidden;white-space:nowrap}
+.ticker-bar .track{display:inline-block;animation:scroll 60s linear infinite}
+.ticker-bar .item{display:inline-block;padding:0 20px;font-size:11px;letter-spacing:.04em;border-right:1px solid var(--border)}
+.ticker-bar .item .label{color:var(--amber);margin-right:8px;font-weight:600}
+.ticker-bar .item .val{color:var(--white);font-weight:500}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* ── HEADER ── */
-.header{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;border-bottom:1px solid var(--border);background:var(--bg-panel)}
-.header .logo{font-size:16px;font-weight:700;color:var(--amber);letter-spacing:2px}
-.header .logo span{color:var(--text-muted);font-weight:400;font-size:11px;margin-left:8px}
-.header .meta{font-size:11px;color:var(--text-muted)}
-.header .meta .live{color:var(--green);margin-right:4px}
-
-/* ── GRID LAYOUT ── */
-.grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1px;background:var(--border);margin:0}
+/* ═══ GRID LAYOUT ═══ */
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1px;background:var(--border)}
 .grid-2{grid-template-columns:1fr 1fr}
 .grid-3{grid-template-columns:1fr 1fr 1fr}
-.panel{background:var(--bg-panel);padding:10px 12px}
-.panel-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:8px;font-weight:500}
+.panel{background:#000;padding:6px 10px;position:relative}
 .panel-full{grid-column:1/-1}
+.panel-title{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--amber);margin-bottom:6px;font-weight:600;border-bottom:1px solid var(--border);padding-bottom:3px;display:flex;align-items:center;justify-content:space-between}
+.panel-title .badge{background:var(--amber);color:#000;padding:0 4px;font-size:9px;font-weight:700}
 
-/* ── KPI CARDS ── */
-.kpi{text-align:center;padding:12px 8px}
-.kpi .value{font-size:28px;font-weight:700;line-height:1}
-.kpi .label{font-size:10px;color:var(--text-muted);margin-top:4px;text-transform:uppercase;letter-spacing:1px}
-.kpi .sub{font-size:11px;margin-top:2px}
+/* ═══ KPI ═══ */
+.kpi{display:flex;flex-direction:column;gap:2px;padding:4px 6px}
+.kpi .label{font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.12em;font-weight:500}
+.kpi .value{font-size:26px;font-weight:700;line-height:1.05;color:var(--white);font-variant-numeric:tabular-nums}
+.kpi .sub{font-size:10px;color:var(--green);font-weight:500}
+.kpi .sub.down{color:var(--red)}
 
-/* ── SPARKLINE ── */
-.spark-container{position:relative;height:100px;margin-top:4px}
+/* ═══ SPARKLINE ═══ */
+.spark-container{position:relative;height:110px;margin-top:2px}
 .spark-container svg{width:100%;height:100%}
 
-/* ── SENTIMENT BAR ── */
-.sent-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
-.sent-chip{font-size:10px;padding:2px 6px;border:1px solid var(--border-hi);color:var(--text-muted);display:inline-flex;align-items:center;gap:4px}
-.sent-chip .cnt{color:var(--text);font-weight:500}
-.sent-chip.bull{border-color:rgba(34,197,94,.3);color:var(--green)}
-.sent-chip.bear{border-color:rgba(239,68,68,.3);color:var(--red)}
+/* ═══ SENTIMENT ═══ */
+.sent-row{display:flex;flex-direction:column;gap:2px;margin-top:2px}
+.sent-chip{font-size:11px;padding:2px 6px;display:flex;align-items:center;gap:8px;cursor:pointer;border-left:2px solid transparent}
+.sent-chip:hover{background:var(--bg-hover);border-left-color:var(--amber)}
+.sent-chip .cnt{color:var(--amber);font-weight:700;min-width:30px;text-align:right;font-variant-numeric:tabular-nums}
+.sent-chip .name{color:var(--text)}
+.sent-chip.bull .name{color:var(--green)}
+.sent-chip.bear .name{color:var(--red)}
+.sent-chip.warn .name{color:var(--yellow)}
 
-/* ── THEME TAGS ── */
-.theme-row{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px}
-.theme-tag{font-size:10px;padding:1px 5px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-dim)}
-.theme-tag .n{color:var(--amber);margin-left:3px}
+/* ═══ THEMES (heatmap style) ═══ */
+.theme-row{display:flex;flex-wrap:wrap;gap:1px;margin-top:2px}
+.theme-tag{font-size:10px;padding:2px 6px;background:#111;color:var(--text);cursor:pointer;font-weight:500;transition:background .15s;letter-spacing:.03em}
+.theme-tag:hover{background:var(--amber);color:#000}
+.theme-tag .n{color:var(--amber);margin-left:5px;font-weight:600}
+.theme-tag:hover .n{color:#000}
 
-/* ── CALENDAR ── */
-.cal-list{max-height:200px;overflow-y:auto}
-.cal-item{display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid rgba(30,41,59,.5);font-size:11px}
-.cal-item.past{opacity:.35}
-.cal-item .date{color:var(--cyan);width:80px;flex-shrink:0}
-.cal-item .stars{color:var(--amber);width:36px;flex-shrink:0}
-.cal-item .country{color:var(--text-muted);width:40px;flex-shrink:0}
+/* ═══ CALENDAR ═══ */
+.cal-list{max-height:220px;overflow-y:auto}
+.cal-item{display:flex;align-items:center;gap:10px;padding:3px 4px;border-bottom:1px solid #111;font-size:11px}
+.cal-item:hover{background:var(--bg-hover)}
+.cal-item.past{opacity:.3}
+.cal-item .date{color:var(--cyan);width:70px;flex-shrink:0;font-weight:500}
+.cal-item .stars{color:var(--yellow);width:32px;flex-shrink:0;font-size:9px;letter-spacing:-.5px}
+.cal-item .country{color:var(--text-muted);width:44px;flex-shrink:0;font-size:10px}
 .cal-item .name{color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* ── ARTICLE TABLE ── */
-.article-table{width:100%;border-collapse:collapse;font-size:11px}
-.article-table th{text-align:left;color:var(--amber);font-size:10px;text-transform:uppercase;letter-spacing:1px;padding:4px 6px;border-bottom:1px solid var(--border-hi);font-weight:500;position:sticky;top:0;background:var(--bg-panel);z-index:1}
-.article-table td{padding:4px 6px;border-bottom:1px solid rgba(30,41,59,.3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:0}
-.article-table td:first-child{max-width:none;white-space:normal;word-break:break-all}
+/* ═══ CLUSTERS ═══ */
+.cluster-card{padding:4px 8px;margin-bottom:1px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;border-left:2px solid transparent;background:#0a0a0a}
+.cluster-card:hover{background:var(--bg-hover);border-left-color:var(--amber)}
+.cluster-card .cl-name{color:var(--text);font-size:11px;font-weight:500}
+.cluster-card .cl-count{color:var(--amber);font-size:11px;font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ═══ REPORT CARDS (L1/L2/L3) ═══ */
+.report-card{padding:8px 10px;border-left:3px solid var(--amber);background:#0a0a0a}
+.report-card .rc-tier{color:var(--amber);font-size:10px;letter-spacing:.15em;font-weight:700;margin-bottom:2px}
+.report-card .rc-title{color:var(--white);font-size:13px;font-weight:600;margin-bottom:4px}
+.report-card .rc-meta{color:var(--text-dim);font-size:10px}
+.report-card .rc-sub{color:var(--cyan);font-size:10px;margin-top:4px}
+
+/* ═══ ARTICLE NEWSWIRE ═══ */
+.article-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
+.article-table th{text-align:left;color:var(--amber);font-size:10px;text-transform:uppercase;letter-spacing:.12em;padding:4px 6px;border-bottom:1px solid var(--amber);font-weight:600;position:sticky;top:0;background:#000;z-index:1}
+.article-table td{padding:3px 6px;border-bottom:1px solid #111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.article-table tr{cursor:pointer}
 .article-table tr:hover td{background:var(--bg-hover)}
-.article-table .title-cell{color:var(--text);cursor:pointer;font-family:var(--font-sans);font-size:12px}
+.article-table .time-cell{color:var(--cyan);width:70px;font-weight:500}
+.article-table .chan-cell{color:var(--yellow);width:60px;font-size:10px;text-transform:uppercase}
+.article-table .title-cell{color:var(--white)}
 .article-table .title-cell:hover{color:var(--amber)}
-.article-table .date-cell{color:var(--text-muted);width:90px}
-.article-table .sent-cell{width:100px}
-.article-table .author-cell{color:var(--text-dim);width:80px}
-.article-scroll{max-height:400px;overflow-y:auto}
+.article-table .sent-cell{width:90px;font-size:10px}
+.article-table .author-cell{color:var(--text-dim);width:90px;font-size:10px}
+.article-scroll{max-height:520px;overflow-y:auto}
+.bull-text{color:var(--green)}
+.bear-text{color:var(--red)}
+.neutral-text{color:var(--text-muted)}
+.warn-text{color:var(--yellow)}
 
-/* ── SEARCH ── */
-.search-bar{display:flex;gap:8px;margin-bottom:8px}
-.search-bar input{flex:1;background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:5px 8px;font-family:var(--font-mono);font-size:12px;outline:none}
-.search-bar input:focus{border-color:var(--amber)}
-.search-bar select{background:var(--bg-card);border:1px solid var(--border);color:var(--text-muted);padding:5px 6px;font-family:var(--font-mono);font-size:11px;outline:none}
+/* ═══ SEARCH ═══ */
+.search-bar{display:flex;gap:1px;margin-bottom:4px;background:var(--border)}
+.search-bar > *{background:#111;border:none;color:var(--text);padding:5px 8px;font-family:var(--font-mono);font-size:11px;outline:none}
+.search-bar input{flex:1}
+.search-bar input:focus,.search-bar select:focus{background:#000;color:var(--amber);box-shadow:inset 0 -2px 0 var(--amber)}
+.search-bar select{color:var(--text-muted);cursor:pointer}
 
-/* ── CLUSTER PANEL ── */
-.cluster-card{padding:6px 8px;border:1px solid var(--border);margin-bottom:4px;cursor:default}
-.cluster-card:hover{border-color:var(--amber);background:var(--bg-hover)}
-.cluster-card .cl-name{color:var(--text);font-size:12px;font-family:var(--font-sans)}
-.cluster-card .cl-count{color:var(--amber);font-size:11px;float:right}
-.cluster-card .cl-sent{font-size:10px;color:var(--text-muted);margin-top:2px}
-
-/* ── MODAL ── */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;justify-content:center;align-items:center}
+/* ═══ MODAL ═══ */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;justify-content:center;align-items:center;backdrop-filter:blur(4px)}
 .modal-overlay.active{display:flex}
-.modal-box{background:var(--bg-panel);border:1px solid var(--amber);max-width:700px;width:90%;max-height:85vh;overflow-y:auto;padding:16px}
-.modal-box .modal-title{color:var(--amber);font-size:14px;font-family:var(--font-sans);font-weight:600;margin-bottom:8px}
-.modal-box .modal-meta{color:var(--text-muted);font-size:11px;margin-bottom:12px}
-.modal-box .modal-body{color:var(--text);font-size:12px;font-family:var(--font-sans);line-height:1.6}
-.modal-box .modal-close{float:right;color:var(--amber);cursor:pointer;font-size:14px;border:1px solid var(--amber);padding:0 6px;background:none}
-.modal-box .modal-close:hover{background:var(--amber);color:#000}
+.modal-box{background:#000;border:2px solid var(--amber);max-width:760px;width:92%;max-height:88vh;overflow-y:auto;padding:0}
+.modal-box .modal-header{background:var(--amber);color:#000;padding:6px 12px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.modal-box .modal-close{color:#000;cursor:pointer;font-weight:700;border:1px solid #000;padding:0 6px;background:transparent;font-family:inherit}
+.modal-box .modal-close:hover{background:#000;color:var(--amber)}
+.modal-box .modal-body{padding:14px}
+.modal-box .modal-title{color:var(--white);font-size:14px;font-weight:600;margin-bottom:6px}
+.modal-box .modal-meta{color:var(--text-muted);font-size:10px;letter-spacing:.05em;margin-bottom:12px;border-bottom:1px dashed var(--border);padding-bottom:6px}
+.modal-box .modal-content{color:var(--text);font-size:12px;line-height:1.6}
+.modal-box .modal-content .label{color:var(--amber);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.1em}
 
-/* ── FOOTER ── */
-.footer{text-align:center;padding:6px;font-size:10px;color:var(--text-dim);border-top:1px solid var(--border)}
+/* ═══ FOOTER (status bar) ═══ */
+.footer{background:#111;padding:4px 10px;font-size:10px;color:var(--text-muted);border-top:1px solid var(--amber);display:flex;gap:14px;letter-spacing:.04em}
+.footer .ok{color:var(--green);font-weight:600}
+.footer .spacer{flex:1}
+.footer b{color:var(--amber);font-weight:600}
 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--border-hi)}
+/* ═══ SCROLLBAR ═══ */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#000}
+::-webkit-scrollbar-thumb{background:var(--amber-dim)}
+::-webkit-scrollbar-thumb:hover{background:var(--amber)}
 
-/* ── RESPONSIVE ── */
+/* ═══ RESPONSIVE ═══ */
 @media(max-width:900px){
   .grid{grid-template-columns:1fr 1fr}
   .grid-3{grid-template-columns:1fr}
+  .fkeys{display:none}
 }
 @media(max-width:600px){
   .grid,.grid-2,.grid-3{grid-template-columns:1fr}
-  html{font-size:12px}
 }
 </style>
 </head>
 <body>
 
-<!-- TICKER BAR -->
+<!-- ═══ COMMAND BAR ═══ -->
+<div class="cmdbar">
+  <span class="brand">FX168</span>
+  <span class="go">&lt;GO&gt;</span>
+  <span class="divider">│</span>
+  <span>TERMINAL 2.0</span>
+  <span class="spacer"></span>
+  <span class="live">● LIVE</span>
+  <span id="headerTime"></span>
+</div>
+
+<!-- ═══ FUNCTION KEYS ═══ -->
+<div class="fkeys">
+  <span><b>F1</b>HELP</span>
+  <span><b>F2</b>FEED</span>
+  <span><b>F3</b>CAL</span>
+  <span><b>F4</b>THEMES</span>
+  <span><b>F5</b>SENT</span>
+  <span><b>F6</b>CLUSTERS</span>
+  <span><b>F7</b>REPORTS</span>
+  <span><b>F9</b>REFRESH</span>
+  <span style="flex:1"></span>
+  <span>PRESS &nbsp;<b>/</b>&nbsp;TO SEARCH</span>
+</div>
+
+<!-- ═══ TICKER ═══ -->
 <div class="ticker-bar">
   <div class="track" id="ticker"></div>
 </div>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="logo">FX168<span>TERMINAL</span></div>
-  <div class="meta"><span class="live">●</span> <span id="headerTime"></span></div>
-</div>
-
-<!-- ROW 1: KPI -->
+<!-- ═══ ROW 1: KPI ═══ -->
 <div class="grid" id="kpiRow"></div>
 
-<!-- ROW 2: SPARKLINE + CALENDAR -->
+<!-- ═══ ROW 2: SPARKLINE + CALENDAR ═══ -->
 <div class="grid grid-2">
   <div class="panel">
-    <div class="panel-title">7-Day Volume</div>
+    <div class="panel-title">VOLUME 7D <span class="badge">HIST</span></div>
     <div class="spark-container"><svg id="sparkSvg"></svg></div>
   </div>
   <div class="panel">
-    <div class="panel-title">Economic Calendar</div>
+    <div class="panel-title">ECON CALENDAR <span class="badge" id="calBadge"></span></div>
     <div class="cal-list" id="calList"></div>
   </div>
 </div>
 
-<!-- ROW 3: SENTIMENT + THEMES + CLUSTERS -->
+<!-- ═══ ROW 3: SENTIMENT + THEMES + CLUSTERS ═══ -->
 <div class="grid grid-3">
   <div class="panel">
-    <div class="panel-title">Sentiment Distribution</div>
+    <div class="panel-title">SENTIMENT DISTRIBUTION</div>
     <div class="sent-row" id="sentRow"></div>
   </div>
   <div class="panel">
-    <div class="panel-title">Top Themes</div>
+    <div class="panel-title">THEME HEATMAP</div>
     <div class="theme-row" id="themeRow"></div>
   </div>
   <div class="panel">
-    <div class="panel-title">Clusters</div>
-    <div id="clusterList" style="max-height:180px;overflow-y:auto"></div>
+    <div class="panel-title">TOPIC CLUSTERS</div>
+    <div id="clusterList" style="max-height:200px;overflow-y:auto"></div>
   </div>
 </div>
 
-
-<!-- ROW 4: MARKET REPORTS -->
+<!-- ═══ ROW 4: MARKET REPORTS ═══ -->
 <div class="grid grid-3">
   <div class="panel">
-    <div class="panel-title">L1 Quick Brief</div>
-    <div style="border:1px solid var(--border);padding:8px">
-      <div style="color:var(--amber);font-size:13px;font-family:var(--font-sans);font-weight:600">快速摘要</div>
-      <div style="color:var(--text-muted);font-size:11px;margin-top:4px">58 篇 curated · ~5 min read</div>
-      <div style="color:var(--text-dim);font-size:10px;margin-top:6px">2026-04-10 深度分析.md</div>
-      <div style="color:var(--cyan);font-size:10px;margin-top:2px">伊朗戰爭五連反應 fast briefing</div>
+    <div class="panel-title">L1 QUICK BRIEF <span class="badge">~5M</span></div>
+    <div class="report-card">
+      <div class="rc-tier">TIER 1 · CURATED</div>
+      <div class="rc-title">快速摘要</div>
+      <div class="rc-meta">58 篇 curated · fast briefing</div>
+      <div class="rc-sub">伊朗戰爭五連反應</div>
     </div>
   </div>
   <div class="panel">
-    <div class="panel-title">L2 Full Coverage</div>
-    <div style="border:1px solid var(--border);padding:8px">
-      <div style="color:var(--amber);font-size:13px;font-family:var(--font-sans);font-weight:600">全景綜合</div>
-      <div style="color:var(--text-muted);font-size:11px;margin-top:4px">942 篇 Map-Reduce · ~15 min</div>
-      <div style="color:var(--text-dim);font-size:10px;margin-top:6px">全覆蓋 2026-04-11/</div>
-      <div style="color:var(--cyan);font-size:10px;margin-top:2px">00-綜合分析 + 9 clusters + 統計</div>
+    <div class="panel-title">L2 FULL COVERAGE <span class="badge">~15M</span></div>
+    <div class="report-card">
+      <div class="rc-tier">TIER 2 · COMPREHENSIVE</div>
+      <div class="rc-title">全景綜合</div>
+      <div class="rc-meta">942 篇 Map-Reduce · 9 clusters</div>
+      <div class="rc-sub">00-綜合分析 + 統計</div>
     </div>
   </div>
   <div class="panel">
-    <div class="panel-title">L3 Deep Research</div>
-    <div style="border:1px solid var(--border);padding:8px">
-      <div style="color:var(--amber);font-size:13px;font-family:var(--font-sans);font-weight:600">深度研究</div>
-      <div style="color:var(--text-muted);font-size:11px;margin-top:4px">20 份 per-cluster · ~30+ min</div>
-      <div style="color:var(--text-dim);font-size:10px;margin-top:6px">主題深度 2026-04-11/</div>
-      <div style="color:var(--cyan);font-size:10px;margin-top:2px">油價·黃金·美股·伊朗 + 4 supporting</div>
+    <div class="panel-title">L3 DEEP RESEARCH <span class="badge">~30M</span></div>
+    <div class="report-card">
+      <div class="rc-tier">TIER 3 · EXPERT</div>
+      <div class="rc-title">深度研究</div>
+      <div class="rc-meta">20 份 per-cluster analysis</div>
+      <div class="rc-sub">油價 · 黃金 · 美股 · 伊朗</div>
     </div>
   </div>
 </div>
 
-<!-- ROW 5: ARTICLE TABLE -->
+<!-- ═══ ROW 5: NEWSWIRE ═══ -->
 <div class="grid">
   <div class="panel panel-full">
-    <div class="panel-title">Articles Feed</div>
+    <div class="panel-title">NEWSWIRE <span class="badge" id="feedBadge">0</span></div>
     <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Search title / keyword...">
+      <input type="text" id="searchInput" placeholder="TYPE TO FILTER...">
       <select id="sentFilter"><option value="">ALL SENTIMENT</option></select>
       <select id="themeFilter"><option value="">ALL THEMES</option></select>
     </div>
     <div class="article-scroll">
       <table class="article-table">
-        <thead><tr><th>Title</th><th>Date</th><th>Sentiment</th><th>Author</th></tr></thead>
+        <thead><tr>
+          <th style="width:70px">TIME</th>
+          <th style="width:60px">CHAN</th>
+          <th>HEADLINE</th>
+          <th style="width:90px">SENT</th>
+          <th style="width:90px">AUTHOR</th>
+        </tr></thead>
         <tbody id="articleBody"></tbody>
       </table>
     </div>
   </div>
 </div>
 
-<!-- FOOTER -->
-<div class="footer">FX168 TERMINAL — Data from fx168news.com — Updated <span id="footerTime"></span></div>
+<!-- ═══ FOOTER STATUS BAR ═══ -->
+<div class="footer">
+  <span>DATA: <b>FX168 · JIN10</b></span>
+  <span>│</span>
+  <span>CONN: <span class="ok">● OK</span></span>
+  <span>│</span>
+  <span>UPDATED: <span id="footerTime"></span></span>
+  <span class="spacer"></span>
+  <span>FX168 TERMINAL <b>v2.0</b></span>
+</div>
 
-<!-- MODAL -->
+<!-- ═══ MODAL ═══ -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title" id="modalTitle"></div>
-    <div class="modal-meta" id="modalMeta"></div>
-    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-header">
+      <span>ARTICLE DETAIL</span>
+      <button class="modal-close" onclick="closeModal()">[✕] ESC</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-meta" id="modalMeta"></div>
+      <div class="modal-content" id="modalBody"></div>
+    </div>
   </div>
 </div>
 
@@ -239,9 +329,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-mono);overflo
 const D = window.FX168_DATA;
 const $ = s => document.getElementById(s);
 
-// ── HEADER TIME ──
-$('headerTime').textContent = D.generated_at?.replace('T',' ') || '';
-$('footerTime').textContent = D.generated_at?.replace('T',' ') || '';
+// ── TIMESTAMPS ──
+const stamp = (D.generated_at || '').replace('T',' ');
+$('headerTime').textContent = stamp;
+$('footerTime').textContent = stamp;
 
 // ── TICKER (market indices) ──
 (function(){
@@ -250,12 +341,14 @@ $('footerTime').textContent = D.generated_at?.replace('T',' ') || '';
   if(indices.length){
     for(const m of indices){
       const color = m.change>=0?'var(--green)':'var(--red)';
+      const arrow = m.change>=0?'▲':'▼';
       const sign = m.change>=0?'+':'';
-      html += `<span class="item"><span class="label">${m.name}</span><span class="val">${m.price.toLocaleString()}</span> <span style="color:${color}">${sign}${m.change_pct}%</span></span>`;
+      html += `<span class="item"><span class="label">${m.name.toUpperCase()}</span><span class="val">${Number(m.price).toLocaleString()}</span> <span style="color:${color};font-weight:600">${arrow} ${sign}${m.change_pct}%</span></span>`;
     }
   } else {
     // fallback: show themes if no market data
-    for(const [t,c] of (D.top_themes||[]).slice(0,15)) html += `<span class="item"><span class="label">${t.toUpperCase()}</span><span class="val">${c}</span></span>`;
+    for(const [t,c] of (D.top_themes||[]).slice(0,20))
+      html += `<span class="item"><span class="label">${t.toUpperCase()}</span><span class="val">${c}</span></span>`;
   }
   $('ticker').innerHTML = html + html;
 })();
@@ -263,13 +356,19 @@ $('footerTime').textContent = D.generated_at?.replace('T',' ') || '';
 // ── KPI ──
 (function(){
   const items = [
-    {label:'Total Articles',value:D.total,color:'var(--amber)'},
-    {label:'Today',value:D.today,color:'var(--green)',sub:`+${D.today}`},
-    {label:`${D.recent_days}D Window`,value:D.recent_count,color:'var(--cyan)'},
-    {label:'Summaries',value:D.total,color:'var(--text)'},
+    {label:'TOTAL ARTICLES',value:D.total,sub:'LIFETIME'},
+    {label:'TODAY',value:D.today,sub:`+${D.today} NEW`,color:'up'},
+    {label:`${D.recent_days}D WINDOW`,value:D.recent_count,sub:'DISPLAYED'},
+    {label:'SUMMARIES',value:D.total,sub:'AI-INDEXED'},
   ];
   $('kpiRow').innerHTML = items.map(i=>
-    `<div class="panel kpi"><div class="value" style="color:${i.color}">${i.value.toLocaleString()}</div><div class="label">${i.label}</div>${i.sub?`<div class="sub" style="color:var(--green)">${i.sub}</div>`:''}</div>`
+    `<div class="panel">
+       <div class="kpi">
+         <div class="label">${i.label}</div>
+         <div class="value">${i.value.toLocaleString()}</div>
+         <div class="sub${i.color==='up'?'':' down'.replace('down','')}">${i.sub}</div>
+       </div>
+     </div>`
   ).join('');
 })();
 
@@ -284,52 +383,55 @@ $('footerTime').textContent = D.generated_at?.replace('T',' ') || '';
 
   requestAnimationFrame(()=>{
     const W = svg.clientWidth || 300;
-    const H = 80;
-    const pad = {l:35,r:35,t:8,b:20};
+    const H = 90;
+    const pad = {l:30,r:30,t:10,b:22};
     const pw = W-pad.l-pad.r, ph = H-pad.t-pad.b;
     svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
 
     const pts = entries.map((e,i)=>{
-      const x = pad.l + (i/(entries.length-1))*pw;
+      const x = pad.l + (entries.length===1?pw/2:(i/(entries.length-1))*pw);
       const y = pad.t + ph - (e[1]/maxV)*ph;
       return {x,y,date:e[0],val:e[1]};
     });
 
-    // gradient
-    let defs = `<defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--green)" stop-opacity=".3"/><stop offset="100%" stop-color="var(--green)" stop-opacity="0"/></linearGradient></defs>`;
+    const defs = `<defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
+       <stop offset="0%" stop-color="#ff9900" stop-opacity=".35"/>
+       <stop offset="100%" stop-color="#ff9900" stop-opacity="0"/>
+     </linearGradient></defs>`;
 
-    // area
     const line = pts.map((p,i)=>`${i?'L':'M'}${p.x},${p.y}`).join(' ');
     const area = `${line} L${pts[pts.length-1].x},${pad.t+ph} L${pts[0].x},${pad.t+ph} Z`;
 
-    // bars
-    const barW = pw/entries.length*.6;
+    const barW = pw/Math.max(entries.length,1)*.55;
     const bars = pts.map(p=>
-      `<rect x="${p.x-barW/2}" y="${p.y}" width="${barW}" height="${pad.t+ph-p.y}" fill="var(--green)" opacity=".15"/>`
+      `<rect x="${p.x-barW/2}" y="${p.y}" width="${barW}" height="${pad.t+ph-p.y}" fill="#ff9900" opacity=".18"/>`
     ).join('');
 
-    // labels
     const labels = pts.map(p=>
-      `<text x="${p.x}" y="${H-2}" text-anchor="middle" font-size="9" fill="var(--text-dim)" font-family="var(--font-mono)">${p.date.slice(5)}</text>
-       <text x="${p.x}" y="${p.y-5}" text-anchor="middle" font-size="9" fill="var(--green)" font-family="var(--font-mono)">${p.val}</text>`
+      `<text x="${p.x}" y="${H-4}" text-anchor="middle" font-size="9" fill="#666" font-family="IBM Plex Mono,monospace">${p.date.slice(5)}</text>
+       <text x="${p.x}" y="${p.y-5}" text-anchor="middle" font-size="9" fill="#ff9900" font-weight="600" font-family="IBM Plex Mono,monospace">${p.val}</text>`
     ).join('');
 
-    svg.innerHTML = `${defs}${bars}<path d="${area}" fill="url(#sg)"/><path d="${line}" fill="none" stroke="var(--green)" stroke-width="1.5"/>${labels}`;
+    svg.innerHTML = `${defs}${bars}<path d="${area}" fill="url(#sg)"/><path d="${line}" fill="none" stroke="#ff9900" stroke-width="1.5"/>${labels}`;
   });
 })();
 
 // ── CALENDAR ──
 (function(){
   const cal = D.calendar;
-  if(!cal||!cal.events){$('calList').innerHTML='<div style="color:var(--text-dim);font-size:11px">No calendar data</div>';return;}
+  $('calBadge').textContent = cal?.events?.length || 0;
+  if(!cal||!cal.events||!cal.events.length){
+    $('calList').innerHTML='<div style="color:#666;font-size:10px;padding:6px">NO CALENDAR DATA</div>';
+    return;
+  }
   const today = new Date().toISOString().slice(0,10);
-  const stars = n => '★'.repeat(n) + '☆'.repeat(3-n);
-  $('calList').innerHTML = cal.events.slice(0,30).map(e=>{
+  const stars = n => '★'.repeat(Math.min(n,3));
+  $('calList').innerHTML = cal.events.slice(0,40).map(e=>{
     const past = e.pubDate && e.pubDate < today;
     return `<div class="cal-item${past?' past':''}">
-      <span class="date">${(e.pubDate||'TBD').slice(5)}</span>
+      <span class="date">${(e.pubDate||'TBD').slice(5)} ${e.pubTime||''}</span>
       <span class="stars">${stars(e.star||0)}</span>
-      <span class="country">${e.countryName||''}</span>
+      <span class="country">${e.countryName||'--'}</span>
       <span class="name">${e.eventName||''}</span>
     </div>`;
   }).join('');
@@ -341,49 +443,66 @@ function filterBy(type, value){
   else if(type==='theme') $('themeFilter').value = value;
   else if(type==='search'){$('searchInput').value = value; $('sentFilter').value=''; $('themeFilter').value='';}
   renderArticles();
-  $('articleBody').parentElement.parentElement.scrollIntoView({behavior:'smooth'});
+  document.querySelector('.article-scroll')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-// ── SENTIMENT (clickable) ──
+// ── SENTIMENT ──
 (function(){
   const sd = D.sentiment_dist||{};
-  const sorted = Object.entries(sd).sort((a,b)=>b[1]-a[1]).slice(0,20);
+  const sorted = Object.entries(sd).sort((a,b)=>b[1]-a[1]).slice(0,15);
+  if(!sorted.length){
+    $('sentRow').innerHTML='<div style="color:#666;font-size:10px;padding:6px">NO SENTIMENT DATA</div>';
+    return;
+  }
   $('sentRow').innerHTML = sorted.map(([s,c])=>{
-    const cls = s.includes('bullish')?'bull':s.includes('bearish')||s.includes('warning')?'bear':'';
-    return `<span class="sent-chip ${cls}" style="cursor:pointer" onclick="filterBy('sentiment','${s}')"><span class="cnt">${c}</span>${s.replace(/_/g,' ')}</span>`;
+    const cls = s.includes('bullish')?'bull':s.includes('bearish')||s.includes('warning')?'bear':s.includes('stagflation')?'warn':'';
+    return `<span class="sent-chip ${cls}" onclick="filterBy('sentiment','${s}')"><span class="cnt">${c}</span><span class="name">${s.replace(/_/g,' ').toUpperCase()}</span></span>`;
   }).join('');
 })();
 
-// ── THEMES (clickable) ──
+// ── THEMES ──
 (function(){
   const th = D.top_themes||[];
-  $('themeRow').innerHTML = th.slice(0,25).map(([t,c])=>
-    `<span class="theme-tag" style="cursor:pointer" onclick="filterBy('theme','${t}')">${t}<span class="n">${c}</span></span>`
+  if(!th.length){
+    $('themeRow').innerHTML='<div style="color:#666;font-size:10px;padding:6px">NO THEME DATA</div>';
+    return;
+  }
+  $('themeRow').innerHTML = th.slice(0,30).map(([t,c])=>
+    `<span class="theme-tag" onclick="filterBy('theme','${t}')">${t.toUpperCase()}<span class="n">${c}</span></span>`
   ).join('');
 })();
 
-// ── CLUSTERS (clickable → search by cluster name) ──
+// ── CLUSTERS ──
 (function(){
   const cl = D.clusters||{};
-  $('clusterList').innerHTML = Object.entries(cl).map(([name,info])=>{
-    const topSent = Object.entries(info.sentiment||{}).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([s,c])=>s.replace(/_/g,' ')).join(', ');
-    return `<div class="cluster-card" style="cursor:pointer" onclick="filterBy('search','${name}')"><span class="cl-name">${name}</span><span class="cl-count">${info.count||0}</span><div class="cl-sent">${topSent}</div></div>`;
-  }).join('');
+  const entries = Object.entries(cl);
+  if(!entries.length){
+    $('clusterList').innerHTML='<div style="color:#666;font-size:10px;padding:6px">NO CLUSTER DATA</div>';
+    return;
+  }
+  $('clusterList').innerHTML = entries.map(([name,info])=>
+    `<div class="cluster-card" onclick="filterBy('search','${name}')">
+      <span class="cl-name">${name}</span>
+      <span class="cl-count">${info.count||0}</span>
+     </div>`
+  ).join('');
 })();
 
 // ── ARTICLES ──
 const articles = D.articles||[];
 let filtered = [...articles];
 
+function parseArr(s){try{return JSON.parse(s||'[]')}catch{return []}}
+
 function populateFilters(){
   const sents = new Set(), themes = new Set();
   articles.forEach(a=>{
-    try{const s=JSON.parse(a.sentiment||'[]');s.forEach(x=>sents.add(x))}catch{}
-    try{const t=JSON.parse(a.themes||'[]');t.forEach(x=>themes.add(x))}catch{}
+    if(a.sentiment) sents.add(a.sentiment);
+    parseArr(a.themes).forEach(x=>themes.add(x));
   });
   const sf=$('sentFilter'),tf=$('themeFilter');
-  [...sents].sort().forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s.replace(/_/g,' ');sf.appendChild(o)});
-  [...themes].sort().forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;tf.appendChild(o)});
+  [...sents].sort().forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s.replace(/_/g,' ').toUpperCase();sf.appendChild(o)});
+  [...themes].sort().forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t.toUpperCase();tf.appendChild(o)});
 }
 
 function renderArticles(){
@@ -392,42 +511,93 @@ function renderArticles(){
   const tf = $('themeFilter').value;
 
   filtered = articles.filter(a=>{
-    if(q && !(a.title||'').toLowerCase().includes(q) && !(a.keywords||'').toLowerCase().includes(q)) return false;
-    if(sf){try{if(!JSON.parse(a.sentiment||'[]').includes(sf))return false}catch{return false}}
-    if(tf){try{if(!JSON.parse(a.themes||'[]').includes(tf))return false}catch{return false}}
+    if(q && !(a.title||'').toLowerCase().includes(q) && !(a.keywords||'').toLowerCase().includes(q) && !(a.core_claim||'').toLowerCase().includes(q)) return false;
+    if(sf && a.sentiment!==sf) return false;
+    if(tf && !parseArr(a.themes).includes(tf)) return false;
     return true;
   });
 
-  $('articleBody').innerHTML = filtered.slice(0,100).map((a,i)=>{
-    let sentBadges = '';
-    try{
-      const ss = JSON.parse(a.sentiment||'[]');
-      sentBadges = ss.slice(0,2).map(s=>{
-        const cls = s.includes('bullish')?'color:var(--green)':s.includes('bearish')||s.includes('warning')?'color:var(--red)':'color:var(--text-dim)';
-        return `<span style="${cls};font-size:10px">${s.replace(/_/g,' ')}</span>`;
-      }).join(' ');
-    }catch{}
+  $('feedBadge').textContent = filtered.length;
+
+  $('articleBody').innerHTML = filtered.slice(0,200).map((a,i)=>{
+    const s = a.sentiment||'';
+    const sentCls = s.includes('bullish')?'bull-text':s.includes('bearish')||s.includes('warning')?'bear-text':s.includes('stagflation')||s.includes('recession')?'warn-text':'neutral-text';
+    const sentShort = (s||'--').replace(/_/g,' ').toUpperCase().slice(0,16);
+    const time = (a.published_at||'').slice(5,16).replace('T',' ');
+    const channel = (a.channel||'').slice(3,6) || '---';
     return `<tr onclick="showModal(${i})">
+      <td class="time-cell">${time}</td>
+      <td class="chan-cell">${channel}</td>
       <td class="title-cell">${escHtml(a.title||'')}</td>
-      <td class="date-cell">${(a.published_at||'').slice(0,10)}</td>
-      <td class="sent-cell">${sentBadges}</td>
-      <td class="author-cell">${escHtml(a.author||'')}</td>
+      <td class="sent-cell ${sentCls}">${sentShort}</td>
+      <td class="author-cell">${escHtml(a.author||'--')}</td>
     </tr>`;
   }).join('');
 }
 
-function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 
 function showModal(i){
   const a = filtered[i]; if(!a) return;
   $('modalTitle').textContent = a.title||'';
-  $('modalMeta').textContent = `${a.published_at||''} · ${a.author||''} · ${a.url_code||''}`;
-  $('modalBody').textContent = a.core_claim || a.actionable || '(No summary available)';
+  $('modalMeta').innerHTML = `
+    <span>${a.published_at||''}</span> ·
+    <span>AUTHOR: ${escHtml(a.author||'--')}</span> ·
+    <span>CHAN: ${escHtml(a.channel||'--')}</span> ·
+    <span>CODE: ${escHtml(a.url_code||'')}</span>`;
+
+  const themes = parseArr(a.themes);
+  const keyNums = parseArr(a.key_numbers);
+  const dissent = parseArr(a.dissent_signals);
+  const sent = a.sentiment||'';
+  const sentCls = sent.includes('bullish')?'bull-text':sent.includes('bearish')||sent.includes('warning')?'bear-text':'neutral-text';
+
+  let html = '';
+  if(a.core_claim){
+    html += `<div style="margin-bottom:10px"><span class="label">CORE CLAIM</span><div style="color:var(--white);font-size:13px;margin-top:2px">${escHtml(a.core_claim)}</div></div>`;
+  }
+  if(sent){
+    html += `<div style="margin-bottom:8px"><span class="label">SENTIMENT</span>
+      <span class="${sentCls}" style="margin-left:8px;font-weight:600">${sent.replace(/_/g,' ').toUpperCase()}</span></div>`;
+  }
+  if(themes.length){
+    html += `<div style="margin-bottom:8px"><span class="label">THEMES</span><div style="margin-top:2px">${themes.map(t=>`<span style="display:inline-block;background:#111;color:#ff9900;padding:1px 6px;margin-right:3px;font-size:10px">${t.toUpperCase()}</span>`).join('')}</div></div>`;
+  }
+  if(keyNums.length){
+    html += `<div style="margin-bottom:8px"><span class="label">KEY NUMBERS</span><div style="color:var(--cyan);margin-top:2px">${keyNums.map(n=>escHtml(String(n))).join(' · ')}</div></div>`;
+  }
+  if(a.actionable){
+    html += `<div style="margin-bottom:8px"><span class="label">ACTIONABLE</span><div style="margin-top:2px">${escHtml(a.actionable)}</div></div>`;
+  }
+  if(dissent.length){
+    html += `<div style="margin-bottom:8px"><span class="label">DISSENT SIGNALS</span>${dissent.map(d=>`<div style="color:var(--yellow);margin-top:2px;font-size:11px">⚠ ${escHtml(d)}</div>`).join('')}</div>`;
+  }
+  if(a.source_weight!=null){
+    const w = Number(a.source_weight);
+    const wColor = w>=0.7?'var(--green)':w<=0.3?'var(--red)':'var(--amber)';
+    html += `<div style="margin-top:10px;border-top:1px dashed var(--border);padding-top:8px;font-size:10px">
+      <span class="label">SOURCE WEIGHT:</span>
+      <span style="color:${wColor};font-weight:600;margin-left:6px">${w.toFixed(2)}</span>
+      ${a.is_duplicate_news?'<span style="color:var(--red);margin-left:10px">[DUPLICATE]</span>':''}
+      ${a.clicks?`<span style="margin-left:10px;color:var(--text-muted)">${a.clicks} CLICKS</span>`:''}
+      ${a.likes?`<span style="margin-left:10px;color:var(--text-muted)">${a.likes} LIKES</span>`:''}
+    </div>`;
+  }
+  if(!html) html = '<div style="color:var(--text-muted);font-style:italic">(No AI summary available)</div>';
+  $('modalBody').innerHTML = html;
   $('modal').classList.add('active');
 }
 function closeModal(){$('modal').classList.remove('active')}
 $('modal').addEventListener('click',e=>{if(e.target===$('modal'))closeModal()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+// Keyboard shortcuts: ESC closes modal, / focuses search
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeModal();$('searchInput').blur();}
+  if(e.key==='/' && document.activeElement !== $('searchInput')){
+    e.preventDefault();
+    $('searchInput').focus();
+  }
+});
 
 $('searchInput').addEventListener('input',renderArticles);
 $('sentFilter').addEventListener('change',renderArticles);
