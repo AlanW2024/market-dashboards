@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股盤後日報 — 2026-04-16</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #D4AF37;
+  --gold-dim: rgba(212, 175, 55, 0.15);
+  --gold-glow: rgba(212, 175, 55, 0.3);
+  --bg-primary: #0a0a0f;
+  --bg-card: #12121a;
+  --bg-card-hover: #1a1a26;
+  --bg-elevated: #1e1e2a;
+  --text-primary: #e8e6e1;
+  --text-secondary: #8a8a9a;
+  --text-dim: #5a5a6a;
+  --border: rgba(255,255,255,0.06);
+  --border-gold: rgba(212, 175, 55, 0.3);
+  --bullish: #4ade80;
+  --bearish: #f87171;
+  --neutral: #fbbf24;
+  --bullish-bg: rgba(74, 222, 128, 0.08);
+  --bearish-bg: rgba(248, 113, 113, 0.08);
+  --neutral-bg: rgba(251, 191, 36, 0.08);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Noto Sans TC', 'JetBrains Mono', sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+/* HEADER */
+.market-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.market-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 50%;
+  transform: translateX(-50%);
+  width: 120px; height: 1px;
+  background: var(--gold);
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+.header-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; font-weight: 500;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.75rem; opacity: 0.8;
+}
+.market-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 400; color: var(--text-primary);
+  letter-spacing: -0.02em; line-height: 1.2;
+}
+.header-subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.5rem;
+}
+
+/* SECTION */
+.section { margin-bottom: 2.5rem; }
+.section-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1rem;
+  padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-gold);
+}
+
+/* GRID */
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+@media(max-width:700px){ .grid-4{ grid-template-columns:repeat(2,1fr); } .grid-3{ grid-template-columns:repeat(2,1fr); } }
+
+/* METRIC CARD */
+.metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 1rem;
+  transition: border-color 0.2s;
+}
+.metric-card:hover { border-color: var(--border-gold); }
+.metric-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 0.4rem;
+}
+.metric-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.45rem; font-weight: 600; color: var(--text-primary);
+  line-height: 1.1;
+}
+.metric-change {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem; margin-top: 0.25rem;
+}
+.bullish { color: var(--bullish); }
+.bearish { color: var(--bearish); }
+.neutral { color: var(--neutral); }
+
+/* HIGHLIGHT CARD */
+.highlight-card {
+  border-radius: 10px; padding: 1.25rem;
+  border: 1px solid; margin-bottom: 0.75rem;
+}
+.highlight-card.bullish-card { background: var(--bullish-bg); border-color: rgba(74,222,128,0.2); }
+.highlight-card.bearish-card { background: var(--bearish-bg); border-color: rgba(248,113,113,0.2); }
+.highlight-card.neutral-card { background: var(--neutral-bg); border-color: rgba(251,191,36,0.2); }
+.highlight-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.highlight-card.bullish-card .highlight-title { color: var(--bullish); }
+.highlight-card.bearish-card .highlight-title { color: var(--bearish); }
+.highlight-card.neutral-card .highlight-title { color: var(--neutral); }
+.highlight-body { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+.highlight-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.5rem; font-weight: 700; margin: 0.25rem 0;
+}
+
+/* SECTOR BARS */
+.sector-row {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.5rem 0; border-bottom: 1px solid var(--border);
+}
+.sector-row:last-child { border-bottom: none; }
+.sector-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; width: 90px; flex-shrink: 0; color: var(--text-secondary);
+}
+.sector-bar-wrap { flex: 1; height: 6px; background: rgba(255,255,255,0.04); border-radius: 3px; overflow: hidden; }
+.sector-bar { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+.sector-pct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; width: 55px; text-align: right; flex-shrink: 0;
+}
+
+/* TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.data-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-dim); padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border); text-align: left;
+}
+.data-table td { padding: 0.6rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.03); }
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table td:first-child { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-secondary); }
+
+/* VOTE BAR */
+.vote-section { margin-top: 1rem; }
+.vote-bar-wrap { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin: 0.75rem 0; }
+.vote-segment { height: 100%; transition: flex 0.5s ease; }
+.vote-labels { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-dim); }
+
+/* CONFIDENCE */
+.confidence-display {
+  background: var(--bg-elevated); border-radius: 12px;
+  padding: 1.5rem; text-align: center; margin-bottom: 1rem;
+}
+.conf-score {
+  font-family: 'DM Serif Display', serif;
+  font-size: 3.5rem; font-weight: 400; color: var(--neutral);
+  line-height: 1;
+}
+.conf-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-dim); margin-top: 0.5rem;
+}
+.conf-note { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.75rem; }
+
+/* RISK VETO */
+.veto-card {
+  background: var(--bg-elevated); border: 1px solid rgba(251,191,36,0.3);
+  border-radius: 10px; padding: 1rem 1.25rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+}
+.veto-label { color: var(--neutral); font-weight: 600; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.veto-status { color: var(--text-secondary); margin-top: 0.25rem; }
+
+/* ACTION CARD */
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+@media(max-width:600px){ .action-grid{ grid-template-columns:1fr; } }
+.action-item {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1rem;
+}
+.action-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-dim); margin-bottom: 0.4rem;
+}
+.action-value { font-size: 0.85rem; color: var(--text-primary); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="market-header">
+    <div class="header-eyebrow">美股 · 盤後日報 · POST-MARKET</div>
+    <h1>2026年4月16日（星期四）</h1>
+    <div class="header-subtitle">SPY 突破 $700 確認 · NFLX 盤後 -9% · Nasdaq 第12連升 · Jobless Claims 207K</div>
+  </div>
+
+  <!-- SECTION 1: 主要指數 -->
+  <div class="section">
+    <div class="section-title">01 — 主要指數收市</div>
+    <div class="grid-4">
+      <div class="metric-card">
+        <div class="metric-label">SPY · S&amp;P 500</div>
+        <div class="metric-value">$701.66</div>
+        <div class="metric-change bullish">▲ +$1.01 &nbsp; +0.14%</div>
+        <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.25rem;font-family:'JetBrains Mono',monospace;">週 +3.27%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">QQQ · Nasdaq 100</div>
+        <div class="metric-value">$640.47</div>
+        <div class="metric-change bullish">▲ +$2.13 &nbsp; +0.33%</div>
+        <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.25rem;font-family:'JetBrains Mono',monospace;">週 +4.81%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">DIA · 道指</div>
+        <div class="metric-value">$485.63</div>
+        <div class="metric-change bullish">▲ +$0.21 &nbsp; +0.04%</div>
+        <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.25rem;font-family:'JetBrains Mono',monospace;">週 +1.33%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">IWM · Russell 2000</div>
+        <div class="metric-value">$269.95</div>
+        <div class="metric-change bullish">▲ +$0.12 &nbsp; +0.04%</div>
+        <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.25rem;font-family:'JetBrains Mono',monospace;">週 +3.31%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: 風險指標 -->
+  <div class="section">
+    <div class="section-title">02 — 風險指標</div>
+    <div class="grid-3">
+      <div class="metric-card">
+        <div class="metric-label">VIX · 恐慌指數</div>
+        <div class="metric-value bullish">17.94</div>
+        <div class="metric-change bullish">▼ -1.27% &nbsp; 近月最低</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">10Y 孳息率</div>
+        <div class="metric-value bearish">4.31%</div>
+        <div class="metric-change bearish">▲ +0.63% &nbsp; 小幅回升</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">DXY · 美元指數</div>
+        <div class="metric-value bearish">98.21</div>
+        <div class="metric-change bearish">▼ -0.03% &nbsp; 連續走弱</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">WTI 原油</div>
+        <div class="metric-value bearish">$89.44</div>
+        <div class="metric-change bearish">▼ -0.60% &nbsp; 停火壓制</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">黃金 Gold</div>
+        <div class="metric-value bullish">$4,819</div>
+        <div class="metric-change bullish">▲ +0.20% &nbsp; 維持強勢</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">10Y-2Y 利差</div>
+        <div class="metric-value bullish">+54bps</div>
+        <div class="metric-change neutral">正常曲線 &nbsp; 擴張預期</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: 今日焦點 — NFLX & TSMC -->
+  <div class="section">
+    <div class="section-title">03 — 今日焦點：NFLX 業績 + TSMC 消化</div>
+    <div class="grid-2">
+      <div class="highlight-card bearish-card">
+        <div class="highlight-title">🔴 NFLX — Q1 大 Beat，但 Q2 指引爆雷</div>
+        <div class="highlight-value bearish">盤後 -9%</div>
+        <div class="highlight-body">
+          <strong style="color:var(--bullish);">Q1 EPS：$1.23</strong>（預期 $0.77，+59.7% beat）<br>
+          <strong style="color:var(--bullish);">Q1 收入：$12.25B</strong>（預期 $12.18B，+16.2% YoY）<br>
+          <strong style="color:var(--bullish);">淨利潤：$5.3B　自由現金流：$5.1B</strong><br>
+          ─────────────────────<br>
+          <strong style="color:var(--bearish);">Q2 指引低於預期</strong> → 分析員共識下修<br>
+          <strong style="color:var(--bearish);">Reed Hastings 6月辭任董事</strong>（任職29年）<br>
+          廣告 tier 仍係增長引擎，但訂閱天花板討論重燃
+        </div>
+      </div>
+      <div class="highlight-card neutral-card">
+        <div class="highlight-title">🟡 TSMC — Beat 後消化，AI 論述完整</div>
+        <div class="highlight-value bearish">ADR -2.5%（盤中）</div>
+        <div class="highlight-body">
+          <strong style="color:var(--bullish);">Q1 Revenue：$35.9B</strong>（+35% YoY）<br>
+          <strong style="color:var(--bullish);">毛利率：66.2%</strong>（歷史新高）<br>
+          全年指引：+30% revenue 增長<br>
+          ─────────────────────<br>
+          跌因：業績 price-in 過度，非基本面問題<br>
+          AI capex 超級週期確認：Nvidia/Apple 訂單強勁<br>
+          NVDA/MSFT 讀穿：<strong style="color:var(--bullish);">AI 需求無減速</strong>
+        </div>
+      </div>
+    </div>
+    <div class="highlight-card bullish-card" style="margin-top:0.75rem;">
+      <div class="highlight-title">🟢 Jobless Claims — 207K，遠低於預期</div>
+      <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;">
+        <div><div class="highlight-value bullish">207K</div><div style="font-size:0.75rem;color:var(--text-secondary);">實際 vs 預期 215K</div></div>
+        <div class="highlight-body" style="flex:1;">
+          前值（修訂）：218K　　降幅：-11K（2月以來最大單週降幅）<br>
+          首批完整關稅後數據：<strong style="color:var(--bullish);">無裂縫</strong>，勞工市場韌性強勁<br>
+          Fed 降息壓力進一步降低，4月 FOMC 維持不變概率 ~99%
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: 板塊排名 -->
+  <div class="section">
+    <div class="section-title">04 — 板塊表現排名（11 板塊）</div>
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.25rem;">
+      <!-- XLE -->
+      <div class="sector-row">
+        <span class="sector-name">XLE 能源</span>
+        <div class="sector-bar-wrap"><div class="sector-bar" style="width:100%;background:var(--bullish);"></div></div>
+        <span class="sector-pct bullish">+1.58%</span>
+      </div>
+      <!-- XLC -->
+      <div class="sector-row">
+        <span class="sector-name">XLC 通訊</span>
+        <div class="sector-bar-wrap"><div class="sector-bar" style="width:82%;background:var(--bullish);"></div></div>
+        <span class="sector-pct bullish">+1.30%</span>
+      </div>
+      <!-- XLK -->
+      <div class="sector-row">
+        <span class="sector-name">XLK 科技</span>
+        <div class="sector-bar-wrap"><div class="sector-bar" style="width:58%;background:var(--bullish);"></div></div>
+        <span class="sector-pct bullish">+0.92%</span>
+      </div>
+      <!-- XLRE -->
+      <div class="sector-row">
+        <span class="sector-name">XLRE 房地產</span>
+        <div class="sector-bar-wrap"><div class="sector-bar" style="width:54%;background:var(--bullish);"></div></div>
+        <span class="sector-pct bullish">+0.85%</span>
+      </div>
+      <!-- XLU -->
+      <div class="sector-row">
+        <span class="sector-name">XLU 公用事業</span>
+        <div class="sector-bar-wrap"><div class="sector-bar" style="width:34%;background:var(--bullish);"></div></div>
+        <span class="sector-pct bullish">+0.54%</span>
+      </div>
+      <!-- XLB -->
+      <div class="sector-row">
+        <span class="sector-name">XLB 原材料</span>
+        <div class="sector-bar-wrap"><div class="sector-bar" style="width:32%;background:var(--bullish);"></div></div>
+        <span class="sector-pct bullish">+0.50%</span>
+      </div>
+      <!-- XLP -->
+      <div class="sector-row">
+        <span class="sector-name">XLP 必需消費</span>
+        <div class="sector-bar-wrap"><div class="sector-bar" style="width:30%;background:var(--bullish);"></div></div>
+        <span class="sector-pct bullish">+0.47%</span>
+      </div>
+      <!-- XLF -->
+      <div class="sector-row">
+        <span class="sector-name">XLF 金融</span>
+        <div class="sector-bar-wrap"><div class="sector-bar" style="width:22%;background:var(--bearish);"></div></div>
+        <span class="sector-pct bearish">-0.35%</span>
+      </div>
+      <!-- XLY -->
+      <div class="sector-row">
+        <span class="sector-name">XLY 非必需消費</span>
+        <div class="sector-bar-wrap"><div class="sector-bar" style="width:34%;background:var(--bearish);"></div></div>
+        <span class="sector-pct bearish">-0.54%</span>
+      </div>
+      <!-- XLI -->
+      <div class="sector-row">
+        <span class="sector-name">XLI 工業</span>
+        <div class="sector-bar-wrap"><div class="sector-bar" style="width:44%;background:var(--bearish);"></div></div>
+        <span class="sector-pct bearish">-0.69%</span>
+      </div>
+      <!-- XLV -->
+      <div class="sector-row">
+        <span class="sector-name">XLV 醫療</span>
+        <div class="sector-bar-wrap"><div class="sector-bar" style="width:66%;background:var(--bearish);"></div></div>
+        <span class="sector-pct bearish">-1.05%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: SPY 技術分析 -->
+  <div class="section">
+    <div class="section-title">05 — SPY 技術分析（$700 關口）</div>
+    <div class="grid-3">
+      <div class="metric-card" style="border-color:rgba(74,222,128,0.3);">
+        <div class="metric-label">RSI（Alpha Vantage）</div>
+        <div class="metric-value neutral">70.5</div>
+        <div class="metric-change neutral">超買警示 ⚠️</div>
+      </div>
+      <div class="metric-card" style="border-color:rgba(74,222,128,0.3);">
+        <div class="metric-label">MACD Histogram</div>
+        <div class="metric-value bullish">+6.26</div>
+        <div class="metric-change bullish">金叉 · 動量增強</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">50MA / 200MA</div>
+        <div class="metric-value" style="font-size:1.1rem;">$673 / $663</div>
+        <div class="metric-change bullish">強勢牛市排列 ✅</div>
+      </div>
+      <div class="metric-card" style="border-color:rgba(74,222,128,0.3);">
+        <div class="metric-label">$700 關口突破</div>
+        <div class="metric-value bullish">✅ 確認</div>
+        <div class="metric-change" style="color:var(--text-secondary);">收 $701.66 站穩</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Bollinger 上軌</div>
+        <div class="metric-value">$704.89</div>
+        <div class="metric-change neutral">距上軌 $3.23</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">ATR 波幅</div>
+        <div class="metric-value">9.57</div>
+        <div class="metric-change" style="color:var(--text-secondary);">1.36% of price</div>
+      </div>
+    </div>
+    <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;padding:1rem;margin-top:0.75rem;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-secondary);">
+        <span style="color:var(--bullish);">阻力</span>：$704.89（BB上軌）→ $710 &nbsp;&nbsp;&nbsp;
+        <span style="color:var(--neutral);">支撐（新）</span>：$700 關口翻轉 → $698.53 &nbsp;&nbsp;&nbsp;
+        <span style="color:var(--bearish);">止損</span>：跌破 $698 減倉 / 跌破 $692 平多
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: 辯論結果 -->
+  <div class="section">
+    <div class="section-title">06 — 投資委員會辯論結果</div>
+    <div class="confidence-display">
+      <div class="conf-score">6.8</div>
+      <div class="conf-label">綜合信心評分 / 10</div>
+      <div class="conf-note">謹慎持多 · 相較盤前 7.2 下調 · NFLX 爆雷 + Taleb 7.5 警示觸發縮倉</div>
+    </div>
+
+    <div class="veto-card" style="margin-bottom:1rem;">
+      <div class="veto-label">⚠️ RISK VETO 狀態</div>
+      <div class="veto-status">
+        Taleb 評分：<strong style="color:var(--neutral);">7.5/10</strong>（閾值 ≥8.0）— 黃色警示，未觸發 Veto<br>
+        Marks 評分：6.0/10 — 正常<br>
+        <strong>結論：允許持多，但強制增加對沖（SPY $690 put）</strong>
+      </div>
+    </div>
+
+    <div class="vote-section">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-dim);margin-bottom:0.5rem;">投票分佈</div>
+      <div class="vote-bar-wrap">
+        <div class="vote-segment" style="flex:2;background:var(--bullish);opacity:0.7;"></div>
+        <div class="vote-segment" style="flex:1;background:var(--bullish);opacity:0.4;"></div>
+        <div class="vote-segment" style="flex:3;background:var(--neutral);opacity:0.6;"></div>
+        <div class="vote-segment" style="flex:2;background:var(--bearish);opacity:0.5;"></div>
+        <div class="vote-segment" style="flex:1;background:#ff6b6b;opacity:0.8;"></div>
+      </div>
+      <div class="vote-labels">
+        <span style="color:var(--bullish);">看多 2票</span>
+        <span style="color:var(--bullish);opacity:0.6;">謹慎偏多 1票</span>
+        <span style="color:var(--neutral);">中性 3票</span>
+        <span style="color:var(--bearish);">對沖 2票</span>
+        <span style="color:#ff6b6b;">WSB反指 1票</span>
+      </div>
+    </div>
+
+    <table class="data-table" style="margin-top:1rem;">
+      <thead>
+        <tr>
+          <th>角色</th>
+          <th>立場</th>
+          <th>信心</th>
+          <th>核心論點</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Howard Marks</td>
+          <td><span class="neutral">中性</span></td>
+          <td>6.0/10</td>
+          <td style="font-size:0.78rem;color:var(--text-secondary);">Sell-the-news 初現；不追高</td>
+        </tr>
+        <tr>
+          <td>Ray Dalio</td>
+          <td><span class="neutral">中性</span></td>
+          <td>5.0/10</td>
+          <td style="font-size:0.78rem;color:var(--text-secondary);">Goldilocks 維持；10Y 升至 4.31% 警惕</td>
+        </tr>
+        <tr>
+          <td>Stan Druckenmiller</td>
+          <td><span class="bullish">偏多</span></td>
+          <td>7.0/10</td>
+          <td style="font-size:0.78rem;color:var(--text-secondary);">TSMC AI 讀穿 NVDA；Nasdaq 動量強</td>
+        </tr>
+        <tr>
+          <td>George Soros</td>
+          <td><span class="bearish">謹慎</span></td>
+          <td>5.5/10</td>
+          <td style="font-size:0.78rem;color:var(--text-secondary);">反身性逆轉早期訊號；繼續買 put</td>
+        </tr>
+        <tr>
+          <td>Peter Lynch</td>
+          <td><span class="bullish">偏多</span></td>
+          <td>6.5/10</td>
+          <td style="font-size:0.78rem;color:var(--text-secondary);">NFLX 廣告 tier 仍健康；Q2 指引係短期噪音</td>
+        </tr>
+        <tr>
+          <td style="color:var(--neutral);">Nassim Taleb ⚠️</td>
+          <td><span class="bearish">對沖警告</span></td>
+          <td style="color:var(--neutral);font-weight:bold;">7.5/10</td>
+          <td style="font-size:0.78rem;color:var(--text-secondary);">VIX 17.94 保險極廉；NFLX 跌法係不對稱前兆</td>
+        </tr>
+        <tr>
+          <td>量化交易員</td>
+          <td><span class="neutral">謹慎偏多</span></td>
+          <td>6.5/10</td>
+          <td style="font-size:0.78rem;color:var(--text-secondary);">RSI 70.5 超買；守 $700 係關鍵</td>
+        </tr>
+        <tr>
+          <td>宏觀策略師</td>
+          <td><span class="neutral">中性偏謹慎</span></td>
+          <td>5.5/10</td>
+          <td style="font-size:0.78rem;color:var(--text-secondary);">三重潛在壓力：10Y升/停火/Mega-cap 指引</td>
+        </tr>
+        <tr>
+          <td style="color:var(--bearish);">WSB 散戶 ⚠️反指</td>
+          <td><span style="color:#ff6b6b;">超多</span></td>
+          <td style="color:var(--bearish);">9/10</td>
+          <td style="font-size:0.78rem;color:var(--text-secondary);">YOLO NFLX dip（反指標：情緒過熱）</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 7: Action Card -->
+  <div class="section">
+    <div class="section-title">07 — Action Card（明日 4/17 星期五）</div>
+    <div class="action-grid">
+      <div class="action-item" style="border-color:rgba(74,222,128,0.2);">
+        <div class="action-label">場景 A — SPY 守 $700 + 成交量正常</div>
+        <div class="action-value">持現有倉位；勿追高；等 $700 回測確認後再考慮加碼 XLK/QQQ</div>
+      </div>
+      <div class="action-item" style="border-color:rgba(251,191,36,0.2);">
+        <div class="action-label">場景 B — NFLX 情緒蔓延，XLC 承壓</div>
+        <div class="action-value">不 buy the dip；等 SPY 確認 $698 支撐再評估</div>
+      </div>
+      <div class="action-item" style="border-color:rgba(248,113,113,0.2);">
+        <div class="action-label">場景 C — SPY 跌破 $698</div>
+        <div class="action-value">減倉 20-30%；增加 TLT 防禦；觀察下週 GOOGL/MSFT/META</div>
+      </div>
+      <div class="action-item" style="border-color:rgba(212,175,55,0.3);">
+        <div class="action-label">Taleb 7.5 對沖建議（黃色警示啟動）</div>
+        <div class="action-value">買 SPY $690-695 put（到期 4/24）；VIX 17.94 時保費低廉</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-top:0.75rem;">
+      <div class="metric-card">
+        <div class="metric-label">止損一（減倉警戒）</div>
+        <div class="metric-value bearish">$698</div>
+        <div class="metric-change" style="color:var(--text-secondary);">跌破 → 減倉 30%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">止損二（平多）</div>
+        <div class="metric-value bearish">$692</div>
+        <div class="metric-change" style="color:var(--text-secondary);">跌破 → 清多倉</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">明日最強預測</div>
+        <div class="metric-value neutral">XLE/XLK</div>
+        <div class="metric-change" style="color:var(--text-secondary);">停火動向 + AI 動量</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 8: 宏觀 + Fed -->
+  <div class="section">
+    <div class="section-title">08 — 宏觀 + Fed 路徑</div>
+    <div class="grid-3">
+      <div class="metric-card">
+        <div class="metric-label">Fed Funds Rate</div>
+        <div class="metric-value">3.64%</div>
+        <div class="metric-change neutral">4月FOMC 維持 ~99%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">2026 全年零降息概率</div>
+        <div class="metric-value bearish">39.6%</div>
+        <div class="metric-change" style="color:var(--text-secondary);">Higher for longer</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">密歇根消費信心</div>
+        <div class="metric-value bearish">56.6</div>
+        <div class="metric-change" style="color:var(--text-secondary);">Feb 2026，歷史低位</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">失業率（3月）</div>
+        <div class="metric-value">4.3%</div>
+        <div class="metric-change bullish">前值 4.4%，改善</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">HY OAS 利差</div>
+        <div class="metric-value">2.85%</div>
+        <div class="metric-change neutral">信用市場穩定</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Q1 盈利 Beat Rate</div>
+        <div class="metric-value neutral">53.6%</div>
+        <div class="metric-change" style="color:var(--text-secondary);">69家已報，本週</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="text-align:center;padding-top:2rem;border-top:1px solid var(--border);">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-dim);">
+      2026-04-16 美股盤後 · 數據來源：yfinance · web_search · Finnhub · FRED · Jin10
+    </div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-dim);margin-top:0.5rem;">
+      SPY $701.66 ✅ $700 突破確認 · VIX 17.94 · Nasdaq 第12連升 · NFLX盤後-9% ⚠️ · Taleb警示 7.5/10
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
