@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股週報 — 2026-03-24 至 2026-03-27</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #D4AF37;
+  --gold-dim: rgba(212, 175, 55, 0.15);
+  --gold-glow: rgba(212, 175, 55, 0.3);
+  --bg-primary: #0a0a0f;
+  --bg-card: #12121a;
+  --bg-card-hover: #1a1a26;
+  --bg-elevated: #1e1e2a;
+  --text-primary: #e8e6e1;
+  --text-secondary: #8a8a9a;
+  --text-dim: #5a5a6a;
+  --border: rgba(255,255,255,0.06);
+  --border-gold: rgba(212, 175, 55, 0.3);
+  --bullish: #4ade80;
+  --bearish: #f87171;
+  --neutral: #fbbf24;
+  --bullish-bg: rgba(74, 222, 128, 0.08);
+  --bearish-bg: rgba(248, 113, 113, 0.08);
+  --neutral-bg: rgba(251, 191, 36, 0.08);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Noto Sans TC', 'JetBrains Mono', sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+/* Header */
+.market-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  animation: fadeIn 0.8s ease-out;
+}
+.market-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 1px;
+  background: var(--gold);
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+.header-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+  opacity: 0.8;
+}
+.market-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.header-subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+.header-summary {
+  margin-top: 1.2rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.7;
+}
+
+/* Hero Metrics */
+.hero-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.hero-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.2rem 1rem;
+  text-align: center;
+  transition: all 0.3s;
+}
+.hero-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-gold);
+  transform: translateY(-2px);
+}
+.hero-card .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.4rem;
+}
+.hero-card .value {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+.hero-card .change {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+}
+.up { color: var(--bullish); }
+.down { color: var(--bearish); }
+.warn { color: var(--neutral); }
+
+/* Section */
+.section {
+  margin-bottom: 2.5rem;
+  animation: fadeIn 0.6s ease-out;
+}
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 60px;
+  height: 1px;
+  background: var(--gold);
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin-bottom: 1rem;
+}
+th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: left;
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 0.55rem 0.8rem;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: var(--text-secondary);
+}
+tr:hover td { background: rgba(255,255,255,0.02); }
+td.num { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+
+/* Heatmap tiles */
+.heatmap {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+.heat-tile {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.8rem;
+  text-align: center;
+  transition: all 0.3s;
+}
+.heat-tile:hover { transform: translateY(-2px); }
+.heat-tile .sector-name {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-bottom: 0.3rem;
+}
+.heat-tile .sector-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.heat-tile.positive { border-color: rgba(74,222,128,0.3); background: var(--bullish-bg); }
+.heat-tile.negative { border-color: rgba(248,113,113,0.2); background: var(--bearish-bg); }
+
+/* Macro gauge cards */
+.gauge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+.gauge-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+.gauge-card .g-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.3rem;
+}
+.gauge-card .g-value {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.3rem;
+}
+.gauge-card .g-change {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  margin-top: 0.2rem;
+}
+
+/* Timeline */
+.timeline { position: relative; padding-left: 1.5rem; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--gold), var(--border));
+}
+.tl-item {
+  position: relative;
+  margin-bottom: 1rem;
+  padding: 0.8rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: -1.75rem;
+  top: 1rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+.tl-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--gold);
+  margin-bottom: 0.3rem;
+}
+.tl-text { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; }
+.tl-item.high-risk { border-color: rgba(248,113,113,0.3); }
+.tl-item.positive { border-color: rgba(74,222,128,0.3); }
+
+/* Vote bar */
+.vote-section {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  position: relative;
+}
+.vote-section::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 1px;
+  background: var(--gold);
+  box-shadow: 0 0 15px var(--gold-glow);
+}
+.vote-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+.vote-header {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.4rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.vote-bar-container { margin-bottom: 1.5rem; }
+.vote-bar {
+  display: flex;
+  height: 32px;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+.vote-bar .bull { background: var(--bullish); }
+.vote-bar .bear { background: var(--bearish); }
+.vote-bar .hold { background: var(--neutral); }
+.vote-bar > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #000;
+}
+.vote-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--text-dim);
+}
+
+/* Action card */
+.action-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-gold);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+.action-card h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.1rem;
+  color: var(--gold);
+  margin-bottom: 0.8rem;
+}
+.action-card p, .action-card li {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.action-card ul { padding-left: 1.2rem; }
+.action-card li { margin-bottom: 0.4rem; }
+
+/* Confidence bars */
+.conf-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.78rem;
+}
+.conf-name {
+  width: 120px;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+}
+.conf-bar-bg {
+  flex: 1;
+  height: 14px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 0.5rem;
+}
+.conf-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease-out;
+}
+.conf-val {
+  width: 40px;
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+/* Collapsible */
+details { margin-bottom: 1rem; }
+summary {
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+  user-select: none;
+}
+summary:hover { opacity: 0.8; }
+details[open] summary { margin-bottom: 0.8rem; }
+.detail-content {
+  padding: 0.8rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Daily recap cards */
+.daily-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.daily-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+}
+.daily-card .day-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.3rem;
+}
+.daily-card .day-change {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  margin-bottom: 0.4rem;
+}
+.daily-card .day-desc {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 600px) {
+  .container { padding: 1rem; }
+  .hero-grid { grid-template-columns: repeat(2, 1fr); }
+  .heatmap { grid-template-columns: repeat(2, 1fr); }
+  .gauge-grid { grid-template-columns: repeat(2, 1fr); }
+  .daily-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ===== HEADER ===== -->
+<header class="market-header">
+  <div class="header-eyebrow">Weekly Market Report</div>
+  <h1>美股週報 2026-03-28</h1>
+  <div class="header-subtitle">覆蓋 3/24 (Mon) — 3/27 (Thu) | Public Mode</div>
+  <p class="header-summary">伊朗戰爭全面升級、Houthis 正式參戰、WTI 盤中觸及 $100、VIX 突破 30 — S&P 500 連跌五週（2022 年以來最長），道指正式進入修正領域。能源一枝獨秀，板塊兩極化達石油危機級別。</p>
+</header>
+
+<!-- ===== HERO METRICS ===== -->
+<div class="section">
+  <div class="hero-grid">
+    <div class="hero-card">
+      <div class="label">S&P 500 (SPY)</div>
+      <div class="value">634.09</div>
+      <div class="change down">-3.25% 本週</div>
+    </div>
+    <div class="hero-card">
+      <div class="label">Nasdaq 100 (QQQ)</div>
+      <div class="value">562.58</div>
+      <div class="change down">-4.32% 本週</div>
+    </div>
+    <div class="hero-card">
+      <div class="label">道指 (DIA)</div>
+      <div class="value">451.39</div>
+      <div class="change down">-2.29% 本週</div>
+    </div>
+    <div class="hero-card">
+      <div class="label">Russell 2000 (IWM)</div>
+      <div class="value">243.10</div>
+      <div class="change down">-1.76% 本週</div>
+    </div>
+    <div class="hero-card">
+      <div class="label">VIX</div>
+      <div class="value" style="color:var(--bearish)">31.05</div>
+      <div class="change up">+18.74% 突破 30</div>
+    </div>
+    <div class="hero-card">
+      <div class="label">WTI 原油</div>
+      <div class="value" style="color:var(--bearish)">$99.64</div>
+      <div class="change up">+13.06% 盤中觸 $100</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DAILY RECAP ===== -->
+<div class="section">
+  <h2 class="section-title">每日回顧</h2>
+  <div class="daily-grid">
+    <div class="daily-card">
+      <div class="day-label">3/24 MON</div>
+      <div class="day-change down">-0.54%</div>
+      <div class="day-desc">Dead cat bounce 確認。Gold 暴升 +5.42%。以色列空襲伊朗 50+ 目標。</div>
+    </div>
+    <div class="daily-card">
+      <div class="day-label">3/25 TUE</div>
+      <div class="day-change up">+0.54%</div>
+      <div class="day-desc">15 點停火方案 + Arm AGI CPU +16%。油價 V 型反轉暴露和平脆弱。</div>
+    </div>
+    <div class="daily-card">
+      <div class="day-label">3/26 WED</div>
+      <div class="day-change down">-1.56%</div>
+      <div class="day-desc">TurboQuant 衝擊記憶體股。Trump「唔 care」+ 伊朗要求核武。</div>
+    </div>
+    <div class="daily-card">
+      <div class="day-label">3/27 THU</div>
+      <div class="day-change down" style="color:var(--bearish);font-size:1.8rem">-2.12%</div>
+      <div class="day-desc">Houthis 參戰！WTI $100。道指 -800 pts 進修正。VIX 31.05。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTOR HEATMAP ===== -->
+<div class="section">
+  <h2 class="section-title">板塊週度熱力圖</h2>
+  <div class="heatmap">
+    <div class="heat-tile positive">
+      <div class="sector-name">能源 XLE</div>
+      <div class="sector-val up">+4.91%</div>
+    </div>
+    <div class="heat-tile positive">
+      <div class="sector-name">原材料 XLB</div>
+      <div class="sector-val up">+2.86%</div>
+    </div>
+    <div class="heat-tile positive">
+      <div class="sector-name">公用事業 XLU</div>
+      <div class="sector-val up">+1.81%</div>
+    </div>
+    <div class="heat-tile positive">
+      <div class="sector-name">必需消費 XLP</div>
+      <div class="sector-val up">+0.74%</div>
+    </div>
+    <div class="heat-tile negative">
+      <div class="sector-name">醫療 XLV</div>
+      <div class="sector-val down">-1.04%</div>
+    </div>
+    <div class="heat-tile negative">
+      <div class="sector-name">房地產 XLRE</div>
+      <div class="sector-val down">-1.50%</div>
+    </div>
+    <div class="heat-tile negative">
+      <div class="sector-name">工業 XLI</div>
+      <div class="sector-val down">-2.36%</div>
+    </div>
+    <div class="heat-tile negative">
+      <div class="sector-name">金融 XLF</div>
+      <div class="sector-val down">-2.96%</div>
+    </div>
+    <div class="heat-tile negative">
+      <div class="sector-name">非必需消費 XLY</div>
+      <div class="sector-val down">-4.03%</div>
+    </div>
+    <div class="heat-tile negative">
+      <div class="sector-name">通訊 XLC</div>
+      <div class="sector-val down">-5.03%</div>
+    </div>
+    <div class="heat-tile negative">
+      <div class="sector-name">科技 XLK</div>
+      <div class="sector-val down">-5.13%</div>
+    </div>
+  </div>
+  <p style="font-size:0.75rem;color:var(--text-dim);text-align:center;">能源 vs 科技差距 10.04% — 石油危機級別兩極化</p>
+</div>
+
+<!-- ===== MACRO GAUGES ===== -->
+<div class="section">
+  <h2 class="section-title">宏觀指標週變幅</h2>
+  <div class="gauge-grid">
+    <div class="gauge-card">
+      <div class="g-label">VIX</div>
+      <div class="g-value down">31.05</div>
+      <div class="g-change up">+18.74%</div>
+    </div>
+    <div class="gauge-card">
+      <div class="g-label">10Y 孳息率</div>
+      <div class="g-value">4.44%</div>
+      <div class="g-change down">+5bp</div>
+    </div>
+    <div class="gauge-card">
+      <div class="g-label">2Y 孳息率</div>
+      <div class="g-value">3.96%</div>
+      <div class="g-change down">+13bp</div>
+    </div>
+    <div class="gauge-card">
+      <div class="g-label">DXY 美元</div>
+      <div class="g-value">100.15</div>
+      <div class="g-change">+1.21%</div>
+    </div>
+    <div class="gauge-card">
+      <div class="g-label">WTI 原油</div>
+      <div class="g-value down">$99.64</div>
+      <div class="g-change up">+13.06%</div>
+    </div>
+    <div class="gauge-card">
+      <div class="g-label">Gold</div>
+      <div class="g-value">$4,492</div>
+      <div class="g-change up">+2.00%</div>
+    </div>
+    <div class="gauge-card">
+      <div class="g-label">BTC</div>
+      <div class="g-value">$66,926</div>
+      <div class="g-change down">-5.09%</div>
+    </div>
+    <div class="gauge-card">
+      <div class="g-label">USD/JPY</div>
+      <div class="g-value warn">159.90</div>
+      <div class="g-change warn">逼近 160 紅線</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== YIELD CURVE ===== -->
+<div class="section">
+  <h2 class="section-title">殖利率曲線 & 信用</h2>
+  <table>
+    <thead>
+      <tr><th>年期</th><th>週初</th><th>週末</th><th>週變幅</th><th>解讀</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>2Y</td><td class="num">3.83%</td><td class="num">3.96%</td><td class="num down">+13bp</td><td>短端暴升 = 加息預期</td></tr>
+      <tr><td>5Y</td><td class="num">3.95%</td><td class="num">4.08%</td><td class="num down">+13bp</td><td>中端同步</td></tr>
+      <tr><td>10Y</td><td class="num">4.39%</td><td class="num">4.44%</td><td class="num down">+5bp</td><td>長端被衰退預期壓住</td></tr>
+      <tr><td>30Y</td><td class="num">4.91%</td><td class="num">4.93%</td><td class="num">+2bp</td><td>基本持平</td></tr>
+      <tr><td>2s10s</td><td class="num">+56bp</td><td class="num">+48bp</td><td class="num">-8bp</td><td>收窄 = bear flattening</td></tr>
+      <tr><td>HY OAS</td><td class="num">3.19%</td><td class="num">3.21%</td><td class="num down">+2bp</td><td>終於開始動！</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:0.78rem;color:var(--text-secondary);line-height:1.6;">曲線形態：<strong>Stagflation 信號</strong> — 短端暴升（通脹）但長端被壓（衰退）。2Y 3 月累計 +58bp = 債市已完全放棄減息。HY OAS 由 3.19% 升至 3.21% = Bond Strategist 連週警告嘅 VIX-HY disconnect 開始修正。</p>
+</div>
+
+<!-- ===== EVENT TIMELINE ===== -->
+<div class="section">
+  <h2 class="section-title">重大事件時間線</h2>
+  <div class="timeline">
+    <div class="tl-item high-risk">
+      <div class="tl-date">3/24 MON</div>
+      <div class="tl-text">以色列空襲伊朗 50+ 目標。Gold 暴升 +5.42% 至 $4,582（2020 年以來最大日升）。Port Arthur 煉油廠爆炸。</div>
+    </div>
+    <div class="tl-item positive">
+      <div class="tl-date">3/25 TUE</div>
+      <div class="tl-text">15 點停火方案提出 → 油盤中跌 5%。Arm AGI CPU +16%。SpaceX IPO 消息（$1.75T）。Trump-Xi 5 月峰會。但伊朗軍方嘲笑方案 + 油 V 型反轉。</div>
+    </div>
+    <div class="tl-item high-risk">
+      <div class="tl-date">3/26 WED</div>
+      <div class="tl-text">Google TurboQuant（記憶體需求降 6 倍）重擊晶片股。Trump「唔 care 有冇 deal」。伊朗強硬派要求核武 = 核門檻升級。全資產 deleveraging（Gold -3.16% + Stock -1.56% + Crypto -4%）。</div>
+    </div>
+    <div class="tl-item high-risk">
+      <div class="tl-date">3/27 THU</div>
+      <div class="tl-text"><strong>Houthis 首次向以色列射導彈 = 戰爭多邊化！</strong>科威特機場遭攻擊。WTI 盤中觸 $100.04。道指 -800 pts 進修正。VIX 31.05 backwardation。S&P 連跌五週。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== NEXT WEEK OUTLOOK ===== -->
+<div class="section">
+  <h2 class="section-title">下週展望 (3/31 — 4/4)</h2>
+  <table>
+    <thead>
+      <tr><th>日期</th><th>事件</th><th>重要性</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>3/31 Mon</td><td>Chicago PMI + 月末/季末 rebalancing</td><td style="color:var(--neutral)">***</td></tr>
+      <tr><td>4/1 Tue</td><td><strong>ISM Manufacturing PMI</strong> + LW/CAG 財報</td><td style="color:var(--bearish)">***</td></tr>
+      <tr><td>4/2 Wed</td><td><strong>ADP 就業</strong> + Trump 汽車關稅豁免到期</td><td style="color:var(--bearish)">***</td></tr>
+      <tr><td>4/3 Thu</td><td>Jobless Claims + <strong>ISM Services PMI</strong></td><td style="color:var(--bearish)">***</td></tr>
+      <tr><td>4/4 Fri</td><td><strong>Non-Farm Payrolls + 失業率</strong></td><td style="color:var(--bearish)">****</td></tr>
+    </tbody>
+  </table>
+  <table>
+    <thead>
+      <tr><th>情景</th><th>概率</th><th>SPY 目標</th><th>觸發條件</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="up">Bull（停火+好數據）</td><td class="num">5%</td><td class="num">650-665</td><td>伊朗停火 + ISM>52 + NFP 穩健</td></tr>
+      <tr><td class="warn">Base（震盪磨底）</td><td class="num">35%</td><td class="num">625-640</td><td>無大升級 + 油 $95-100</td></tr>
+      <tr><td class="down">Bear（升級+衰退）</td><td class="num">60%</td><td class="num">605-625</td><td>紅海封鎖 + ISM<48 + NFP<100K</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:0.8rem;text-align:center;">
+    加權期望值 E(R) = <strong class="down">-1.72%</strong>（偏空）
+  </p>
+</div>
+
+<!-- ===== GOLD DIVIDER ===== -->
+<div class="vote-section">
+  <div class="vote-eyebrow">Investment Committee</div>
+  <div class="vote-header">本週投資委員會共識</div>
+
+  <!-- Vote bar -->
+  <div class="vote-bar-container">
+    <div class="vote-bar">
+      <div class="bull" style="width:18%">2 多</div>
+      <div class="hold" style="width:18%">2 望</div>
+      <div class="bear" style="width:64%">7 空</div>
+    </div>
+    <div class="vote-labels">
+      <span class="up">Bullish</span>
+      <span>Weighted Score: <strong class="down">-5.80</strong></span>
+      <span class="down">Bearish</span>
+    </div>
+  </div>
+
+  <!-- Action Card -->
+  <div class="action-card">
+    <h3>週度 Action Card</h3>
+    <ul>
+      <li><strong>決議：</strong>觀望偏防禦（Cash Overweight）— 80% 現金 / 20% 短期國債</li>
+      <li><strong>做空觸發：</strong>SPY 跌穿 633 + VIX >33 + Houthis 紅海封鎖確認 → SPY 620P/600P put spread</li>
+      <li><strong>技術反彈：</strong>週末無升級 + 油 <$97 + SPY 守 633 → 短線多至 645-650</li>
+      <li><strong>對沖：</strong>如持 long → 必須買 SPY 625P（用 spread 降 IV 成本）</li>
+    </ul>
+  </div>
+
+  <!-- Confidence bars -->
+  <h3 style="font-family:'DM Serif Display',serif;font-size:1.1rem;margin:1.5rem 0 1rem;">角色信心度</h3>
+
+  <div class="conf-row"><span class="conf-name">宏觀策略師</span><div class="conf-bar-bg"><div class="conf-bar-fill" style="width:90%;background:var(--bearish)"></div></div><span class="conf-val down">9/10</span></div>
+  <div class="conf-row"><span class="conf-name">Nassim Taleb</span><div class="conf-bar-bg"><div class="conf-bar-fill" style="width:80%;background:var(--bearish)"></div></div><span class="conf-val down">8/10</span></div>
+  <div class="conf-row"><span class="conf-name">Ray Dalio</span><div class="conf-bar-bg"><div class="conf-bar-fill" style="width:80%;background:var(--bearish)"></div></div><span class="conf-val down">8/10</span></div>
+  <div class="conf-row"><span class="conf-name">Howard Marks</span><div class="conf-bar-bg"><div class="conf-bar-fill" style="width:70%;background:var(--bearish)"></div></div><span class="conf-val down">7/10</span></div>
+  <div class="conf-row"><span class="conf-name">Soros</span><div class="conf-bar-bg"><div class="conf-bar-fill" style="width:70%;background:var(--bearish)"></div></div><span class="conf-val down">7/10</span></div>
+  <div class="conf-row"><span class="conf-name">Peter Lynch</span><div class="conf-bar-bg"><div class="conf-bar-fill" style="width:70%;background:var(--bearish)"></div></div><span class="conf-val down">7/10</span></div>
+  <div class="conf-row"><span class="conf-name">Bond Strategist</span><div class="conf-bar-bg"><div class="conf-bar-fill" style="width:70%;background:var(--bearish)"></div></div><span class="conf-val down">7/10</span></div>
+  <div class="conf-row"><span class="conf-name">Options Analyst</span><div class="conf-bar-bg"><div class="conf-bar-fill" style="width:70%;background:var(--bearish)"></div></div><span class="conf-val down">7/10</span></div>
+  <div class="conf-row"><span class="conf-name">量化交易員</span><div class="conf-bar-bg"><div class="conf-bar-fill" style="width:60%;background:var(--neutral)"></div></div><span class="conf-val warn">6/10</span></div>
+  <div class="conf-row"><span class="conf-name">Druckenmiller</span><div class="conf-bar-bg"><div class="conf-bar-fill" style="width:60%;background:var(--bullish)"></div></div><span class="conf-val up">6/10</span></div>
+  <div class="conf-row"><span class="conf-name">WSB 散戶</span><div class="conf-bar-bg"><div class="conf-bar-fill" style="width:50%;background:var(--bullish)"></div></div><span class="conf-val up">5/10</span></div>
+
+  <!-- Key disputes -->
+  <h3 style="font-family:'DM Serif Display',serif;font-size:1.1rem;margin:1.5rem 0 1rem;">本週關鍵分歧</h3>
+  <table>
+    <thead>
+      <tr><th>分歧</th><th>多方觀點</th><th>空方觀點</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>VIX 31 見頂定起步？</td>
+        <td style="color:var(--bullish)">WSB：2022年同組合後兩週反彈 +7%</td>
+        <td style="color:var(--bearish)">Taleb：2020 VIX 由 42 backwardation 後去 82.69</td>
+      </tr>
+      <tr>
+        <td>Gold 暴漲暴跌含義？</td>
+        <td style="color:var(--bullish)">Dalio：1973 先跌 15% 再升 70%</td>
+        <td style="color:var(--bearish)">Taleb：全資產同跌 = margin call cascade</td>
+      </tr>
+      <tr>
+        <td>超賣反彈 vs 繼續跌？</td>
+        <td style="color:var(--bullish)">Druck：RSI 28.5 反彈概率 72%</td>
+        <td style="color:var(--bearish)">量化：反彈後 64% 再創新低</td>
+      </tr>
+      <tr>
+        <td>信用利差遲到？</td>
+        <td>—</td>
+        <td style="color:var(--bearish)">Bond：HY OAS 終於動（+4bp），差 2bp 觸發 -4.2% 閾值</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Stance table -->
+  <h3 style="font-family:'DM Serif Display',serif;font-size:1.1rem;margin:1.5rem 0 1rem;">各方立場速覽（3/27 收市）</h3>
+  <table>
+    <thead>
+      <tr><th>角色</th><th>立場</th><th>信心</th><th>核心論點</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>宏觀策略師</td><td class="down">看空</td><td class="num">9/10</td><td>傳導鏈全面啟動 + USD/JPY 160 干預風險</td></tr>
+      <tr><td>Nassim Taleb</td><td class="down">看空</td><td class="num">8/10</td><td>Houthis = 相變。雙海峽封鎖概率 15-25%</td></tr>
+      <tr><td>Ray Dalio</td><td class="down">看空</td><td class="num">8/10</td><td>滯脹確認。1973 類比。2s10s 陡化 = 衰退前兆</td></tr>
+      <tr><td>Howard Marks</td><td class="down">觀望偏空</td><td class="num">7/10</td><td>HY OAS 驗證 disconnect。超賣 ≠ 底部</td></tr>
+      <tr><td>Soros</td><td class="down">看空</td><td class="num">7/10</td><td>高油價→OPEC 暴富→降低和平動機 = 最危險迴路</td></tr>
+      <tr><td>Peter Lynch</td><td class="down">看空</td><td class="num">7/10</td><td>消費者三面夾攻（油+PS5+機票）</td></tr>
+      <tr><td>Bond Strategist</td><td class="down">看空</td><td class="num">7/10</td><td>HY OAS 開始動 + bear steepening</td></tr>
+      <tr><td>Options Analyst</td><td class="down">看空</td><td class="num">7/10</td><td>VIX 31 backwardation + 負 gamma</td></tr>
+      <tr><td>量化交易員</td><td class="warn">觀望</td><td class="num">6/10</td><td>RSI 28.5 反彈概率 71% 但 64% 再創新低</td></tr>
+      <tr><td>Druckenmiller</td><td class="up">戰術看多</td><td class="num">6/10</td><td>超賣反彈 EV +0.70%。條件：週末無升級</td></tr>
+      <tr><td>WSB 散戶</td><td class="up">BTFD</td><td class="num">5/10</td><td>恐慌指標拉滿 = 做多。但「今次有真正嘅戰爭」</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Collapsible: Weighted Score trend -->
+  <details>
+    <summary>Weighted Score 本週演變</summary>
+    <div class="detail-content">
+      <table>
+        <thead><tr><th></th><th>3/24</th><th>3/25</th><th>3/26</th><th>3/27</th></tr></thead>
+        <tbody>
+          <tr><td>看多</td><td>0</td><td>3</td><td>0</td><td>2</td></tr>
+          <tr><td>看空</td><td>8</td><td>5</td><td>7</td><td>7</td></tr>
+          <tr><td>觀望</td><td>3</td><td>3</td><td>2</td><td>2</td></tr>
+          <tr><td><strong>Score</strong></td><td class="down"><strong>-6.58</strong></td><td class="down"><strong>-1.85</strong></td><td class="down"><strong>-4.18</strong></td><td class="down"><strong>-5.80</strong></td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:0.8rem;">週二因和平交易 + Arm 利好短暫提振至 -1.85，隨後隨 TurboQuant / 核武 / Houthis 逐步惡化至 -5.80。Peter Lynch 本週最大轉變（+3 信心點）。</p>
+    </div>
+  </details>
+
+  <!-- Collapsible: Risk veto -->
+  <details>
+    <summary>風險否決詳情</summary>
+    <div class="detail-content">
+      <p><strong style="color:var(--bearish);">Taleb 紅旗（8/10）：</strong>「Houthis 向以色列射導彈 = 相變（phase transition）。兩大海峽封鎖概率 15-25%。VIX 31 嚴重唔夠，對比 2022 俄烏 VIX 36.5，今次威脅全球 35% 海運石油，VIX 理應 45-55。Backwardation 唔係終點，係起跑線。」</p>
+      <br>
+      <p><strong style="color:var(--bearish);">宏觀策略師（9/10 — 本週最高信心）：</strong>「傳導鏈已完整演繹：Houthis→紅海封鎖→Brent $112→2Y +13bp→Fed 困局。科威特機場被炸 = 戰場擴展到產油國。USD/JPY 160 = 日本干預紅線。上次干預投入 ~$620 億。如果干預觸發 carry trade 平倉潮 = 影響所有風險資產。」</p>
+    </div>
+  </details>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-dim);">
+  <p>Generated 2026-03-28 | Financial Editorial Dark Theme | Data as of 2026-03-27 Close</p>
+  <p style="margin-top:0.3rem;">S&P 500 連跌五週 | 道指修正 | VIX 31 Backwardation | WTI $100</p>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股週報 Dashboard — W14 v2.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #D4AF37;
+  --gold-dim: rgba(212, 175, 55, 0.15);
+  --gold-glow: rgba(212, 175, 55, 0.3);
+  --bg-primary: #0a0a0f;
+  --bg-card: #12121a;
+  --bg-card-hover: #1a1a26;
+  --bg-elevated: #1e1e2a;
+  --text-primary: #e8e6e1;
+  --text-secondary: #8a8a9a;
+  --text-dim: #5a5a6a;
+  --border: rgba(255,255,255,0.06);
+  --border-gold: rgba(212, 175, 55, 0.3);
+  --bullish: #4ade80;
+  --bearish: #f87171;
+  --neutral: #fbbf24;
+  --bullish-bg: rgba(74, 222, 128, 0.08);
+  --bearish-bg: rgba(248, 113, 113, 0.08);
+  --neutral-bg: rgba(251, 191, 36, 0.08);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Noto Sans TC', 'JetBrains Mono', sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+.container { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+.market-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  animation: fadeIn 0.8s ease-out;
+}
+.market-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 50%;
+  transform: translateX(-50%);
+  width: 120px; height: 1px;
+  background: var(--gold);
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+.header-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; font-weight: 500;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.75rem; opacity: 0.8;
+}
+.header-subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.5rem;
+}
+.market-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 400;
+  color: var(--text-primary); letter-spacing: -0.02em; line-height: 1.2;
+}
+.version-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--gold); background: var(--gold-dim);
+  padding: 0.15rem 0.5rem; border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+/* Hero metrics */
+.hero-metrics {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1rem; margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.1s both;
+}
+.hero-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.25rem 1rem; text-align: center;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.hero-card:hover { border-color: var(--border-gold); transform: translateY(-2px); }
+.hero-card.warn { border-color: var(--neutral); box-shadow: 0 0 12px rgba(251, 191, 36, 0.15); }
+.hero-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 0.5rem;
+}
+.hero-value {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem; color: var(--text-primary); line-height: 1.2; margin-bottom: 0.3rem;
+}
+.hero-change { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 600; }
+.hero-change.up { color: var(--bullish); }
+.hero-change.down { color: var(--bearish); }
+.hero-sub { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--text-dim); margin-top: 0.25rem; }
+
+/* Secondary metrics */
+.secondary-metrics {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem; margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.15s both;
+}
+.sec-metric {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.75rem 1rem;
+  display: flex; align-items: baseline; justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+}
+.sec-metric .sec-name { color: var(--text-secondary); font-weight: 500; }
+.sec-metric .sec-val { color: var(--text-primary); font-weight: 600; margin: 0 0.4rem; }
+.sec-metric .sec-chg { font-weight: 600; font-size: 0.78rem; }
+.sec-metric .sec-chg.up { color: var(--bullish); }
+.sec-metric .sec-chg.down { color: var(--bearish); }
+
+/* Section title */
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.15rem; color: var(--text-primary);
+  margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;
+}
+.section-title::before {
+  content: ''; width: 3px; height: 1.1em;
+  background: var(--gold); border-radius: 2px; flex-shrink: 0;
+}
+
+/* Credit card */
+.credit-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem; margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.18s both;
+}
+.credit-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1rem; text-align: center;
+}
+.credit-card .cc-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 0.4rem;
+}
+.credit-card .cc-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.2rem;
+}
+.credit-card .cc-change { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 600; }
+.credit-card .cc-change.up { color: var(--bullish); }
+.credit-card .cc-change.down { color: var(--bearish); }
+.credit-card .cc-note { font-size: 0.68rem; color: var(--text-secondary); margin-top: 0.2rem; }
+
+/* Breadth & Regime gauge */
+.gauge-section {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.22s both;
+}
+.gauge-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;
+}
+.gauge-score {
+  font-family: 'DM Serif Display', serif; font-size: 2rem;
+}
+.gauge-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.gauge-zone {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem; font-weight: 600;
+  padding: 0.25rem 0.75rem; border-radius: 100px;
+}
+.gauge-zone.caution { background: var(--neutral-bg); color: var(--neutral); }
+.gauge-zone.healthy { background: var(--bullish-bg); color: var(--bullish); }
+.gauge-zone.danger { background: var(--bearish-bg); color: var(--bearish); }
+.gauge-bar-track {
+  height: 8px; background: rgba(255,255,255,0.05);
+  border-radius: 4px; overflow: hidden; margin-bottom: 1rem;
+}
+.gauge-bar-fill {
+  height: 100%; border-radius: 4px;
+  transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.gauge-components {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;
+}
+.gauge-comp {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.3rem 0.5rem; background: rgba(0,0,0,0.2); border-radius: 6px;
+}
+.gauge-comp .gc-name { color: var(--text-secondary); }
+.gauge-comp .gc-score { font-weight: 600; }
+
+/* Heatmap */
+.heatmap-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem; margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.25s both;
+}
+.heatmap-tile {
+  border-radius: 10px; padding: 0.9rem 0.75rem;
+  text-align: center; border: 1px solid var(--border);
+  transition: transform 0.2s;
+}
+.heatmap-tile:hover { transform: scale(1.03); }
+.heatmap-tile .ht-name { font-size: 0.78rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0.25rem; }
+.heatmap-tile .ht-etf { font-size: 0.65rem; color: var(--text-dim); margin-bottom: 0.15rem; font-family: 'JetBrains Mono', monospace; }
+.heatmap-tile .ht-chg { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700; }
+.heat-strong-up { background: rgba(74, 222, 128, 0.18); }
+.heat-strong-up .ht-chg { color: #4ade80; }
+.heat-up { background: rgba(74, 222, 128, 0.10); }
+.heat-up .ht-chg { color: #86efac; }
+.heat-mild-up { background: rgba(74, 222, 128, 0.05); }
+.heat-mild-up .ht-chg { color: #a7f3d0; }
+.heat-flat { background: rgba(255, 255, 255, 0.02); }
+.heat-flat .ht-chg { color: var(--text-secondary); }
+.heat-strong-down { background: rgba(248, 113, 113, 0.18); }
+.heat-strong-down .ht-chg { color: #f87171; }
+
+/* News timeline */
+.news-timeline { margin-bottom: 1.5rem; animation: slideUp 0.6s ease-out 0.3s both; }
+.news-item {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  padding: 0.7rem 0; border-bottom: 1px solid var(--border);
+  font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;
+}
+.news-item:last-child { border-bottom: none; }
+.news-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em;
+  padding: 0.2rem 0.5rem; border-radius: 4px;
+  white-space: nowrap; flex-shrink: 0; margin-top: 0.15rem;
+}
+.news-tag.risk { background: var(--bearish-bg); color: var(--bearish); }
+.news-tag.positive { background: var(--bullish-bg); color: var(--bullish); }
+.news-tag.watch { background: var(--neutral-bg); color: var(--neutral); }
+.news-tag.energy { background: rgba(251, 146, 60, 0.15); color: #fb923c; }
+
+/* Section divider */
+.section-divider {
+  position: relative; text-align: center;
+  margin: 3rem 0 2.5rem; padding: 1.5rem 0;
+}
+.section-divider::before {
+  content: ''; position: absolute;
+  top: 50%; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  box-shadow: 0 0 12px var(--gold-glow);
+}
+.section-divider::after {
+  content: ''; position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 8px; height: 8px; background: var(--gold);
+  border-radius: 50%; box-shadow: 0 0 16px var(--gold-glow);
+}
+.divider-label {
+  position: relative; display: inline-block;
+  background: var(--bg-primary); padding: 0.4rem 1.5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* Debate */
+.debate-header {
+  text-align: center; margin-bottom: 3rem; padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border); position: relative;
+  animation: fadeIn 0.8s ease-out;
+}
+.debate-header::after {
+  content: ''; position: absolute; bottom: -1px; left: 50%;
+  transform: translateX(-50%); width: 120px; height: 1px;
+  background: var(--gold); box-shadow: 0 0 20px var(--gold-glow);
+}
+.debate-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.4rem, 4vw, 1.8rem); font-weight: 400;
+  color: var(--text-primary); letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 1rem;
+}
+.vote-summary {
+  display: inline-flex; align-items: center; gap: 0.75rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.95rem;
+  padding: 0.5rem 1.25rem; border: 1px solid var(--border);
+  border-radius: 100px; background: var(--bg-card);
+}
+.vote-summary .num-bull { color: var(--bullish); font-weight: 600; }
+.vote-summary .num-bear { color: var(--bearish); font-weight: 600; }
+.vote-summary .num-neut { color: var(--neutral); font-weight: 600; }
+.vote-summary .sep { color: var(--text-dim); }
+.confidence-badge {
+  display: block; margin-top: 0.75rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-secondary);
+}
+.confidence-badge strong { color: var(--neutral); font-weight: 600; }
+
+/* Vote bar */
+.section { margin-bottom: 2.5rem; animation: slideUp 0.6s ease-out both; }
+.vote-bar-wrap {
+  background: var(--bg-card); border-radius: 12px;
+  padding: 1.5rem; border: 1px solid var(--border);
+}
+.vote-bar {
+  display: flex; height: 40px; border-radius: 8px;
+  overflow: hidden; margin-bottom: 1rem;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+.vote-bar > div {
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem; font-weight: 600;
+  transition: flex 1s ease-out;
+}
+.vb-bull { background: linear-gradient(135deg, #22c55e, #4ade80); color: #052e16; }
+.vb-bear { background: linear-gradient(135deg, #dc2626, #f87171); color: #450a0a; }
+.vb-neut { background: linear-gradient(135deg, #d97706, #fbbf24); color: #451a03; }
+.vote-legend {
+  display: flex; justify-content: center; gap: 2rem; font-size: 0.8rem;
+}
+.vote-legend span { display: flex; align-items: center; gap: 0.4rem; color: var(--text-secondary); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.legend-dot.bull { background: var(--bullish); }
+.legend-dot.bear { background: var(--bearish); }
+.legend-dot.neut { background: var(--neutral); }
+
+/* Confidence chart */
+.conf-chart {
+  background: var(--bg-card); border-radius: 12px;
+  padding: 1.5rem; border: 1px solid var(--border);
+}
+.conf-row {
+  display: grid; grid-template-columns: 140px 1fr 40px;
+  align-items: center; gap: 0.75rem; padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.conf-row:last-child { border-bottom: none; }
+.conf-name { font-size: 0.82rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.conf-bar-track { height: 24px; background: rgba(255,255,255,0.03); border-radius: 6px; overflow: hidden; }
+.conf-bar-fill { height: 100%; border-radius: 6px; transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
+.conf-pct { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; font-weight: 600; text-align: right; }
+
+/* Action card */
+.action-card {
+  position: relative; border: 1px solid var(--border-gold);
+  border-radius: 16px; padding: 2rem; margin-bottom: 2.5rem;
+  background: linear-gradient(135deg, rgba(212,175,55,0.04) 0%, rgba(212,175,55,0.01) 100%);
+  overflow: hidden; animation: slideUp 0.6s ease-out 0.2s both;
+}
+.action-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.action-card-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.action-card-label::before { content: '\25C6'; font-size: 0.5rem; }
+.action-main {
+  display: flex; align-items: baseline; gap: 1rem;
+  margin-bottom: 1.5rem; flex-wrap: wrap;
+}
+.action-verb {
+  font-family: 'DM Serif Display', serif; font-size: 2rem; line-height: 1;
+}
+.action-verb.bullish { color: var(--bullish); }
+.action-reason {
+  font-size: 0.95rem; color: var(--text-secondary);
+  border-left: 2px solid var(--border-gold); padding-left: 1rem;
+}
+.action-details {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;
+}
+.action-detail-item {
+  padding: 0.75rem 1rem; background: rgba(0,0,0,0.25);
+  border-radius: 8px; border: 1px solid var(--border);
+}
+.action-detail-item .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 500;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 0.25rem;
+}
+.action-detail-item .value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem; font-weight: 500; color: var(--text-primary);
+}
+.action-detail-item .value.long-cond { color: var(--bullish); }
+.action-detail-item .value.stop { color: var(--bearish); }
+.action-detail-item .value.trigger { color: var(--gold); }
+
+/* Risk matrix */
+.risk-matrix {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.risk-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1rem; text-align: center;
+}
+.risk-card.green { border-color: rgba(74, 222, 128, 0.3); }
+.risk-card.yellow { border-color: rgba(251, 191, 36, 0.3); }
+.risk-card.red { border-color: rgba(248, 113, 113, 0.3); }
+.risk-card .rc-scenario {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+.risk-card.green .rc-scenario { color: var(--bullish); }
+.risk-card.yellow .rc-scenario { color: var(--neutral); }
+.risk-card.red .rc-scenario { color: var(--bearish); }
+.risk-card .rc-prob {
+  font-family: 'DM Serif Display', serif; font-size: 1.5rem; margin-bottom: 0.25rem;
+}
+.risk-card .rc-impact { font-size: 0.78rem; color: var(--text-secondary); }
+
+/* Footer */
+.footer {
+  text-align: center; padding-top: 2rem; margin-top: 3rem;
+  border-top: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem; color: var(--text-dim);
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="market-header">
+  <div class="header-eyebrow">Weekly Report</div>
+  <h1>美股週報 W14</h1>
+  <div class="header-subtitle">2026-03-28 至 2026-04-02</div>
+  <div class="version-badge">v2.1 UPGRADE</div>
+</div>
+
+<!-- HERO METRICS: Indices -->
+<div class="hero-metrics">
+  <div class="hero-card">
+    <div class="hero-label">S&P 500</div>
+    <div class="hero-value">655.83</div>
+    <div class="hero-change up">+3.43%</div>
+    <div class="hero-sub">SPY</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">Nasdaq 100</div>
+    <div class="hero-value">584.98</div>
+    <div class="hero-change up">+3.98%</div>
+    <div class="hero-sub">QQQ</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">Dow Jones</div>
+    <div class="hero-value">465.06</div>
+    <div class="hero-change up">+3.03%</div>
+    <div class="hero-sub">DIA</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">Russell 2000</div>
+    <div class="hero-value">251.29</div>
+    <div class="hero-change up">+3.37%</div>
+    <div class="hero-sub">IWM</div>
+  </div>
+</div>
+
+<!-- SECONDARY: Risk -->
+<div class="secondary-metrics">
+  <div class="sec-metric">
+    <span class="sec-name">VIX</span>
+    <span class="sec-val">23.87</span>
+    <span class="sec-chg down">-23.1%</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">10Y</span>
+    <span class="sec-val">4.31%</span>
+    <span class="sec-chg down">-2.05%</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">DXY</span>
+    <span class="sec-val">100.19</span>
+    <span class="sec-chg down">-0.32%</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">WTI</span>
+    <span class="sec-val">$111.54</span>
+    <span class="sec-chg up">+11.9%</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">Gold</span>
+    <span class="sec-val">$4,651</span>
+    <span class="sec-chg up">+2.5%</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">Fed Rate</span>
+    <span class="sec-val">3.64%</span>
+    <span class="sec-chg" style="color:var(--text-dim)">HOLD</span>
+  </div>
+</div>
+
+<!-- NEW: CREDIT & RATES -->
+<div class="section-title">Credit & Rates</div>
+<div class="credit-grid">
+  <div class="credit-card">
+    <div class="cc-label">HY OAS</div>
+    <div class="cc-value">3.17%</div>
+    <div class="cc-change up">+0.01%</div>
+    <div class="cc-note">微幅擴大</div>
+  </div>
+  <div class="credit-card">
+    <div class="cc-label">IG OAS</div>
+    <div class="cc-value">0.86%</div>
+    <div class="cc-change down">-0.01%</div>
+    <div class="cc-note">微幅收窄</div>
+  </div>
+  <div class="credit-card">
+    <div class="cc-label">2s10s Spread</div>
+    <div class="cc-value">+0.51%</div>
+    <div class="cc-change down">-0.01%</div>
+    <div class="cc-note">正斜率維持</div>
+  </div>
+  <div class="credit-card">
+    <div class="cc-label">VIX/VIX3M</div>
+    <div class="cc-value">0.97</div>
+    <div class="cc-change down">-0.09</div>
+    <div class="cc-note">轉 Contango</div>
+  </div>
+</div>
+
+<!-- NEW: MARKET BREADTH -->
+<div class="section-title">Market Breadth</div>
+<div class="gauge-section">
+  <div class="gauge-header">
+    <div>
+      <div class="gauge-label">Composite Score</div>
+      <div class="gauge-score" style="color:var(--neutral)">51<span style="font-size:0.8rem;color:var(--text-dim)">/100</span></div>
+    </div>
+    <div class="gauge-zone caution">Caution Zone</div>
+  </div>
+  <div class="gauge-bar-track">
+    <div class="gauge-bar-fill" style="width:51%;background:linear-gradient(90deg, var(--bearish), var(--neutral))"></div>
+  </div>
+  <div class="gauge-components">
+    <div class="gauge-comp"><span class="gc-name">Breadth Trend</span><span class="gc-score" style="color:var(--neutral)">55</span></div>
+    <div class="gauge-comp"><span class="gc-name">8MA/200MA</span><span class="gc-score" style="color:var(--neutral)">45</span></div>
+    <div class="gauge-comp"><span class="gc-name">Peak/Trough</span><span class="gc-score" style="color:var(--neutral)">50</span></div>
+    <div class="gauge-comp"><span class="gc-name">Bearish Signal</span><span class="gc-score" style="color:var(--bullish)">60</span></div>
+    <div class="gauge-comp"><span class="gc-name">Hist. Pctile</span><span class="gc-score" style="color:var(--neutral)">40</span></div>
+    <div class="gauge-comp"><span class="gc-name">Divergence</span><span class="gc-score" style="color:var(--neutral)">50</span></div>
+  </div>
+</div>
+
+<!-- NEW: MACRO REGIME -->
+<div class="section-title">Macro Regime</div>
+<div class="gauge-section">
+  <div class="gauge-header">
+    <div>
+      <div class="gauge-label">Regime: Late-Cycle Expansion</div>
+      <div class="gauge-score" style="color:var(--neutral)">55<span style="font-size:0.8rem;color:var(--text-dim)">/100</span></div>
+    </div>
+    <div class="gauge-zone caution">30% Contraction Risk</div>
+  </div>
+  <div class="gauge-bar-track">
+    <div class="gauge-bar-fill" style="width:55%;background:linear-gradient(90deg, var(--bearish), var(--neutral), var(--bullish))"></div>
+  </div>
+  <div class="gauge-components">
+    <div class="gauge-comp"><span class="gc-name">Concentration</span><span class="gc-score" style="color:var(--neutral)">45</span></div>
+    <div class="gauge-comp"><span class="gc-name">Yield Curve</span><span class="gc-score" style="color:var(--bullish)">65</span></div>
+    <div class="gauge-comp"><span class="gc-name">Credit Cond.</span><span class="gc-score" style="color:var(--neutral)">55</span></div>
+    <div class="gauge-comp"><span class="gc-name">Size Factor</span><span class="gc-score" style="color:var(--neutral)">50</span></div>
+    <div class="gauge-comp"><span class="gc-name">Eq-Bond</span><span class="gc-score" style="color:var(--bullish)">60</span></div>
+    <div class="gauge-comp"><span class="gc-name">Sector Rot.</span><span class="gc-score" style="color:var(--bullish)">70</span></div>
+  </div>
+</div>
+
+<!-- SECTOR HEATMAP -->
+<div class="section-title">Sector Performance (Weekly)</div>
+<div class="heatmap-grid">
+  <div class="heatmap-tile heat-strong-up">
+    <div class="ht-name">科技</div>
+    <div class="ht-etf">XLK</div>
+    <div class="ht-chg">+4.67%</div>
+  </div>
+  <div class="heatmap-tile heat-strong-up">
+    <div class="ht-name">通訊</div>
+    <div class="ht-etf">XLC</div>
+    <div class="ht-chg">+4.35%</div>
+  </div>
+  <div class="heatmap-tile heat-strong-up">
+    <div class="ht-name">房地產</div>
+    <div class="ht-etf">XLRE</div>
+    <div class="ht-chg">+4.00%</div>
+  </div>
+  <div class="heatmap-tile heat-up">
+    <div class="ht-name">金融</div>
+    <div class="ht-etf">XLF</div>
+    <div class="ht-chg">+3.60%</div>
+  </div>
+  <div class="heatmap-tile heat-up">
+    <div class="ht-name">原材料</div>
+    <div class="ht-etf">XLB</div>
+    <div class="ht-chg">+3.07%</div>
+  </div>
+  <div class="heatmap-tile heat-up">
+    <div class="ht-name">工業</div>
+    <div class="ht-etf">XLI</div>
+    <div class="ht-chg">+2.87%</div>
+  </div>
+  <div class="heatmap-tile heat-mild-up">
+    <div class="ht-name">醫療</div>
+    <div class="ht-etf">XLV</div>
+    <div class="ht-chg">+2.48%</div>
+  </div>
+  <div class="heatmap-tile heat-mild-up">
+    <div class="ht-name">非必需消費</div>
+    <div class="ht-etf">XLY</div>
+    <div class="ht-chg">+2.34%</div>
+  </div>
+  <div class="heatmap-tile heat-mild-up">
+    <div class="ht-name">公用事業</div>
+    <div class="ht-etf">XLU</div>
+    <div class="ht-chg">+1.65%</div>
+  </div>
+  <div class="heatmap-tile heat-flat">
+    <div class="ht-name">必需消費</div>
+    <div class="ht-etf">XLP</div>
+    <div class="ht-chg">+0.13%</div>
+  </div>
+  <div class="heatmap-tile heat-strong-down">
+    <div class="ht-name">能源</div>
+    <div class="ht-etf">XLE</div>
+    <div class="ht-chg">-5.29%</div>
+  </div>
+</div>
+
+<!-- EVENT TIMELINE -->
+<div class="section-title">Event Timeline</div>
+<div class="news-timeline">
+  <div class="news-item">
+    <span class="news-tag risk">3/27</span>
+    <span>Houthis 宣佈加入伊朗陣營 + WTI 觸及 $100 + 道指進入修正區間</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag risk">3/30</span>
+    <span>伊朗攻擊科威特油輪 + HY OAS +21bp + Gold/Oil/DXY 三漲</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag positive">3/31</span>
+    <span>伊朗總統表態願意談判 → SPY +2.91% 暴力反彈 + VIX -17.5%</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag watch">4/1</span>
+    <span>Trump 聲稱「2-3 週結束戰爭」+ SpaceX-xAI IPO + Nike -15.5%</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag energy">4/2</span>
+    <span>WTI 突破 $112 + 荷姆茲海峽監控協議 → V 型反轉 + Tesla -5.4%</span>
+  </div>
+</div>
+
+<!-- SECTION DIVIDER -->
+<div class="section-divider"><span class="divider-label">Investment Committee</span></div>
+
+<!-- DEBATE -->
+<div class="debate-header">
+  <div class="debate-title">中東危機後暴力反彈 — 真正轉折還是死貓跳？</div>
+  <div class="vote-summary">
+    <span class="num-bull">4 Bull</span>
+    <span class="sep">:</span>
+    <span class="num-bear">3 Bear</span>
+    <span class="sep">:</span>
+    <span class="num-neut">3 Neutral</span>
+  </div>
+  <div class="confidence-badge">Consensus Confidence: <strong>63%</strong></div>
+</div>
+
+<!-- VOTE BAR -->
+<div class="section">
+  <div class="vote-bar-wrap">
+    <div class="vote-bar">
+      <div class="vb-bull" style="flex:4">40%</div>
+      <div class="vb-bear" style="flex:3">30%</div>
+      <div class="vb-neut" style="flex:3">30%</div>
+    </div>
+    <div class="vote-legend">
+      <span><span class="legend-dot bull"></span>Bull (4)</span>
+      <span><span class="legend-dot bear"></span>Bear (3)</span>
+      <span><span class="legend-dot neut"></span>Neutral (3)</span>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIDENCE CHART -->
+<div class="section">
+  <div class="section-title">Confidence Levels</div>
+  <div class="conf-chart">
+    <div class="conf-row">
+      <div class="conf-name" style="color:var(--bullish)">WSB</div>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width:90%;background:var(--bullish)"></div></div>
+      <div class="conf-pct" style="color:var(--bullish)">90%</div>
+    </div>
+    <div class="conf-row">
+      <div class="conf-name" style="color:var(--bearish)">Taleb</div>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width:85%;background:var(--bearish)"></div></div>
+      <div class="conf-pct" style="color:var(--bearish)">85%</div>
+    </div>
+    <div class="conf-row">
+      <div class="conf-name" style="color:var(--bullish)">Lynch</div>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width:75%;background:var(--bullish)"></div></div>
+      <div class="conf-pct" style="color:var(--bullish)">75%</div>
+    </div>
+    <div class="conf-row">
+      <div class="conf-name" style="color:var(--bullish)">Druckenmiller</div>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width:72%;background:var(--bullish)"></div></div>
+      <div class="conf-pct" style="color:var(--bullish)">72%</div>
+    </div>
+    <div class="conf-row">
+      <div class="conf-name" style="color:var(--bearish)">Li Ka-shing</div>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width:72%;background:var(--bearish)"></div></div>
+      <div class="conf-pct" style="color:var(--bearish)">72%</div>
+    </div>
+    <div class="conf-row">
+      <div class="conf-name" style="color:var(--bearish)">Dalio</div>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width:70%;background:var(--bearish)"></div></div>
+      <div class="conf-pct" style="color:var(--bearish)">70%</div>
+    </div>
+    <div class="conf-row">
+      <div class="conf-name" style="color:var(--bullish)">Soros</div>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width:68%;background:var(--bullish)"></div></div>
+      <div class="conf-pct" style="color:var(--bullish)">68%</div>
+    </div>
+    <div class="conf-row">
+      <div class="conf-name" style="color:var(--neutral)">Marks</div>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width:65%;background:var(--neutral)"></div></div>
+      <div class="conf-pct" style="color:var(--neutral)">65%</div>
+    </div>
+    <div class="conf-row">
+      <div class="conf-name" style="color:var(--neutral)">Macro Strat.</div>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width:62%;background:var(--neutral)"></div></div>
+      <div class="conf-pct" style="color:var(--neutral)">62%</div>
+    </div>
+    <div class="conf-row">
+      <div class="conf-name" style="color:var(--neutral)">Quant</div>
+      <div class="conf-bar-track"><div class="conf-bar-fill" style="width:60%;background:var(--neutral)"></div></div>
+      <div class="conf-pct" style="color:var(--neutral)">60%</div>
+    </div>
+  </div>
+</div>
+
+<!-- ACTION CARD -->
+<div class="action-card">
+  <div class="action-card-label">Weekly Action</div>
+  <div class="action-main">
+    <div class="action-verb bullish">Selective Long</div>
+    <div class="action-reason">精選反彈標的 — Risk Veto 部分採納，配置 15% 尾部對沖</div>
+  </div>
+  <div class="action-details">
+    <div class="action-detail-item">
+      <div class="label">Position</div>
+      <div class="value">Equity 60% / Cash 25% / Hedge 15%</div>
+    </div>
+    <div class="action-detail-item">
+      <div class="label">Long Condition</div>
+      <div class="value long-cond">VIX < 22 + WTI < $105 + 談判進展</div>
+    </div>
+    <div class="action-detail-item">
+      <div class="label">Short Trigger</div>
+      <div class="value stop">Hormuz blockade / WTI > $120 / HY OAS > 3.50%</div>
+    </div>
+    <div class="action-detail-item">
+      <div class="label">Stop Loss</div>
+      <div class="value stop">SPY < 635</div>
+    </div>
+    <div class="action-detail-item">
+      <div class="label">Overweight</div>
+      <div class="value long-cond">XLK, XLC</div>
+    </div>
+    <div class="action-detail-item">
+      <div class="label">Hedge</div>
+      <div class="value trigger">SPY Apr 630P + USO May 120C</div>
+    </div>
+  </div>
+</div>
+
+<!-- RISK MATRIX -->
+<div class="section-title">Risk Scenario Matrix</div>
+<div class="risk-matrix">
+  <div class="risk-card green">
+    <div class="rc-scenario">BULL: NEGOTIATION SUCCESS</div>
+    <div class="rc-prob">25%</div>
+    <div class="rc-impact" style="color:var(--bullish)">SPY +3~5%</div>
+    <div class="rc-impact">Iran ceasefire + WTI < $100</div>
+  </div>
+  <div class="risk-card yellow">
+    <div class="rc-scenario">BASE: STALEMATE</div>
+    <div class="rc-prob">45%</div>
+    <div class="rc-impact" style="color:var(--neutral)">SPY -1~+2%</div>
+    <div class="rc-impact">Talks but no action</div>
+  </div>
+  <div class="risk-card red">
+    <div class="rc-scenario">BEAR: HORMUZ CRISIS</div>
+    <div class="rc-prob">30%</div>
+    <div class="rc-impact" style="color:var(--bearish)">SPY -5~-10%</div>
+    <div class="rc-impact">Strait blockade / military action</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>Sources: Yahoo Finance / FRED / Treasury.gov / Financial Datasets / Finnhub</p>
+  <p style="margin-top:0.5rem">Generated 2026-04-02 | v2.1 Upgrade | W14 Weekly Report</p>
+</div>
+
+</div>
+</body>
+</html>
