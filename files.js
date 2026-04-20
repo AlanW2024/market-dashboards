@@ -58,6 +58,7 @@ const FILES = {
     {"name":"2026-W14 美股週報Dashboard.html","path":"美股/週報/2026-04/2026-W14 美股週報Dashboard.html","dir":"美股/週報/2026-04","month":"2026-04"},
   ],
   "🇭🇰 港股盤前": [
+    {"name":"2026-04-20 港股盤前Dashboard.html","path":"港股/盤前/2026-04-20 港股盤前Dashboard.html","dir":"港股/盤前"},
     {"name":"2026-04-17 港股盤前Dashboard.html","path":"港股/盤前/2026-04-17 港股盤前Dashboard.html","dir":"港股/盤前"},
     {"name":"2026-04-16 港股盤前Dashboard.html","path":"港股/盤前/2026-04-16 港股盤前Dashboard.html","dir":"港股/盤前"},
     {"name":"2026-04-15 港股盤前Dashboard.html","path":"港股/盤前/2026-04-15 港股盤前Dashboard.html","dir":"港股/盤前"},
