@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>港股盤後日報 — 2026-04-20</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #D4AF37; --gold-dim: rgba(212,175,55,0.15); --gold-glow: rgba(212,175,55,0.3);
+  --bg-primary: #0a0a0f; --bg-card: #12121a; --bg-elevated: #1e1e2a;
+  --text-primary: #e8e6e1; --text-secondary: #8a8a9a; --text-dim: #5a5a6a;
+  --border: rgba(255,255,255,0.06); --border-gold: rgba(212,175,55,0.3);
+  --bullish: #4ade80; --bearish: #f87171; --neutral: #fbbf24;
+  --bullish-bg: rgba(74,222,128,0.08); --bearish-bg: rgba(248,113,113,0.08); --neutral-bg: rgba(251,191,36,0.08);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg-primary); color:var(--text-primary); font-family:'Noto Sans TC','JetBrains Mono',sans-serif; line-height:1.6; overflow-x:hidden; }
+.container { max-width:960px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+.market-header { text-align:center; margin-bottom:2.5rem; padding-bottom:2rem; border-bottom:1px solid var(--border); }
+.header-eyebrow { font-family:'JetBrains Mono',monospace; font-size:0.7rem; font-weight:500; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem; }
+.market-header h1 { font-family:'DM Serif Display',serif; font-size:clamp(1.8rem,5vw,2.6rem); color:var(--text-primary); }
+.header-subtitle { font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--text-secondary); margin-top:0.5rem; }
+.section-title { font-family:'JetBrains Mono',monospace; font-size:0.68rem; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:1.2rem; opacity:0.8; }
+.hero-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; margin-bottom:1.5rem; }
+.hero-card { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:1.5rem; }
+.hero-card.featured { border-color:var(--border-gold); background:linear-gradient(135deg,var(--bg-card),rgba(212,175,55,0.04)); }
+.hero-label { font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--text-secondary); letter-spacing:0.1em; margin-bottom:0.5rem; }
+.hero-value { font-family:'JetBrains Mono',monospace; font-size:2rem; font-weight:700; color:var(--text-primary); }
+.hero-change { font-family:'JetBrains Mono',monospace; font-size:0.85rem; margin-top:0.3rem; }
+.bullish { color:var(--bullish); } .bearish { color:var(--bearish); } .neutral-c { color:var(--neutral); }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.5rem; }
+.card { background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:1.2rem; }
+.heatmap { display:grid; grid-template-columns:repeat(4,1fr); gap:0.5rem; margin-bottom:1.5rem; }
+.heat-cell { border-radius:8px; padding:0.75rem 0.5rem; text-align:center; }
+.heat-cell .ticker { font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:rgba(255,255,255,0.6); }
+.heat-cell .name { font-size:0.7rem; margin:0.2rem 0; }
+.heat-cell .chg { font-family:'JetBrains Mono',monospace; font-size:0.85rem; font-weight:700; }
+.heat-up { background:rgba(74,222,128,0.15); border:1px solid rgba(74,222,128,0.2); }
+.heat-up2 { background:rgba(74,222,128,0.25); border:1px solid rgba(74,222,128,0.35); }
+.heat-up3 { background:rgba(74,222,128,0.4); border:1px solid rgba(74,222,128,0.5); }
+.heat-dn { background:rgba(248,113,113,0.15); border:1px solid rgba(248,113,113,0.2); }
+.heat-dn2 { background:rgba(248,113,113,0.35); border:1px solid rgba(248,113,113,0.5); }
+.timeline { display:flex; flex-direction:column; gap:0.8rem; }
+.tl-item { display:flex; gap:1rem; align-items:flex-start; }
+.tl-time { font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--gold); min-width:55px; padding-top:0.1rem; }
+.tl-text { font-size:0.82rem; color:var(--text-primary); line-height:1.5; }
+.tl-tag { display:inline-block; font-size:0.65rem; padding:0.1rem 0.4rem; border-radius:3px; margin-right:0.4rem; }
+.tag-bear { background:rgba(248,113,113,0.15); color:var(--bearish); }
+.tag-bull { background:rgba(74,222,128,0.1); color:var(--bullish); }
+.tag-neutral { background:rgba(251,191,36,0.1); color:var(--neutral); }
+.metric-row { display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0; border-bottom:1px solid var(--border); }
+.metric-row:last-child { border-bottom:none; }
+.metric-label { font-size:0.8rem; color:var(--text-secondary); }
+.metric-value { font-family:'JetBrains Mono',monospace; font-size:0.85rem; }
+/* GOLD DIVIDER */
+.gold-divider { margin:3rem 0; position:relative; text-align:center; }
+.gold-divider::before { content:''; position:absolute; top:50%; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+.gold-divider-text { position:relative; display:inline-block; background:var(--bg-primary); padding:0 1.5rem; font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); }
+/* DEBATE */
+.vote-bar-container { margin:1rem 0; }
+.vote-bar-label { display:flex; justify-content:space-between; margin-bottom:0.3rem; font-size:0.78rem; }
+.vote-bar { height:8px; border-radius:4px; background:var(--bg-elevated); overflow:hidden; }
+.vote-fill { height:100%; border-radius:4px; transition:width 1s ease; }
+.fill-bull { background:var(--bullish); }
+.fill-bear { background:var(--bearish); }
+.fill-watch { background:var(--neutral); }
+.stance-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+.stance-table th { font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:var(--text-dim); text-align:left; padding:0.5rem 0.75rem; border-bottom:1px solid var(--border); }
+.stance-table td { padding:0.6rem 0.75rem; border-bottom:1px solid rgba(255,255,255,0.03); }
+.stance-bull { color:var(--bullish); font-weight:600; }
+.stance-bear { color:var(--bearish); font-weight:600; }
+.stance-watch { color:var(--neutral); }
+.veto-banner { background:linear-gradient(135deg,rgba(248,113,113,0.1),rgba(248,113,113,0.05)); border:1px solid rgba(248,113,113,0.3); border-radius:10px; padding:1rem 1.2rem; margin-bottom:1.5rem; }
+.veto-banner h3 { color:var(--bearish); font-size:0.85rem; margin-bottom:0.4rem; }
+.veto-banner p { font-size:0.78rem; color:var(--text-secondary); }
+.dispute-grid { display:grid; grid-template-columns:1fr; gap:0.8rem; }
+.dispute-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:1rem; }
+.dispute-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:0.4rem; }
+.dispute-text { font-size:0.75rem; color:var(--text-secondary); line-height:1.6; }
+.action-table { width:100%; border-collapse:collapse; }
+.action-table tr { border-bottom:1px solid var(--border); }
+.action-table tr:last-child { border-bottom:none; }
+.action-table td:first-child { font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--gold); padding:0.7rem 1rem 0.7rem 0; width:120px; vertical-align:top; }
+.action-table td:last-child { font-size:0.82rem; color:var(--text-primary); padding:0.7rem 0; }
+.conf-bar { display:flex; align-items:center; gap:1rem; margin:0.6rem 0; }
+.conf-name { font-size:0.75rem; color:var(--text-secondary); width:80px; }
+.conf-track { flex:1; height:6px; background:var(--bg-elevated); border-radius:3px; overflow:hidden; }
+.conf-fill { height:100%; border-radius:3px; }
+.conf-score { font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--text-dim); width:30px; text-align:right; }
+details summary { cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--gold); padding:0.6rem; list-style:none; }
+details summary::before { content:'▶ '; }
+details[open] summary::before { content:'▼ '; }
+.transcript { font-size:0.78rem; color:var(--text-secondary); line-height:1.7; padding:1rem; background:var(--bg-card); border-radius:8px; max-height:400px; overflow-y:auto; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="market-header">
+  <div class="header-eyebrow">港股 · 盤後日報</div>
+  <h1>恒生指數 收市報告</h1>
+  <div class="header-subtitle">2026-04-20（一）&nbsp;·&nbsp;Investment Committee v2.0</div>
+</div>
+
+<!-- ═══ PART I: MARKET DATA ═══ -->
+<div class="section-title">§1 — 指數收市</div>
+<div class="hero-grid">
+  <div class="hero-card featured">
+    <div class="hero-label">恒生指數 HSI</div>
+    <div class="hero-value">26,377</div>
+    <div class="hero-change bullish">+216.65 pts &nbsp; +0.83%</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">國企指數 HSCE</div>
+    <div class="hero-value">8,913</div>
+    <div class="hero-change bullish">+68.44 pts &nbsp; +0.77%</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">恒生科技ETF 3067.HK</div>
+    <div class="hero-value">10.73</div>
+    <div class="hero-change bullish">+0.85%</div>
+  </div>
+  <div class="hero-card featured">
+    <div class="hero-label">⭐ 東方證券 03958.HK</div>
+    <div class="hero-value" style="font-size:1.5rem">+13.53%</div>
+    <div class="hero-change bullish">收購上海證券100%股權</div>
+  </div>
+</div>
+
+<!-- HEATMAP -->
+<div class="section-title">§2 — 板塊熱力圖</div>
+<div class="heatmap">
+  <div class="heat-cell heat-up3"><div class="ticker">0700.HK</div><div class="name">騰訊</div><div class="chg bullish">+2.64%</div></div>
+  <div class="heat-cell heat-up2"><div class="ticker">1398.HK</div><div class="name">工商銀行</div><div class="chg bullish">+1.56%</div></div>
+  <div class="heat-cell heat-up2"><div class="ticker">1810.HK</div><div class="name">小米</div><div class="chg bullish">+1.44%</div></div>
+  <div class="heat-cell heat-up"><div class="ticker">9988.HK</div><div class="name">阿里巴巴</div><div class="chg bullish">+0.88%</div></div>
+  <div class="heat-cell heat-up"><div class="ticker">2800.HK</div><div class="name">盈富基金</div><div class="chg bullish">+0.91%</div></div>
+  <div class="heat-cell heat-up"><div class="ticker">2828.HK</div><div class="name">國企ETF</div><div class="chg bullish">+0.86%</div></div>
+  <div class="heat-cell heat-up"><div class="ticker">3188.HK</div><div class="name">滬深300</div><div class="chg bullish">+0.78%</div></div>
+  <div class="heat-cell heat-up"><div class="ticker">0941.HK</div><div class="name">中國移動</div><div class="chg bullish">+0.06%</div></div>
+  <div class="heat-cell heat-dn"><div class="ticker">3110.HK</div><div class="name">內房ETF</div><div class="chg bearish">-0.12%</div></div>
+  <div class="heat-cell heat-dn2"><div class="ticker">9618.HK</div><div class="name">京東</div><div class="chg bearish">-0.41%</div></div>
+  <div class="heat-cell heat-up3" style="grid-column:span 2;background:rgba(212,175,55,0.15);border-color:rgba(212,175,55,0.3)"><div class="ticker">03958.HK</div><div class="name">東方證券（整合催化）</div><div class="chg" style="color:var(--gold)">+13.53% 🔥</div></div>
+</div>
+
+<!-- FX + RISK ROW -->
+<div class="section-title">§3 — 風險指標</div>
+<div class="grid-3">
+  <div class="card">
+    <div class="metric-row"><span class="metric-label">VIX</span><span class="metric-value bearish">17.48 <small>-2.56%</small></span></div>
+    <div class="metric-row"><span class="metric-label">美國 10Y</span><span class="metric-value bearish">4.25% <small>-1.46%</small></span></div>
+    <div class="metric-row"><span class="metric-label">2s10s</span><span class="metric-value bullish">+0.55%</span></div>
+  </div>
+  <div class="card">
+    <div class="metric-row"><span class="metric-label">原油 WTI</span><span class="metric-value bullish">$82.59 +7%↑</span></div>
+    <div class="metric-row"><span class="metric-label">黃金</span><span class="metric-value bearish">4,813 -0.74%</span></div>
+    <div class="metric-row"><span class="metric-label">DXY 美元指數</span><span class="metric-value neutral-c">98.30 +0.02%</span></div>
+  </div>
+  <div class="card">
+    <div class="metric-row"><span class="metric-label">USD/HKD</span><span class="metric-value bullish">7.776 穩</span></div>
+    <div class="metric-row"><span class="metric-label">LPR 1年</span><span class="metric-value neutral-c">3.00% 不變</span></div>
+    <div class="metric-row"><span class="metric-label">市場寬度</span><span class="metric-value neutral-c">40.3/100 Neutral</span></div>
+  </div>
+</div>
+
+<!-- NEWS TIMELINE -->
+<div class="section-title">§4 — 今日要聞時間線</div>
+<div class="card" style="margin-bottom:1.5rem">
+<div class="timeline">
+  <div class="tl-item"><span class="tl-time">09:23</span><div class="tl-text"><span class="tl-tag tag-bull">🟢 偏多</span><b>東方證券 +13.53%</b>：籌劃收購上海證券100%股權，重大行業整合催化，帶動券商板塊</div></div>
+  <div class="tl-item"><span class="tl-time">09:00</span><div class="tl-text"><span class="tl-tag tag-neutral">🟡 中性</span><b>中國 LPR 維持不變</b>：1年3.00%，5年3.50%，政策穩定但無降息刺激</div></div>
+  <div class="tl-item"><span class="tl-time">15:55</span><div class="tl-text"><span class="tl-tag tag-bear">🔴 偏空</span><b>大摩：建議減持亞洲 EM</b>：美伊緊張升溫為觸發，機構拋壓潛在風險</div></div>
+  <div class="tl-item"><span class="tl-time">15:55</span><div class="tl-text"><span class="tl-tag tag-bull">🟢 偏多</span><b>大摩：中國股市年底仍具5-10%空間</b>；高盛：港股新股集資額年創新高（4700億）</div></div>
+  <div class="tl-item"><span class="tl-time">15:59</span><div class="tl-text"><span class="tl-tag tag-bear">🔴 偏空</span><b>伊朗：霍爾木茲控制「完全合法」</b>，美伊第二輪談判無計劃，封鎖風險持續</div></div>
+  <div class="tl-item"><span class="tl-time">16:00</span><div class="tl-text"><span class="tl-tag tag-bear">🔴 偏空</span><b>日本東北 7.4 級地震 + 3米海嘯警報</b>：供應鏈衝擊需72小時評估</div></div>
+  <div class="tl-item"><span class="tl-time">16:03</span><div class="tl-text"><span class="tl-tag tag-bull">🟢 偏多</span><b>美聯儲降息概率升至60%</b>：Daley 表態；若衝突結束可能降息</div></div>
+</div>
+</div>
+
+<!-- MACRO ROW -->
+<div class="section-title">§5 — 宏觀 / 跨市場</div>
+<div class="grid-3">
+  <div class="card">
+    <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.5rem">信用信號</div>
+    <div class="metric-row"><span class="metric-label">HY OAS</span><span class="metric-value">2.86% +0bp</span></div>
+    <div class="metric-row"><span class="metric-label">IG OAS</span><span class="metric-value">0.81% +0bp</span></div>
+  </div>
+  <div class="card">
+    <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.5rem">亞洲跨市場</div>
+    <div class="metric-row"><span class="metric-label">日本 EWJ</span><span class="metric-value bullish">+0.84%</span></div>
+    <div class="metric-row"><span class="metric-label">中國 FXI</span><span class="metric-value bullish">+0.83%</span></div>
+  </div>
+  <div class="card">
+    <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.5rem">板塊輪動</div>
+    <div class="metric-row"><span class="metric-label">Basic Mats</span><span class="metric-value bearish">61.4% 超買</span></div>
+    <div class="metric-row"><span class="metric-label">Energy</span><span class="metric-value bearish">21.3% 下行</span></div>
+  </div>
+</div>
+
+<!-- ═══ GOLD DIVIDER ═══ -->
+<div class="gold-divider"><span class="gold-divider-text">投資委員會 · 辯論結果</span></div>
+
+<!-- VETO BANNER -->
+<div class="veto-banner">
+  <h3>⚠️ Risk Veto 觸發 — Taleb 8/10</h3>
+  <p>VIX 17.48 嚴重低估三重尾部風險：日本7.4地震 + 霍爾木茲聲明 + 四川4.5地震。黃金 -0.74% 在地緣升溫中下跌 = 流動性壓縮前兆。建議：60-65% 倉位 + OTM Put 對沖。</p>
+</div>
+
+<!-- VOTE SUMMARY -->
+<div class="section-title">§6 — 投票結果</div>
+<div class="card" style="margin-bottom:1.5rem">
+  <div style="text-align:center;margin-bottom:1.5rem">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--bullish)">3</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:var(--text-dim)"> : </span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--bearish)">2</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:var(--text-dim)"> : </span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--neutral)">4</span>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-dim);margin-top:0.3rem">看多 : 看空 : 觀望 &nbsp;·&nbsp; 加權 6.3/10</div>
+  </div>
+  <div class="vote-bar-container">
+    <div class="vote-bar-label"><span>看多</span><span class="bullish">3票</span></div>
+    <div class="vote-bar"><div class="vote-fill fill-bull" style="width:33%"></div></div>
+  </div>
+  <div class="vote-bar-container">
+    <div class="vote-bar-label"><span>觀望</span><span class="neutral-c">4票</span></div>
+    <div class="vote-bar"><div class="vote-fill fill-watch" style="width:44%"></div></div>
+  </div>
+  <div class="vote-bar-container">
+    <div class="vote-bar-label"><span>看空</span><span class="bearish">2票</span></div>
+    <div class="vote-bar"><div class="vote-fill fill-bear" style="width:22%"></div></div>
+  </div>
+</div>
+
+<!-- STANCE TABLE -->
+<div class="section-title">§7 — 各方立場</div>
+<div class="card" style="margin-bottom:1.5rem;overflow-x:auto">
+<table class="stance-table">
+<thead><tr><th>角色</th><th>立場</th><th>信心</th><th>核心論點</th></tr></thead>
+<tbody>
+<tr><td>Marks</td><td class="stance-watch">觀望偏空</td><td>6/10</td><td>敘事矛盾，Breadth 40.3，北水缺失</td></tr>
+<tr><td>Taleb ⚠️</td><td class="stance-bear">看空</td><td><b>8/10</b></td><td>VIX低估三重尾部，黃金異常，買保險</td></tr>
+<tr><td>李嘉誠</td><td class="stance-watch">觀望</td><td>7/10</td><td>北水不明就唔動，現金35-40%</td></tr>
+<tr><td>Druckenmiller</td><td class="stance-bull">審慎看多</td><td>6/10</td><td>Bull 30%/Base 45%/Bear 25%，等北水</td></tr>
+<tr><td>Soros</td><td class="stance-watch">觀望</td><td>5/10</td><td>兩個敘事並存，敘A暫強但脆弱</td></tr>
+<tr><td>連登散戶</td><td class="stance-bull">謹慎看多</td><td>5.5/10</td><td>等明日北水方向確認</td></tr>
+<tr><td>Dalio</td><td class="stance-bull">看多</td><td>5.5/10</td><td>Goldilocks仍在，但通脹尾部警示</td></tr>
+<tr><td>Lynch</td><td class="stance-bull">觀望偏多</td><td>6/10</td><td>MS叫賣是反指標，騰訊有基本面</td></tr>
+<tr><td>宏觀策略師</td><td class="stance-bear">看空</td><td>7/10</td><td>三地緣火頭，MS減持資金外流路徑清晰</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- CONFIDENCE BARS -->
+<div class="section-title">§8 — 信心分佈</div>
+<div class="card" style="margin-bottom:1.5rem">
+  <div class="conf-bar"><span class="conf-name">Marks</span><div class="conf-track"><div class="conf-fill" style="width:60%;background:var(--neutral)"></div></div><span class="conf-score">6/10</span></div>
+  <div class="conf-bar"><span class="conf-name">Taleb ⚠️</span><div class="conf-track"><div class="conf-fill" style="width:80%;background:var(--bearish)"></div></div><span class="conf-score">8/10</span></div>
+  <div class="conf-bar"><span class="conf-name">李嘉誠</span><div class="conf-track"><div class="conf-fill" style="width:70%;background:var(--neutral)"></div></div><span class="conf-score">7/10</span></div>
+  <div class="conf-bar"><span class="conf-name">Druckenmiller</span><div class="conf-track"><div class="conf-fill" style="width:60%;background:var(--bullish)"></div></div><span class="conf-score">6/10</span></div>
+  <div class="conf-bar"><span class="conf-name">Soros</span><div class="conf-track"><div class="conf-fill" style="width:50%;background:var(--neutral)"></div></div><span class="conf-score">5/10</span></div>
+  <div class="conf-bar"><span class="conf-name">連登散戶</span><div class="conf-track"><div class="conf-fill" style="width:55%;background:var(--bullish)"></div></div><span class="conf-score">5.5/10</span></div>
+  <div class="conf-bar"><span class="conf-name">Dalio</span><div class="conf-track"><div class="conf-fill" style="width:55%;background:var(--bullish)"></div></div><span class="conf-score">5.5/10</span></div>
+  <div class="conf-bar"><span class="conf-name">Lynch</span><div class="conf-track"><div class="conf-fill" style="width:60%;background:var(--bullish)"></div></div><span class="conf-score">6/10</span></div>
+  <div class="conf-bar"><span class="conf-name">宏觀策略師</span><div class="conf-track"><div class="conf-fill" style="width:70%;background:var(--bearish)"></div></div><span class="conf-score">7/10</span></div>
+</div>
+
+<!-- DISPUTES -->
+<div class="section-title">§9 — 核心分歧</div>
+<div class="dispute-grid" style="margin-bottom:1.5rem">
+  <div class="dispute-card">
+    <div class="dispute-title">分歧 1：騰訊 +2.64% = 科技周期啟動？ vs 局部拉升？</div>
+    <div class="dispute-text"><b style="color:var(--bullish)">Druckenmiller</b>：動量確認，北水流入騰訊 = 機構戰略配置訊號，非對稱做多<br><b style="color:var(--neutral)">Marks</b>：Breadth 40.3/100，10隻股漲不代表港股全面啟動，這是第二層思維要問的</div>
+  </div>
+  <div class="dispute-card">
+    <div class="dispute-title">分歧 2：VIX 17.48 = 保險便宜買 vs 風險可控</div>
+    <div class="dispute-text"><b style="color:var(--bearish)">Taleb</b>：VIX9D 14.81 = 史上最便宜短期尾部保險，同日兩個地震+地緣升溫，不買put是送錢<br><b style="color:var(--bullish)">Lynch</b>：市場已消化大部分消息，大行看空時反而是機會，MS反指標效應</div>
+  </div>
+  <div class="dispute-card">
+    <div class="dispute-title">分歧 3：大摩「減持EM」= 執行拋售 vs 反指標</div>
+    <div class="dispute-text"><b style="color:var(--bearish)">宏觀策略師</b>：資金流向路徑清晰：美股科技→歐洲→現金，港股作為高流動性EM首當其衝<br><b style="color:var(--bullish)">Lynch</b>：大行報告通常在趨勢末段發出，是滯後判斷，散戶反向往往佔便宜</div>
+  </div>
+</div>
+
+<!-- ACTION CARD -->
+<div class="section-title">§10 — Action Card</div>
+<div class="card" style="margin-bottom:1.5rem;border-color:var(--border-gold)">
+<table class="action-table">
+<tr><td>行動</td><td><b>觀望</b>（Risk Veto觸發，不追高；持倉60-65%）</td></tr>
+<tr><td>場景 A</td><td>北水南下 &gt;5億 + 霍爾木茲談判進展 → 小倉加科技ETF（3067.HK），目標11.00，止損10.40</td></tr>
+<tr><td>場景 B</td><td>霍爾木茲軍事行動確認 + 日本地震重大供應鏈中斷 → 清減港股，轉黃金/HKD現金</td></tr>
+<tr><td>倉位</td><td>60-65%（Breadth建議75%，Risk Veto取保守值）</td></tr>
+<tr><td>時間框架</td><td>Swing（2-5日，等北水方向確認）</td></tr>
+<tr><td>對沖</td><td>VIX9D call（14.81極便宜）+ 少量2800.HK Put（行使26,000，5月到期）</td></tr>
+<tr><td>止損</td><td>HSI 25,800 / 2800.HK 26.00</td></tr>
+</table>
+</div>
+
+<!-- TOMORROW -->
+<div class="section-title">§11 — 明日留意（2026-04-21）</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="metric-row"><span class="metric-label">大市方向預測</span><span class="metric-value neutral-c">-0.3%~+0.5%</span></div>
+    <div class="metric-row"><span class="metric-label">最強板塊</span><span class="metric-value bullish">券商/金融</span></div>
+    <div class="metric-row"><span class="metric-label">最弱板塊</span><span class="metric-value bearish">航空/內房</span></div>
+    <div class="metric-row"><span class="metric-label">VIX 預測</span><span class="metric-value neutral-c">18-21</span></div>
+  </div>
+  <div class="card">
+    <div class="metric-row"><span class="metric-label">關鍵催化劑</span><span class="metric-value">北水流向方向</span></div>
+    <div class="metric-row"><span class="metric-label">加拿大CPI 20:30</span><span class="metric-value neutral-c">通脹訊號</span></div>
+    <div class="metric-row"><span class="metric-label">霍爾木茲</span><span class="metric-value bearish">持續監測</span></div>
+  </div>
+</div>
+
+<!-- TRANSCRIPT -->
+<details style="margin-top:2rem">
+<summary>📜 完整辯論記錄（3輪）</summary>
+<div class="transcript">
+<b>Phase 1 — 風險鷹派（Marks/Taleb/李嘉誠）</b><br>
+Marks：HSI +0.83%背景下，油價48h切換，敘事矛盾。Breadth 40.3，局部拉升。北水缺失。LPR不降=無貨幣政策背書。信心：6/10觀望。<br>
+Taleb：VIX 17.48嚴重低估。同日日本7.4+四川4.5+霍爾木茲聲明+油價暴漲。黃金-0.74%地緣升溫中下跌=流動性壓縮前兆。信心：8/10看空。<br>
+李嘉誠：北水不明=不操作。LPR維穩非主動擴張。現金35-40%。油價混亂不追。信心：7/10觀望。<br><br>
+<b>Phase 1 — 機會獵人（Druck/Soros/連登）</b><br>
+Druckenmiller：Bull 30%/Base 45%/Bear 25%。騰訊領漲+10Y下行=流動性改善。但Breadth 40.3動量不紮實。信心：6.5/10審慎看多。<br>
+Soros：敘事A(科技反彈)vs敘事B(地緣壓制)，敘A暫強但脆弱。東方證券板塊傳染1-2日。信心：5/10觀望。<br>
+連登散戶：今日升幅靚但係補跌反彈，唔係牛市起點。市場寬度40.3不代表全面牛市。信心：5.5/10謹慎看多。<br><br>
+<b>Phase 1 — 框架分析師（Dalio/Lynch/宏觀策略師）</b><br>
+Dalio：Goldilocks邊緣（降息60%+2s10s正斜率），但VIX3M 20.51 vs VIX 17.48落差。Materials 61.4%超買警示。信心：6/10看多。<br>
+Lynch：騰訊/小米有基本面追蹤點。MS叫賣是反指標（滯後）。東方證券案=個股機會。信心：6/10觀望偏多。<br>
+宏觀策略師：三個地緣火頭（霍爾木茲+日本+四川）。MS減持路徑清晰：資金流向美股→歐洲→現金。北水是機會主義者，非戰略買家。信心：7/10看空。<br><br>
+<b>Phase 2 — 辯論第1輪（核心分歧）</b><br>
+Taleb攻Druck：你的Bull場景30%建立在「無黑天鵝」前提，今日日本7.4已發生，Bear概率應≥35%。<br>
+Druck反擊：騰訊在地震消息後仍維持+2.64%，市場消化了，這就是市場說「影響可控」的訊號。<br>
+宏觀策略師加入：地震影響72小時後才顯現，現在說「市場消化了」是用不完整資訊判斷。<br>
+Dalio反擊宏觀策略師：Goldilocks指標穩定，地緣是短期外生衝擊，系統3-5日吸收。<br><br>
+<b>Phase 2 — 辯論第2輪（北水爭議）</b><br>
+李嘉誠：北水不明=不操作。30-35%現金等確認。<br>
+Soros：北水方向取決於哪個敘事先達臨界質量，現在都在猜。<br>
+連登散戶：等明日9:30港股開市，北水>5億買，淨賣出縮倉，唔使而家決定。<br>
+Lynch支持連登：行動需要確認，明日開市首小時是最好信息窗口。<br><br>
+<b>Phase 2 — 辯論第3輪（行動卡片）</b><br>
+Taleb（Veto）：倉位60-65%，買少量2800.HK Put（26,000行使，5月到期）+VIX call，保險極便宜。<br>
+Druckenmiller接受Veto：調整倉位60-65%，北水>5億才加倉。<br>
+最終共識：觀望，北水觸發加倉/減倉條件清晰。<br><br>
+<b>Phase 3 — 最終投票：3看多:2看空:4觀望 / 加權6.3/10 / Risk Veto觸發</b>
+</div>
+</details>
+
+<div style="margin-top:2rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-dim)">
+港股盤後 2026-04-20 · Investment Committee v2.0 · 數據源：yfinance / Jin10 / FX168
+</div>
+
+</div>
+</body>
+</html>
