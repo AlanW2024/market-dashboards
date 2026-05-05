@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>港股盤前日報 — 2026-05-05</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #D4AF37;
+  --gold-dim: rgba(212, 175, 55, 0.15);
+  --gold-glow: rgba(212, 175, 55, 0.3);
+  --bg-primary: #0a0a0f;
+  --bg-card: #12121a;
+  --bg-card-hover: #1a1a26;
+  --bg-elevated: #1e1e2a;
+  --text-primary: #e8e6e1;
+  --text-secondary: #8a8a9a;
+  --text-dim: #5a5a6a;
+  --border: rgba(255,255,255,0.06);
+  --border-gold: rgba(212, 175, 55, 0.3);
+  --bullish: #4ade80;
+  --bearish: #f87171;
+  --neutral: #fbbf24;
+  --bullish-bg: rgba(74, 222, 128, 0.08);
+  --bearish-bg: rgba(248, 113, 113, 0.08);
+  --neutral-bg: rgba(251, 191, 36, 0.08);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Noto Sans TC', 'JetBrains Mono', sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+/* HEADER */
+.market-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  animation: fadeIn 0.8s ease-out;
+}
+.market-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 50%;
+  transform: translateX(-50%);
+  width: 120px; height: 1px;
+  background: var(--gold);
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+.header-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; font-weight: 500;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.75rem; opacity: 0.8;
+}
+.market-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-weight: 400; color: var(--text-primary);
+  letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 0.25rem;
+}
+.header-subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.5rem;
+}
+
+/* STATUS BADGES */
+.status-row {
+  display: flex; justify-content: center; gap: 0.75rem;
+  margin-top: 1rem; flex-wrap: wrap;
+}
+.status-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em;
+  padding: 0.3rem 0.75rem; border-radius: 20px;
+}
+.badge-warn { background: rgba(251,191,36,0.12); color: var(--neutral); border: 1px solid rgba(251,191,36,0.3); }
+.badge-risk { background: rgba(248,113,113,0.12); color: var(--bearish); border: 1px solid rgba(248,113,113,0.3); }
+.badge-info { background: rgba(56,189,248,0.10); color: #38bdf8; border: 1px solid rgba(56,189,248,0.2); }
+.badge-neutral { background: rgba(138,138,154,0.1); color: var(--text-secondary); border: 1px solid var(--border); }
+
+/* VETO BANNER */
+.veto-banner {
+  background: linear-gradient(90deg, rgba(248,113,113,0.08), rgba(248,113,113,0.03));
+  border: 1px solid rgba(248,113,113,0.2);
+  border-radius: 10px; padding: 0.75rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+}
+.veto-label { color: var(--bearish); font-weight: 700; letter-spacing: 0.1em; }
+.veto-text { color: var(--text-secondary); }
+
+/* HERO METRICS */
+.hero-metrics {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1rem; margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.1s both;
+}
+.hero-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.25rem 1rem; text-align: center;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.hero-card:hover { border-color: var(--border-gold); transform: translateY(-2px); }
+.hero-card.warn { border-color: var(--neutral); box-shadow: 0 0 12px rgba(251,191,36,0.15); }
+.hero-card.bearish-card { border-color: rgba(248,113,113,0.3); box-shadow: 0 0 12px rgba(248,113,113,0.1); }
+.hero-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--text-dim); margin-bottom: 0.5rem;
+}
+.hero-value { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--text-primary); line-height: 1.2; margin-bottom: 0.3rem; }
+.hero-change { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 600; }
+.hero-change.up { color: var(--bullish); }
+.hero-change.down { color: var(--bearish); }
+.hero-sub { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--text-dim); margin-top: 0.25rem; }
+
+/* SECONDARY METRICS */
+.secondary-metrics {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem; margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.15s both;
+}
+.sec-metric {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.75rem 1rem;
+  display: flex; align-items: baseline; justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+}
+.sec-metric .sec-name { color: var(--text-secondary); font-weight: 500; }
+.sec-metric .sec-val { color: var(--text-primary); font-weight: 600; margin: 0 0.4rem; }
+.sec-metric .sec-chg { font-weight: 600; font-size: 0.78rem; }
+.sec-metric .sec-chg.up { color: var(--bullish); }
+.sec-metric .sec-chg.down { color: var(--bearish); }
+
+/* SECTION TITLE */
+.section-title {
+  font-family: 'DM Serif Display', serif; font-size: 1.15rem;
+  color: var(--text-primary); margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.section-title::before {
+  content: ''; width: 3px; height: 1.1em;
+  background: var(--gold); border-radius: 2px; flex-shrink: 0;
+}
+
+/* HEATMAP */
+.heatmap-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem; margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.2s both;
+}
+.heatmap-tile {
+  border-radius: 10px; padding: 0.9rem 0.75rem; text-align: center;
+  border: 1px solid var(--border); transition: transform 0.2s;
+}
+.heatmap-tile:hover { transform: scale(1.03); }
+.heatmap-tile .ht-name { font-size: 0.78rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0.25rem; }
+.heatmap-tile .ht-chg { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; font-weight: 700; }
+.heat-strong-up { background: rgba(74,222,128,0.18); } .heat-strong-up .ht-chg { color: #4ade80; }
+.heat-up { background: rgba(74,222,128,0.10); } .heat-up .ht-chg { color: #86efac; }
+.heat-mild-up { background: rgba(74,222,128,0.05); } .heat-mild-up .ht-chg { color: #a7f3d0; }
+.heat-flat { background: rgba(255,255,255,0.02); } .heat-flat .ht-chg { color: var(--text-secondary); }
+.heat-mild-down { background: rgba(248,113,113,0.05); } .heat-mild-down .ht-chg { color: #fca5a5; }
+.heat-down { background: rgba(248,113,113,0.10); } .heat-down .ht-chg { color: #fca5a5; }
+.heat-strong-down { background: rgba(248,113,113,0.18); } .heat-strong-down .ht-chg { color: #f87171; }
+
+/* FX ROW */
+.fx-row {
+  display: flex; justify-content: center; gap: 2rem;
+  padding: 0.9rem 0; margin-bottom: 1.5rem;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+  color: var(--text-secondary);
+  animation: slideUp 0.6s ease-out 0.25s both;
+  flex-wrap: wrap;
+}
+.fx-row .fx-pair { display: flex; align-items: baseline; gap: 0.4rem; }
+.fx-row .fx-label { color: var(--text-dim); font-weight: 500; }
+.fx-row .fx-val { color: var(--text-primary); font-weight: 600; }
+.fx-row .fx-chg { font-size: 0.72rem; font-weight: 500; }
+.fx-row .fx-chg.up { color: var(--bullish); }
+.fx-row .fx-chg.down { color: var(--bearish); }
+
+/* NEWS TIMELINE */
+.news-timeline { margin-bottom: 1.5rem; animation: slideUp 0.6s ease-out 0.3s both; }
+.news-item {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  padding: 0.7rem 0; border-bottom: 1px solid var(--border);
+  font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;
+}
+.news-item:last-child { border-bottom: none; }
+.news-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em;
+  padding: 0.2rem 0.5rem; border-radius: 4px; white-space: nowrap;
+  flex-shrink: 0; margin-top: 0.15rem;
+}
+.news-tag.earnings { background: rgba(168,85,247,0.15); color: #a855f7; }
+.news-tag.risk { background: var(--bearish-bg); color: var(--bearish); }
+.news-tag.watch { background: var(--neutral-bg); color: var(--neutral); }
+.news-tag.policy { background: rgba(56,189,248,0.15); color: #38bdf8; }
+.news-tag.energy { background: rgba(251,146,60,0.15); color: #fb923c; }
+.news-tag.northwater { background: rgba(212,175,55,0.15); color: var(--gold); }
+
+/* PREDICTION GRID */
+.prediction-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 0.6rem; margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.35s both;
+}
+.pred-scenario {
+  border-radius: 10px; padding: 0.85rem 0.6rem; text-align: center;
+  border: 1px solid var(--border); transition: transform 0.2s;
+}
+.pred-scenario:hover { transform: translateY(-2px); }
+.pred-label { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; margin-bottom: 0.3rem; }
+.pred-pct { font-family: 'DM Serif Display', serif; font-size: 1.2rem; margin-bottom: 0.2rem; }
+.pred-ev { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; }
+.pred-bull-plus { background: rgba(74,222,128,0.15); border-color: rgba(74,222,128,0.3); }
+.pred-bull-plus .pred-label, .pred-bull-plus .pred-pct, .pred-bull-plus .pred-ev { color: #4ade80; }
+.pred-bull { background: rgba(74,222,128,0.08); border-color: rgba(74,222,128,0.15); }
+.pred-bull .pred-label, .pred-bull .pred-pct, .pred-bull .pred-ev { color: #86efac; }
+.pred-base { background: rgba(255,255,255,0.03); }
+.pred-base .pred-label { color: var(--text-secondary); } .pred-base .pred-pct { color: var(--text-primary); } .pred-base .pred-ev { color: var(--text-dim); }
+.pred-bear { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.15); }
+.pred-bear .pred-label, .pred-bear .pred-pct, .pred-bear .pred-ev { color: #fca5a5; }
+.pred-bear-plus { background: rgba(248,113,113,0.15); border-color: rgba(248,113,113,0.3); }
+.pred-bear-plus .pred-label, .pred-bear-plus .pred-pct, .pred-bear-plus .pred-ev { color: #f87171; }
+.ev-total {
+  background: var(--bg-elevated); border: 1px solid var(--border-gold);
+  border-radius: 10px; padding: 0.85rem 1.25rem; margin-bottom: 1.5rem;
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+}
+.ev-label { font-size: 0.72rem; color: var(--text-secondary); letter-spacing: 0.1em; }
+.ev-value { font-size: 1.1rem; font-weight: 700; color: var(--bearish); }
+
+/* MACRO GRID */
+.macro-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem; margin-bottom: 1.5rem;
+  animation: slideUp 0.6s ease-out 0.4s both;
+}
+.macro-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.9rem 1rem;
+}
+.macro-name { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--text-dim); letter-spacing: 0.1em; margin-bottom: 0.3rem; }
+.macro-val { font-family: 'DM Serif Display', serif; font-size: 1.15rem; color: var(--text-primary); margin-bottom: 0.2rem; }
+.macro-note { font-size: 0.75rem; color: var(--text-secondary); }
+
+/* NORTHWATER STATUS */
+.northwater-block {
+  background: var(--bg-card); border: 1px solid var(--border-gold);
+  border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem;
+}
+.nw-title { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--gold); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.75rem; }
+.nw-timeline { display: flex; gap: 0; }
+.nw-day {
+  flex: 1; padding: 0.6rem; text-align: center;
+  border: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+}
+.nw-day:first-child { border-radius: 8px 0 0 8px; }
+.nw-day:last-child { border-radius: 0 8px 8px 0; }
+.nw-day.suspended { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.2); }
+.nw-day.today { background: rgba(251,191,36,0.12); border-color: rgba(251,191,36,0.3); }
+.nw-day.open { background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.2); }
+.nw-date { font-size: 0.62rem; color: var(--text-dim); margin-bottom: 0.2rem; }
+.nw-status { font-size: 0.72rem; font-weight: 600; }
+.nw-day.suspended .nw-status { color: var(--bearish); }
+.nw-day.today .nw-status { color: var(--neutral); }
+.nw-day.open .nw-status { color: var(--bullish); }
+.nw-note { font-size: 0.68rem; color: var(--text-dim); margin-top: 0.15rem; }
+
+/* GOLD DIVIDER */
+.gold-divider {
+  display: flex; align-items: center; gap: 1.5rem;
+  margin: 2.5rem 0;
+}
+.gold-divider::before, .gold-divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.gold-divider-text {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+  font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold); opacity: 0.8;
+}
+
+/* VOTE BANNER */
+.vote-banner {
+  border: 1px solid var(--border-gold);
+  border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, rgba(212,175,55,0.05), transparent);
+  animation: slideUp 0.6s ease-out 0.5s both;
+}
+.vote-title {
+  font-family: 'DM Serif Display', serif; font-size: 1rem;
+  color: var(--gold); margin-bottom: 1rem; text-align: center;
+}
+.vote-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
+.vote-item { text-align: center; }
+.vote-camp { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-dim); margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.1em; }
+.vote-score { font-family: 'DM Serif Display', serif; font-size: 2rem; margin-bottom: 0.15rem; }
+.vote-score.bullish { color: var(--bullish); }
+.vote-score.neutral { color: var(--neutral); }
+.vote-score.bearish { color: var(--bearish); }
+.vote-names { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--text-secondary); }
+.verdict-box {
+  background: var(--bg-elevated); border: 1px solid var(--border-gold);
+  border-radius: 8px; padding: 0.75rem; text-align: center;
+}
+.verdict-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text-dim); letter-spacing: 0.1em; margin-bottom: 0.25rem; }
+.verdict-text { font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--gold); }
+
+/* CONFIDENCE TABLE */
+.stance-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 0.82rem; }
+.stance-table th {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.62rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+  padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); text-align: left;
+}
+.stance-table td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+.stance-table tr:last-child td { border-bottom: none; }
+.stance-bull { color: var(--bullish); font-weight: 600; }
+.stance-bear { color: var(--bearish); font-weight: 600; }
+.stance-neutral { color: var(--neutral); font-weight: 600; }
+.conf-bar { display: flex; align-items: center; gap: 0.5rem; }
+.conf-track { flex: 1; height: 4px; background: var(--bg-elevated); border-radius: 2px; }
+.conf-fill { height: 100%; border-radius: 2px; background: var(--gold); }
+
+/* DISPUTE BLOCKS */
+.dispute-block {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 0.75rem;
+}
+.dispute-header { display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.5rem; }
+.dispute-number { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--gold); font-weight: 700; }
+.dispute-title { font-size: 0.88rem; color: var(--text-primary); font-weight: 500; }
+.dispute-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.55; }
+
+/* ACTION CARDS */
+.action-cards {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.action-card {
+  border-radius: 10px; padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+}
+.action-card.green { background: rgba(74,222,128,0.06); border-color: rgba(74,222,128,0.2); }
+.action-card.yellow { background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.2); }
+.action-card.red { background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.2); }
+.action-card.blue { background: rgba(56,189,248,0.06); border-color: rgba(56,189,248,0.2); }
+.action-indicator { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; margin-bottom: 0.35rem; }
+.action-card.green .action-indicator { color: var(--bullish); }
+.action-card.yellow .action-indicator { color: var(--neutral); }
+.action-card.red .action-indicator { color: var(--bearish); }
+.action-card.blue .action-indicator { color: #38bdf8; }
+.action-text { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.45; }
+.action-trigger { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+/* COLLAPSIBLE */
+.collapsible-btn {
+  width: 100%; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 0.9rem 1.25rem; cursor: pointer; color: var(--text-secondary);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+  display: flex; justify-content: space-between; align-items: center;
+  transition: border-color 0.2s;
+}
+.collapsible-btn:hover { border-color: var(--border-gold); color: var(--text-primary); }
+.collapsible-content { display: none; margin-top: 0.5rem; }
+.collapsible-content.open { display: block; }
+.transcript-block {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1.25rem; font-size: 0.82rem;
+  color: var(--text-secondary); line-height: 1.7;
+}
+.transcript-round { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--gold); letter-spacing: 0.12em; margin: 1rem 0 0.5rem; }
+.transcript-round:first-child { margin-top: 0; }
+.persona-name { color: var(--text-primary); font-weight: 600; }
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+  .hero-metrics { grid-template-columns: repeat(2, 1fr); }
+  .heatmap-grid { grid-template-columns: repeat(2, 1fr); }
+  .prediction-grid { grid-template-columns: repeat(3, 1fr); }
+  .vote-grid { grid-template-columns: 1fr; }
+  .action-cards { grid-template-columns: 1fr; }
+  .fx-row { gap: 1rem; }
+  .nw-timeline { flex-direction: column; }
+  .nw-day:first-child, .nw-day:last-child { border-radius: 8px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ===== HEADER ===== -->
+<div class="market-header">
+  <div class="header-eyebrow">Investment Committee · Hong Kong Pre-Market</div>
+  <h1>港股盤前日報</h1>
+  <div class="header-subtitle">2026年5月5日（星期二）| 數據截止：2026-05-04 收市 + 盤前消息</div>
+  <div class="status-row">
+    <span class="status-badge badge-risk">Risk Veto PARTIAL</span>
+    <span class="status-badge badge-warn">HSBC Q1 MISS</span>
+    <span class="status-badge badge-risk">北水 Day 2 暫停</span>
+    <span class="status-badge badge-warn">VIX 18.29 ↑7.71%</span>
+    <span class="status-badge badge-info">5/6 北水重開</span>
+  </div>
+</div>
+
+<!-- VETO BANNER -->
+<div class="veto-banner">
+  <span class="veto-label">⚠ RISK VETO PARTIAL</span>
+  <span class="veto-text">2/4 條件達成 → 最大倉位 ≤60% | Bear-- 情境觸發（HSBC miss + 美股 VIX 升穿 18）</span>
+</div>
+
+<!-- ===== HERO METRICS (HK Indices) ===== -->
+<div class="section-title">市場概覽</div>
+<div class="hero-metrics">
+  <div class="hero-card">
+    <div class="hero-label">恒生指數</div>
+    <div class="hero-value">26,095</div>
+    <div class="hero-change down">前收 −0.87%</div>
+    <div class="hero-sub">5/5 盤前預期偏空</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">恒科技指數</div>
+    <div class="hero-value">4,976</div>
+    <div class="hero-change down">−1.53% (5/4)</div>
+    <div class="hero-sub">VIX 壓制科技風險偏好</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">國企指數</div>
+    <div class="hero-value">8,774</div>
+    <div class="hero-change down">−0.96% (5/4)</div>
+    <div class="hero-sub">北水缺席第2日</div>
+  </div>
+  <div class="hero-card warn">
+    <div class="hero-label">VIX 恐慌指數</div>
+    <div class="hero-value">18.29</div>
+    <div class="hero-change down">+7.71%</div>
+    <div class="hero-sub">⚠ 升穿 18 警戒線</div>
+  </div>
+</div>
+
+<!-- OVERNIGHT US -->
+<div class="section-title">隔夜美股（2026-05-04 收市）</div>
+<div class="secondary-metrics">
+  <div class="sec-metric">
+    <span class="sec-name">SPY</span>
+    <span class="sec-val">718.01</span>
+    <span class="sec-chg down">−0.28%</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">QQQ</span>
+    <span class="sec-val">672.88</span>
+    <span class="sec-chg down">−0.10%</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">DIA</span>
+    <span class="sec-val">489.56</span>
+    <span class="sec-chg down">−0.95%</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">WTI 原油</span>
+    <span class="sec-val">$104.96</span>
+    <span class="sec-chg up">+0.49%</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">黃金</span>
+    <span class="sec-val">$4,547.7</span>
+    <span class="sec-chg">−1.77%</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">美債 10Y</span>
+    <span class="sec-val">4.45%</span>
+    <span class="sec-chg" style="color:var(--text-dim)">高企</span>
+  </div>
+</div>
+
+<!-- FX ROW -->
+<div class="fx-row">
+  <div class="fx-pair"><span class="fx-label">USD/HKD</span><span class="fx-val">7.8331</span><span class="fx-chg" style="color:var(--text-dim)">聯匯穩定</span></div>
+  <div class="fx-pair"><span class="fx-label">USD/CNY</span><span class="fx-val">6.8303</span><span class="fx-chg up">人民幣小升</span></div>
+  <div class="fx-pair"><span class="fx-label">DXY</span><span class="fx-val">98.51</span><span class="fx-chg" style="color:var(--text-dim)">低位</span></div>
+  <div class="fx-pair"><span class="fx-label">成交額 (5/4)</span><span class="fx-val">1,769億</span><span class="fx-chg" style="color:var(--text-dim)">HKD</span></div>
+</div>
+
+<!-- ===== SECTOR HEATMAP ===== -->
+<div class="section-title">板塊前瞻</div>
+<div class="heatmap-grid">
+  <div class="heatmap-tile heat-strong-down">
+    <div class="ht-name">金融</div>
+    <div class="ht-chg">🔴 偏弱</div>
+    <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.2rem">HSBC Q1 miss</div>
+  </div>
+  <div class="heatmap-tile heat-strong-down">
+    <div class="ht-name">科技平台</div>
+    <div class="ht-chg">🔴 偏弱</div>
+    <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.2rem">VIX壓風險偏好</div>
+  </div>
+  <div class="heatmap-tile heat-strong-down">
+    <div class="ht-name">消費科技</div>
+    <div class="ht-chg">🔴 偏弱</div>
+    <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.2rem">獲利了結壓力</div>
+  </div>
+  <div class="heatmap-tile heat-strong-down">
+    <div class="ht-name">博彩</div>
+    <div class="ht-chg">🔴 偏弱</div>
+    <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.2rem">澳門MoM −12%</div>
+  </div>
+  <div class="heatmap-tile heat-down">
+    <div class="ht-name">消費啤酒</div>
+    <div class="ht-chg">⚠️ 業績</div>
+    <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.2rem">百威亞太 7am</div>
+  </div>
+  <div class="heatmap-tile heat-flat">
+    <div class="ht-name">能源</div>
+    <div class="ht-chg">🟡 中性</div>
+    <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.2rem">WTI高但OPEC+</div>
+  </div>
+  <div class="heatmap-tile heat-mild-up">
+    <div class="ht-name">公用/電訊</div>
+    <div class="ht-chg">🟡 防守</div>
+    <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.2rem">中移動相對穩</div>
+  </div>
+  <div class="heatmap-tile heat-mild-up">
+    <div class="ht-name">內房</div>
+    <div class="ht-chg">🟡 政策</div>
+    <div style="font-size:0.65rem;color:var(--text-dim);margin-top:0.2rem">深/穗/武撐樓</div>
+  </div>
+</div>
+
+<!-- ===== NEWS TIMELINE ===== -->
+<div class="section-title">今日催化劑 & 重大消息</div>
+<div class="news-timeline">
+  <div class="news-item">
+    <span class="news-tag earnings">業績</span>
+    <span><strong style="color:var(--text-primary)">滙豐控股（0005）Q1 2026</strong>——稅前盈利未達預期（信貸損失撥備上升，中東衝突因素）。NII +8% YoY 至 $8.9B（正面），RoTE 17.3% 達標，維持 10¢ 中期股息。管理層警告：中東不利因素若發生，稅前盈利受「中至高個位數百分比」衝擊。昨日 +2.28% 提前 price-in 面臨回吐。</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag earnings">業績</span>
+    <span><strong style="color:var(--text-primary)">百威亞太（1876）Q1 2026</strong>（07:00 HKT）——昨收 7.93（+3.39%）已 price-in 期待。業績 beat → 消費板塊小幅支撐；miss → 昨日升幅全數回吐，消費板塊進一步承壓。</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag northwater">北水</span>
+    <span><strong style="color:var(--text-primary)">港股通第2日暫停</strong>——A 股五一假期最後一日。明日（5/6）恢復，人行同步啟動 3,000 億元買斷式逆回購，政策協調時間點預示北水回市有支撐。</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag energy">能源</span>
+    <span><strong style="color:var(--text-primary)">霍爾木茲地緣持續</strong>——伊朗無人機昨日攻擊 UAE Fujairah 油設施（首次重大基礎設施打擊）。WTI $104.96 在 $104-106 維持高溢價。中海油（0883）供應鏈壓力 vs 油價溢價矛盾持續。</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag risk">外圍</span>
+    <span><strong style="color:var(--text-primary)">美股 VIX +7.71% 至 18.29</strong>——恐慌指數升速與指數跌幅（SPY −0.28%）不成比例，顯示機構期權對沖加速。XLE P/C 比率 2.57（hedging_heavy）信號持續。</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag policy">政策</span>
+    <span><strong style="color:var(--text-primary)">內房政策支撐</strong>——深圳/廣州/武漢出台穩定措施，短期支撐內房板塊；但政策延續性弱，龍湖/碧桂園觀望。</span>
+  </div>
+</div>
+
+<!-- ===== PREDICTION GRID ===== -->
+<div class="section-title">今日預測（2026-05-05）</div>
+<div class="prediction-grid">
+  <div class="pred-scenario pred-bull-plus">
+    <div class="pred-label">Bull++</div>
+    <div class="pred-pct">5%</div>
+    <div class="pred-ev">+0.15%</div>
+  </div>
+  <div class="pred-scenario pred-bull">
+    <div class="pred-label">Bull</div>
+    <div class="pred-pct">18%</div>
+    <div class="pred-ev">+0.23%</div>
+  </div>
+  <div class="pred-scenario pred-base">
+    <div class="pred-label">Base</div>
+    <div class="pred-pct">40%</div>
+    <div class="pred-ev">0.00%</div>
+  </div>
+  <div class="pred-scenario pred-bear">
+    <div class="pred-label">Bear</div>
+    <div class="pred-pct">27%</div>
+    <div class="pred-ev">−0.38%</div>
+  </div>
+  <div class="pred-scenario pred-bear-plus">
+    <div class="pred-label">Bear--</div>
+    <div class="pred-pct">10%</div>
+    <div class="pred-ev">−0.25%</div>
+  </div>
+</div>
+<div class="ev-total">
+  <span class="ev-label">EXPECTED VALUE</span>
+  <span class="ev-value">−0.25%（偏空）</span>
+</div>
+
+<!-- KEY LEVELS -->
+<div class="section-title">技術關鍵位</div>
+<div class="secondary-metrics" style="margin-bottom:1rem">
+  <div class="sec-metric">
+    <span class="sec-name" style="color:var(--bearish)">強支撐</span>
+    <span class="sec-val">25,500</span>
+    <span class="sec-chg down">止損線</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name" style="color:var(--bearish)">支撐 2</span>
+    <span class="sec-val">25,800</span>
+    <span class="sec-chg down">多空分水嶺</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">支撐 1</span>
+    <span class="sec-val">26,000</span>
+    <span class="sec-chg" style="color:var(--text-dim)">前收守位</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name" style="color:var(--bullish)">阻力 1</span>
+    <span class="sec-val">26,200</span>
+    <span class="sec-chg up">初始阻力</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name" style="color:var(--bullish)">阻力 2</span>
+    <span class="sec-val">26,500</span>
+    <span class="sec-chg up">未突破</span>
+  </div>
+  <div class="sec-metric">
+    <span class="sec-name">RSI14</span>
+    <span class="sec-val">56.6</span>
+    <span class="sec-chg" style="color:var(--text-dim)">中性偏弱</span>
+  </div>
+</div>
+
+<!-- ===== MACRO ===== -->
+<div class="section-title">宏觀指標</div>
+<div class="macro-grid">
+  <div class="macro-card">
+    <div class="macro-name">VIX</div>
+    <div class="macro-val" style="color:var(--bearish)">18.29</div>
+    <div class="macro-note">⚠ 升穿 18；接近 19 警戒線</div>
+  </div>
+  <div class="macro-card">
+    <div class="macro-name">WTI 原油</div>
+    <div class="macro-val" style="color:var(--neutral)">$104.96</div>
+    <div class="macro-note">地緣溢價；$105 關鍵關口</div>
+  </div>
+  <div class="macro-card">
+    <div class="macro-name">財新製造 PMI (4月)</div>
+    <div class="macro-val" style="color:var(--bullish)">52.2</div>
+    <div class="macro-note">擴張 — 正面</div>
+  </div>
+  <div class="macro-card">
+    <div class="macro-name">NBS 非製造 (4月)</div>
+    <div class="macro-val" style="color:var(--bearish)">49.4</div>
+    <div class="macro-note">收縮 — 服務業偏弱</div>
+  </div>
+  <div class="macro-card">
+    <div class="macro-name">USD/CNY</div>
+    <div class="macro-val">6.8303</div>
+    <div class="macro-note">30日升 0.98%（有利港股）</div>
+  </div>
+  <div class="macro-card">
+    <div class="macro-name">市場寬度</div>
+    <div class="macro-val" style="color:var(--bearish)">33.1/100</div>
+    <div class="macro-note">指數穩 ≠ 市場健康</div>
+  </div>
+</div>
+
+<!-- NORTHWATER STATUS -->
+<div class="northwater-block">
+  <div class="nw-title">北水（港股通）狀態追蹤</div>
+  <div class="nw-timeline">
+    <div class="nw-day suspended">
+      <div class="nw-date">5/4（一）</div>
+      <div class="nw-status">🔴 暫停</div>
+      <div class="nw-note">Day 1</div>
+    </div>
+    <div class="nw-day today">
+      <div class="nw-date">5/5（二）今日</div>
+      <div class="nw-status">🟡 暫停</div>
+      <div class="nw-note">Day 2 最後一日</div>
+    </div>
+    <div class="nw-day open">
+      <div class="nw-date">5/6（三）明日</div>
+      <div class="nw-status">🟢 重開</div>
+      <div class="nw-note">PBOC 3,000億逆回購</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== GOLD DIVIDER ===== -->
+<div class="gold-divider">
+  <span class="gold-divider-text">Investment Committee · 10 Analysts · v3 HK Variant</span>
+</div>
+
+<!-- ===== VOTE BANNER ===== -->
+<div class="vote-banner">
+  <div class="vote-title">投資委員會裁決</div>
+  <div class="vote-grid">
+    <div class="vote-item">
+      <div class="vote-camp">偏多（今日低點/明日機會）</div>
+      <div class="vote-score bullish">3.6</div>
+      <div class="vote-names">Druckenmiller ×1.3 · Lynch ×1.2 · Soros ×1.1</div>
+    </div>
+    <div class="vote-item">
+      <div class="vote-camp">觀望（等百威/5/6確認）</div>
+      <div class="vote-score neutral">3.0</div>
+      <div class="vote-names">李嘉誠 ×1.0 · 宏觀策略師 ×1.0 · 連登 ×1.0</div>
+    </div>
+    <div class="vote-item">
+      <div class="vote-camp">謹慎/偏空</div>
+      <div class="vote-score bearish">3.6</div>
+      <div class="vote-names">Dalio ×0.9 · Marks ×0.9 · Taleb ×0.8 · 量化 ×1.0</div>
+    </div>
+  </div>
+  <div class="verdict-box">
+    <div class="verdict-label">委員會裁決</div>
+    <div class="verdict-text">偏多 vs 謹慎打平（3.6:3.6）→「觀望等 5/6」為操作共識</div>
+  </div>
+</div>
+
+<!-- STANCE TABLE -->
+<div class="section-title">分析師立場概覽</div>
+<table class="stance-table">
+  <thead>
+    <tr>
+      <th>分析師</th>
+      <th>陣營</th>
+      <th>立場</th>
+      <th>信心</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="color:var(--text-primary)">Howard Marks</td>
+      <td>風險鷹派</td>
+      <td class="stance-bear">謹慎</td>
+      <td><div class="conf-bar"><span style="font-family:monospace;font-size:0.72rem;color:var(--text-dim)">8/10</span><div class="conf-track"><div class="conf-fill" style="width:80%"></div></div></div></td>
+    </tr>
+    <tr>
+      <td style="color:var(--text-primary)">Nassim Taleb</td>
+      <td>風險鷹派</td>
+      <td class="stance-bear">謹慎</td>
+      <td><div class="conf-bar"><span style="font-family:monospace;font-size:0.72rem;color:var(--text-dim)">8/10</span><div class="conf-track"><div class="conf-fill" style="width:80%"></div></div></div></td>
+    </tr>
+    <tr>
+      <td style="color:var(--text-primary)">量化交易員</td>
+      <td>風險鷹派</td>
+      <td class="stance-bear">謹慎</td>
+      <td><div class="conf-bar"><span style="font-family:monospace;font-size:0.72rem;color:var(--text-dim)">7/10</span><div class="conf-track"><div class="conf-fill" style="width:70%"></div></div></div></td>
+    </tr>
+    <tr>
+      <td style="color:var(--text-primary)">Druckenmiller</td>
+      <td>機會獵人</td>
+      <td class="stance-bull">偏多</td>
+      <td><div class="conf-bar"><span style="font-family:monospace;font-size:0.72rem;color:var(--text-dim)">7/10</span><div class="conf-track"><div class="conf-fill" style="width:70%;background:var(--bullish)"></div></div></div></td>
+    </tr>
+    <tr>
+      <td style="color:var(--text-primary)">George Soros</td>
+      <td>機會獵人</td>
+      <td class="stance-bull">偏多</td>
+      <td><div class="conf-bar"><span style="font-family:monospace;font-size:0.72rem;color:var(--text-dim)">7/10</span><div class="conf-track"><div class="conf-fill" style="width:70%;background:var(--bullish)"></div></div></div></td>
+    </tr>
+    <tr>
+      <td style="color:var(--text-primary)">連登散戶</td>
+      <td>機會獵人</td>
+      <td class="stance-neutral">觀望</td>
+      <td><div class="conf-bar"><span style="font-family:monospace;font-size:0.72rem;color:var(--text-dim)">3/10</span><div class="conf-track"><div class="conf-fill" style="width:30%;background:var(--neutral)"></div></div></div></td>
+    </tr>
+    <tr>
+      <td style="color:var(--text-primary)">Ray Dalio</td>
+      <td>框架分析師</td>
+      <td class="stance-bear">謹慎</td>
+      <td><div class="conf-bar"><span style="font-family:monospace;font-size:0.72rem;color:var(--text-dim)">9/10</span><div class="conf-track"><div class="conf-fill" style="width:90%"></div></div></div></td>
+    </tr>
+    <tr>
+      <td style="color:var(--text-primary)">Peter Lynch</td>
+      <td>框架分析師</td>
+      <td class="stance-bull">偏多</td>
+      <td><div class="conf-bar"><span style="font-family:monospace;font-size:0.72rem;color:var(--text-dim)">7/10</span><div class="conf-track"><div class="conf-fill" style="width:70%;background:var(--bullish)"></div></div></div></td>
+    </tr>
+    <tr>
+      <td style="color:var(--text-primary)">宏觀策略師</td>
+      <td>框架分析師</td>
+      <td class="stance-neutral">觀望</td>
+      <td><div class="conf-bar"><span style="font-family:monospace;font-size:0.72rem;color:var(--text-dim)">8/10</span><div class="conf-track"><div class="conf-fill" style="width:80%;background:var(--neutral)"></div></div></div></td>
+    </tr>
+    <tr>
+      <td style="color:var(--gold);font-weight:600">李嘉誠 🏙</td>
+      <td style="color:var(--gold)">HK 獨有</td>
+      <td class="stance-neutral">觀望</td>
+      <td><div class="conf-bar"><span style="font-family:monospace;font-size:0.72rem;color:var(--text-dim)">7/10</span><div class="conf-track"><div class="conf-fill" style="width:70%;background:var(--neutral)"></div></div></div></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- DISPUTES -->
+<div class="section-title">主要分歧點</div>
+<div class="dispute-block">
+  <div class="dispute-header">
+    <span class="dispute-number">DISPUTE #1</span>
+    <span class="dispute-title">HSBC miss：個股過度反應 vs 系統性信號</span>
+  </div>
+  <div class="dispute-desc"><span class="persona-name">Dalio</span>：信貸損失撥備上升是能源衝擊滲透金融系統的第一個量化訊號，銀行業整體撥備將跟進。<span class="persona-name">Lynch</span>：主情境是 NII +8%、維持全年目標，miss 是一次性撥備；若 HSBC 跌 5%+ 是過度反應機會。<span class="persona-name">李嘉誠</span>（裁判）：不是判斷 HSBC 是否值得持有，是判斷現在是否是時機——等 5/6 再說。</div>
+</div>
+<div class="dispute-block">
+  <div class="dispute-header">
+    <span class="dispute-number">DISPUTE #2</span>
+    <span class="dispute-title">今日偏空 vs 5/6 北水非對稱機會</span>
+  </div>
+  <div class="dispute-desc"><span class="persona-name">Druckenmiller</span>：今日是清洗浮籌，若 HSI 跌至 25,800，那是明日的理想入場點。<span class="persona-name">宏觀策略師</span>：PBOC 3,000億逆回購協調時間點預示情緒修復；但若今日美股再跌、VIX 升穿 20，5/6 計劃需重評。<span class="persona-name">Taleb</span>（反方）：WTI $105 + Fujairah 攻擊後續風險完全未被定價；任何 5/6 計劃都建立在「無升級」假設上。</div>
+</div>
+<div class="dispute-block">
+  <div class="dispute-header">
+    <span class="dispute-number">DISPUTE #3</span>
+    <span class="dispute-title">百威亞太業績是今日關鍵分叉</span>
+  </div>
+  <div class="dispute-desc"><span class="persona-name">Lynch</span>：百威 beat → 消費支撐 HSBC 跌幅被部分對沖 → Base（25,800-26,000 震盪）。百威 miss + HSBC miss → 金融+消費雙殺 → 下看 25,500。業績結果決定今日路徑，量化模型（<span class="persona-name">量化</span>）確認：若收盤守 25,800 + 量能低於 1,500億，5/6 反彈概率 68%。</div>
+</div>
+
+<!-- ACTION CARDS -->
+<div class="section-title">行動卡片</div>
+<div class="action-cards">
+  <div class="action-card yellow">
+    <div class="action-indicator">🟡 等待業績</div>
+    <div class="action-text">百威亞太 7am 業績確認後才決定今日方向</div>
+    <div class="action-trigger">觸發：業績公布即時評估</div>
+  </div>
+  <div class="action-card yellow">
+    <div class="action-indicator">🟡 維持倉位</div>
+    <div class="action-text">核心倉位維持 50%（Veto PARTIAL 不加不減）</div>
+    <div class="action-trigger">條件：HSI 守 25,800</div>
+  </div>
+  <div class="action-card red">
+    <div class="action-indicator">🔴 觸發減倉</div>
+    <div class="action-text">降至 40%，現金等 5/6 北水確認</div>
+    <div class="action-trigger">條件：HSBC 跌 >5% OR VIX >19</div>
+  </div>
+  <div class="action-card red">
+    <div class="action-indicator">🔴 止損線</div>
+    <div class="action-text">降至 30%，等待市場穩定信號</div>
+    <div class="action-trigger">條件：HSI 跌破 25,500 + VIX >20</div>
+  </div>
+  <div class="action-card green">
+    <div class="action-indicator">🟢 5/6 入場窗口</div>
+    <div class="action-text">若今日 HSI 守 25,800，明日北水 + 逆回購 = 加碼機會</div>
+    <div class="action-trigger">條件：今日收盤守位 + 量能 &lt;1,500億 → 5/6 反彈概率 68%</div>
+  </div>
+  <div class="action-card blue">
+    <div class="action-indicator">🔵 決策樹</div>
+    <div class="action-text">偏多：百威 beat + HSBC &lt;2% + VIX &lt;18.5 → 50-60% 倉 觀 26,200<br>偏空：HSBC &gt;4% + 百威 miss + VIX &gt;19 → 降至 40%</div>
+    <div class="action-trigger">業績驅動決策分叉</div>
+  </div>
+</div>
+
+<!-- COLLAPSIBLE TRANSCRIPT -->
+<button class="collapsible-btn" onclick="this.nextElementSibling.classList.toggle('open')">
+  <span>完整辯論記錄（Phase 1-3）</span>
+  <span>▼</span>
+</button>
+<div class="collapsible-content">
+  <div class="transcript-block">
+    <div class="transcript-round">PHASE 1 — 獨立立場</div>
+    <p><span class="persona-name">Howard Marks</span>（風險鷹派）：HSBC miss = 昨日升幅虛火；信貸撥備上升是滯脹環境的必然結果。XLE P/C 2.57 的機構對沖信號跨市場延伸至港股金融板塊。</p>
+    <p><span class="persona-name">Nassim Taleb</span>（風險鷹派）：VIX 18.29 + HSBC miss + 北水缺席 = 三個脆弱節點同時暴露；6% 概率情境成真應引起警覺。Hormuz 尾部風險依然未被定價。</p>
+    <p><span class="persona-name">量化交易員</span>（風險鷹派）：Breadth 33.1 + hedging_heavy 跨市場同步；HSI RSI 56.6，上方阻力密集。若 HSI 收盤守 25,800 + 量能低於 1,500億 → 5/6 反彈概率 68%。</p>
+    <p style="margin-top:0.5rem"><span class="persona-name">Druckenmiller</span>（機會獵人）：5/6 北水 + PBOC 3,000億逆回購 = 明日非對稱設置；今日偏空但明日是真正入場窗口。若今日 HSI 跌到 25,800 是明日入場點。</p>
+    <p><span class="persona-name">Soros</span>（機會獵人）：「壞消息已知化」= 不確定性下降。若 HSBC 跌幅有序（3-5%）且百威 beat，今日是今週相對低點。框架靈活。</p>
+    <p><span class="persona-name">連登散戶</span>（機會獵人）：滙豐跌就跌，0700 我都唔賣，明日北水番嚟先算。唔會今日加倉。</p>
+    <p style="margin-top:0.5rem"><span class="persona-name">Ray Dalio</span>（框架分析師）：HSBC 信貸損失撥備上升是能源衝擊滲透金融系統的第一個量化訊號；系統性信號，非個股事件。</p>
+    <p><span class="persona-name">Peter Lynch</span>（框架分析師）：HSBC NII +8% 是真實業績，miss 是一次性撥備。管理層維持全年目標 → 今日是過度反應機會。</p>
+    <p><span class="persona-name">宏觀策略師</span>（框架分析師）：人行 3,000億 5/6 逆回購 + 北水回市 = 政策協調信號；今日「熬過去」，明日才是真正評估時點。</p>
+    <p style="margin-top:0.5rem; border-left:3px solid var(--gold); padding-left:0.75rem"><span class="persona-name" style="color:var(--gold)">李嘉誠（HK 獨有）</span>：地產政策加快落地；HSBC 是香港核心資產，miss 一個季度不代表長期下行。但現在進場需要耐心。等待 5/6 北水回市後再看清楚。</p>
+
+    <div class="transcript-round">PHASE 2 — Moderator 辯論（3 輪）</div>
+    <p><strong>第 1 輪：HSBC miss 性質</strong><br>
+    Dalio vs Lynch：Dalio 堅持系統性信號（中東風險量化滲入銀行撥備），Lynch 反駁 NII +8% 是真實業績、管理層維持目標。李嘉誠：不是判斷值得持有，是判斷時機——等 5/6。</p>
+    <p><strong>第 2 輪：今日偏空 vs 5/6 非對稱</strong><br>
+    Druckenmiller：今日清洗浮籌，25,800 是明日入場點。宏觀策略師：PBOC 協調時間點重要，但若美股再跌、VIX 升穿 20，需重評。Taleb：WTI $105 + Fujairah 後續攻擊 = 完全未定價的尾部，任何 5/6 計劃建立在「無升級」假設上。Soros：「壞消息已知化」框架；若 HSBC 跌有序、百威 beat，今日是本週低點。</p>
+    <p><strong>第 3 輪：行動共識</strong><br>
+    量化：HSI 25,800 多空分水嶺；若收盤守 25,800 + 量能 &lt;1,500億，5/6 反彈概率 68%。Lynch：等百威 7am 業績是今日關鍵分叉。李嘉誠（最後言）：若 HSI 守 25,800 是健康整固；跌穿才需重評中線配置。維持核心倉位，現金等 5/6 確認。</p>
+
+    <div class="transcript-round">PHASE 3 — 投票 & 裁決</div>
+    <p>偏多 3.6 票（Druckenmiller ×1.3 + Lynch ×1.2 + Soros ×1.1）vs 謹慎 3.6 票（Dalio ×0.9 + Marks ×0.9 + Taleb ×0.8 + 量化 ×1.0）打平。觀望 3.0 票（李嘉誠 + 宏觀策略師 + 連登）。委員會裁決：以「觀望等 5/6」為操作共識。</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-dim);text-align:center;line-height:1.8">
+  <div>數據來源：yfinance API · Frankfurter API · FRED API · HSBC IR · web_search</div>
+  <div>生成時間：2026-05-05 盤前 | 市場評論小組演習 v3 HK 變體 | 含李嘉誠第10位</div>
+  <div style="margin-top:0.5rem;color:var(--text-dim)">本報告為市場分析演習，不構成投資建議。</div>
+</div>
+
+</div>
+<script>
+// No external scripts needed - pure CSS/HTML
+</script>
+</body>
+</html>
