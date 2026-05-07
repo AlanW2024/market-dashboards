@@ -76,6 +76,7 @@ const FILES = {
     {"name":"2026-W18 美股週報Dashboard.html","path":"美股/週報/2026-05/2026-W18 美股週報Dashboard.html","dir":"美股/週報/2026-05","month":"2026-05"},
   ],
   "🇭🇰 港股盤前": [
+    {"name":"2026-05-07 港股盤前Dashboard.html","path":"港股/盤前/2026-05-07 港股盤前Dashboard.html","dir":"港股/盤前"},
     {"name":"2026-05-06 港股盤前Dashboard（盤中補做）.html","path":"港股/盤前/2026-05-06 港股盤前Dashboard（盤中補做）.html","dir":"港股/盤前"},
     {"name":"2026-05-06 港股盤前Dashboard.html","path":"港股/盤前/2026-05-06 港股盤前Dashboard.html","dir":"港股/盤前"},
     {"name":"2026-05-05 港股盤前Dashboard.html","path":"港股/盤前/2026-05-05 港股盤前Dashboard.html","dir":"港股/盤前"},
@@ -107,6 +108,7 @@ const FILES = {
     {"name":"2026-03-18 港股盤前Dashboard.html","path":"港股/盤前/2026-03/2026-03-18 港股盤前Dashboard.html","dir":"港股/盤前/2026-03","month":"2026-03"},
   ],
   "🇭🇰 港股盤後": [
+    {"name":"2026-05-07 港股盤後Dashboard.html","path":"港股/盤後/2026-05-07 港股盤後Dashboard.html","dir":"港股/盤後"},
     {"name":"2026-05-06 港股盤後Dashboard.html","path":"港股/盤後/2026-05-06 港股盤後Dashboard.html","dir":"港股/盤後"},
     {"name":"2026-05-05 港股盤後Dashboard.html","path":"港股/盤後/2026-05-05 港股盤後Dashboard.html","dir":"港股/盤後"},
     {"name":"2026-05-04 港股盤後Dashboard.html","path":"港股/盤後/2026-05-04 港股盤後Dashboard.html","dir":"港股/盤後"},
