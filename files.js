@@ -1,5 +1,6 @@
 const FILES = {
   "🇺🇸 美股盤前": [
+    {"name":"2026-05-06 美股盤前Dashboard.html","path":"美股/盤前/2026-05-06 美股盤前Dashboard.html","dir":"美股/盤前"},
     {"name":"2026-05-05 美股盤前Dashboard.html","path":"美股/盤前/2026-05-05 美股盤前Dashboard.html","dir":"美股/盤前"},
     {"name":"2026-05-04 美股盤前Dashboard.html","path":"美股/盤前/2026-05-04 美股盤前Dashboard.html","dir":"美股/盤前"},
     {"name":"2026-04-30 美股盤前Dashboard.html","path":"美股/盤前/2026-04-30 美股盤前Dashboard.html","dir":"美股/盤前"},
@@ -32,6 +33,7 @@ const FILES = {
     {"name":"2026-03-17 盤前Dashboard.html","path":"美股/盤前/2026-03/2026-03-17 盤前Dashboard.html","dir":"美股/盤前/2026-03","month":"2026-03"},
   ],
   "🇺🇸 美股盤後": [
+    {"name":"2026-05-06 美股盤後Dashboard.html","path":"美股/盤後/2026-05-06 美股盤後Dashboard.html","dir":"美股/盤後"},
     {"name":"2026-05-05 美股盤後Dashboard.html","path":"美股/盤後/2026-05-05 美股盤後Dashboard.html","dir":"美股/盤後"},
     {"name":"2026-05-04 美股盤後Dashboard.html","path":"美股/盤後/2026-05-04 美股盤後Dashboard.html","dir":"美股/盤後"},
     {"name":"2026-04-28 美股盤後Dashboard.html","path":"美股/盤後/2026-04-28 美股盤後Dashboard.html","dir":"美股/盤後"},
