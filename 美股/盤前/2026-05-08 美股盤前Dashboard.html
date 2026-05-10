@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026-05-08 美股盤前Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --gold-dim: rgba(212, 175, 55, 0.15);
+      --gold-glow: rgba(212, 175, 55, 0.3);
+      --bg-primary: #0a0a0f;
+      --bg-card: #12121a;
+      --bg-card-hover: #1a1a26;
+      --bg-elevated: #1e1e2a;
+      --text-primary: #e8e6e1;
+      --text-secondary: #8a8a9a;
+      --text-dim: #5a5a6a;
+      --border: rgba(255,255,255,0.06);
+      --border-gold: rgba(212, 175, 55, 0.3);
+      --bullish: #4ade80;
+      --bearish: #f87171;
+      --neutral: #fbbf24;
+      --bullish-bg: rgba(74, 222, 128, 0.08);
+      --bearish-bg: rgba(248, 113, 113, 0.08);
+      --neutral-bg: rgba(251, 191, 36, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg-primary); color: var(--text-primary); font-family: 'Noto Sans TC', sans-serif; line-height: 1.6; }
+    body::after { content: ''; position: fixed; inset: 0; opacity: 0.03; pointer-events: none; z-index: 9999; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+    .container { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    .market-header { border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 1.75rem; position: relative; animation: fadeIn .8s ease-out; }
+    .market-header::after { content: ''; position: absolute; left: 0; bottom: -1px; width: 120px; height: 1px; background: var(--gold); }
+    .header-eyebrow, .eyebrow { font-family: 'JetBrains Mono', monospace; color: var(--gold); font-size: .7rem; text-transform: uppercase; letter-spacing: .25em; }
+    h1, .debate-title { font-family: 'DM Serif Display', serif; font-weight: 400; letter-spacing: 0; }
+    h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); margin: .5rem 0; }
+    .header-subtitle { color: var(--text-secondary); font-family: 'JetBrains Mono', monospace; font-size: .78rem; }
+    .note { margin-top: 1rem; padding: 1rem; border: 1px solid var(--border-gold); background: var(--gold-dim); border-radius: 8px; color: var(--text-primary); }
+    .hero-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 1.25rem 0; }
+    .hero-card, .panel, .action-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.15rem; }
+    .hero-label, .sec-name, .tc-label, .mc-label { font-family: 'JetBrains Mono', monospace; font-size: .65rem; text-transform: uppercase; color: var(--text-secondary); }
+    .hero-value { font-family: 'DM Serif Display', serif; font-size: 1.55rem; margin: .2rem 0; }
+    .hero-change { font-family: 'JetBrains Mono', monospace; font-size: .82rem; }
+    .up { color: var(--bullish); } .down { color: var(--bearish); } .flat { color: var(--neutral); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1rem 0; }
+    .section-title { margin: 2rem 0 1rem; font-family: 'DM Serif Display', serif; font-size: 1.45rem; }
+    .secondary-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: .7rem; }
+    .sec-metric { display: flex; justify-content: space-between; gap: 1rem; padding: .75rem .9rem; background: var(--bg-elevated); border-radius: 8px; border: 1px solid var(--border); }
+    .news-timeline { display: grid; gap: .8rem; }
+    .news-item { display: flex; gap: .75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: .9rem; }
+    .news-tag { flex: 0 0 auto; font-family: 'JetBrains Mono', monospace; font-size: .68rem; padding: .15rem .45rem; border-radius: 999px; height: 1.5rem; }
+    .positive { color: var(--bullish); background: var(--bullish-bg); } .risk { color: var(--bearish); background: var(--bearish-bg); } .watch { color: var(--neutral); background: var(--neutral-bg); } .energy { color: #fb923c; background: rgba(251,146,60,.1); }
+    table { width: 100%; border-collapse: collapse; margin: .8rem 0; font-size: .9rem; }
+    th, td { text-align: left; border-bottom: 1px solid var(--border); padding: .65rem .55rem; vertical-align: top; }
+    th { color: var(--gold); font-family: 'JetBrains Mono', monospace; font-size: .72rem; }
+    .section-divider { display: flex; align-items: center; gap: 1rem; margin: 2.5rem 0 1.5rem; color: var(--gold); font-family: 'JetBrains Mono', monospace; font-size: .65rem; text-transform: uppercase; letter-spacing: .2em; }
+    .section-divider::before, .section-divider::after { content: ''; height: 1px; flex: 1; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+    .vote-summary { font-family: 'JetBrains Mono', monospace; color: var(--text-secondary); }
+    .confidence-badge { display: inline-block; margin-top: .6rem; padding: .3rem .6rem; border-radius: 999px; border: 1px solid var(--border-gold); color: var(--gold); }
+    .action-main { display: flex; gap: 1rem; align-items: baseline; }
+    .action-verb { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--neutral); }
+    .vote-bar { display: flex; height: 14px; overflow: hidden; border-radius: 999px; background: var(--bg-elevated); margin: 1rem 0; }
+    .vb-bull { width: 27.3%; background: var(--bullish); } .vb-bear { width: 18.2%; background: var(--bearish); } .vb-neut { width: 54.5%; background: var(--neutral); }
+    .conf-row { display: grid; grid-template-columns: 150px 1fr 42px; gap: .7rem; align-items: center; margin: .55rem 0; font-size: .85rem; }
+    .conf-bar-track { background: var(--bg-elevated); border-radius: 999px; overflow: hidden; height: 10px; }
+    .conf-bar-fill { height: 10px; border-radius: 999px; background: linear-gradient(90deg, var(--gold-dim), var(--gold)); }
+    .footer { color: var(--text-secondary); font-size: .82rem; margin-top: 2rem; }
+    @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+    @media (max-width: 760px) { .hero-metrics, .grid-2, .grid-3, .secondary-metrics { grid-template-columns: 1fr; } .conf-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header class="market-header">
+      <div class="header-eyebrow">US PRE-MARKET · 2026-05-08</div>
+      <h1>NFP relief, but not a free chase</h1>
+      <div class="header-subtitle">NFP 115K ｜ Unemployment 4.3% ｜ NQ futures +1.47% ｜ WTI $95.62 ｜ VIX 17.28</div>
+      <div class="note">本 Dashboard 對應 2026-05-08 美股盤前框架；生成時間已在 NFP 公布後，因此 NFP 使用 BLS 實數。ETF 即時價只作狀態更新，不當成盤前已實現結果。</div>
+    </header>
+
+    <section class="hero-metrics">
+      <div class="hero-card"><div class="hero-label">ES Futures</div><div class="hero-value">7,417.75</div><div class="hero-change up">+0.54%</div></div>
+      <div class="hero-card"><div class="hero-label">NQ Futures</div><div class="hero-value">29,197</div><div class="hero-change up">+1.47%</div></div>
+      <div class="hero-card"><div class="hero-label">VIX</div><div class="hero-value">17.28</div><div class="hero-change flat">正常但未解除</div></div>
+      <div class="hero-card"><div class="hero-label">WTI</div><div class="hero-value">$95.62</div><div class="hero-change flat">$100 為風險線</div></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">Market Snapshot</div>
+      <div class="secondary-metrics">
+        <div class="sec-metric"><span class="sec-name">SPY RSI</span><strong>~75 超買</strong></div>
+        <div class="sec-metric"><span class="sec-name">10Y UST</span><strong>4.37%</strong></div>
+        <div class="sec-metric"><span class="sec-name">DXY</span><strong>97.92</strong></div>
+        <div class="sec-metric"><span class="sec-name">HY OAS</span><strong>2.79%</strong></div>
+        <div class="sec-metric"><span class="sec-name">SPY P/C</span><strong>1.83</strong></div>
+        <div class="sec-metric"><span class="sec-name">Regime</span><strong>59.8 Transition</strong></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">News Timeline</div>
+      <div class="news-timeline">
+        <div class="news-item"><span class="news-tag positive">NFP</span><span><strong>NFP +115K，失業率 4.3%，平均時薪 MoM +0.2%。</strong> 就業放慢但未失控，Fed 鷹派壓力下降。</span></div>
+        <div class="news-item"><span class="news-tag positive">Growth</span><span><strong>Nasdaq 期指明顯跑贏。</strong> 市場第一反應仍是買大型科技與 AI relief。</span></div>
+        <div class="news-item"><span class="news-tag energy">Oil</span><span><strong>WTI 約 $95.6，未破 $100。</strong> Oil / Iran headline 仍是第二風險軸。</span></div>
+        <div class="news-item"><span class="news-tag watch">Options</span><span><strong>P/C 偏高。</strong> SPY 1.83、QQQ 2.22、IWM 2.85，事件對沖仍重。</span></div>
+        <div class="news-item"><span class="news-tag risk">Technical</span><span><strong>SPY RSI 約 75。</strong> 趨勢可延續，但不適合大倉追高。</span></div>
+      </div>
+    </section>
+
+    <section class="grid-2">
+      <div class="panel">
+        <div class="section-title">Key Levels</div>
+        <table>
+          <tr><th>Level</th><th>Meaning</th></tr>
+          <tr><td>SPY 738.62</td><td>上軌突破，允許小倉跟隨</td></tr>
+          <tr><td>SPY 734.57</td><td>新增倉撤退線</td></tr>
+          <tr><td>SPY 729</td><td>轉防守線</td></tr>
+          <tr><td>DIA 500</td><td>Dow 50K / 風險擴散確認</td></tr>
+          <tr><td>WTI $100</td><td>通脹與地緣風險重新定價</td></tr>
+        </table>
+      </div>
+      <div class="panel">
+        <div class="section-title">Scenario Map</div>
+        <table>
+          <tr><th>Scenario</th><th>Prob.</th><th>SPY</th></tr>
+          <tr><td>Bull++</td><td>12%</td><td>&gt; +1.0%</td></tr>
+          <tr><td>Bull</td><td>33%</td><td>+0.3% 至 +1.0%</td></tr>
+          <tr><td>Base</td><td>30%</td><td>-0.3% 至 +0.3%</td></tr>
+          <tr><td>Bear</td><td>18%</td><td>-1.0% 至 -0.3%</td></tr>
+          <tr><td>Bear--</td><td>7%</td><td>&lt; -1.0%</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <div class="section-divider"><span>Investment Committee</span></div>
+
+    <section class="panel">
+      <div class="debate-header">
+        <div class="header-eyebrow">Final Vote</div>
+        <div class="debate-title">中性略偏多，但禁止大倉追高</div>
+        <div class="vote-summary">看多 3 / 看空 2 / 觀望 6</div>
+        <div class="confidence-badge">Confidence 6/10</div>
+      </div>
+      <div class="vote-bar"><div class="vb-bull"></div><div class="vb-bear"></div><div class="vb-neut"></div></div>
+      <div class="action-card">
+        <div class="hero-label">Action Card</div>
+        <div class="action-main"><div class="action-verb">小倉跟隨</div><div>NFP relief 可交易，但 WTI $100 / VIX 20 / SPY 734.57 是硬撤退線。</div></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">Confidence Chart</div>
+      <div class="conf-row"><span>Druckenmiller</span><div class="conf-bar-track"><div class="conf-bar-fill" style="width:70%"></div></div><span>7</span></div>
+      <div class="conf-row"><span>Taleb</span><div class="conf-bar-track"><div class="conf-bar-fill" style="width:70%"></div></div><span>7</span></div>
+      <div class="conf-row"><span>WSB</span><div class="conf-bar-track"><div class="conf-bar-fill" style="width:70%"></div></div><span>7</span></div>
+      <div class="conf-row"><span>Marks</span><div class="conf-bar-track"><div class="conf-bar-fill" style="width:60%"></div></div><span>6</span></div>
+      <div class="conf-row"><span>Macro</span><div class="conf-bar-track"><div class="conf-bar-fill" style="width:60%"></div></div><span>6</span></div>
+      <div class="conf-row"><span>Options Desk</span><div class="conf-bar-track"><div class="conf-bar-fill" style="width:60%"></div></div><span>6</span></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">Action Layer</div>
+      <table>
+        <tr><th>應該做</th><td>保留核心大型科技 / 指數 exposure；SPY > 738.62 且 QQQ 跑贏才小倉跟隨。</td></tr>
+        <tr><th>應該睇</th><td>WTI $100、DIA 500、VIX 20、IWM 是否止跌、SPY 734.57。</td></tr>
+        <tr><th>應該避</th><td>把 NFP 115K 當成全面 risk-on；避免在 RSI 約 75 時大倉追高或追 0DTE。</td></tr>
+      </table>
+    </section>
+
+    <footer class="footer">
+      Sources: BLS Employment Situation, MarketWatch 5/8 coverage, Investing / Reuters market update, local fetch_all JSON. HTML Dashboard generated for Obsidian vault.
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-05-08 港股盤後日報</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#D4AF37;--gold-dim:rgba(212,175,55,0.15);--gold-glow:rgba(212,175,55,0.3);--bg-primary:#0a0a0f;--bg-card:#12121a;--bg-elevated:#1e1e2a;--text-primary:#e8e6e1;--text-secondary:#8a8a9a;--text-dim:#5a5a6a;--border:rgba(255,255,255,0.06);--border-gold:rgba(212,175,55,0.3);--bullish:#4ade80;--bearish:#f87171;--neutral:#fbbf24;--bullish-bg:rgba(74,222,128,0.08);--bearish-bg:rgba(248,113,113,0.08);--neutral-bg:rgba(251,191,36,0.08);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg-primary);color:var(--text-primary);font-family:'Noto Sans TC','JetBrains Mono',sans-serif;line-height:1.6;min-height:100vh;}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem 5rem;}
+.market-header{text-align:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);position:relative;}
+.market-header::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:120px;height:1px;background:var(--gold);}
+.header-eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;}
+.market-header h1{font-family:'DM Serif Display',serif;font-size:clamp(1.6rem,4vw,2.2rem);color:var(--text-primary);margin-bottom:0.25rem;}
+.header-subtitle{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-secondary);}
+.pboc-banner{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.3);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:0.85rem;color:var(--bullish);display:flex;align-items:flex-start;gap:0.75rem;}
+.alert-banner{background:rgba(248,113,113,0.10);border:1px solid rgba(248,113,113,0.35);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:0.85rem;color:var(--bearish);display:flex;align-items:flex-start;gap:0.75rem;}
+.hero-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin-bottom:1.5rem;}
+.hero-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center;}
+.hero-card.bearish-card{border-color:rgba(248,113,113,0.25);}
+.hero-card.bullish-card{border-color:rgba(74,222,128,0.25);}
+.hero-card.gold-card{border-color:var(--border-gold);background:var(--gold-dim);}
+.hero-label{font-family:'JetBrains Mono',monospace;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.4rem;}
+.hero-value{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--text-primary);margin-bottom:0.2rem;}
+.hero-change{font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:600;}
+.hero-change.up{color:var(--bullish);}
+.hero-change.down{color:var(--bearish);}
+.hero-change.neutral{color:var(--neutral);}
+.section-title{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text-primary);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.6rem;}
+.section-title::before{content:'';width:3px;height:1em;background:var(--gold);border-radius:2px;flex-shrink:0;}
+.news-timeline{margin-bottom:1.5rem;}
+.news-item{display:flex;align-items:flex-start;gap:0.7rem;padding:0.65rem 0;border-bottom:1px solid var(--border);font-size:0.83rem;color:var(--text-secondary);line-height:1.5;}
+.news-item:last-child{border-bottom:none;}
+.news-tag{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;padding:0.18rem 0.45rem;border-radius:4px;white-space:nowrap;flex-shrink:0;}
+.news-tag.pboc{background:rgba(74,222,128,0.2);color:#22c55e;}
+.news-tag.positive{background:var(--bullish-bg);color:var(--bullish);}
+.news-tag.negative{background:var(--bearish-bg);color:var(--bearish);}
+.news-tag.watch{background:var(--neutral-bg);color:var(--neutral);}
+.news-tag.macro{background:rgba(56,189,248,0.15);color:#38bdf8;}
+.stock-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;margin-bottom:1.5rem;}
+.stock-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:0.65rem 0.9rem;}
+.stock-name{font-size:0.78rem;color:var(--text-secondary);margin-bottom:0.2rem;}
+.stock-change{font-family:'JetBrains Mono',monospace;font-size:0.95rem;font-weight:700;}
+.stock-change.up{color:var(--bullish);}
+.stock-change.down{color:var(--bearish);}
+.macro-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;margin-bottom:1.5rem;}
+.macro-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:0.75rem 1rem;}
+.macro-label{font-family:'JetBrains Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.3rem;}
+.macro-value{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:600;color:var(--text-primary);margin-bottom:0.1rem;}
+.macro-sub{font-size:0.72rem;color:var(--text-secondary);}
+.macro-card.bullish{border-color:rgba(74,222,128,0.3);background:rgba(74,222,128,0.05);}
+.macro-card.warning{border-color:rgba(248,113,113,0.3);background:rgba(248,113,113,0.05);}
+.prediction-table{width:100%;border-collapse:collapse;margin-bottom:1.5rem;background:var(--bg-card);border-radius:12px;overflow:hidden;}
+.prediction-table th{background:var(--bg-elevated);font-family:'JetBrains Mono',monospace;font-size:0.63rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);padding:0.6rem 0.75rem;text-align:left;}
+.prediction-table td{padding:0.6rem 0.75rem;border-top:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);}
+.prediction-table td:first-child{font-weight:600;color:var(--text-primary);}
+.scenario-table{width:100%;border-collapse:collapse;margin-bottom:1.5rem;background:var(--bg-card);border-radius:12px;overflow:hidden;}
+.scenario-table th{background:var(--bg-elevated);font-family:'JetBrains Mono',monospace;font-size:0.63rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);padding:0.6rem 0.75rem;text-align:left;}
+.scenario-table td{padding:0.6rem 0.75rem;border-top:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);}
+.scenario-table td:first-child{font-weight:600;color:var(--text-primary);}
+.obs-list{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.5rem;}
+.obs-item{padding:0.5rem 0;border-bottom:1px solid var(--border);font-size:0.83rem;color:var(--text-secondary);display:flex;align-items:flex-start;gap:0.5rem;line-height:1.5;}
+.obs-item:last-child{border-bottom:none;}
+.obs-num{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--gold);font-weight:600;min-width:20px;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:2rem 0;}
+.footer{text-align:center;padding:1.5rem 0 1rem;font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-dim);border-top:1px solid var(--border);margin-top:1.5rem;}
+@media(max-width:600px){.hero-metrics{grid-template-columns:repeat(2,1fr);}.macro-grid{grid-template-columns:repeat(2,1fr);}.stock-grid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="market-header">
+  <div class="header-eyebrow">HK Equity · Post-Market · Friday · May 8, 2026</div>
+  <h1>2026-05-08 港股盤後日報</h1>
+  <div class="header-subtitle">HSI −0.87% ｜ PBOC 新催化未確認 ｜ 北水半日暫流入待全日確認 ｜ NFP 今晚 20:30 HKT</div>
+</div>
+
+<div class="pboc-banner">
+  <span style="font-size:1.2rem;flex-shrink:0">🟢</span>
+  <div><strong>PBOC 新催化未確認</strong> — 原稿把 2025 年「降息+降準」新聞誤當成 2026-05-08 新催化。修正版不再把 PBOC 雙管齊下寫成今日主線；下週一要看 NFP、北水全日確認與外圍風險。</div>
+</div>
+
+<div class="alert-banner">
+  <span style="font-size:1.2rem;flex-shrink:0">🔴</span>
+  <div><strong>NFP 今晚 20:30 HKT（08:30 ET）</strong> — 港股已收市，但 NFP 結果直接決定下週一開市方向。預期 180-200K；強勁 (&gt;220K) = 降息退場，部分抵消 PBOC 效應；理想 = PBOC + NFP 雙重利好組合。</div>
+</div>
+
+<div class="section-title">5/8 主要指數收市</div>
+<div class="hero-metrics">
+  <div class="hero-card bearish-card">
+    <div class="hero-label">HSI 恒生指數</div>
+    <div class="hero-value">26,394</div>
+    <div class="hero-change down">▼ −0.87%（−224pt）</div>
+  </div>
+  <div class="hero-card bearish-card">
+    <div class="hero-label">HSCE 國企指數</div>
+    <div class="hero-value">8,889</div>
+    <div class="hero-change down">▼ −0.34%</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">恒科 ETF 3067</div>
+    <div class="hero-value">—</div>
+    <div class="hero-change down">▼ −0.28%（抗跌）</div>
+  </div>
+  <div class="hero-card gold-card">
+    <div class="hero-label">北水</div>
+    <div class="hero-value">+56.38億</div>
+    <div class="hero-change up">半日暫流入；全日待確認</div>
+  </div>
+</div>
+
+<div class="section-title">個股表現</div>
+<div class="stock-grid">
+  <div class="stock-card"><div class="stock-name">泡泡瑪特 9992</div><div class="stock-change up">+5.00% 🏆</div></div>
+  <div class="stock-card"><div class="stock-name">百度 9888</div><div class="stock-change up">+3.00%</div></div>
+  <div class="stock-card"><div class="stock-name">小米 1810</div><div class="stock-change up">+1.80%</div></div>
+  <div class="stock-card"><div class="stock-name">中國移動 0941</div><div class="stock-change up">+0.18%</div></div>
+  <div class="stock-card"><div class="stock-name">京東 9618</div><div class="stock-change down">−0.42%</div></div>
+  <div class="stock-card"><div class="stock-name">工商銀行 1398</div><div class="stock-change down">−1.00%</div></div>
+  <div class="stock-card"><div class="stock-name">騰訊 0700</div><div class="stock-change down">−1.26%（守 470 邊緣）</div></div>
+  <div class="stock-card"><div class="stock-name">阿里巴巴 9988</div><div class="stock-change down">−1.35%</div></div>
+  <div class="stock-card"><div class="stock-name">盈富 2800</div><div class="stock-change down">−0.97%</div></div>
+</div>
+
+<div class="section-title">風險指標</div>
+<div class="macro-grid">
+  <div class="macro-card bullish">
+    <div class="macro-label">PBOC</div>
+    <div class="macro-value">未確認</div>
+    <div class="macro-sub">不作今日新催化</div>
+  </div>
+  <div class="macro-card">
+    <div class="macro-label">WTI</div>
+    <div class="macro-value">$94.56</div>
+    <div class="macro-sub">−1.18%（美伊略降溫）</div>
+  </div>
+  <div class="macro-card">
+    <div class="macro-label">Gold</div>
+    <div class="macro-value">$4,727</div>
+    <div class="macro-sub">持平，高位維持</div>
+  </div>
+  <div class="macro-card">
+    <div class="macro-label">DXY</div>
+    <div class="macro-value">98.03</div>
+    <div class="macro-sub">−0.21%（美元回軟）</div>
+  </div>
+  <div class="macro-card">
+    <div class="macro-label">VIX（美參考）</div>
+    <div class="macro-value">17.15</div>
+    <div class="macro-sub">NFP 前夕輕微回升</div>
+  </div>
+  <div class="macro-card warning">
+    <div class="macro-label">美國 10Y</div>
+    <div class="macro-value">4.39%</div>
+    <div class="macro-sub">NFP 前利率偏高</div>
+  </div>
+</div>
+
+<div class="section-title">盤後重大消息</div>
+<div class="news-timeline">
+  <div class="news-item">
+    <span class="news-tag pboc">PBOC 修正</span>
+    <span>未能確認 2026-05-08 有新一輪「降息+降準」公告；原稿將舊政策新聞當今日新催化，已移出主線。</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag positive">泡泡瑪特 +5%</span>
+    <span>段永平增持確認 + 海外業務（Labubu）高增長預期。4月北水買入前三名之一，逆市強勢領漲藍籌。</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag positive">百度 +3%</span>
+    <span>旗下 AI 芯片子公司「崑崙芯」啟動科創板上市輔導，觸發估值重估邏輯。</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag positive">港交所業績</span>
+    <span>Q1 業績超預期：股東應佔溢利 51.88億港元（+27% YoY），優於市場預期 12%，創歷年首季新高。</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag watch">北水反轉</span>
+    <span>今日半日錄得南向資金淨流入 +56.38億港元；全日官方或可靠數字仍待確認，只能視作盤中改善信號。</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag watch">美伊略降溫</span>
+    <span>WTI 從 $95.77 回落至 $94.56（−1.18%）。Trump 稱停火仍有效，初步降溫但未完全解除。完全停火消息將是下一個強力催化劑。</span>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section-title">預測追蹤（5/8 盤前 Section 6 vs 實際）</div>
+<table class="prediction-table">
+  <thead>
+    <tr><th>預測項目</th><th>盤前預測</th><th>收市實際</th><th>評分</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>EV −0.2%</td><td>輕微偏空</td><td>HSI −0.87%</td><td>⚠️ 方向正確，幅度偏大</td></tr>
+    <tr><td>北水第三日流出</td><td>可能第三日續出</td><td>半日 +56.38億；全日待確認</td><td>🔍 可能改善，未能定論</td></tr>
+    <tr><td>WTI $100 關口</td><td>最大尾部風險</td><td>WTI $94.56（回落）</td><td>✅ 未破 $100，尾部未現</td></tr>
+    <tr><td>騰訊守 470</td><td>維持 470+ = 企穩</td><td>−1.26%，約 470 水平</td><td>⚠️ 剛好守住，勉強企穩</td></tr>
+    <tr><td>尾市 NFP 前夕倉位</td><td>尾市走向反映定位</td><td>尾市跌幅輕微收窄</td><td>🔍 中性，消化 PBOC</td></tr>
+  </tbody>
+</table>
+<p style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--bullish);margin-bottom:1.5rem;">🟡 今日最大修正：北水半日暫流入是改善信號，但全日未確認；PBOC 新催化亦未能確認，所以不應寫成政策底已形成。</p>
+
+<div class="section-title">宏觀指標</div>
+<div class="macro-grid">
+  <div class="macro-card bullish">
+    <div class="macro-label">北水</div>
+    <div class="macro-value">+56.38億</div>
+    <div class="macro-sub">半日數字；全日待確認</div>
+  </div>
+  <div class="macro-card bullish">
+    <div class="macro-label">外匯儲備</div>
+    <div class="macro-value">34,105億</div>
+    <div class="macro-sub">+2.05%，近28月最大增幅</div>
+  </div>
+  <div class="macro-card bullish">
+    <div class="macro-label">黃金儲備</div>
+    <div class="macro-value">7,464萬oz</div>
+    <div class="macro-sub">18連增，去美元化</div>
+  </div>
+  <div class="macro-card">
+    <div class="macro-label">Regime</div>
+    <div class="macro-value">62.4</div>
+    <div class="macro-sub">Late-Cycle Transition</div>
+  </div>
+  <div class="macro-card">
+    <div class="macro-label">Market Breadth</div>
+    <div class="macro-value">33.1</div>
+    <div class="macro-sub">Weakening（待改善）</div>
+  </div>
+  <div class="macro-card bullish">
+    <div class="macro-label">DXY</div>
+    <div class="macro-value">98.03</div>
+    <div class="macro-sub">−0.21%，美元回軟利好港股</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section-title">明日留意（下週一 5/11）</div>
+<table class="scenario-table">
+  <thead>
+    <tr><th>情境</th><th>概率</th><th>觸發條件</th><th>HSI 目標</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>🚀 Bull++</td><td>12%</td><td>NFP goldilocks + 美伊降溫 + 北水全日確認大額流入</td><td>HSI 26,800+</td></tr>
+    <tr><td>🟢 Bull</td><td>30%</td><td>NFP 合格 + WTI 不破  + 騰訊守 470</td><td>HSI 26,500–26,800</td></tr>
+    <tr><td>🟡 Base</td><td>35%</td><td>NFP 符合但外圍仍複雜，北水待確認</td><td>HSI 26,200–26,500</td></tr>
+    <tr><td>🔴 Bear</td><td>18%</td><td>NFP 強勁或太弱 + 北水未能確認流入</td><td>HSI 25,900–26,200</td></tr>
+    <tr><td>🚨 Bear--</td><td>5%</td><td>週末地緣升級 + NFP shock + HSI 失 26,200</td><td>HSI &lt;25,900</td></tr>
+  </tbody>
+</table>
+<p style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--bullish);margin-bottom:1.5rem;">EV 估算：約 0% 至 +0.05%（中性略偏正；NFP 與北水全日確認前不宜進一步上調）</p>
+
+<div class="section-title">5/11 週一 5 個觀察點</div>
+<div class="obs-list">
+  <div class="obs-item"><span class="obs-num">1.</span><span><strong>NFP 結果（今晚 20:30 HKT）</strong>——下週一港股最重要外部錨點。180-200K = PBOC+NFP 雙重利好；&gt;220K = 降息退場，抵消 PBOC；&lt;150K = 衰退恐慌。週一期指跳空方向是最快反映。</span></div>
+  <div class="obs-item"><span class="obs-num">2.</span><span><strong>政策預期是否重新定價</strong>——今日 HSI -0.87%，但 PBOC 新催化未能確認；下週一要看 NFP、北水全日數字與外圍風險共同決定。</span></div>
+  <div class="obs-item"><span class="obs-num">3.</span><span><strong>北水全日確認</strong>——半日 +56.38億只是盤中改善；若全日及週一繼續 +50億以上，資金面才可升級。</span></div>
+  <div class="obs-item"><span class="obs-num">4.</span><span><strong>WTI 週末動態</strong>——$94.56 回落，從高位降溫。週末若美伊外交進展 → WTI 可能跌回 $90-92，通脹敘事再次緩解，NFP 降息預期回歸 = 港股雙重正面。</span></div>
+  <div class="obs-item"><span class="obs-num">5.</span><span><strong>騰訊 0700 守住 470 再出發</strong>——今日 −1.26% 跌至 470 邊緣。若週一 PBOC 效應 + NFP 正面 = 騰訊能否重破 480？這是科技板塊 re-rate 的晴雨表，也是整個恒科指數企穩的關鍵。</span></div>
+</div>
+
+<div class="footer">
+  2026-05-08 港股盤後（修正版） · 數據截止：2026-05-08 16:00 HKT 收市<br>
+  NFP 結果（20:30 HKT）待公佈，下週一開市前更新<br>
+  完整說明：[[2026-05-08 港股盤後日報]]
+</div>
+
+</div>
+</body>
+</html>

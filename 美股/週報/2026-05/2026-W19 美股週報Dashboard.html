@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>2026-W19 美股週報 Dashboard</title>
+<style>
+:root{--bg:#0a0a0f;--panel:#13131b;--panel-2:#1a1a24;--gold:#d4af37;--green:#16c784;--red:#ea3943;--text:#e7e7ee;--mut:#888899}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,SF Pro,system-ui,"PingFang TC","Noto Sans TC",sans-serif;padding:24px}
+h1{color:var(--gold);font-size:24px;margin-bottom:6px}
+h2{color:var(--gold);font-size:18px;margin:20px 0 12px;border-bottom:1px solid #2a2a36;padding-bottom:6px}
+.sub{color:var(--mut);margin-bottom:16px;font-size:12px}
+.banner{background:linear-gradient(90deg,#1a1a24,#252535);border-left:4px solid var(--gold);padding:12px 16px;margin:12px 0;border-radius:4px}
+.banner.alert{border-left-color:var(--red)}
+.banner.good{border-left-color:var(--green)}
+.grid{display:grid;gap:12px}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g5{grid-template-columns:repeat(5,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g11{grid-template-columns:repeat(11,1fr)}
+.card{background:var(--panel);border:1px solid #252535;border-radius:6px;padding:14px}
+.metric .label{color:var(--mut);font-size:11px;letter-spacing:.5px;text-transform:uppercase}
+.metric .value{font-size:22px;font-weight:600;margin-top:4px}
+.metric .delta{font-size:13px;margin-top:2px}
+.up{color:var(--green)}.down{color:var(--red)}.flat{color:var(--mut)}
+table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:6px;overflow:hidden}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid #252535;font-size:13px}
+th{background:var(--panel-2);color:var(--gold);font-weight:600}
+tr:last-child td{border-bottom:none}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.tag.bull{background:rgba(22,199,132,.18);color:var(--green)}
+.tag.bear{background:rgba(234,57,67,.18);color:var(--red)}
+.tag.warn{background:rgba(212,175,55,.18);color:var(--gold)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:30px 0}
+.hero{background:linear-gradient(135deg,var(--panel),var(--panel-2));border:1px solid #252535;border-radius:8px;padding:18px}
+.hero .label{color:var(--mut);font-size:12px}
+.hero .value{font-size:28px;font-weight:700;margin-top:4px}
+.note{color:var(--mut);font-size:12px;margin-top:8px}
+ul{list-style:none}
+ul.bullet li{padding-left:14px;position:relative;margin:6px 0}
+ul.bullet li:before{content:"▸";color:var(--gold);position:absolute;left:0}
+</style>
+</head>
+<body>
+<h1>2026-W19 美股週報 Dashboard</h1>
+<div class="sub">5 個完整交易日（5/4 - 5/8） | SPY +2.44% | QQQ +5.59% | SPX 雙度刷新歷史新高 | 「Hormuz 恐慌 → JOLTS Beat → AMD 業績 → 美伊反覆 → NFP +115K 低於共識（dovish 解讀）」完整循環</div>
+
+<div class="banner good">🚀 <strong>SPY +2.44% / QQQ +5.59%</strong> — 5/6 SPX 7,365 + 5/8 XLK +3.67% 史詩反彈</div>
+<div class="banner">💥 <strong>AMD +16% (5/6) + SMCI +18%</strong> — AI Data Center +57% YoY，Cycle 重新點火</div>
+<div class="banner alert">⚠️ <strong>非典型組合警示</strong>：Gold +4.52% 同升、密西根 5 月初值 48.2（弱消費 vs risk-on divergence）、Breadth 33.1 全週未改善</div>
+
+<h2>週度核心指標</h2>
+<div class="grid g4">
+<div class="hero"><div class="label">SPY 週收</div><div class="value">$737.62 <span class="up">+2.44%</span></div><div class="note">$720 → $737.62 | 高 $733.83</div></div>
+<div class="hero"><div class="label">QQQ 🚀</div><div class="value">$711.23 <span class="up">+5.59%</span></div><div class="note">全週最強 | 5/8 +2.37% 史詩</div></div>
+<div class="hero"><div class="label">DIA</div><div class="value">$496.13 <span class="flat">+0.43%</span></div><div class="note">全週最弱 | 板塊撕裂達 235bp</div></div>
+<div class="hero"><div class="label">IWM</div><div class="value">$284.17 <span class="up">+2.59%</span></div><div class="note">5/5 創新高，但被 QQQ 拋離</div></div>
+</div>
+
+<h2>每日走勢軌跡（∪ 型反轉）</h2>
+<table>
+<tr><th>日期</th><th>SPY</th><th>日漲跌</th><th>關鍵事件</th></tr>
+<tr><td>05/04（一）</td><td>$718.01</td><td><span class="down">-0.28%</span></td><td>伊朗攻擊 UAE Fujairah；VIX +7.71%；XLB -1.29% 最弱</td></tr>
+<tr><td>05/05（二）</td><td>$723.77</td><td><span class="up">+0.80%</span></td><td>JOLTS 6.866M Beat + WTI -3.9%；Russell 2000 創新高</td></tr>
+<tr><td>05/06（三）</td><td>$733.83 🏆</td><td><span class="up">+1.02%</span></td><td>AMD +16%、SMCI +18%；SPX 新高 7,365；WTI 跌穿 $100</td></tr>
+<tr><td>05/07（四）</td><td>$731.43</td><td><span class="down">-0.32%</span></td><td>美伊衝突反覆；3 個月最大盤中反轉；DIA 失守 500</td></tr>
+<tr><td>05/08（五）</td><td>$737.62</td><td><span class="up">+0.85%</span></td><td>NFP +115K 低於 180-200K 共識（4.3% U-rate / +0.2% MoM AHE），dovish / soft-landing 解讀；XLK +3.67%；俄烏 3 天停火</td></tr>
+</table>
+
+<h2>板塊全週累計</h2>
+<table>
+<tr><th>板塊</th><th>週度評估</th><th>關鍵單日</th><th>驅動</th></tr>
+<tr><td>XLK 科技</td><td><span class="tag bull">全週最強</span></td><td>5/8 +3.67% / 5/5 +2.21%</td><td>AMD/SMCI 業績 + AI cycle 確認</td></tr>
+<tr><td>XLC 通訊</td><td><span class="tag warn">5/6 反轉</span></td><td>5/6 +2.03%（vs 5/5 -0.40%）</td><td>AMD 帶動 META 等反彈</td></tr>
+<tr><td>XLI 工業</td><td><span class="tag bull">5/6 領漲</span></td><td>5/6 +2.44%</td><td>AI 基建需求</td></tr>
+<tr><td>XLB 原材料</td><td><span class="tag bear">5/4 + 5/7 殺最深</span></td><td>5/7 -2.06%</td><td>需求萎縮訊號</td></tr>
+<tr><td>XLE 能源</td><td><span class="tag bear">領漲到崩</span></td><td>5/4 +0.83% → 5/6 -3.54%</td><td>Hormuz 完整輪動</td></tr>
+<tr><td>XLU 公用</td><td><span class="tag warn">異常對沖</span></td><td>5/6 PCR 21.37</td><td>聰明資金大力對沖</td></tr>
+<tr><td>XLV 醫療</td><td><span class="tag bear">全週負</span></td><td>5/8 -1.08%</td><td>無安全港效應</td></tr>
+<tr><td>XLF 金融</td><td><span class="tag bear">弱化</span></td><td>5/8 -0.54%</td><td>降息預期壓淨息差</td></tr>
+</table>
+
+<h2>個股亮點 / 慘案</h2>
+<div class="grid g3">
+<div class="card">
+<h3 style="color:var(--green);font-size:14px;margin-bottom:8px">🟢 全週業績爆發</h3>
+<ul class="bullet">
+<li><strong>AMD</strong> 5/6 +16% — Data Center +57%</li>
+<li><strong>SMCI</strong> 5/6 +18% — Q4 指引 $11-12.5B</li>
+<li><strong>AAPL</strong> 5/4 +2.66% — Q3 展望 +14-17%</li>
+<li><strong>AVGO</strong> 5/5 +2.61% — 半導體強</li>
+<li><strong>GOOGL</strong> 5/5 +1.35% — Mag 7 強側</li>
+</ul>
+</div>
+<div class="card">
+<h3 style="color:var(--red);font-size:14px;margin-bottom:8px">🔴 全週弱勢</h3>
+<ul class="bullet">
+<li><strong>NCLH 郵輪</strong> 5/4 -9% — 中東訂單取消</li>
+<li><strong>TSM</strong> 5/5 -1.79% — 地緣定價</li>
+<li><strong>NVDA</strong> 5/5 -1.00% — Mag 7 弱側</li>
+<li><strong>META</strong> 5/5 -0.89% — Mag 7 弱側</li>
+<li><strong>TSLA</strong> 5/5 -0.80% — 同弱</li>
+</ul>
+</div>
+<div class="card">
+<h3 style="color:var(--gold);font-size:14px;margin-bottom:8px">🟡 Mag 7 內部分化</h3>
+<ul class="bullet">
+<li><strong>強：應用 AI</strong> AAPL/GOOGL/AMD/AVGO</li>
+<li><strong>弱：訓練 AI</strong> NVDA/META/MSFT/TSLA/TSM</li>
+<li>主題輪動 signal vs 個別雜訊待確認</li>
+<li>5/8 NVDA 隨 XLK 反彈</li>
+</ul>
+</div>
+</div>
+
+<h2>風險指標與宏觀（週度變化）</h2>
+<div class="grid g4">
+<div class="card metric"><div class="label">VIX</div><div class="value">17.15 <span class="up">+0.94%</span></div><div class="note">週內波動：5/4 +7.71%</div></div>
+<div class="card metric"><div class="label">VIX 9D</div><div class="value">14.21 <span class="down">-2.40%</span></div><div class="note">短期恐慌幾近全退</div></div>
+<div class="card metric"><div class="label">10Y UST</div><div class="value">4.36% <span class="down">-1.84%</span></div><div class="note">殖利率溫和下行</div></div>
+<div class="card metric"><div class="label">DXY</div><div class="value">97.84 <span class="down">-0.64%</span></div><div class="note">美元持續弱化</div></div>
+<div class="card metric"><div class="label">WTI 🔑</div><div class="value">$94.68 <span class="down">-11.03%</span></div><div class="note">週度創新低，最大宏觀變化</div></div>
+<div class="card metric"><div class="label">Gold ⚠️</div><div class="value">$4,723.70 <span class="up">+4.52%</span></div><div class="note">非典型組合，Taleb 警示</div></div>
+<div class="card metric"><div class="label">JOLTS（3 月）</div><div class="value">6.866M <span class="up">Beat</span></div><div class="note">雇用 +655K</div></div>
+<div class="card metric"><div class="label">密西根信心 ⚠️</div><div class="value">48.2</div><div class="note">UMich 5 月 preliminary 已公布；record-low 表述需引用 Trading Economics / Reuters；final May reading 5/22</div></div>
+<div class="card metric"><div class="label">Macro Regime</div><div class="value">59.8</div><div class="note">62.4 → 59.8 下移</div></div>
+<div class="card metric"><div class="label">Breadth</div><div class="value">33.1 <span class="flat">持平</span></div><div class="note">全週未改善</div></div>
+<div class="card metric"><div class="label">HY OAS</div><div class="value">2.77% <span class="down">-2.12%</span></div><div class="note">信用利差收窄</div></div>
+<div class="card metric"><div class="label">10Y-2Y</div><div class="value">+0.43</div><div class="note">衰退信號消退</div></div>
+</div>
+
+<h2>正面 vs 負面催化劑</h2>
+<div class="grid g2" style="grid-template-columns:1fr 1fr;gap:12px">
+<div class="card">
+<h3 style="color:var(--green);font-size:14px;margin-bottom:8px">🟢 正面催化（8）</h3>
+<ul class="bullet">
+<li><strong>AMD Q1 業績爆發</strong>（5/6 +16%）</li>
+<li><strong>SMCI 強勁指引</strong>（5/6 +18%）</li>
+<li><strong>JOLTS 中性 Beat</strong>（5/5 6.866M）</li>
+<li><strong>WTI 週度 -11.03%</strong>（通脹敘事退潮）</li>
+<li>AAPL Q2 + Q3 強勁展望（5/4 +2.66%）</li>
+<li><strong>NFP +115K 低於共識，dovish 解讀</strong>（5/8）</li>
+<li>俄烏 3 天停火（5/8 起）</li>
+<li>10Y 殖利率全週下行（4.40% → 4.36%）</li>
+</ul>
+</div>
+<div class="card">
+<h3 style="color:var(--red);font-size:14px;margin-bottom:8px">🔴 負面催化（8）</h3>
+<ul class="bullet">
+<li><strong>伊朗攻擊 UAE Fujairah</strong>（5/4）</li>
+<li>NCLH 郵輪 -9%（5/4 中東訂單取消）</li>
+<li>密西根消費信心 5 月初值 48.2（UMich 已公布；record-low 表述需引用 Trading Economics / Reuters）</li>
+<li>HSBC Q1 中東撥備警告</li>
+<li><strong>美伊衝突反覆</strong>（5/7）</li>
+<li>Burry/Shilling 警告 AI 1999 泡沫</li>
+<li>私募信貸風險擴散（5/8）</li>
+<li><strong>板塊廣度全週未改善</strong>（Breadth 33.1）</li>
+</ul>
+</div>
+</div>
+
+<div class="divider"></div>
+
+<h2>下週情境地圖</h2>
+<table>
+<tr><th>情境</th><th>觸發條件</th><th>市場反應</th><th>機率</th></tr>
+<tr><td><span class="tag bull">740-750 突破</span></td><td>CPI <3.0% + NVDA Beat + Warsh 過 full Senate confirmation 且鴿派</td><td>SPY 站穩 740, QQQ 720+</td><td>25%</td></tr>
+<tr><td><span class="tag warn">730-740 整固</span></td><td>CPI 符合 + 美伊維持 + 板塊輪動</td><td>區間震盪，等下個 catalyst</td><td>45%</td></tr>
+<tr><td><span class="tag bear">720-730 回調</span></td><td>CPI 反彈 + AMD/SMCI 獲利回吐 + Burry 警示發酵</td><td>SPY 回試 720-725</td><td>20%</td></tr>
+<tr><td><span class="tag bear">黑天鵝</span></td><td>美伊重新升級 + 私募信貸 contagion + 消費信心訊號 amplify</td><td>SPY 破 715, VIX >22</td><td>10%</td></tr>
+</table>
+
+<h2>下週 5 個觀察點</h2>
+<ul class="bullet">
+<li><strong>SPY 730 站穩 + 740 阻力</strong>：trend 確認測試（連續第二週）</li>
+<li><strong>5/13 CPI（4 月）</strong>：下週最重要 macro anchor，<3.0% = 加速降息預期</li>
+<li><strong>5/15 Powell 任期到期（Warsh 待 full Senate confirmation）</strong>：確認前後 Fed communication 是政策路徑 repricing 風險</li>
+<li><strong>板塊廣度改善</strong>：XLF/XLI/XLY 跟漲 = rally quality 提升</li>
+<li><strong>俄烏停火進展（5/9-11）</strong>：是否延長</li>
+</ul>
+
+<h2>預測準確度審計（W19）</h2>
+<table>
+<tr><th>日期</th><th>覆蓋率</th><th>命中率</th><th>核心評估</th></tr>
+<tr><td>5/4（一）</td><td>5/5 = 100%</td><td><span class="warn">70%</span></td><td>伊朗攻擊未預見，但 XLE/XLP/VIX 命中</td></tr>
+<tr><td>5/5（二）</td><td>3/5 = 60%</td><td><span class="up">100%</span> ✅</td><td>JOLTS Beat + WTI -3.9% 主驅動命中</td></tr>
+<tr><td>5/6（三）</td><td>5/5 = 100%</td><td><span class="down">50%</span> ❌</td><td>AMD/SMCI 業績未預見；XLC 預測完全反轉</td></tr>
+<tr><td>5/7（四）</td><td>4/5 = 80%</td><td><span class="warn">75%</span></td><td>Dow 50K 預測命中；美伊反覆未預見</td></tr>
+<tr><td>5/8（五）</td><td>3/5 = 60%</td><td><span class="down">33%</span> ❌</td><td>NFP +115K 低於共識，市場以 dovish 解讀；模型線性鷹派假設失效；XLK 史詩單日完全反轉</td></tr>
+</table>
+<div class="banner">W19 整體：覆蓋率 20/25 = 80%（vs 港股 100%）｜ 命中率 13/20 = 65%（vs 港股 76%）｜ 5/6 + 5/8 兩個重大 miss 拖累；需提升「最強板塊」明確預測比例</div>
+
+<div class="divider"></div>
+<div class="note">報告生成：2026-05-09 ｜ 數據截止：W19 5/4-5/8 完整 5 日 ｜ 數據源：每日美股盤前/盤後日報</div>
+</body>
+</html>
