@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股盤前日報 — 2026-04-20</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #D4AF37; --gold-dim: rgba(212,175,55,0.15); --gold-glow: rgba(212,175,55,0.3);
+  --bg-primary: #0a0a0f; --bg-card: #12121a; --bg-elevated: #1e1e2a;
+  --text-primary: #e8e6e1; --text-secondary: #8a8a9a; --text-dim: #5a5a6a;
+  --border: rgba(255,255,255,0.06); --border-gold: rgba(212,175,55,0.3);
+  --bullish: #4ade80; --bearish: #f87171; --neutral: #fbbf24;
+  --bullish-bg: rgba(74,222,128,0.08); --bearish-bg: rgba(248,113,113,0.08);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg-primary); color:var(--text-primary); font-family:'Noto Sans TC','JetBrains Mono',sans-serif; line-height:1.6; overflow-x:hidden; }
+.container { max-width:960px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+.market-header { text-align:center; margin-bottom:2.5rem; padding-bottom:2rem; border-bottom:1px solid var(--border); }
+.header-eyebrow { font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem; }
+.market-header h1 { font-family:'DM Serif Display',serif; font-size:clamp(1.8rem,5vw,2.6rem); color:var(--text-primary); }
+.header-subtitle { font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--text-secondary); margin-top:0.5rem; }
+.section-title { font-family:'JetBrains Mono',monospace; font-size:0.68rem; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:1.2rem; opacity:0.8; }
+.hero-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; margin-bottom:1.5rem; }
+.hero-card { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:1.5rem; }
+.hero-card.warn { border-color:rgba(248,113,113,0.4); background:rgba(248,113,113,0.03); }
+.hero-card.alert { border-color:rgba(251,191,36,0.4); background:rgba(251,191,36,0.03); }
+.hero-label { font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--text-secondary); letter-spacing:0.1em; margin-bottom:0.5rem; }
+.hero-value { font-family:'JetBrains Mono',monospace; font-size:2rem; font-weight:700; color:var(--text-primary); }
+.hero-change { font-family:'JetBrains Mono',monospace; font-size:0.85rem; margin-top:0.3rem; }
+.bullish { color:var(--bullish); } .bearish { color:var(--bearish); } .neutral-c { color:var(--neutral); }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:1.5rem; }
+.card { background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:1.2rem; }
+.heatmap { display:grid; grid-template-columns:repeat(4,1fr); gap:0.5rem; margin-bottom:1.5rem; }
+.heat-cell { border-radius:8px; padding:0.75rem 0.5rem; text-align:center; }
+.heat-cell .ticker { font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:rgba(255,255,255,0.6); }
+.heat-cell .name { font-size:0.7rem; margin:0.2rem 0; }
+.heat-cell .chg { font-family:'JetBrains Mono',monospace; font-size:0.85rem; font-weight:700; }
+.heat-up { background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.2); }
+.heat-up2 { background:rgba(74,222,128,0.22); border:1px solid rgba(74,222,128,0.35); }
+.heat-up3 { background:rgba(74,222,128,0.35); border:1px solid rgba(74,222,128,0.5); }
+.heat-dn { background:rgba(248,113,113,0.15); border:1px solid rgba(248,113,113,0.2); }
+.heat-dn3 { background:rgba(248,113,113,0.4); border:1px solid rgba(248,113,113,0.55); }
+.timeline { display:flex; flex-direction:column; gap:0.8rem; }
+.tl-item { display:flex; gap:1rem; align-items:flex-start; }
+.tl-time { font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--gold); min-width:55px; padding-top:0.1rem; }
+.tl-text { font-size:0.82rem; line-height:1.5; }
+.tl-tag { display:inline-block; font-size:0.65rem; padding:0.1rem 0.4rem; border-radius:3px; margin-right:0.4rem; }
+.tag-bear { background:rgba(248,113,113,0.15); color:var(--bearish); }
+.tag-bull { background:rgba(74,222,128,0.1); color:var(--bullish); }
+.tag-neutral { background:rgba(251,191,36,0.1); color:var(--neutral); }
+.metric-row { display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0; border-bottom:1px solid var(--border); }
+.metric-row:last-child { border-bottom:none; }
+.metric-label { font-size:0.8rem; color:var(--text-secondary); }
+.metric-value { font-family:'JetBrains Mono',monospace; font-size:0.85rem; }
+.gold-divider { margin:3rem 0; position:relative; text-align:center; }
+.gold-divider::before { content:''; position:absolute; top:50%; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+.gold-divider-text { position:relative; display:inline-block; background:var(--bg-primary); padding:0 1.5rem; font-family:'JetBrains Mono',monospace; font-size:0.7rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); }
+.vote-bar-container { margin:0.6rem 0; }
+.vote-bar-label { display:flex; justify-content:space-between; margin-bottom:0.3rem; font-size:0.78rem; }
+.vote-bar { height:8px; border-radius:4px; background:var(--bg-elevated); overflow:hidden; }
+.vote-fill { height:100%; border-radius:4px; }
+.fill-bull { background:var(--bullish); }
+.fill-bear { background:var(--bearish); }
+.fill-watch { background:var(--neutral); }
+.stance-table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+.stance-table th { font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:var(--text-dim); text-align:left; padding:0.5rem 0.75rem; border-bottom:1px solid var(--border); }
+.stance-table td { padding:0.6rem 0.75rem; border-bottom:1px solid rgba(255,255,255,0.03); }
+.stance-bull { color:var(--bullish); font-weight:600; }
+.stance-bear { color:var(--bearish); font-weight:600; }
+.stance-watch { color:var(--neutral); }
+.veto-banner { background:linear-gradient(135deg,rgba(248,113,113,0.1),rgba(248,113,113,0.04)); border:1px solid rgba(248,113,113,0.3); border-radius:10px; padding:1rem 1.2rem; margin-bottom:1.5rem; }
+.veto-banner h3 { color:var(--bearish); font-size:0.85rem; margin-bottom:0.4rem; }
+.veto-banner p { font-size:0.78rem; color:var(--text-secondary); }
+.alert-banner { background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.3); border-radius:10px; padding:0.8rem 1.2rem; margin-bottom:1.2rem; }
+.alert-banner strong { color:var(--neutral); }
+.alert-banner p { font-size:0.78rem; color:var(--text-secondary); }
+.dispute-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:1rem; margin-bottom:0.8rem; }
+.dispute-title { font-size:0.78rem; font-weight:600; color:var(--gold); margin-bottom:0.4rem; }
+.dispute-text { font-size:0.75rem; color:var(--text-secondary); line-height:1.6; }
+.action-table { width:100%; border-collapse:collapse; }
+.action-table tr { border-bottom:1px solid var(--border); }
+.action-table tr:last-child { border-bottom:none; }
+.action-table td:first-child { font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--gold); padding:0.7rem 1rem 0.7rem 0; width:120px; vertical-align:top; }
+.action-table td:last-child { font-size:0.82rem; color:var(--text-primary); padding:0.7rem 0; }
+.conf-bar { display:flex; align-items:center; gap:1rem; margin:0.6rem 0; }
+.conf-name { font-size:0.75rem; color:var(--text-secondary); width:85px; }
+.conf-track { flex:1; height:6px; background:var(--bg-elevated); border-radius:3px; overflow:hidden; }
+.conf-fill { height:100%; border-radius:3px; }
+.conf-score { font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--text-dim); width:30px; text-align:right; }
+.tech-badge { display:inline-block; background:var(--bg-elevated); border:1px solid var(--border); border-radius:6px; padding:0.2rem 0.6rem; font-family:'JetBrains Mono',monospace; font-size:0.72rem; margin:0.2rem; }
+details summary { cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--gold); padding:0.6rem; list-style:none; }
+details summary::before { content:'▶ '; }
+details[open] summary::before { content:'▼ '; }
+.transcript { font-size:0.78rem; color:var(--text-secondary); line-height:1.7; padding:1rem; background:var(--bg-card); border-radius:8px; max-height:400px; overflow-y:auto; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="market-header">
+  <div class="header-eyebrow">美股 · 盤前日報</div>
+  <h1>S&amp;P 500 盤前展望</h1>
+  <div class="header-subtitle">2026-04-20（一）&nbsp;·&nbsp;Investment Committee v2.0</div>
+</div>
+
+<!-- ALERT: 德國PPI -->
+<div class="alert-banner">
+  <strong>🔥 德國3月PPI +2.5%（預期+1.3%，前值-0.5%）— 大幅超預期</strong>
+  <p>歐洲通脹復燃訊號。全球央行同步降息敘事首次受硬數據挑戰。今日20:30 加拿大CPI為關鍵跟蹤點。</p>
+</div>
+
+<!-- HERO: FUTURES -->
+<div class="section-title">§1 — 盤前期指 / 上週五收盤</div>
+<div class="hero-grid">
+  <div class="hero-card warn">
+    <div class="hero-label">ES=F · S&amp;P 500 期指</div>
+    <div class="hero-value">7,115.75</div>
+    <div class="hero-change bearish">-0.05% 盤前整固</div>
+  </div>
+  <div class="hero-card warn">
+    <div class="hero-label">NQ=F · Nasdaq 期指</div>
+    <div class="hero-value">26,646</div>
+    <div class="hero-change bearish">-0.12% 微跌</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">SPY · 週五收盤（週+3.5%）</div>
+    <div class="hero-value">710.14</div>
+    <div class="hero-change bullish">+1.12% · RSI 73.6 超買</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">QQQ · 週五收盤（週+5.1%）</div>
+    <div class="hero-value">648.85</div>
+    <div class="hero-change bullish">+1.35% · Nasdaq 12連漲</div>
+  </div>
+</div>
+
+<!-- SPY TECHNICALS -->
+<div class="section-title">§2 — 技術訊號（SPY）</div>
+<div class="card" style="margin-bottom:1.5rem">
+  <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem">
+    <span class="tech-badge bearish">RSI 73.6 ⚠️ 超買</span>
+    <span class="tech-badge bullish">MACD 牛叉 +9.09</span>
+    <span class="tech-badge bullish">均線強勢排列</span>
+    <span class="tech-badge bearish">逼近Bollinger上軌 712.25</span>
+  </div>
+  <div class="grid-2" style="margin-bottom:0">
+    <div>
+      <div class="metric-row"><span class="metric-label">SMA 50</span><span class="metric-value">673.88 (+5.38%)</span></div>
+      <div class="metric-row"><span class="metric-label">SMA 200</span><span class="metric-value bullish">663.21 強勢</span></div>
+      <div class="metric-row"><span class="metric-label">Bollinger 上軌</span><span class="metric-value bearish">712.25 壓力</span></div>
+    </div>
+    <div>
+      <div class="metric-row"><span class="metric-label">支撐 1</span><span class="metric-value">705（近期盤整下緣）</span></div>
+      <div class="metric-row"><span class="metric-label">支撐 2</span><span class="metric-value">695-698</span></div>
+      <div class="metric-row"><span class="metric-label">阻力</span><span class="metric-value bearish">712-720</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTOR HEATMAP -->
+<div class="section-title">§3 — 板塊熱力圖（週五收盤）</div>
+<div class="heatmap">
+  <div class="heat-cell heat-up2"><div class="ticker">XLY</div><div class="name">非必需消費</div><div class="chg bullish">+2.20%</div></div>
+  <div class="heat-cell heat-up2"><div class="ticker">XLI</div><div class="name">工業</div><div class="chg bullish">+1.66%</div></div>
+  <div class="heat-cell heat-up2"><div class="ticker">XLRE</div><div class="name">房地產</div><div class="chg bullish">+1.53%</div></div>
+  <div class="heat-cell heat-up2"><div class="ticker">XLK</div><div class="name">科技</div><div class="chg bullish">+1.46%</div></div>
+  <div class="heat-cell heat-up"><div class="ticker">XLV</div><div class="name">醫療</div><div class="chg bullish">+1.31%</div></div>
+  <div class="heat-cell heat-up"><div class="ticker">XLP</div><div class="name">必需消費</div><div class="chg bullish">+1.04%</div></div>
+  <div class="heat-cell heat-up"><div class="ticker">XLF</div><div class="name">金融</div><div class="chg bullish">+0.63%</div></div>
+  <div class="heat-cell heat-up"><div class="ticker">XLC</div><div class="name">通訊</div><div class="chg bullish">+0.44%</div></div>
+  <div class="heat-cell heat-up"><div class="ticker">XLB</div><div class="name">原材料</div><div class="chg bullish">+0.04%</div></div>
+  <div class="heat-cell heat-dn"><div class="ticker">XLU</div><div class="name">公用事業</div><div class="chg bearish">-0.30%</div></div>
+  <div class="heat-cell heat-dn3" style="grid-column:span 2"><div class="ticker">XLE</div><div class="name">能源（今日 +7% 反彈）</div><div class="chg bearish">週五 -2.83% → 今日強反彈</div></div>
+</div>
+
+<!-- RISK + MACRO -->
+<div class="section-title">§4 — 風險指標</div>
+<div class="grid-3">
+  <div class="card">
+    <div class="metric-row"><span class="metric-label">VIX</span><span class="metric-value bearish">17.48 -2.56%</span></div>
+    <div class="metric-row"><span class="metric-label">VIX 9-Day</span><span class="metric-value bearish">14.81 ⚠️低</span></div>
+    <div class="metric-row"><span class="metric-label">VIX 3-Month</span><span class="metric-value neutral-c">20.51</span></div>
+  </div>
+  <div class="card">
+    <div class="metric-row"><span class="metric-label">10Y 孳息率</span><span class="metric-value bearish">4.25% -1.46%</span></div>
+    <div class="metric-row"><span class="metric-label">2s10s</span><span class="metric-value bullish">+0.55% 正常</span></div>
+    <div class="metric-row"><span class="metric-label">HY OAS</span><span class="metric-value">2.86% +0bp</span></div>
+  </div>
+  <div class="card">
+    <div class="metric-row"><span class="metric-label">DXY 美元</span><span class="metric-value">98.30 +0.02%</span></div>
+    <div class="metric-row"><span class="metric-label">WTI 原油</span><span class="metric-value bullish">今日 +7% 🔥</span></div>
+    <div class="metric-row"><span class="metric-label">市場寬度</span><span class="metric-value neutral-c">40.3/100 Neutral</span></div>
+  </div>
+</div>
+
+<!-- CROSS MARKET -->
+<div class="section-title">§5 — 跨市場 + 宏觀</div>
+<div class="grid-2">
+  <div class="card">
+    <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.5rem">跨市場（週五）</div>
+    <div class="metric-row"><span class="metric-label">德國 EWG</span><span class="metric-value bullish">+1.96%</span></div>
+    <div class="metric-row"><span class="metric-label">英國 EWU</span><span class="metric-value bullish">+1.05%</span></div>
+    <div class="metric-row"><span class="metric-label">日本 EWJ</span><span class="metric-value bullish">+0.84%</span></div>
+    <div class="metric-row"><span class="metric-label">中國 FXI</span><span class="metric-value bullish">+0.83%</span></div>
+  </div>
+  <div class="card">
+    <div style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.5rem">FRED 宏觀</div>
+    <div class="metric-row"><span class="metric-label">Fed Funds Rate</span><span class="metric-value neutral-c">3.64%</span></div>
+    <div class="metric-row"><span class="metric-label">Core CPI（3月）</span><span class="metric-value neutral-c">+0.653 MoM</span></div>
+    <div class="metric-row"><span class="metric-label">失業率（3月）</span><span class="metric-value bullish">4.3% ↓</span></div>
+  </div>
+</div>
+
+<!-- NEWS TIMELINE -->
+<div class="section-title">§6 — 今日要聞時間線</div>
+<div class="card" style="margin-bottom:1.5rem">
+<div class="timeline">
+  <div class="tl-item"><span class="tl-time">14:00</span><div class="tl-text"><span class="tl-tag tag-bear">🔴 偏空</span><b>德國PPI +2.5%（大超預期+1.3%）</b>：歐洲通脹復燃，全球降息敘事首受硬數據挑戰</div></div>
+  <div class="tl-item"><span class="tl-time">15:59</span><div class="tl-text"><span class="tl-tag tag-bear">🔴 偏空</span><b>伊朗：霍爾木茲控制「完全合法」</b>，無二輪談判計劃，封鎖風險升溫</div></div>
+  <div class="tl-item"><span class="tl-time">16:00</span><div class="tl-text"><span class="tl-tag tag-bear">🔴 偏空</span><b>日本東北 7.4 級地震 + 3米海嘯警報</b>：亞洲供應鏈衝擊待評估</div></div>
+  <div class="tl-item"><span class="tl-time">16:03</span><div class="tl-text"><span class="tl-tag tag-bull">🟢 偏多</span><b>Fed Daley：降息概率升至60%</b>；若衝突結束可降息；Lutnick：GDP目標6%</div></div>
+  <div class="tl-item"><span class="tl-time">16:03</span><div class="tl-text"><span class="tl-tag tag-bear">🔴 偏空</span><b>Fed Waller：對降息謹慎</b>，警告長期衝突風險；Fed內部明顯分歧</div></div>
+  <div class="tl-item"><span class="tl-time">20:30</span><div class="tl-text"><span class="tl-tag tag-neutral">🟡 待公布</span><b>加拿大3月CPI月率</b>：預期+1.0%（前值+0.5%）→ 若超預期，通脹敘事加速</div></div>
+  <div class="tl-item"><span class="tl-time">本週</span><div class="tl-text"><span class="tl-tag tag-neutral">🟡 催化劑</span><b>Tesla業績（週三）+ Intel業績（週四）</b>：本週最大業績風險/機會</div></div>
+</div>
+</div>
+
+<!-- ═══ GOLD DIVIDER ═══ -->
+<div class="gold-divider"><span class="gold-divider-text">投資委員會 · 辯論結果</span></div>
+
+<!-- VETO -->
+<div class="veto-banner">
+  <h3>⚠️ Risk Veto 觸發 — Taleb 8/10</h3>
+  <p>VIX9D 14.81 = 本年最便宜短期保險。同日：日本7.4地震+伊朗聲明+德國PPI超預期+四川地震。三個相互強化的尾部風險。建議：60-65%倉位上限 + VIX9D call 少量對沖。</p>
+</div>
+
+<!-- VOTE -->
+<div class="section-title">§7 — 投票結果</div>
+<div class="card" style="margin-bottom:1.5rem">
+  <div style="text-align:center;margin-bottom:1.5rem">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--bullish)">3</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:var(--text-dim)"> : </span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--bearish)">2</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:var(--text-dim)"> : </span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--neutral)">4</span>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-dim);margin-top:0.3rem">看多 : 看空 : 觀望 &nbsp;·&nbsp; 加權 6.3/10</div>
+  </div>
+  <div class="vote-bar-container">
+    <div class="vote-bar-label"><span>看多</span><span class="bullish">3票</span></div>
+    <div class="vote-bar"><div class="vote-fill fill-bull" style="width:33%"></div></div>
+  </div>
+  <div class="vote-bar-container">
+    <div class="vote-bar-label"><span>觀望</span><span class="neutral-c">4票</span></div>
+    <div class="vote-bar"><div class="vote-fill fill-watch" style="width:44%"></div></div>
+  </div>
+  <div class="vote-bar-container">
+    <div class="vote-bar-label"><span>看空</span><span class="bearish">2票</span></div>
+    <div class="vote-bar"><div class="vote-fill fill-bear" style="width:22%"></div></div>
+  </div>
+</div>
+
+<!-- STANCE TABLE -->
+<div class="section-title">§8 — 各方立場</div>
+<div class="card" style="margin-bottom:1.5rem;overflow-x:auto">
+<table class="stance-table">
+<thead><tr><th>角色</th><th>立場</th><th>信心</th><th>核心論點</th></tr></thead>
+<tbody>
+<tr><td>Marks</td><td class="stance-watch">觀望偏謹慎</td><td>7/10</td><td>共識過度樂觀，Breadth 40.3 vs 動量矛盾，Fed分歧</td></tr>
+<tr><td>Taleb ⚠️</td><td class="stance-bear">看空</td><td><b>8/10</b></td><td>VIX9D 14.81極便宜，三重尾部同日，買保險</td></tr>
+<tr><td>量化</td><td class="stance-watch">中性等確認</td><td>6/10</td><td>RSI 73.6超買，逼近Bollinger上軌，守705先</td></tr>
+<tr><td>Druckenmiller</td><td class="stance-watch">觀望/中期多</td><td>6/10</td><td>Bull 40%/Base 35%/Bear 25%，Tesla業績是本週非對稱</td></tr>
+<tr><td>Soros</td><td class="stance-bull">看多但警惕</td><td>7/10</td><td>降息反身性迴路佔主導，但德國PPI是第一塊多米諾</td></tr>
+<tr><td>WSB 散戶</td><td class="stance-bull">謹慎看多</td><td>5/10</td><td>Tesla遠月小倉，唔0DTE，業績後確認才加</td></tr>
+<tr><td>Dalio</td><td class="stance-watch">觀望</td><td>4.5/10</td><td>假Goldilocks確認，加拿大+德國雙重通脹警號</td></tr>
+<tr><td>Lynch</td><td class="stance-bull">謹慎看多</td><td>6/10</td><td>XLY+2.2%是消費實質訊號，等開盤30分鐘確認</td></tr>
+<tr><td>宏觀策略師</td><td class="stance-bear">看空</td><td>7/10</td><td>霍爾木茲+德國PPI+日本地震=今日最高密度風險</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- CONFIDENCE BARS -->
+<div class="section-title">§9 — 信心分佈</div>
+<div class="card" style="margin-bottom:1.5rem">
+  <div class="conf-bar"><span class="conf-name">Marks</span><div class="conf-track"><div class="conf-fill" style="width:70%;background:var(--neutral)"></div></div><span class="conf-score">7/10</span></div>
+  <div class="conf-bar"><span class="conf-name">Taleb ⚠️</span><div class="conf-track"><div class="conf-fill" style="width:80%;background:var(--bearish)"></div></div><span class="conf-score">8/10</span></div>
+  <div class="conf-bar"><span class="conf-name">量化</span><div class="conf-track"><div class="conf-fill" style="width:60%;background:var(--neutral)"></div></div><span class="conf-score">6/10</span></div>
+  <div class="conf-bar"><span class="conf-name">Druckenmiller</span><div class="conf-track"><div class="conf-fill" style="width:60%;background:var(--neutral)"></div></div><span class="conf-score">6/10</span></div>
+  <div class="conf-bar"><span class="conf-name">Soros</span><div class="conf-track"><div class="conf-fill" style="width:70%;background:var(--bullish)"></div></div><span class="conf-score">7/10</span></div>
+  <div class="conf-bar"><span class="conf-name">WSB</span><div class="conf-track"><div class="conf-fill" style="width:50%;background:var(--bullish)"></div></div><span class="conf-score">5/10</span></div>
+  <div class="conf-bar"><span class="conf-name">Dalio</span><div class="conf-track"><div class="conf-fill" style="width:45%;background:var(--neutral)"></div></div><span class="conf-score">4.5/10</span></div>
+  <div class="conf-bar"><span class="conf-name">Lynch</span><div class="conf-track"><div class="conf-fill" style="width:60%;background:var(--bullish)"></div></div><span class="conf-score">6/10</span></div>
+  <div class="conf-bar"><span class="conf-name">宏觀策略師</span><div class="conf-track"><div class="conf-fill" style="width:70%;background:var(--bearish)"></div></div><span class="conf-score">7/10</span></div>
+</div>
+
+<!-- DISPUTES -->
+<div class="section-title">§10 — 核心分歧</div>
+<div class="dispute-card">
+  <div class="dispute-title">分歧 1：ES -0.05% = 整固繼續 vs 動量耗盡</div>
+  <div class="dispute-text"><b style="color:var(--bullish)">Druckenmiller</b>：12連漲後第一日中位數-0.1%~+0.3%，今日在正常範圍，等Tesla業績確認<br><b style="color:var(--neutral)">Marks+量化</b>：RSI 73.6超買+Bollinger上軌712.25+Breadth 40.3=技術壓力明確，廣度不支撐</div>
+</div>
+<div class="dispute-card">
+  <div class="dispute-title">分歧 2：德國PPI+2.5% = 通脹復燃警號 vs 短暫波動</div>
+  <div class="dispute-text"><b style="color:var(--bearish)">Dalio+宏觀策略師</b>：加拿大CPI翻倍+德國PPI大超=同日雙重通脹警號，假Goldilocks確認，降息敘事遭硬數據挑戰<br><b style="color:var(--bullish)">Soros+Lynch</b>：歐洲PPI滯後CPI，能源分項為主，WTI回落自動修正，美聯儲只看美國數據</div>
+</div>
+<div class="dispute-card">
+  <div class="dispute-title">分歧 3：Tesla業績（週三）= 非對稱機會 vs 業績地雷</div>
+  <div class="dispute-text"><b style="color:var(--bullish)">Druckenmiller+WSB</b>：交付-13%已定價，超預期門檻極低，業績後遠月call 3:1非對稱<br><b style="color:var(--neutral)">Marks</b>：Musk政治活動=執行力打折，這是結構性問題，不是一季度的miss</div>
+</div>
+
+<!-- ACTION CARD -->
+<div class="section-title" style="margin-top:1.5rem">§11 — Action Card</div>
+<div class="card" style="margin-bottom:1.5rem;border-color:var(--border-gold)">
+<table class="action-table">
+<tr><td>行動</td><td><b>觀望</b>（Risk Veto觸發；等加拿大CPI+Tesla業績確認方向）</td></tr>
+<tr><td>場景 A</td><td>加拿大CPI符合預期（+1.0%）+ Tesla週三超預期 + 霍爾木茲無升級 → 追多QQQ，目標655，止損638</td></tr>
+<tr><td>場景 B</td><td>加拿大CPI超預期（&gt;+1.3%）+ 油價破$90 → 減倉至50%；XLE Call對沖能源漲勢；等SPY 705確認</td></tr>
+<tr><td>倉位</td><td>60-65%（Risk Veto = 今日上限65%）</td></tr>
+<tr><td>時間框架</td><td>Swing（本週業績催化劑主導：Tesla週三、Intel週四）</td></tr>
+<tr><td>對沖</td><td>VIX9D call（14.81極便宜）；QQQ週五Put（行使630）</td></tr>
+<tr><td>止損</td><td>SPY 705（破位=減倉至45%）；QQQ 638</td></tr>
+</table>
+</div>
+
+<!-- TODAY'S FORECAST -->
+<div class="section-title">§12 — 今日預測（2026-04-20 US 開市）</div>
+<div class="grid-2">
+  <div class="card">
+    <div class="metric-row"><span class="metric-label">大市方向</span><span class="metric-value neutral-c">-0.5%~+0.3%</span></div>
+    <div class="metric-row"><span class="metric-label">最強板塊</span><span class="metric-value bullish">能源 XLE（油+7% 受益）</span></div>
+    <div class="metric-row"><span class="metric-label">最弱板塊</span><span class="metric-value bearish">XLU / XLRE</span></div>
+    <div class="metric-row"><span class="metric-label">VIX 預測</span><span class="metric-value bearish">18-22↑</span></div>
+  </div>
+  <div class="card">
+    <div class="metric-row"><span class="metric-label">關鍵時間 20:30</span><span class="metric-value neutral-c">加拿大 CPI</span></div>
+    <div class="metric-row"><span class="metric-label">本週催化劑</span><span class="metric-value">Tesla 週三、Intel 週四</span></div>
+    <div class="metric-row"><span class="metric-label">霍爾木茲監測</span><span class="metric-value bearish">持續升溫</span></div>
+  </div>
+</div>
+
+<!-- TRANSCRIPT -->
+<details style="margin-top:2rem">
+<summary>📜 完整辯論記錄（3輪）</summary>
+<div class="transcript">
+<b>Phase 1 — 風險鷹派</b><br>
+Marks（7/10觀望）：Nasdaq+5.1%共識過度樂觀。第二層思維：Breadth 40.3不支撐廣度。VIX偏低但非平靜。Fed Daley/Waller分歧=最核心矛盾。<br>
+Taleb（8/10看空）：VIX9D 14.81=本年最便宜短期保險。同日三重尾部：日本7.4+伊朗+德國PPI大超+四川地震。系統脆弱性8.5/10。IWM+1.95%但債市謹慎=背離。<br>
+量化（6/10中性）：RSI 73.6超買未極端。SPY 710.14逼近Bollinger上軌712.25。支撐705/695。VIX term structure正常Contango，適合賣近月call。<br><br>
+<b>Phase 1 — 機會獵人</b><br>
+Druckenmiller（6/10觀望多）：Bull 40%/Base 35%/Bear 25%。12連漲後5日正報酬65%概率，但最大回撤中位-2.3%。Tesla業績call非對稱3:1，但業績前不重倉。<br>
+Soros（7/10看多）：降息反身性迴路主導（降息→科技→消費→GDP→加強降息）。Nasdaq 12連漲是迴路的體現，全球跟隨確認（EWG+1.96%）。德國PPI是第一塊多米諾，但還沒倒。<br>
+WSB（5/10謹慎多）：12連漲後期指-0.05%=機構偷偷減倉的聲音。Tesla遠月call（6月到期），倉位≤5%，業績後確認再加。<br><br>
+<b>Phase 1 — 框架分析師</b><br>
+Dalio（4.5/10觀望）：假Goldilocks警告：加拿大CPI預期翻倍+德國PPI+2.5%=同日雙重通脹警號。Daley說「若通脹加速需加息」在+7%油價當天說=非偶然。板塊訊號矛盾（Materials 61.4%超買 vs Energy 21.3%下行）。<br>
+Lynch（6/10謹慎多）：XLY+2.2%是消費實質訊號，真實基本面。Tesla業績低基數有超預期空間，但Musk分心問題結構性。日本地震半導體供應鏈待觀察。<br>
+宏觀策略師（7/10看空）：霍爾木茲+7%油價=封鎖概率急升。傳導鏈：油價→通脹→10Y反彈→降息60%急跌→科技壓縮。德國PPI+ECB路徑受質疑。最壞情景（15%概率）：WTI $110+→Fed暫停→SPY 640。<br><br>
+<b>Phase 2 — 輪次1（德國PPI衝擊）</b><br>
+宏觀策略師加碼：PPI+2.5%是今日最重要數據，全球降息敘事第一次被硬數據正面挑戰。<br>
+Dalio更新：從5下調至4.5/10，假Goldilocks確認程度超出最初評估。<br>
+Soros：德國PPI≠美國CPI，迴路地基在Fed。今日的PPI是第一塊多米諾，但還需加拿大CPI確認。<br>
+Marks：市場選擇忽視PPI（ES -0.05%），這可能是反身性確認期，轉折前更常見。<br><br>
+<b>Phase 2 — 輪次2（12連漲疲態）</b><br>
+量化：60%概率整固（回調1-3%），40%概率突破（業績催化）。Bollinger上軌712.25 = 明確天花板。<br>
+Druckenmiller：ES -0.05%在歷史正常範圍。Tesla週三是真正的動量測試。<br>
+Taleb：12連漲後任何負面事件都被放大。今日VIX反而下跌-2.56% = 資訊吸收滯後，不是真正的鎮定。<br><br>
+<b>Phase 2 — 輪次3（行動卡片）</b><br>
+共識：等加拿大CPI（20:30）確認通脹方向後決策。Tesla業績前倉位≤65%。Risk Veto觸發，少量VIX9D call對沖。<br><br>
+<b>Phase 3 — 最終投票：3看多:2看空:4觀望 / 加權6.3/10 / Risk Veto觸發（Taleb 8/10）</b>
+</div>
+</details>
+
+<div style="margin-top:2rem;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-dim)">
+美股盤前 2026-04-20 · Investment Committee v2.0 · 數據源：yfinance / Jin10 / FX168 / FRED
+</div>
+
+</div>
+</body>
+</html>

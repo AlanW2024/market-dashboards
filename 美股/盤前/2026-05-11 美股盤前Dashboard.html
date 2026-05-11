@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股盤前 Dashboard — 2026-05-11</title>
+<style>
+:root{
+  --bg:#0a0e1a; --panel:#0f1424; --panel2:#141b2e; --border:#22304e;
+  --text:#e6ecff; --muted:#8b95b8; --gold:#f4c860;
+  --bull:#4ade80; --bear:#f87171; --neutral:#fbbf24;
+  --accent:#60a5fa;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif;
+  line-height:1.55;padding:24px;font-size:14px;
+}
+.wrap{max-width:1240px;margin:0 auto}
+h1{font-size:26px;font-weight:600;color:var(--gold);margin-bottom:4px}
+.subtitle{color:var(--muted);font-size:13px;margin-bottom:24px}
+.divider-gold{
+  height:1px;background:linear-gradient(90deg,transparent,var(--gold) 30%,var(--gold) 70%,transparent);
+  margin:36px 0 24px;
+}
+.divider-gold-label{
+  text-align:center;color:var(--gold);font-size:11px;letter-spacing:6px;
+  margin-top:-32px;margin-bottom:24px;text-transform:uppercase;
+}
+.grid{display:grid;gap:14px}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+.card{
+  background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;
+}
+.card-title{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.metric-value{font-size:22px;font-weight:600;margin-bottom:2px}
+.metric-delta{font-size:13px}
+.bull{color:var(--bull)}.bear{color:var(--bear)}.neutral{color:var(--neutral)}.gold{color:var(--gold)}
+.muted{color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}
+th{color:var(--muted);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:0.5px}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;letter-spacing:0.3px}
+.tag-bull{background:rgba(74,222,128,0.15);color:var(--bull)}
+.tag-bear{background:rgba(248,113,113,0.15);color:var(--bear)}
+.tag-hold{background:rgba(251,191,36,0.15);color:var(--neutral)}
+.tag-warn{background:rgba(244,200,96,0.15);color:var(--gold)}
+.hero-strip{
+  display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px;
+}
+.hero-cell{
+  background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;
+}
+.hero-cell .label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px}
+.hero-cell .value{font-size:18px;font-weight:600}
+.hero-cell .delta{font-size:11px;margin-top:2px}
+.timeline{display:flex;flex-direction:column;gap:10px}
+.timeline-item{
+  background:var(--panel2);border-left:3px solid var(--accent);border-radius:6px;padding:10px 12px;font-size:13px;
+}
+.timeline-item.bear-item{border-left-color:var(--bear)}
+.timeline-item.bull-item{border-left-color:var(--bull)}
+.timeline-item.neutral-item{border-left-color:var(--neutral)}
+.vote-card{
+  background:linear-gradient(135deg,var(--panel) 0%,var(--panel2) 100%);
+  border:1px solid var(--gold);border-radius:12px;padding:20px;text-align:center;
+}
+.vote-tally{font-size:30px;font-weight:700;letter-spacing:2px;margin:8px 0}
+.confidence-bar{
+  height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;margin-top:6px;
+}
+.confidence-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--accent))}
+.scenario-table td:first-child{font-weight:600}
+.scenario-bull{background:rgba(74,222,128,0.06)}
+.scenario-base{background:rgba(251,191,36,0.06)}
+.scenario-bear{background:rgba(248,113,113,0.06)}
+.section-h{font-size:18px;font-weight:600;color:var(--gold);margin:20px 0 12px;padding-left:8px;border-left:3px solid var(--gold)}
+.footer{
+  margin-top:32px;padding-top:16px;border-top:1px solid var(--border);
+  color:var(--muted);font-size:12px;text-align:center;
+}
+.veto-banner{
+  background:rgba(244,200,96,0.08);border:1px solid var(--gold);border-radius:8px;padding:12px 16px;margin-bottom:18px;
+}
+.veto-banner .label{color:var(--gold);font-weight:600;margin-right:8px}
+@media(max-width:768px){
+  .grid-3,.grid-4,.hero-strip{grid-template-columns:repeat(2,1fr)}
+  .grid-2{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>美股盤前 Dashboard</h1>
+<div class="subtitle">2026-05-11（週一）· 21:15 HKT · 快速模式 · Regime: Late-Cycle Broadening 59.8/100</div>
+
+<div class="veto-banner">
+  <span class="label">⚠ Risk Veto PARTIAL（2/4）</span>
+  <span>VIX&lt;19 ✅ · SOXX broad rally ✅ · HY/IG widened ❌ · SPY break-high ❌</span>
+  <span class="gold"> · Taleb 9/10 觸發 personal veto pattern → 倉位上限 50%</span>
+</div>
+
+<!-- ===== Hero Strip：核心數據 ===== -->
+<div class="hero-strip">
+  <div class="hero-cell">
+    <div class="label">ES 期指</div>
+    <div class="value">7,408</div>
+    <div class="delta bear">-0.04%</div>
+  </div>
+  <div class="hero-cell">
+    <div class="label">NQ 期指</div>
+    <div class="value">29,297</div>
+    <div class="delta bear">-0.10%</div>
+  </div>
+  <div class="hero-cell">
+    <div class="label">WTI 原油</div>
+    <div class="value">$100.3</div>
+    <div class="delta bull">+5.0%</div>
+  </div>
+  <div class="hero-cell">
+    <div class="label">10Y 美債息</div>
+    <div class="value">4.39%</div>
+    <div class="delta bear">+0.64%</div>
+  </div>
+  <div class="hero-cell">
+    <div class="label">DXY</div>
+    <div class="value">97.99</div>
+    <div class="delta bull">-0.12%</div>
+  </div>
+  <div class="hero-cell">
+    <div class="label">VIX</div>
+    <div class="value">18.23</div>
+    <div class="delta bear">+1.05</div>
+  </div>
+</div>
+
+<!-- ===== Section 1: 市場結構 ===== -->
+<div class="section-h">市場結構</div>
+<div class="grid grid-3">
+  <div class="card">
+    <div class="card-title">Market Breadth Composite</div>
+    <div class="metric-value gold">33.1 / 100</div>
+    <div class="metric-delta bear">Weakening · S&amp;P +6% / Breadth -0.118 (60d) = 教科書 bearish divergence</div>
+  </div>
+  <div class="card">
+    <div class="card-title">板塊輪動</div>
+    <div class="metric-value">10/11 下行</div>
+    <div class="metric-delta muted">唯一 uptrend: Communication Svc · Tech 唯一 overbought 37.1%</div>
+  </div>
+  <div class="card">
+    <div class="card-title">通脹預期 5Y TIPS</div>
+    <div class="metric-value bear">2.62%</div>
+    <div class="metric-delta bear">⚠ 破 2.5% 警戒線 · 倒掛（5Y &gt; 10Y）</div>
+  </div>
+</div>
+
+<div class="grid grid-3" style="margin-top:14px">
+  <div class="card">
+    <div class="card-title">HY OAS（高息債息差）</div>
+    <div class="metric-value bear">2.79%</div>
+    <div class="metric-delta muted">過度樂觀 · 下個關口 ≥3.50%</div>
+  </div>
+  <div class="card">
+    <div class="card-title">IG OAS（投資級債）</div>
+    <div class="metric-value bear">0.79%</div>
+    <div class="metric-delta muted">過度放鬆 · 下個關口 ≥1.50%</div>
+  </div>
+  <div class="card">
+    <div class="card-title">2s10s Spread</div>
+    <div class="metric-value">0.48%</div>
+    <div class="metric-delta muted">正常斜率但接近平頭</div>
+  </div>
+</div>
+
+<!-- ===== Section 2: 新聞 Timeline ===== -->
+<div class="section-h">隔夜新聞 Timeline</div>
+<div class="timeline">
+  <div class="timeline-item bear-item">
+    <span class="tag tag-bear">🔴 Hormuz 反轉</span>
+    <strong>Trump 5/10 拒絕伊朗 "totally unacceptable"</strong> — WTI 一夜 +5% 至 $100.3，Brent $105.76。「Iran says it will never bow」（CNBC）。封閉延 H2 2026。
+  </div>
+  <div class="timeline-item bear-item">
+    <span class="tag tag-bear">🔴 通脹預期升</span>
+    <strong>5Y TIPS Breakeven 2.62% 破 2.5%</strong> — 配油 $100，4 月 Core CPI 5/12（20:30 HKT）consensus +2.7% YoY（3 月 prev 2.6%），upside surprise（&gt;2.8%）風險升高。
+  </div>
+  <div class="timeline-item bear-item">
+    <span class="tag tag-bear">🔴 集中度警告</span>
+    SSGA: Rally 集中 Micron/AMD/Intel；過半 S&amp;P 板塊持平或下跌。Breadth 33.1 同步確認。
+  </div>
+  <div class="timeline-item bear-item">
+    <span class="tag tag-bear">🔴 信用 stress</span>
+    StoneX：中型企業違約率季度翻倍，部分非上市 BDC 限制贖回。HY OAS 未擴闊但底層累積。
+  </div>
+  <div class="timeline-item bear-item">
+    <span class="tag tag-bear">🔴 Fed 過渡</span>
+    Powell 任期 5/15 完，Warsh 預期本週 Senate 確認；市場 priced in 更鷹 stance。
+  </div>
+  <div class="timeline-item bull-item">
+    <span class="tag tag-bull">🟢 SOXX 強勢</span>
+    5 日 +11.71%，QQQ $780 Call 6/12 V/OI 2.3x = 機構接貨。Druckenmiller/WSB 跟單。
+  </div>
+  <div class="timeline-item bull-item">
+    <span class="tag tag-bull">🟢 對沖平倉</span>
+    SPY P/C 3 日 2.9→1.83→1.25，機構 unwind hedge fueled rally。
+  </div>
+  <div class="timeline-item neutral-item">
+    <span class="tag tag-hold">🟡 中國 CPI 4 月</span>
+    +1.2% YoY（食品 -1.6%、非食品 +1.8%）。Reflation 仍弱，ADR 中概股反應有限。
+  </div>
+  <div class="timeline-item neutral-item">
+    <span class="tag tag-hold">🟡 本週業績</span>
+    Walmart / Home Depot / Target 大型零售；NVDA 月底。Retail 同店銷售 = 消費者 canary。
+  </div>
+</div>
+
+<!-- ===== Section 3: 5/8 預測對比 ===== -->
+<div class="section-h">5/8 盤後預測 vs 5/11 盤前 Reality</div>
+<div class="card">
+<table>
+<thead><tr><th>5/8 預測（下週一）</th><th>5/11 盤前 reality</th><th>評分</th></tr></thead>
+<tbody>
+<tr><td>Bull++ 條件：WTI &lt; $90 + 美伊降溫 + 科技強</td><td>❌ WTI $100 / Trump 拒伊朗 / 科技持平</td><td><span class="tag tag-bear">🚫 BLOCKED</span></td></tr>
+<tr><td>Bull 條件：10Y 續跌 + rally 消化</td><td>❌ 10Y +0.64% 升而非跌</td><td><span class="tag tag-bear">🚫 BLOCKED</span></td></tr>
+<tr><td>Base：整固等 CPI（35%）</td><td>⏳ 期指持平接近 Base，但向 Bear 傾斜</td><td><span class="tag tag-hold">⚠ tilt</span></td></tr>
+<tr><td>10Y 跌至 4.30% → 加速降息</td><td>4.39% +0.64% bond rally 失動力</td><td><span class="tag tag-bear">🔴 hawkish-by-fear</span></td></tr>
+<tr><td>美伊降溫延續</td><td>反轉</td><td><span class="tag tag-bear">🔴 反轉</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ===== GOLD DIVIDER ===== -->
+<div class="divider-gold"></div>
+<div class="divider-gold-label">投資委員會辯論</div>
+
+<!-- ===== Section 4: Vote Card ===== -->
+<div class="grid grid-2">
+  <div class="vote-card">
+    <div style="font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">RAW Vote</div>
+    <div class="vote-tally"><span class="bear">5</span> : <span class="bull">3</span> : <span class="neutral">1</span></div>
+    <div class="muted" style="font-size:12px">Short : Long : Hold</div>
+  </div>
+  <div class="vote-card">
+    <div style="font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">加權結論</div>
+    <div class="vote-tally"><span class="bear">35.8</span> <span class="muted" style="font-size:14px">vs</span> <span class="bull">27.1</span></div>
+    <div class="muted" style="font-size:12px">Short 偏向（差 8.7）· 信心 6.5/10</div>
+  </div>
+</div>
+
+<!-- ===== Section 4b: Stance Table ===== -->
+<div class="section-h">9 位角色立場</div>
+<div class="card">
+<table>
+<thead><tr><th>角色</th><th>立場</th><th>原始</th><th>加權後</th><th>核心論點</th></tr></thead>
+<tbody>
+<tr><td>Marks（價值）</td><td><span class="tag tag-bear">Short</span></td><td>7/10</td><td>6.3</td><td>HY OAS 2.79% 過度樂觀 + Tech 37% overbought + forward P/E 90 百分位 = value trap</td></tr>
+<tr><td>Taleb（黑天鵝）</td><td><span class="tag tag-bear">Short</span></td><td class="gold">9/10 ⚠</td><td>7.2</td><td>Hormuz + CPI 5/12 + Powell 5/15 三重 left tail；VIX 18 反映 mispricing，買 OTM puts</td></tr>
+<tr><td>量化交易員</td><td><span class="tag tag-bear">Short</span></td><td>8/10</td><td>8.0</td><td>Composite 33.1 + 60d divergence + 10/11 板塊 down，systematic 已減 beta</td></tr>
+<tr><td>Druckenmiller（非對稱）</td><td><span class="tag tag-bull">Long</span></td><td>8/10</td><td class="bull">10.4</td><td>SOXX +11.71% + QQQ $780 Call V/OI 2.3x = asymmetric breakout；XLE 套 Trump put</td></tr>
+<tr><td>Soros（反身性）</td><td><span class="tag tag-bull">Long</span></td><td>7/10</td><td>7.7</td><td>SPY P/C 2.9→1.25 = 機構 unwind = reflexive phase 2；CPI cool 即觸發加速</td></tr>
+<tr><td>WSB（散戶）</td><td><span class="tag tag-bull">Long</span></td><td>9/10</td><td>9.0</td><td>NVDA/AMD/MU 飛、XLK P/C 0.46、$780 Call 接貨；唯一風險 CPI hot</td></tr>
+<tr><td>Dalio（周期）</td><td><span class="tag tag-bear">Short</span></td><td>7/10</td><td>6.3</td><td>滑向滯脹右上：5Y TIPS 2.62% + 油 $100 + 2s10s 平頭，credit 未 price 滯脹尾</td></tr>
+<tr><td>Lynch（常識）</td><td><span class="tag tag-hold">Hold</span></td><td>6/10</td><td>7.2</td><td>中國食品 CPI -1.6% 需求弱 + 油打擊低收入；等 WMT / HD earnings 真相</td></tr>
+<tr><td>宏觀策略師</td><td><span class="tag tag-bear">Short</span></td><td>8/10</td><td>8.0</td><td>三重利空：Hormuz + CPI surprise + Powell→Warsh；DXY 弱反映 stagflation 非 hawkish growth</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ===== Conflicts ===== -->
+<div class="section-h">主要分歧（3 點）</div>
+<div class="grid grid-3">
+  <div class="card">
+    <div class="card-title gold">衝突 1：Hormuz</div>
+    <div><strong>Tail vs Catalyst</strong></div>
+    <p style="margin-top:6px;font-size:13px">Taleb 視為凸性左尾買 vol；Drucky 視為 XLE/defense 直接受益。<br><span class="gold">解決：</span>XLE 細注參與 + SPY put hedge。</p>
+  </div>
+  <div class="card">
+    <div class="card-title gold">衝突 2：Breadth Divergence</div>
+    <div><strong>翻轉 vs Squeeze 燃料</strong></div>
+    <p style="margin-top:6px;font-size:13px">量化視 60d divergence 為翻轉；Soros 視 P/C unwind 為 reflexive squeeze。<br><span class="gold">時序：</span>SPY 735 守住 = Soros；穿 = 量化。</p>
+  </div>
+  <div class="card">
+    <div class="card-title gold">衝突 3：CPI 5/12</div>
+    <div><strong>二選一</strong></div>
+    <p style="margin-top:6px;font-size:13px">Consensus +2.7% YoY（prev 2.6%）。Hot &gt;2.8% = Bear 系全對；Cool &lt;2.6%（跌穿 prev）= Long 系觸發加速；In-line 2.6-2.8% = Lynch 派對。<br><span class="gold">5/11 操作：</span>整固，下行 skew 較上行大。</p>
+  </div>
+</div>
+
+<!-- ===== Section 5: Scenario Table ===== -->
+<div class="section-h">大市方向概率（SPY · 修訂版）</div>
+<div class="card">
+<table class="scenario-table">
+<thead><tr><th>情境</th><th>範圍</th><th>5/8 預測</th><th>5/11 修訂</th><th>EV 貢獻</th><th>觸發 action</th></tr></thead>
+<tbody>
+<tr class="scenario-bull"><td>🚀 Bull++</td><td>&gt;+1%</td><td>12%</td><td class="gold">8%</td><td class="bull">+0.12%</td><td>SPY &gt; 745 + VIX &lt; 17 → XLE 加 + SOXX 試倉</td></tr>
+<tr class="scenario-bull"><td>🟢 Bull</td><td>+0.3~+1%</td><td>28%</td><td class="gold">22%</td><td class="bull">+0.14%</td><td>SPY 740-745 → 維持等 CPI</td></tr>
+<tr class="scenario-base"><td>🟡 Base</td><td>-0.3~+0.3%</td><td>35%</td><td class="gold">32%</td><td>0.00%</td><td>SPY 733-740 → 觀望 hedge 不動</td></tr>
+<tr class="scenario-bear"><td>🔴 Bear</td><td>-1~-0.3%</td><td>20%</td><td class="gold">25%</td><td class="bear">-0.16%</td><td>SPY 730-735 → 減倉 30-40% + put 加倉</td></tr>
+<tr class="scenario-bear"><td>🚨 Bear--</td><td>&lt;-1%</td><td>5%</td><td class="gold">13%</td><td class="bear">-0.20%</td><td>SPY &lt; 730 + VIX &gt; 22 → 倉 25% rotate 金/債</td></tr>
+<tr style="border-top:2px solid var(--gold);font-weight:600"><td colspan="4">期望值 EV</td><td colspan="2" class="bear">−0.10%</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ===== Action Card ===== -->
+<div class="section-h">行動卡片</div>
+<div class="grid grid-3">
+  <div class="card">
+    <div class="card-title bull">✅ 應該做</div>
+    <ul style="margin-left:18px;font-size:13px;line-height:1.7">
+      <li>XLE / XOP 1-2% 套 Trump put（stop：WTI &lt; $93）</li>
+      <li>SPY 5/16 730 put 2-3% disaster hedge</li>
+      <li>SOXX 等 retracement，唔 chase</li>
+      <li>倉位 ≤ 50%（Taleb veto pattern）</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title gold">👀 應該睇</div>
+    <ul style="margin-left:18px;font-size:13px;line-height:1.7">
+      <li>SPY 735 / 740 / 745（支撐 / 阻力 / 新高區）</li>
+      <li>10Y 4.45% 上方突破 = risk-off 加速</li>
+      <li>QQQ 710 / 715 站穩</li>
+      <li>CPI 5/12 20:30 HKT，consensus +2.7% YoY（最大錨）</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title bear">❌ 應該避</div>
+    <ul style="margin-left:18px;font-size:13px;line-height:1.7">
+      <li>盲追 SOXX（5d +11.71% 已 stretched）</li>
+      <li>0DTE long calls（多 catalyst 同時）</li>
+      <li>裸無 hedge 多頭</li>
+      <li>追入 high beta growth-no-profit</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== Footer ===== -->
+<div class="footer">
+  Generated 2026-05-11 21:15 HKT · 快速模式（單輪辯論立場）<br>
+  Section 6 預測不含今日盤中走勢；Section 1 含 cash open 前 snapshot 但不入預測<br>
+  <span class="gold">Macro Regime: Late-Cycle Broadening 59.8 · Risk Veto PARTIAL（Taleb pattern: 倉位 ≤ 50%）</span>
+</div>
+
+</div>
+</body>
+</html>
