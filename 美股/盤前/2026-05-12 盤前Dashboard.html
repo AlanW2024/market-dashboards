@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股盤前 Dashboard — 2026-05-12</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --green: #3fb950;
+    --red: #f85149;
+    --yellow: #d29922;
+    --blue: #58a6ff;
+    --orange: #d97706;
+    --purple: #8b5cf6;
+    --gold: #f59e0b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 20px;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header h1 { font-size: 22px; font-weight: 700; }
+  .header .meta { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge.pre { background: #1c2128; color: var(--gold); border: 1px solid var(--gold); }
+
+  /* ALERT BANNERS */
+  .alert-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .alert-banner {
+    flex: 1;
+    min-width: 200px;
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .alert-red { background: rgba(248,81,73,0.12); border: 1px solid var(--red); color: var(--red); }
+  .alert-yellow { background: rgba(210,153,34,0.12); border: 1px solid var(--yellow); color: var(--yellow); }
+
+  /* GRID */
+  .grid { display: grid; gap: 12px; margin-bottom: 16px; }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 800px) {
+    .grid-4, .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .card-title { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .card-value { font-size: 22px; font-weight: 700; line-height: 1.2; }
+  .card-change { font-size: 13px; margin-top: 3px; }
+  .card-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .neutral { color: var(--muted); }
+  .alert-val { color: var(--red); border-bottom: 2px solid var(--red); }
+
+  /* FUTURES HERO */
+  .futures-hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+  .future-item .label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .future-item .value { font-size: 28px; font-weight: 800; }
+  .future-item .change { font-size: 14px; margin-top: 3px; }
+  .future-item .note { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+  /* SECTION HEADER */
+  .section-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin: 20px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 24px 0;
+    border-radius: 1px;
+  }
+
+  /* SECTOR HEATMAP */
+  .sector-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .sector-item {
+    border-radius: 6px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+  .sector-item .name { font-size: 10px; color: var(--text); margin-bottom: 3px; }
+  .sector-item .pct { font-size: 14px; font-weight: 700; }
+  .sector-item .five-day { font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+  .heat-strong-up { background: rgba(63,185,80,0.3); border: 1px solid rgba(63,185,80,0.5); }
+  .heat-up { background: rgba(63,185,80,0.15); border: 1px solid rgba(63,185,80,0.3); }
+  .heat-flat { background: rgba(139,148,158,0.15); border: 1px solid rgba(139,148,158,0.3); }
+  .heat-down { background: rgba(248,81,73,0.15); border: 1px solid rgba(248,81,73,0.3); }
+  .heat-strong-down { background: rgba(248,81,73,0.3); border: 1px solid rgba(248,81,73,0.5); }
+
+  /* CROSS-MARKET */
+  .cross-market { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 16px; }
+  .cm-item { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px; text-align: center; }
+  .cm-item .name { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+  .cm-item .val { font-size: 14px; font-weight: 700; }
+
+  /* CPI ALERT */
+  .cpi-card {
+    background: linear-gradient(135deg, rgba(210,153,34,0.1), rgba(248,81,73,0.1));
+    border: 1px solid var(--yellow);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .cpi-header { font-size: 14px; font-weight: 700; color: var(--yellow); margin-bottom: 10px; }
+  .cpi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .cpi-item .label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .cpi-item .value { font-size: 18px; font-weight: 700; }
+
+  /* SCENARIO BARS */
+  .scenario-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .scenario-item { }
+  .scenario-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .scenario-name { font-size: 12px; font-weight: 600; }
+  .scenario-pct { font-size: 12px; font-weight: 700; }
+  .scenario-bar { height: 6px; border-radius: 3px; background: var(--border); overflow: hidden; }
+  .scenario-fill { height: 100%; border-radius: 3px; }
+
+  /* VOTE BARS */
+  .vote-bar-container { display: flex; height: 40px; border-radius: 6px; overflow: hidden; margin-bottom: 12px; }
+  .vote-segment { display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: white; }
+  .vote-hold { background: var(--blue); }
+  .vote-long { background: var(--green); }
+  .vote-short { background: var(--red); }
+
+  .vote-legend { display: flex; gap: 16px; margin-bottom: 16px; }
+  .vote-item { display: flex; align-items: center; gap: 6px; }
+  .vote-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-hold { background: var(--blue); }
+  .dot-long { background: var(--green); }
+  .dot-short { background: var(--red); }
+
+  /* P/C TABLE */
+  .pc-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  .pc-table th { font-size: 11px; color: var(--muted); text-transform: uppercase; padding: 6px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+  .pc-table td { padding: 6px 10px; border-bottom: 1px solid rgba(48,54,61,0.5); font-size: 12px; }
+  .pc-table tr:last-child td { border-bottom: none; }
+  .signal-pos { color: var(--green); font-weight: 700; }
+  .signal-neg { color: var(--red); }
+  .signal-neutral { color: var(--muted); }
+
+  /* POSITION CARD */
+  .position-display {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+  .position-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .position-value { font-size: 24px; font-weight: 800; color: var(--yellow); }
+  .veto-tag {
+    display: inline-block;
+    background: rgba(248,81,73,0.15);
+    border: 1px solid var(--red);
+    color: var(--red);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+
+  /* ACTION CARD */
+  .action-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; }
+  .action-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: flex-start; }
+  .action-label { font-size: 11px; color: var(--muted); min-width: 80px; padding-top: 2px; }
+  .action-text { font-size: 13px; }
+
+  /* WIKILINKS */
+  .wikilinks { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .wikilinks a { display: inline-block; color: var(--blue); font-size: 12px; text-decoration: none; margin-right: 16px; margin-bottom: 4px; }
+  .footer { margin-top: 20px; font-size: 11px; color: var(--muted); text-align: center; }
+
+  /* REGIME BADGE */
+  .regime-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 14px;
+    margin-bottom: 12px;
+  }
+  .regime-score { font-size: 20px; font-weight: 800; color: var(--orange); }
+  .regime-label { font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <h1>美股盤前 Dashboard</h1>
+    <div class="meta">2026-05-12 ｜ 盤前（約 07:45 EDT）｜ CPI 08:30 ET 最大 catalyst</div>
+  </div>
+  <span class="badge pre">盤前報告</span>
+</div>
+
+<!-- ALERT BANNERS -->
+<div class="alert-row">
+  <div class="alert-banner alert-red">⚠️ WTI $101.27 — 破 $100！能源通脹確認，CPI 能源項目上行</div>
+  <div class="alert-banner alert-yellow">🗳️ CPI 4月 08:30 ET — 今日唯一值得在乎的數字！</div>
+  <div class="alert-banner alert-red">🏛️ Warsh 確認票本週 — 鷹派 Fed 正式鎖定</div>
+</div>
+
+<!-- FUTURES HERO -->
+<div class="section-header">期指（盤前）</div>
+<div class="futures-hero">
+  <div class="future-item">
+    <div class="label">S&P 500 期指（ES=F）</div>
+    <div class="value down">7,405.0</div>
+    <div class="change down">▼ -20.25 pts (-0.27%)</div>
+    <div class="note">SPY 前收 739.30 | 月度 +7.75%</div>
+  </div>
+  <div class="future-item">
+    <div class="label">Nasdaq 100 期指（NQ=F）</div>
+    <div class="value down">29,157.25</div>
+    <div class="change down">▼ -0.58%</div>
+    <div class="note">QQQ 前收 713.29 | 月度 +15.53%</div>
+  </div>
+  <div class="future-item">
+    <div class="label">道指期指（YM=F）</div>
+    <div class="value down">49,733.0</div>
+    <div class="change down">▼ -0.07%</div>
+    <div class="note">DIA 前收 497.11</div>
+  </div>
+</div>
+
+<!-- CPI ALERT CARD -->
+<div class="cpi-card">
+  <div class="cpi-header">🔴 CPI 4月 — 今日 08:30 ET（20:30 HKT）發布</div>
+  <div class="cpi-grid">
+    <div class="cpi-item">
+      <div class="label">Headline YoY 預期</div>
+      <div class="value down">+3.7%</div>
+    </div>
+    <div class="cpi-item">
+      <div class="label">Core YoY 預期</div>
+      <div class="value" style="color:var(--yellow)">+2.7%</div>
+    </div>
+    <div class="cpi-item">
+      <div class="label">關鍵分水嶺</div>
+      <div class="value" style="color:var(--muted);font-size:14px">≤2.7% Bull ｜ >2.8% Bear</div>
+    </div>
+  </div>
+</div>
+
+<!-- KEY INDICATORS -->
+<div class="section-header">風險指標</div>
+<div class="grid grid-4">
+  <div class="card">
+    <div class="card-title">VIX 恐慌指數</div>
+    <div class="card-value down">18.83</div>
+    <div class="card-change down">↑ +0.46 (+2.5%)</div>
+    <div class="card-sub">VIX Term 0.886（<1.0，正常結構）</div>
+  </div>
+  <div class="card">
+    <div class="card-title">WTI 原油</div>
+    <div class="card-value alert-val">$101.27</div>
+    <div class="card-change down">↑ +2.11%（破 $100！）</div>
+    <div class="card-sub">Iran 停火「靠維生系統」</div>
+  </div>
+  <div class="card">
+    <div class="card-title">10Y UST 孳息率</div>
+    <div class="card-value down">4.41%</div>
+    <div class="card-change down">↑ +1.05%</div>
+    <div class="card-sub">TIPS 5Y 2.67% ⚠️ > 2.5% 警戒線</div>
+  </div>
+  <div class="card">
+    <div class="card-title">黃金 Gold</div>
+    <div class="card-value down">$4,703.9</div>
+    <div class="card-change down">↓ -0.53%</div>
+    <div class="card-sub">DXY 98.27（強美元壓制）</div>
+  </div>
+</div>
+
+<div class="grid grid-4">
+  <div class="card">
+    <div class="card-title">HY OAS（高收益息差）</div>
+    <div class="card-value neutral">2.81%</div>
+    <div class="card-sub">+0bp ｜ 過度樂觀 ｜ 下一警戒 ≥3.50%</div>
+  </div>
+  <div class="card">
+    <div class="card-title">IG OAS（投資級息差）</div>
+    <div class="card-value neutral">0.79%</div>
+    <div class="card-sub">+0bp ｜ 過度放鬆 ｜ 下一警戒 ≥1.50%</div>
+  </div>
+  <div class="card">
+    <div class="card-title">2s10s 息差</div>
+    <div class="card-value up">+0.48%</div>
+    <div class="card-sub">正常斜率 ｜ 未倒掛</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Fed Funds Rate</div>
+    <div class="card-value neutral">3.64%</div>
+    <div class="card-sub">維持 3.50-3.75%（4/28-29 FOMC）</div>
+  </div>
+</div>
+
+<!-- PORTFOLIO -->
+<div class="section-header">主要持倉（5/11 收盤）</div>
+<div class="grid grid-4">
+  <div class="card">
+    <div class="card-title">NVDA</div>
+    <div class="card-value down">$219.44</div>
+    <div class="card-change down">-0.12%</div>
+    <div class="card-sub">月度 +15.92% ｜ AI 龍頭</div>
+  </div>
+  <div class="card">
+    <div class="card-title">AAPL</div>
+    <div class="card-value up">$292.68</div>
+    <div class="card-change up">+0.06%</div>
+    <div class="card-sub">月度 +13.02%</div>
+  </div>
+  <div class="card">
+    <div class="card-title">META</div>
+    <div class="card-value down">$598.86</div>
+    <div class="card-change down">-0.09%</div>
+    <div class="card-sub">月度 -5.62%（相對弱）</div>
+  </div>
+  <div class="card">
+    <div class="card-title">SPY</div>
+    <div class="card-value neutral">$739.30</div>
+    <div class="card-change neutral">+0.00%</div>
+    <div class="card-sub">月度 +7.75%</div>
+  </div>
+</div>
+
+<!-- SECTOR HEATMAP -->
+<div class="section-header">板塊表現（5/11 收盤 ｜ 5日 Trend）</div>
+<div class="sector-grid">
+  <div class="sector-item heat-flat">
+    <div class="name">科技 XLK</div>
+    <div class="pct neutral">-0.05%</div>
+    <div class="five-day up">5d: +7.4%</div>
+  </div>
+  <div class="sector-item heat-up">
+    <div class="name">通訊 XLC</div>
+    <div class="pct up">+0.49%</div>
+    <div class="five-day neutral">5d: -0.04%</div>
+  </div>
+  <div class="sector-item heat-up">
+    <div class="name">非消費 XLY</div>
+    <div class="pct up">+0.10%</div>
+    <div class="five-day up">5d: +1.1%</div>
+  </div>
+  <div class="sector-item heat-flat">
+    <div class="name">工業 XLI</div>
+    <div class="pct neutral">-0.06%</div>
+    <div class="five-day up">5d: +1.53%</div>
+  </div>
+  <div class="sector-item heat-flat">
+    <div class="name">金融 XLF</div>
+    <div class="pct neutral">-0.06%</div>
+    <div class="five-day down">5d: -0.79%</div>
+  </div>
+  <div class="sector-item heat-flat">
+    <div class="name">醫療 XLV</div>
+    <div class="pct neutral">-0.03%</div>
+    <div class="five-day down">5d: -1.56%</div>
+  </div>
+  <div class="sector-item heat-flat">
+    <div class="name">原材料 XLB</div>
+    <div class="pct neutral">-0.25%</div>
+    <div class="five-day up">5d: +1.42%</div>
+  </div>
+  <div class="sector-item heat-flat">
+    <div class="name">房地產 XLRE</div>
+    <div class="pct up">+0.12%</div>
+    <div class="five-day up">5d: +0.91%</div>
+  </div>
+  <div class="sector-item heat-down">
+    <div class="name">必需消費 XLP</div>
+    <div class="pct down">-0.51%</div>
+    <div class="five-day down">5d: -0.82%</div>
+  </div>
+  <div class="sector-item heat-down">
+    <div class="name">公用 XLU</div>
+    <div class="pct down">-0.09%</div>
+    <div class="five-day down">5d: -2.65%</div>
+  </div>
+  <div class="sector-item heat-strong-down">
+    <div class="name">能源 XLE</div>
+    <div class="pct neutral">-0.02%</div>
+    <div class="five-day down">5d: -3.84%</div>
+  </div>
+</div>
+
+<!-- CROSS-MARKET -->
+<div class="section-header">隔夜市場</div>
+<div class="cross-market">
+  <div class="cm-item">
+    <div class="name">日本（EWJ）</div>
+    <div class="val up">+0.23%</div>
+  </div>
+  <div class="cm-item">
+    <div class="name">德國（EWG）</div>
+    <div class="val up">+3.03%</div>
+  </div>
+  <div class="cm-item">
+    <div class="name">英國（EWU）</div>
+    <div class="val down">-0.06%</div>
+  </div>
+  <div class="cm-item">
+    <div class="name">中國（FXI）</div>
+    <div class="val down">-0.40%</div>
+  </div>
+  <div class="cm-item">
+    <div class="name">恒生（HSI ETF）</div>
+    <div class="val down">-0.23%</div>
+  </div>
+</div>
+
+<!-- P/C RATIO -->
+<div class="section-header">Options Flow — P/C Ratio 3日趨勢</div>
+<div class="card" style="margin-bottom:16px">
+  <table class="pc-table">
+    <thead>
+      <tr>
+        <th>Ticker</th>
+        <th>今日 P/C</th>
+        <th>3日趨勢</th>
+        <th>方向訊號</th>
+        <th>解讀</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>IWM</td>
+        <td>0.53</td>
+        <td>2.85 → 1.40 → 0.53</td>
+        <td class="signal-pos">✅ 多頭</td>
+        <td>機構連3日 unwind hedge = 小盤多頭</td>
+      </tr>
+      <tr>
+        <td>XLK</td>
+        <td>0.23</td>
+        <td>2.30 → 0.46 → 0.23</td>
+        <td class="signal-pos">✅ 多頭</td>
+        <td>機構連3日 unwind hedge = 科技多頭</td>
+      </tr>
+      <tr>
+        <td>SPY</td>
+        <td>1.59</td>
+        <td>1.83 → 1.25 → 1.59</td>
+        <td class="signal-neutral">❌ 不明確</td>
+        <td>短期波動，無方向性</td>
+      </tr>
+      <tr>
+        <td>QQQ</td>
+        <td>2.96</td>
+        <td>2.22 → 1.33 → 2.96</td>
+        <td class="signal-neutral">❌ 不明確</td>
+        <td>避險需求存在，無趨勢確認</td>
+      </tr>
+      <tr>
+        <td>XLE</td>
+        <td>0.27</td>
+        <td>1.06 → 0.45 → 0.27</td>
+        <td class="signal-neutral">❌ 不明確</td>
+        <td>能源 hedge 解除但非 directional</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="font-size:11px;color:var(--muted);padding:0 10px 4px">Signal: <strong>risk_off_mild_pc_only</strong> — IWM/XLK de-hedge 多頭但 SPY/QQQ 仍有避險需求</div>
+</div>
+
+<!-- DIVIDER -->
+<div class="divider"></div>
+
+<!-- COMMITTEE -->
+<div class="section-header">投資委員會決議（Section 4）</div>
+
+<!-- REGIME -->
+<div class="regime-badge">
+  <div class="regime-score">62.6</div>
+  <div>
+    <div class="regime-label">宏觀 Regime：Late-Cycle Broadening</div>
+    <div style="font-size:11px;color:var(--muted)">IWM/XLI/XLF 優於大盤科技 ｜ 下月轉換概率 70-90%</div>
+  </div>
+</div>
+
+<div class="vote-bar-container">
+  <div class="vote-segment vote-hold" style="width:50.9%">Hold 50.9%</div>
+  <div class="vote-segment vote-long" style="width:30.5%">Long 30.5%</div>
+  <div class="vote-segment vote-short" style="width:18.6%">Short 18.6%</div>
+</div>
+
+<div class="vote-legend">
+  <div class="vote-item"><div class="vote-dot dot-hold"></div><div class="vote-label">Hold：36.7 pts（等 CPI）</div></div>
+  <div class="vote-item"><div class="vote-dot dot-long"></div><div class="vote-label">Long：22.0 pts（Drucky/Soros/WSB）</div></div>
+  <div class="vote-item"><div class="vote-dot dot-short"></div><div class="vote-label">Short：13.4 pts（Taleb/Bond Vigilante）</div></div>
+</div>
+
+<!-- POSITION -->
+<div class="position-display">
+  <div>
+    <div class="position-label">建議倉位上限</div>
+    <div class="position-value">60%</div>
+    <div class="veto-tag">Taleb 8/10 個人 Veto</div>
+  </div>
+  <div style="flex:1;padding-left:20px">
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Risk Veto：RELEASED（3/4）系統 75%，但 Taleb 8/10 個人 Veto 縮至 60%</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:12px;">
+      <div class="up">✅ VIX < 19（18.83）</div>
+      <div class="up">✅ Credit OAS 穩定</div>
+      <div class="up">✅ SOXX 5日 +15.30%</div>
+      <div class="down">❌ SPY 未突破前高</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 6 SCENARIOS -->
+<div class="section-header">今日預測 — Section 6（CPI Binary Framework）</div>
+<div class="card" style="margin-bottom:16px">
+  <div style="font-size:12px;color:var(--muted);margin-bottom:12px">
+    EV 修正：從 Regime Baseline +0.18% 調低至 <strong style="color:var(--red)">-0.09%</strong>（WTI $101 能源衝擊 + Warsh 鷹派）
+  </div>
+  <div class="scenario-list">
+    <div class="scenario-item">
+      <div class="scenario-header">
+        <span class="scenario-name up">Bull++ (>+1%)</span>
+        <span class="scenario-pct up">8%</span>
+      </div>
+      <div class="scenario-bar"><div class="scenario-fill" style="width:8%;background:var(--green)"></div></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">CPI Core ≤2.6%（大幅 beat）+ Iran 停火恢復 → SOXX/IWM +2-3%</div>
+    </div>
+    <div class="scenario-item">
+      <div class="scenario-header">
+        <span class="scenario-name" style="color:#86efac">Bull (+0.3-+1%)</span>
+        <span class="scenario-pct" style="color:#86efac">22%</span>
+      </div>
+      <div class="scenario-bar"><div class="scenario-fill" style="width:22%;background:#86efac"></div></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">Core 2.7%（in-line）→ 期指反彈確認，IWM/QQQ 增持</div>
+    </div>
+    <div class="scenario-item">
+      <div class="scenario-header">
+        <span class="scenario-name" style="color:var(--blue)">Base (-0.3-+0.3%)</span>
+        <span class="scenario-pct" style="color:var(--blue)">32%</span>
+      </div>
+      <div class="scenario-bar"><div class="scenario-fill" style="width:32%;background:var(--blue)"></div></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">Core 2.7-2.8%（in-line 至邊際偏熱）→ 震盪，等 Warsh 確認 → Hold</div>
+    </div>
+    <div class="scenario-item">
+      <div class="scenario-header">
+        <span class="scenario-name" style="color:var(--orange)">Bear (-1~-0.3%)</span>
+        <span class="scenario-pct" style="color:var(--orange)">26%</span>
+      </div>
+      <div class="scenario-bar"><div class="scenario-fill" style="width:26%;background:var(--orange)"></div></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">Core >2.8% + Warsh 鷹派 → 減倉 10-15%，加 VIX hedge</div>
+    </div>
+    <div class="scenario-item">
+      <div class="scenario-header">
+        <span class="scenario-name" style="color:var(--red)">Bear-- (&lt;-1%)</span>
+        <span class="scenario-pct" style="color:var(--red)">12%</span>
+      </div>
+      <div class="scenario-bar"><div class="scenario-fill" style="width:12%;background:var(--red)"></div></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">Core >2.9% + Iran 升級 → 防守模式，XLK put + SH hedge</div>
+    </div>
+  </div>
+</div>
+
+<!-- ACTION CARD -->
+<div class="section-header">Action Card（Section 5）</div>
+<div class="action-card">
+  <div class="action-row">
+    <div class="action-label">應該做</div>
+    <div class="action-text">CPI 前 Hold；CPI 後 15min 確認方向再操作。若 Core ≤2.7% + SPY >742，增持 IWM/QQQ 各 1-2%</div>
+  </div>
+  <div class="action-row">
+    <div class="action-label">應該睇</div>
+    <div class="action-text">CPI Core 數字（08:30 ET）；SPY 730 支撐 / 748 阻力；Warsh 確認日期；Iran 停火動態（oil wild card）</div>
+  </div>
+  <div class="action-row">
+    <div class="action-label">應該避</div>
+    <div class="action-text">CPI 前大手加倉；0DTE 押注 CPI 方向；追入期指跌後反彈（等15min確認）；槓桿小型股</div>
+  </div>
+  <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;font-size:12px">
+    <div><div style="color:var(--muted)">倉位上限</div><div style="font-weight:700;color:var(--yellow)">≤60%（Taleb Veto）</div></div>
+    <div><div style="color:var(--muted)">止損</div><div style="font-weight:700;color:var(--red)">SPY 730 / NQ 28,800</div></div>
+    <div><div style="color:var(--muted)">時間框架</div><div style="font-weight:700">Intraday，等 CPI 後行動</div></div>
+  </div>
+</div>
+
+<!-- KEY EVENTS -->
+<div class="section-header">今日關鍵時間線</div>
+<div class="card" style="margin-bottom:16px">
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span style="background:var(--red);color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;white-space:nowrap">08:30 ET</span>
+      <span style="font-size:13px;font-weight:700">CPI 4月 — 最大 catalyst（Core ≤2.7% vs. >2.8%）</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span style="background:var(--orange);color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;white-space:nowrap">09:30 ET</span>
+      <span style="font-size:13px">NYSE 開市 — SPY 730/748 關鍵位</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span style="background:var(--yellow);color:#0d1117;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;white-space:nowrap">本週任日</span>
+      <span style="font-size:13px">Warsh 參議院確認票（Powell 任期 5/15 結束）</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span style="background:var(--blue);color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;white-space:nowrap">5/13 08:30 ET</span>
+      <span style="font-size:13px">PPI 4月（預計 +4.9% YoY）</span>
+    </div>
+  </div>
+</div>
+
+<!-- WIKILINKS -->
+<div class="wikilinks">
+  <div style="font-size:11px;color:var(--muted);margin-bottom:6px">關聯文件</div>
+  <a href="#">[[2026-05-12 盤前日報]]</a>
+  <a href="#">[[2026-05-12 美股盤前辯論記錄]]</a>
+  <a href="#">[[2026-05-11 美股盤後日報]]</a>
+</div>
+
+<div class="footer">
+  美股盤前 Dashboard ｜ 2026-05-12 ｜ 數據：fetch_all.py + yfinance（19:37 HKT）
+</div>
+
+</body>
+</html>
