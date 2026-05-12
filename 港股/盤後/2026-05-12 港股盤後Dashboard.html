@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>港股盤後 Dashboard — 2026-05-12</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --green: #3fb950;
+    --red: #f85149;
+    --yellow: #d29922;
+    --blue: #58a6ff;
+    --orange: #d97706;
+    --purple: #8b5cf6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 20px;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header h1 { font-size: 22px; font-weight: 700; }
+  .header .meta { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--surface2);
+    color: var(--muted);
+  }
+  .badge.post { background: #1c2128; color: var(--blue); border: 1px solid var(--blue); }
+
+  /* ALERT BANNER */
+  .alert-banner {
+    background: rgba(248, 81, 73, 0.12);
+    border: 1px solid var(--red);
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--red);
+  }
+  .alert-icon { font-size: 18px; }
+
+  /* GRID */
+  .grid { display: grid; gap: 12px; margin-bottom: 16px; }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 800px) {
+    .grid-4, .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .card-title {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .card-value {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .card-change {
+    font-size: 13px;
+    margin-top: 3px;
+  }
+  .card-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .neutral { color: var(--muted); }
+  .alert-val { color: var(--red); border-bottom: 2px solid var(--red); }
+
+  /* HSI HERO */
+  .hsi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .hsi-main .label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .hsi-main .value { font-size: 36px; font-weight: 800; }
+  .hsi-main .change { font-size: 16px; margin-top: 4px; }
+  .hsi-meta { text-align: right; }
+  .hsi-meta .item { margin-bottom: 6px; }
+  .hsi-meta .item .k { font-size: 11px; color: var(--muted); }
+  .hsi-meta .item .v { font-size: 14px; font-weight: 600; }
+
+  /* SECTION HEADER */
+  .section-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin: 20px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* SECTOR HEATMAP */
+  .sector-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .sector-item {
+    border-radius: 6px;
+    padding: 10px 8px;
+    text-align: center;
+  }
+  .sector-item .name { font-size: 11px; color: var(--text); margin-bottom: 4px; }
+  .sector-item .pct { font-size: 15px; font-weight: 700; }
+  .sector-item .ticker { font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+  .heat-strong-up { background: rgba(63, 185, 80, 0.3); border: 1px solid rgba(63,185,80,0.5); }
+  .heat-up { background: rgba(63, 185, 80, 0.15); border: 1px solid rgba(63,185,80,0.3); }
+  .heat-flat { background: rgba(139,148,158,0.15); border: 1px solid rgba(139,148,158,0.3); }
+  .heat-down { background: rgba(248,81,73,0.15); border: 1px solid rgba(248,81,73,0.3); }
+  .heat-strong-down { background: rgba(248,81,73,0.3); border: 1px solid rgba(248,81,73,0.5); }
+
+  /* PREDICTION SCORECARD */
+  .scorecard-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  .scorecard-table th {
+    text-align: left;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .scorecard-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    font-size: 13px;
+  }
+  .scorecard-table tr:last-child td { border-bottom: none; }
+  .score-pass { color: var(--green); font-weight: 700; }
+  .score-partial { color: var(--yellow); font-weight: 700; }
+  .score-fail { color: var(--red); font-weight: 700; }
+  .score-total {
+    display: inline-block;
+    background: var(--surface2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--yellow);
+    margin-top: 8px;
+  }
+
+  /* SCENARIO BARS */
+  .scenario-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .scenario-item { }
+  .scenario-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .scenario-name { font-size: 12px; font-weight: 600; }
+  .scenario-pct { font-size: 12px; font-weight: 700; }
+  .scenario-bar { height: 6px; border-radius: 3px; background: var(--border); overflow: hidden; }
+  .scenario-fill { height: 100%; border-radius: 3px; }
+  .s-bull-plus .scenario-fill { background: var(--green); }
+  .s-bull .scenario-name { color: #86efac; }
+  .s-bull .scenario-fill { background: #86efac; }
+  .s-base .scenario-name { color: var(--blue); }
+  .s-base .scenario-fill { background: var(--blue); }
+  .s-bear .scenario-name { color: var(--orange); }
+  .s-bear .scenario-fill { background: var(--orange); }
+  .s-bear-minus .scenario-name { color: var(--red); }
+  .s-bear-minus .scenario-fill { background: var(--red); }
+
+  /* VOTE BARS */
+  .vote-bar-container { display: flex; gap: 8px; height: 40px; border-radius: 6px; overflow: hidden; margin-bottom: 12px; }
+  .vote-segment { display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: white; }
+  .vote-hold { background: var(--blue); }
+  .vote-long { background: var(--green); }
+  .vote-short { background: var(--red); }
+
+  .vote-legend { display: flex; gap: 16px; margin-bottom: 16px; }
+  .vote-item { display: flex; align-items: center; gap: 6px; }
+  .vote-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-hold { background: var(--blue); }
+  .dot-long { background: var(--green); }
+  .dot-short { background: var(--red); }
+  .vote-label { font-size: 12px; }
+  .vote-pct { font-size: 12px; font-weight: 700; }
+
+  /* POSITION CARD */
+  .position-display {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+  .position-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .position-value { font-size: 24px; font-weight: 800; color: var(--yellow); }
+  .veto-tag {
+    display: inline-block;
+    background: rgba(248,81,73,0.15);
+    border: 1px solid var(--red);
+    color: var(--red);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+
+  /* WIKILINKS */
+  .wikilinks { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .wikilinks a {
+    display: inline-block;
+    color: var(--blue);
+    font-size: 12px;
+    text-decoration: none;
+    margin-right: 16px;
+    margin-bottom: 4px;
+  }
+  .wikilinks a:hover { text-decoration: underline; }
+
+  /* NORTH WATER */
+  .nw-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .nw-value { font-size: 20px; font-weight: 700; }
+  .nw-note { font-size: 11px; color: var(--yellow); margin-top: 4px; }
+
+  .footer { margin-top: 24px; font-size: 11px; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <h1>港股盤後 Dashboard</h1>
+    <div class="meta">2026-05-12 ｜ 收市後 ｜ 港股通南向 · 主要科技股 · WTI 原油</div>
+  </div>
+  <span class="badge post">盤後報告</span>
+</div>
+
+<!-- ALERT: WTI $100 BREACH -->
+<div class="alert-banner">
+  <span class="alert-icon">⚠️</span>
+  <span>WTI 原油 $100.91 — 已破 $100 防守升級線！輸入性通脹壓力升溫，Taleb veto 觸發確認</span>
+</div>
+
+<!-- HSI HERO -->
+<div class="hsi-card">
+  <div class="hsi-main">
+    <div class="label">恒生指數 HSI（5/12 收盤）</div>
+    <div class="value down">26,347.91</div>
+    <div class="change down">▼ -58.84 pts (-0.22%)</div>
+    <div class="card-sub">守住 26,200 下沿 ✓　未破上阻 26,500</div>
+  </div>
+  <div class="hsi-meta">
+    <div class="item">
+      <div class="k">北水淨買入</div>
+      <div class="v neutral">待可靠確認</div>
+    </div>
+    <div class="item">
+      <div class="k">VIX 恐慌指數</div>
+      <div class="v down">18.92 ↑（升 = 紅色）</div>
+    </div>
+    <div class="item">
+      <div class="k">10Y UST</div>
+      <div class="v neutral">4.41%</div>
+    </div>
+    <div class="item">
+      <div class="k">USD/HKD</div>
+      <div class="v neutral">7.8293</div>
+    </div>
+  </div>
+</div>
+
+<!-- KEY TICKERS -->
+<div class="section-header">主要股票</div>
+<div class="grid grid-4">
+  <div class="card">
+    <div class="card-title">騰訊 0700</div>
+    <div class="card-value down">457.2</div>
+    <div class="card-change down">▼ -1.55%（今日最弱）</div>
+    <div class="card-sub">RSI 35.8 ｜ 跌破 460</div>
+  </div>
+  <div class="card">
+    <div class="card-title">阿里巴巴 9988</div>
+    <div class="card-value down">133.3</div>
+    <div class="card-change down">▼ -0.45%</div>
+    <div class="card-sub">✅ 勉強守住 133 ｜ RSI 51.4</div>
+  </div>
+  <div class="card">
+    <div class="card-title">盈富基金 2800</div>
+    <div class="card-value down">26.48</div>
+    <div class="card-change down">▼ -0.23%</div>
+    <div class="card-sub">HSI 追蹤 ｜ 與指數一致</div>
+  </div>
+  <div class="card">
+    <div class="card-title">WTI 原油</div>
+    <div class="card-value alert-val">$100.91</div>
+    <div class="card-change down">▲ +1.74%（破 $100！）</div>
+    <div class="card-sub">防守升級觸發 ✗ 不利港股科技</div>
+  </div>
+</div>
+
+<!-- MACRO INDICATORS -->
+<div class="section-header">宏觀指標</div>
+<div class="grid grid-4">
+  <div class="card">
+    <div class="card-title">HY OAS（美高收益息差）</div>
+    <div class="card-value neutral">2.81%</div>
+    <div class="card-sub">穩定 ｜ 未進入 Risk Veto 觸發</div>
+  </div>
+  <div class="card">
+    <div class="card-title">TIPS 5Y（實際利率）</div>
+    <div class="card-value neutral">2.67%</div>
+    <div class="card-sub">估值壓力中等</div>
+  </div>
+  <div class="card">
+    <div class="card-title">USD/CNY</div>
+    <div class="card-value neutral">6.7965</div>
+    <div class="card-sub">人民幣穩定</div>
+  </div>
+  <div class="card">
+    <div class="card-title">美國 CPI（4月）</div>
+    <div class="card-value" style="color:var(--yellow);font-size:16px">未公布</div>
+    <div class="card-sub">20:30 HKT 後才發布</div>
+  </div>
+</div>
+
+<!-- SECTOR HEATMAP -->
+<div class="section-header">板塊表現（今日）</div>
+<div class="sector-grid">
+  <div class="sector-item heat-strong-up">
+    <div class="name">能源</div>
+    <div class="pct up">+4.61%</div>
+    <div class="ticker">中石油 0857</div>
+  </div>
+  <div class="sector-item heat-up">
+    <div class="name">短視頻</div>
+    <div class="pct up">+3.49%</div>
+    <div class="ticker">快手 1024</div>
+  </div>
+  <div class="sector-item heat-up">
+    <div class="name">銀行</div>
+    <div class="pct up">+1.00%</div>
+    <div class="ticker">工行 1398</div>
+  </div>
+  <div class="sector-item heat-flat">
+    <div class="name">電信</div>
+    <div class="pct neutral">+0.35%</div>
+    <div class="ticker">中移動 0941</div>
+  </div>
+  <div class="sector-item heat-strong-down">
+    <div class="name">科技</div>
+    <div class="pct down">-1.55%</div>
+    <div class="ticker">騰訊 0700</div>
+  </div>
+</div>
+
+<!-- PREDICTION SCORECARD (Section 3) -->
+<div class="section-header">盤前預測 vs 實際（Section 3 評分）</div>
+<div class="card" style="margin-bottom:16px">
+  <table class="scorecard-table">
+    <thead>
+      <tr>
+        <th>預測項目</th>
+        <th>盤前預測</th>
+        <th>實際結果</th>
+        <th>評分</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>EV 估算</td>
+        <td>-0.10% 至 -0.15%</td>
+        <td>-0.22%（超出範圍）</td>
+        <td><span class="score-fail">❌ Miss</span></td>
+      </tr>
+      <tr>
+        <td>情境框架</td>
+        <td>Base 43%（26,200–26,500）</td>
+        <td>26,347（Base 區間）</td>
+        <td><span class="score-partial">✅ Base 命中</span></td>
+      </tr>
+      <tr>
+        <td>騰訊重上 470？</td>
+        <td>能否重上 470（收 464.40）</td>
+        <td>457.2（進一步下跌）</td>
+        <td><span class="score-fail">❌ Miss</span></td>
+      </tr>
+      <tr>
+        <td>阿里守住 133？</td>
+        <td>能否守住 133（收 133.90）</td>
+        <td>133.3（勉強守住）</td>
+        <td><span class="score-pass">✅ Hit</span></td>
+      </tr>
+      <tr>
+        <td>北水 >50 億？</td>
+        <td>&gt;50 億 = Bull confirm</td>
+        <td>待可靠確認</td>
+        <td><span class="score-partial">🔍 待確認</span></td>
+      </tr>
+      <tr>
+        <td>HSI 防線</td>
+        <td>26,200 下沿不失守</td>
+        <td>26,347（守住）</td>
+        <td><span class="score-pass">✅ Hit</span></td>
+      </tr>
+      <tr>
+        <td>WTI $100 防守升級</td>
+        <td>升穿觸發防守升級</td>
+        <td>100.91（已升穿）</td>
+        <td><span class="score-pass">✅ Hit（觸發 = 預測正確）</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="padding: 0 10px 6px;">
+    來源：<span style="color:var(--blue);font-size:12px">[[2026-05-12 港股盤前日報（盤中補做）]] Section 6</span>
+    &nbsp;&nbsp;
+    <span class="score-total">總分：3.5 / 7（50%）</span>
+    &nbsp;&nbsp;
+    <span style="font-size:12px;color:var(--muted)">✅×3 + 🟡×1 + ❌×3</span>
+  </div>
+</div>
+
+<!-- TOMORROW SCENARIOS (Section 6) -->
+<div class="section-header">明日留意 — 5/13 阿里/騰訊業績情境</div>
+<div class="card" style="margin-bottom:16px">
+  <div style="font-size:12px;color:var(--muted);margin-bottom:12px">
+    核心 catalyst：阿里 9988 業績（5/13 盤前）+ 騰訊 0700 業績（5/13 盤後）
+  </div>
+  <div class="scenario-list">
+    <div class="scenario-item s-bull-plus">
+      <div class="scenario-header">
+        <span class="scenario-name up">Bull++（極度樂觀）</span>
+        <span class="scenario-pct up">8%</span>
+      </div>
+      <div class="scenario-bar"><div class="scenario-fill" style="width:8%"></div></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">阿里 GMV 大超預期 + 雲 ARR >30% + 騰訊廣告超預期 → HSI >26,800</div>
+    </div>
+    <div class="scenario-item s-bull">
+      <div class="scenario-header">
+        <span class="scenario-name">Bull（樂觀）</span>
+        <span class="scenario-pct" style="color:#86efac">22%</span>
+      </div>
+      <div class="scenario-bar"><div class="scenario-fill" style="width:22%"></div></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">阿里輕微超預期 + 北水可靠確認轉強 → HSI 26,500-26,800</div>
+    </div>
+    <div class="scenario-item s-base">
+      <div class="scenario-header">
+        <span class="scenario-name">Base（基本）</span>
+        <span class="scenario-pct" style="color:var(--blue)">35%</span>
+      </div>
+      <div class="scenario-bar"><div class="scenario-fill" style="width:35%"></div></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">業績符合預期，市場震盪消化 → HSI 26,200–26,500</div>
+    </div>
+    <div class="scenario-item s-bear">
+      <div class="scenario-header">
+        <span class="scenario-name">Bear（悲觀）</span>
+        <span class="scenario-pct" style="color:var(--orange)">25%</span>
+      </div>
+      <div class="scenario-bar"><div class="scenario-fill" style="width:25%"></div></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">阿里 GMV 轉正失敗 + CPI 超預期 → HSI 25,900–26,200</div>
+    </div>
+    <div class="scenario-item s-bear-minus">
+      <div class="scenario-header">
+        <span class="scenario-name">Bear--（極度悲觀）</span>
+        <span class="scenario-pct" style="color:var(--red)">10%</span>
+      </div>
+      <div class="scenario-bar"><div class="scenario-fill" style="width:10%"></div></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">雙業績崩潰 + CPI Core >2.8% → HSI &lt;25,900</div>
+    </div>
+  </div>
+  <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;">
+    <strong>EV 估算：</strong><span style="color:var(--muted)">~-0.05%（業績週不對稱：Bull 尾部 upside 有限，Bear 尾部 downside 較大）</span>
+  </div>
+</div>
+
+<!-- COMMITTEE VOTE -->
+<div class="section-header">投資委員會決議（Section 7）</div>
+
+<div class="vote-bar-container">
+  <div class="vote-segment vote-hold" style="width:47%">Hold 47%</div>
+  <div class="vote-segment vote-long" style="width:29%">Long 29%</div>
+  <div class="vote-segment vote-short" style="width:24%">Short 24%</div>
+</div>
+
+<div class="vote-legend">
+  <div class="vote-item">
+    <div class="vote-dot dot-hold"></div>
+    <div class="vote-label">Hold：26.4 pts</div>
+  </div>
+  <div class="vote-item">
+    <div class="vote-dot dot-long"></div>
+    <div class="vote-label">Long：16.3 pts</div>
+  </div>
+  <div class="vote-item">
+    <div class="vote-dot dot-short"></div>
+    <div class="vote-label">Short：13.4 pts</div>
+  </div>
+</div>
+
+<!-- POSITION -->
+<div class="position-display">
+  <div>
+    <div class="position-label">建議倉位上限</div>
+    <div class="position-value">40%</div>
+    <div class="veto-tag">Taleb Veto 8/10</div>
+  </div>
+  <div style="flex:1;padding-left:20px">
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Risk Veto 狀態：PARTIAL（2/4）</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:12px;">
+      <div class="up">✅ VIX &lt; 19（18.92）</div>
+      <div class="up">✅ HY OAS 穩定（2.81%）</div>
+      <div class="down">❌ SPY 無突破</div>
+      <div class="down">❌ SOXX 無反彈</div>
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:var(--muted)">
+      解鎖條件：CPI Core ≤2.7% AND 北水可靠確認 &gt;30億 AND 騰訊重返 465+
+    </div>
+  </div>
+</div>
+
+<!-- KEY EVENTS TOMORROW -->
+<div class="section-header">5/13 關鍵日程</div>
+<div class="card" style="margin-bottom:16px">
+  <div style="display:flex;flex-direction:column;gap:8px;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="background:var(--red);color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;white-space:nowrap">盤前</span>
+      <span style="font-size:13px;font-weight:600">阿里巴巴 9988 業績（FY2026 Q4）</span>
+      <span style="font-size:11px;color:var(--muted)">GMV 轉正？雲業務 ARR？</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="background:var(--orange);color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;white-space:nowrap">盤後</span>
+      <span style="font-size:13px;font-weight:600">騰訊 0700 業績（2026 Q1）</span>
+      <span style="font-size:11px;color:var(--muted)">廣告回暖？遊戲授權？</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="background:var(--blue);color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;white-space:nowrap">今晚</span>
+      <span style="font-size:13px;font-weight:600">美國 CPI 4月（20:30 HKT）</span>
+      <span style="font-size:11px;color:var(--muted)">Core ≤2.7% = Bull 框架強化；>2.8% = Bear 框架</span>
+    </div>
+  </div>
+</div>
+
+<!-- WIKILINKS -->
+<div class="wikilinks">
+  <div style="font-size:11px;color:var(--muted);margin-bottom:6px">關聯文件</div>
+  <a href="#">[[2026-05-12 港股盤後日報]]</a>
+  <a href="#">[[2026-05-12 港股盤後辯論記錄]]</a>
+  <a href="#">[[2026-05-12 港股盤前日報（盤中補做）]]</a>
+</div>
+
+<div class="footer">
+  港股盤後 Dashboard ｜ 2026-05-12 ｜ 生成時間：收市後（約 16:30 HKT）
+</div>
+
+</body>
+</html>
