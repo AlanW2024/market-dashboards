@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2026-05-13 美股盤前 Dashboard</title>
+  <style>
+    :root {
+      --bg:#0d1117; --surface:#161b22; --surface2:#0f141b; --border:#30363d;
+      --text:#e6edf3; --muted:#8b949e; --green:#3fb950; --red:#f85149;
+      --yellow:#d29922; --blue:#58a6ff; --orange:#f0883e;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:var(--text); }
+    .wrap { max-width:1280px; margin:0 auto; padding:24px; }
+    .header, .card, .hero, .section { background:var(--surface); border:1px solid var(--border); border-radius:10px; }
+    .header { padding:20px; display:flex; justify-content:space-between; gap:16px; align-items:flex-start; margin-bottom:16px; }
+    h1 { margin:0 0 8px; font-size:28px; }
+    .meta { color:var(--muted); font-size:13px; }
+    .badge { border:1px solid var(--border); background:var(--surface2); padding:6px 10px; border-radius:999px; font-size:12px; }
+    .alerts { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px; }
+    .alert { padding:12px 14px; border-radius:8px; font-size:13px; font-weight:600; }
+    .alert.red { background:rgba(248,81,73,.12); border:1px solid rgba(248,81,73,.35); color:#ffb4ae; }
+    .alert.yellow { background:rgba(210,153,34,.12); border:1px solid rgba(210,153,34,.35); color:#ffd27f; }
+    .alert.blue { background:rgba(88,166,255,.12); border:1px solid rgba(88,166,255,.35); color:#b9d7ff; }
+    .hero-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+    .hero { padding:16px; }
+    .label { font-size:11px; color:var(--muted); margin-bottom:8px; }
+    .value { font-size:28px; font-weight:800; }
+    .up { color:var(--green); }
+    .down { color:var(--red); }
+    .flat { color:var(--yellow); }
+    .sub { color:var(--muted); font-size:12px; margin-top:6px; line-height:1.5; }
+    .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:16px; }
+    .section { padding:16px; }
+    .section h2 { margin:0 0 12px; font-size:16px; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th, td { padding:9px 10px; border-bottom:1px solid rgba(48,54,61,.6); text-align:left; vertical-align:top; }
+    th { color:var(--muted); font-size:11px; text-transform:uppercase; }
+    tr:last-child td { border-bottom:none; }
+    .outlook { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:12px; }
+    .out { padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--surface2); }
+    .out .pct { font-size:22px; font-weight:800; margin:6px 0; }
+    .foot { margin-top:18px; color:var(--muted); font-size:12px; }
+    @media (max-width: 900px) {
+      .alerts, .hero-grid, .grid, .outlook { grid-template-columns:1fr; }
+      .header { flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <h1>美股盤前 Dashboard</h1>
+        <div class="meta">2026-05-13 ｜ 盤前（約 09:25 EDT）｜ PPI already released · Alibaba results out · Warsh chair vote 2:00pm ET</div>
+      </div>
+      <div class="badge">盤前報告</div>
+    </div>
+
+    <div class="alerts">
+      <div class="alert red">⚠️ PPI 4月 +6.0% YoY / +1.4% MoM，明顯高於昨晚盤後預期 +4.9%</div>
+      <div class="alert yellow">📉 Alibaba results out：收入 miss，但雲收入 +38%，AI 主線仍具支撐</div>
+      <div class="alert blue">🏛️ Warsh chair vote scheduled 2:00pm ET，午後仍有第二重事件風險</div>
+    </div>
+
+    <div class="hero-grid">
+      <div class="hero">
+        <div class="label">S&P 期指</div>
+        <div class="value up">7,437.50</div>
+        <div class="sub">+11.00 pts / +0.15%</div>
+      </div>
+      <div class="hero">
+        <div class="label">Nasdaq 期指</div>
+        <div class="value up">29,311.00</div>
+        <div class="sub">+141.00 pts / +0.48%</div>
+      </div>
+      <div class="hero">
+        <div class="label">10Y UST</div>
+        <div class="value down">4.463%</div>
+        <div class="sub">+5.3bp ｜ 利率壓力仍在</div>
+      </div>
+      <div class="hero">
+        <div class="label">WTI 原油</div>
+        <div class="value down">$101.08</div>
+        <div class="sub">高位徘徊 ｜ 通脹壓力未退</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="section">
+        <h2>今日核心數據</h2>
+        <table>
+          <thead><tr><th>項目</th><th>數值</th><th>解讀</th></tr></thead>
+          <tbody>
+            <tr><td>PPI Final Demand</td><td><span class="down">+6.0% YoY / +1.4% MoM</span></td><td>明顯高於昨晚盤後假設，對估值不利</td></tr>
+            <tr><td>PPI Goods</td><td><span class="down">+2.0% MoM</span></td><td>商品端成本壓力偏熱</td></tr>
+            <tr><td>PPI Services</td><td><span class="down">+1.2% MoM</span></td><td>並非單一能源噪音</td></tr>
+            <tr><td>VIX</td><td><span class="flat">17.99</span></td><td>未恐慌，但也未反映午後風險</td></tr>
+            <tr><td>DXY</td><td><span class="down">98.40</span></td><td>美元仍強</td></tr>
+            <tr><td>黃金</td><td><span class="up">$4,712.90</span></td><td>通脹與不確定性支撐避險</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>阿里業績速覽</h2>
+        <table>
+          <thead><tr><th>項目</th><th>數值</th><th>讀法</th></tr></thead>
+          <tbody>
+            <tr><td>收入</td><td><span class="down">243.38 億元人民幣</span></td><td>低於市場預期 247.22 億</td></tr>
+            <tr><td>雲收入</td><td><span class="up">416 億元人民幣</span></td><td>+38% YoY，雲與 AI 主線很強</td></tr>
+            <tr><td>AI 相關收入</td><td><span class="up">89.7 億元人民幣</span></td><td>連續 11 季三位數增長</td></tr>
+            <tr><td>盤前早段股價</td><td><span class="down">約 -1% 至 -2%</span></td><td>市場先交易 revenue miss</td></tr>
+            <tr><td>對美股 read-through</td><td>Mixed</td><td>科技敘事有支撐，但不足以完全抵消 rates shock</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="section">
+        <h2>板塊定性</h2>
+        <table>
+          <thead><tr><th>板塊</th><th>方向</th><th>理由</th></tr></thead>
+          <tbody>
+            <tr><td>科技 / 成長</td><td class="flat">分化</td><td>熱 PPI 壓估值，但期指仍正，表示市場未直接放棄 AI 敘事</td></tr>
+            <tr><td>中概 / 中國科技</td><td class="down">偏審慎</td><td>阿里收入 miss，read-through 先偏弱</td></tr>
+            <tr><td>能源</td><td class="up">偏強</td><td>WTI 仍在 $101 上方</td></tr>
+            <tr><td>防守 / 金融</td><td class="up">相對穩</td><td>高利率環境下現金流與息差邏輯仍在</td></tr>
+            <tr><td>小盤</td><td class="flat">先觀察</td><td>要看 10Y 是否再衝高</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Action Card</h2>
+        <table>
+          <tbody>
+            <tr><td style="width:90px;color:#8b949e;">應該做</td><td>先看開盤前後 15 分鐘是否出現第二輪利率重定價；維持 ≤60% 倉位</td></tr>
+            <tr><td style="color:#8b949e;">應該睇</td><td>SPY 730 / 748、10Y 是否破 4.50%、BABA 跌幅有否擴大、Warsh 14:00 ET 前市場有否先行收窄 beta</td></tr>
+            <tr><td style="color:#8b949e;">應該避</td><td>沿用昨日 preview 語氣；把 Warsh 當成已確認；把阿里混合結果寫成單向 beat</td></tr>
+            <tr><td style="color:#8b949e;">倉位</td><td><span class="flat">≤60%</span>（Taleb personal veto 持續）</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>今日情境機率</h2>
+      <div class="outlook">
+        <div class="out"><div>Bull++</div><div class="pct up">4%</div><div class="sub">利率回落 + 科技全面吸收壞消息</div></div>
+        <div class="out"><div>Bull</div><div class="pct up">18%</div><div class="sub">熱 PPI 被視作可控，QQQ 持續反彈</div></div>
+        <div class="out"><div>Base</div><div class="pct flat">34%</div><div class="sub">等待 14:00 ET，指數區間震盪</div></div>
+        <div class="out"><div>Bear</div><div class="pct down">30%</div><div class="sub">10Y 再升 + 阿里弱勢延續</div></div>
+        <div class="out"><div>Bear--</div><div class="pct down">14%</div><div class="sub">利率急升 + Warsh 風險擴散</div></div>
+      </div>
+      <div class="foot">EV 估算：<span class="down">-0.18%</span> ｜ 較昨晚盤後 -0.15% 再下修，因 PPI 實際值更熱。</div>
+    </div>
+
+    <div class="foot">
+      來源：BLS PPI、Senate Schedule、Alibaba official results page、Reuters / Yahoo Finance、Yahoo Finance market pages<br />
+      關聯：[[2026-05-13 盤前日報]] ｜ [[2026-05-13 美股盤前辯論記錄]]
+    </div>
+  </div>
+</body>
+</html>
