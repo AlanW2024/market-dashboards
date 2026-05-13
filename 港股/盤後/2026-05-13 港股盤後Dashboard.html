@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-05-13 港股盤後 Dashboard</title>
+<style>
+  :root {
+    --bg-primary: #0a0e1a;
+    --bg-secondary: #111827;
+    --bg-card: #1a2235;
+    --bg-card-hover: #1e2a40;
+    --border: #2a3550;
+    --gold: #f0b429;
+    --gold-dim: #a07a1a;
+    --text-primary: #e8edf5;
+    --text-secondary: #8899b4;
+    --text-dim: #5a6a84;
+    --green: #22c55e;
+    --green-dim: #166534;
+    --red: #ef4444;
+    --red-dim: #7f1d1d;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, #0d1526 0%, #162040 100%);
+    border-bottom: 2px solid var(--gold);
+    padding: 18px 24px 14px;
+  }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .header-title { font-size: 20px; font-weight: 700; color: var(--gold); letter-spacing: 0.02em; }
+  .header-sub { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+  .header-badge {
+    background: rgba(240,180,41,0.15);
+    border: 1px solid var(--gold-dim);
+    color: var(--gold);
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .alerts {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;
+  }
+  .alert-chip {
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid;
+  }
+  .alert-red { background: rgba(239,68,68,0.12); border-color: #7f1d1d; color: #fca5a5; }
+  .alert-amber { background: rgba(245,158,11,0.12); border-color: #78350f; color: #fcd34d; }
+  .alert-green { background: rgba(34,197,94,0.12); border-color: #166534; color: #86efac; }
+
+  /* ── Layout ── */
+  .container { max-width: 1400px; margin: 0 auto; padding: 20px 20px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
+  .grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 16px; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .card-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .card-span-2 { grid-column: span 2; }
+  .card-span-3 { grid-column: span 3; }
+
+  /* ── Hero Metric ── */
+  .hero-value {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .hero-sub { font-size: 12px; color: var(--text-secondary); }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .flat { color: var(--text-secondary); }
+  .gold { color: var(--gold); }
+  .amber { color: var(--amber); }
+
+  /* ── Heatmap ── */
+  .heat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .heat-cell {
+    padding: 8px 6px;
+    border-radius: 5px;
+    text-align: center;
+    border: 1px solid transparent;
+    cursor: default;
+  }
+  .heat-cell .ticker { font-size: 10px; font-weight: 700; color: var(--text-primary); }
+  .heat-cell .pct { font-size: 13px; font-weight: 800; margin: 2px 0; }
+  .heat-cell .name { font-size: 9px; color: rgba(255,255,255,0.6); }
+  .heat-strong-up { background: rgba(34,197,94,0.30); border-color: rgba(34,197,94,0.5); }
+  .heat-up { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.3); }
+  .heat-flat { background: rgba(100,116,139,0.15); border-color: rgba(100,116,139,0.3); }
+  .heat-down { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); }
+  .heat-strong-down { background: rgba(239,68,68,0.30); border-color: rgba(239,68,68,0.5); }
+
+  /* ── Table ── */
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    color: var(--text-dim); letter-spacing: 0.06em;
+    padding: 5px 8px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  td { padding: 6px 8px; border-bottom: 1px solid rgba(42,53,80,0.5); font-size: 12px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ── Gauge Bar ── */
+  .gauge-track {
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    height: 6px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  .gauge-fill { height: 100%; border-radius: 4px; }
+  .g-green { background: var(--green); }
+  .g-red { background: var(--red); }
+  .g-amber { background: var(--amber); }
+  .g-gold { background: var(--gold); }
+
+  /* ── Vote Bar ── */
+  .vote-bar-track {
+    display: flex;
+    height: 20px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin: 8px 0;
+  }
+  .vb-bull { background: var(--green); }
+  .vb-neut { background: var(--amber); }
+  .vb-bear { background: var(--red); }
+  .vote-labels { display: flex; justify-content: space-between; font-size: 11px; }
+
+  /* ── Confidence Bar ── */
+  .conf-bar { margin-bottom: 8px; }
+  .conf-label { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 3px; }
+  .conf-bar-track { background: rgba(255,255,255,0.08); border-radius: 3px; height: 5px; }
+  .conf-bar-fill { height: 100%; border-radius: 3px; }
+
+  /* ── Scenario ── */
+  .scenario-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .scenario-cell {
+    border-radius: 6px;
+    padding: 10px 8px;
+    text-align: center;
+    border: 1px solid transparent;
+  }
+  .s-bull-plus { background: rgba(34,197,94,0.25); border-color: rgba(34,197,94,0.5); }
+  .s-bull { background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.25); }
+  .s-base { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.3); }
+  .s-bear { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.25); }
+  .s-bear-plus { background: rgba(239,68,68,0.25); border-color: rgba(239,68,68,0.5); }
+  .s-label { font-size: 11px; font-weight: 700; margin-bottom: 4px; }
+  .s-pct { font-size: 22px; font-weight: 900; }
+  .s-range { font-size: 9px; color: var(--text-secondary); margin-top: 3px; }
+
+  /* ── Divider ── */
+  .gold-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 24px 0;
+    border-radius: 2px;
+  }
+
+  /* ── Stance Badge ── */
+  .stance-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .sb-long { background: rgba(34,197,94,0.2); color: var(--green); border: 1px solid rgba(34,197,94,0.4); }
+  .sb-hold { background: rgba(245,158,11,0.2); color: var(--amber); border: 1px solid rgba(245,158,11,0.4); }
+  .sb-short { background: rgba(239,68,68,0.2); color: var(--red); border: 1px solid rgba(239,68,68,0.4); }
+  .sb-hedge { background: rgba(168,85,247,0.2); color: var(--purple); border: 1px solid rgba(168,85,247,0.4); }
+
+  /* ── Risk Veto Box ── */
+  .veto-box {
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-top: 10px;
+  }
+  .veto-title { color: var(--red); font-weight: 700; font-size: 12px; margin-bottom: 6px; }
+
+  /* ── Signal Tag ── */
+  .sig { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600; }
+  .sig-warn { background: rgba(245,158,11,0.2); color: var(--amber); }
+  .sig-ok { background: rgba(34,197,94,0.2); color: var(--green); }
+  .sig-danger { background: rgba(239,68,68,0.2); color: var(--red); }
+  .sig-pending { background: rgba(100,116,139,0.2); color: var(--text-secondary); }
+
+  /* ── Dispute Box ── */
+  .dispute {
+    border-left: 3px solid var(--gold);
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    background: rgba(240,180,41,0.04);
+    border-radius: 0 4px 4px 0;
+  }
+  .dispute-title { font-size: 11px; font-weight: 700; color: var(--gold); margin-bottom: 3px; }
+  .dispute-body { font-size: 11px; color: var(--text-secondary); }
+
+  /* ── North Water Banner ── */
+  .nw-banner {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.4);
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .nw-icon { font-size: 20px; }
+  .nw-value { font-size: 22px; font-weight: 900; color: var(--red); }
+  .nw-label { font-size: 11px; color: var(--text-secondary); }
+
+  /* ── Section Label ── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-title">港股盤後 Dashboard — 2026-05-13（週三）</div>
+      <div class="header-sub">HSI 收市 26,388.44 (+0.15%) ｜ Base 情境命中 ｜ 收市後資料轉弱，5/14 先防守再看承接</div>
+    </div>
+    <div class="header-badge">Late-Cycle Broadening 59.0/100</div>
+  </div>
+  <div class="alerts">
+    <span class="alert-red">北水終值 −67.71 億（HKD -6.77B）</span>
+    <span class="alert-red">阿里收入低於預期</span>
+    <span class="alert-red">騰訊收入與盈利低於預期</span>
+    <span class="alert-red">PPI +6.0% YoY / +1.4% MoM</span>
+    <span class="alert-red">WTI $101.65 持續高於 $100</span>
+    <span class="alert-amber">Warsh 已確認進入 Fed Board，Chair vote next</span>
+    <span class="alert-green">京東 +8.28%，但不足以抵消平台板塊壓力</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="section-label">市場核心指標</div>
+  <div class="grid-4" style="margin-bottom:12px;">
+    <div class="card">
+      <div class="card-title">HSI 恒生指數</div>
+      <div class="hero-value up">26,388.44</div>
+      <div class="hero-sub up">+40.53 pts ／ +0.15%</div>
+      <div class="hero-sub" style="margin-top:4px;">日間 Base 命中，但未反映盤後壞消息</div>
+    </div>
+    <div class="card">
+      <div class="card-title">南向資金終值</div>
+      <div class="hero-value down">−67.71 億</div>
+      <div class="hero-sub down">HKD -6.77B ｜ 較 5/12 的 +7.91 億明顯惡化</div>
+      <div class="hero-sub" style="margin-top:4px;">港股通（滬）+4.98 億 ｜ 港股通（深）-72.70 億</div>
+    </div>
+    <div class="card">
+      <div class="card-title">平台板塊收市後定性</div>
+      <div class="hero-value down">偏負</div>
+      <div class="hero-sub">阿里 miss ｜ 騰訊 miss ｜ 美息壓力再升</div>
+      <div class="hero-sub" style="margin-top:4px;">京東強勢屬個股，未能代表全板塊</div>
+    </div>
+    <div class="card">
+      <div class="card-title">5/14 行動結論</div>
+      <div class="hero-value amber">30-40%</div>
+      <div class="hero-sub">維持倉位上限 ｜ 先防守再觀察首 30 分鐘北水</div>
+      <div class="hero-sub" style="margin-top:4px;">失守 26,200 且北水續流出要降至 20-25%</div>
+    </div>
+  </div>
+
+  <div class="nw-banner">
+    <div class="nw-icon">🚨</div>
+    <div>
+      <div class="nw-value">−67.71 億港元</div>
+      <div class="nw-label">可靠終值已確認，可直接作日報引用；今日唔係單純未夠強，而係主動減倉。</div>
+    </div>
+    <div style="margin-left:auto; text-align:right;">
+      <div style="font-size:11px;color:var(--text-secondary);">單日變化</div>
+      <div style="font-size:18px;font-weight:800;color:var(--red);">-75.62 億</div>
+      <div style="font-size:10px;color:var(--text-dim);">相對前一日 +7.91 億</div>
+    </div>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:16px;">
+    <div class="card">
+      <div class="card-title">北水拆分</div>
+      <table>
+        <tr><td style="color:var(--text-secondary)">港股通（滬）</td><td class="up" style="text-align:right;font-weight:700;">+4.98 億</td></tr>
+        <tr><td style="color:var(--text-secondary)">港股通（深）</td><td class="down" style="text-align:right;font-weight:700;">-72.70 億</td></tr>
+        <tr><td style="color:var(--text-secondary)">結論</td><td style="text-align:right;font-weight:700;color:var(--red);">深港通賣壓主導</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">主要成交方向</div>
+      <table>
+        <tr><td style="color:var(--text-secondary)">淨買入</td><td style="text-align:right;">泡泡瑪特 +4.72 億</td></tr>
+        <tr><td style="color:var(--text-secondary)">淨賣出 1</td><td class="down" style="text-align:right;">阿里 -14.26 億</td></tr>
+        <tr><td style="color:var(--text-secondary)">淨賣出 2</td><td class="down" style="text-align:right;">小米 -5.87 億</td></tr>
+        <tr><td style="color:var(--text-secondary)">淨賣出 3</td><td class="down" style="text-align:right;">長飛光纖 -5.81 億</td></tr>
+        <tr><td style="color:var(--text-secondary)">淨賣出 4</td><td class="down" style="text-align:right;">騰訊 -4.52 億</td></tr>
+        <tr><td style="color:var(--text-secondary)">淨賣出 5</td><td class="down" style="text-align:right;">美團 -4.10 億</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">北水解讀</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">
+        深港通單日流出 72.70 億，說明內地主動資金在業績密集日選擇先減倉，而唔係等結果再追。
+      </div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">
+        呢個流向同今日指數微升並唔一致，屬於對 price action 嘅明確反駁，而唔係中性確認。
+      </div>
+      <div class="veto-box" style="margin-top:0;">
+        <div class="veto-title">組合含義</div>
+        <div style="font-size:11px;color:var(--text-secondary);">Veto 仍然有效；除非 5/14 早段北水回流且阿里、騰訊跌幅受控，否則唔適合解除防守。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">收市後已驗證催化</div>
+  <div class="card" style="margin-bottom:16px;">
+    <table>
+      <thead>
+        <tr>
+          <th>項目</th>
+          <th>已確認結果</th>
+          <th>對 5/14 含義</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>阿里 FY2026 Q4</td>
+          <td>收入 2433.8 億人民幣，低於預期約 2472.2 億</td>
+          <td>削弱京東 read-through，平台板塊催化降級</td>
+        </tr>
+        <tr>
+          <td>騰訊 1Q2026</td>
+          <td>收入 1965 億，淨利潤 581 億，均低於預期</td>
+          <td>市場更易先交易 miss，而唔係長線 AI 敘事</td>
+        </tr>
+        <tr>
+          <td>美國 4 月 PPI</td>
+          <td>+6.0% YoY ／ +1.4% MoM</td>
+          <td>美債收益率、美元偏強，高估值科技折現率更吃緊</td>
+        </tr>
+        <tr>
+          <td>京東 9618</td>
+          <td>JD.com 收入 3157 億，Non-GAAP 歸母淨利潤 74 億</td>
+          <td>個股真係 beat，但唔等於整個平台板塊同步轉強</td>
+        </tr>
+        <tr>
+          <td>Kevin Warsh</td>
+          <td>已確認進入 Fed Board，Chair vote 尚未完成</td>
+          <td>原先「已確認 Fed Chair」屬過度陳述，現改正</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">預測審計</div>
+  <div class="card" style="margin-bottom:16px;">
+    <table>
+      <thead>
+        <tr>
+          <th>預測項目</th>
+          <th>原先判斷</th>
+          <th>實際結果</th>
+          <th style="text-align:center;">評分</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>HSI Base 區間</td>
+          <td>Base −0.3% 至 +0.3%</td>
+          <td>+0.15%，準確命中</td>
+          <td style="text-align:center;"><span class="sig sig-ok">✅</span></td>
+        </tr>
+        <tr>
+          <td>26,200 防線</td>
+          <td>應可守住</td>
+          <td>收 26,388.44，日間成立</td>
+          <td style="text-align:center;"><span class="sig sig-ok">✅</span></td>
+        </tr>
+        <tr>
+          <td>WTI >100 防守</td>
+          <td>防守框架持續</td>
+          <td>$101.65，判斷正確</td>
+          <td style="text-align:center;"><span class="sig sig-ok">✅</span></td>
+        </tr>
+        <tr>
+          <td>北水若回流才 risk-on</td>
+          <td>等待 >30 億確認</td>
+          <td style="color:var(--red);font-weight:700;">實際為 -67.71 億，大幅反向</td>
+          <td style="text-align:center;"><span class="sig sig-danger">❌</span></td>
+        </tr>
+        <tr>
+          <td>收市後催化時序</td>
+          <td>原稿仍寫待公布</td>
+          <td style="color:var(--red);font-weight:700;">實際在報告時間內已公布，需即時納入</td>
+          <td style="text-align:center;"><span class="sig sig-danger">❌</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:4px;font-size:11px;color:var(--text-secondary);">
+      最大修正唔係日間方向，而係收市後定性：北水、阿里、騰訊、PPI 四條訊號同時轉弱，令 5/14 預設由中性偏多改為先防守。
+    </div>
+  </div>
+
+  <div class="section-label">5/14 行動框架</div>
+  <div class="grid-3" style="margin-bottom:16px;">
+    <div class="card">
+      <div class="card-title">Bull 修復</div>
+      <div class="hero-value up">低機率</div>
+      <div class="hero-sub">低開後快速收復，北水回流，阿里與騰訊跌幅受控</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Base 震盪</div>
+      <div class="hero-value amber">主情境</div>
+      <div class="hero-sub">26,200 至 26,450 拉鋸，資金偏防守，科技反彈有限</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Bear 擴散</div>
+      <div class="hero-value down">要防</div>
+      <div class="hero-sub">北水續流出，平台龍頭再被拋售，HSI 失守 26,200</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div class="card">
+      <div class="card-title">交易紀律</div>
+      <table>
+        <tr><td style="color:var(--text-secondary)">倉位上限</td><td style="text-align:right;font-weight:700;">30-40%</td></tr>
+        <tr><td style="color:var(--text-secondary)">北水回流 >30 億且跌幅受控</td><td style="text-align:right;">可回到 40-50%</td></tr>
+        <tr><td style="color:var(--text-secondary)">北水續流出且失守 26,200</td><td class="down" style="text-align:right;font-weight:700;">降至 20-25%</td></tr>
+        <tr><td style="color:var(--text-secondary)">止損</td><td class="down" style="text-align:right;">阿里、騰訊同步弱於大市時執行</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Risk Veto</div>
+      <div class="vote-bar-track">
+        <div class="vb-bull" style="width:20%"></div>
+        <div class="vb-neut" style="width:20%"></div>
+        <div class="vb-bear" style="width:60%"></div>
+      </div>
+      <div class="vote-labels">
+        <span>Risk-on 20%</span>
+        <span>Neutral 20%</span>
+        <span>Defensive 60%</span>
+      </div>
+      <div class="veto-box">
+        <div class="veto-title">Veto 仍然有效</div>
+        <div style="font-size:11px;color:var(--text-secondary);">原因：北水未回流、PPI 偏熱、WTI >100、阿里與騰訊未提供 risk-on 觸發。今朝先看深港通有冇止血。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Sources</div>
+    <div style="font-size:11px;color:var(--text-secondary);line-height:1.7;">
+      財聯社南向資金追蹤 ｜ BLS PPI April 2026 ｜ Alibaba Group March Quarter 2026 Results ｜ Tencent 2026 First Quarter Results ｜ JD.com 1Q2026 Results ｜ Warsh nomination / hearing status
+    </div>
+  </div>
+</div>
+</body>
+
+</html>
