@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股盤後日報 — 2026-05-12</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #D4AF37; --gold-dim: rgba(212,175,55,0.15); --gold-glow: rgba(212,175,55,0.3);
+  --bg-primary: #0a0a0f; --bg-card: #12121a; --bg-elevated: #1e1e2a;
+  --text-primary: #e8e6e1; --text-secondary: #8a8a9a; --text-dim: #5a5a6a;
+  --border: rgba(255,255,255,0.06); --border-gold: rgba(212,175,55,0.3);
+  --bullish: #4ade80; --bearish: #f87171; --neutral: #fbbf24;
+  --bullish-bg: rgba(74,222,128,0.08); --bearish-bg: rgba(248,113,113,0.08); --neutral-bg: rgba(251,191,36,0.08);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg-primary); color:var(--text-primary); font-family:'Noto Sans TC',sans-serif; line-height:1.6; min-height:100vh; }
+body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; }
+.container { max-width:920px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+.market-header { text-align:center; margin-bottom:2.5rem; padding-bottom:2rem; border-bottom:1px solid var(--border); position:relative; animation:fadeIn 0.8s ease-out; }
+.market-header::after { content:''; position:absolute; bottom:-1px; left:50%; transform:translateX(-50%); width:120px; height:1px; background:var(--gold); box-shadow:0 0 20px var(--gold-glow); }
+.header-eyebrow { font-family:'JetBrains Mono',monospace; font-size:0.7rem; font-weight:500; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem; }
+.market-header h1 { font-family:'DM Serif Display',serif; font-size:clamp(1.8rem,5vw,2.6rem); font-weight:400; color:var(--text-primary); letter-spacing:-0.02em; }
+.header-subtitle { font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--text-secondary); margin-top:0.5rem; }
+.alert-badge { display:inline-block; margin-top:1rem; padding:0.4rem 1rem; border:1px solid rgba(248,113,113,0.4); border-radius:100px; font-family:'JetBrains Mono',monospace; font-size:0.72rem; font-weight:600; color:var(--bearish); background:var(--bearish-bg); }
+
+.hero-metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:1.5rem; animation:slideUp 0.6s ease-out 0.1s both; }
+.hero-card { background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:1.25rem 1rem; text-align:center; transition:border-color 0.3s,transform 0.3s; }
+.hero-card:hover { border-color:var(--border-gold); transform:translateY(-2px); }
+.hero-label { font-family:'JetBrains Mono',monospace; font-size:0.65rem; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-dim); margin-bottom:0.5rem; }
+.hero-value { font-family:'DM Serif Display',serif; font-size:1.5rem; color:var(--text-primary); line-height:1.2; margin-bottom:0.3rem; }
+.hero-change { font-family:'JetBrains Mono',monospace; font-size:0.82rem; font-weight:600; }
+.hero-change.up { color:var(--bullish); } .hero-change.down { color:var(--bearish); }
+.hero-sub { font-family:'JetBrains Mono',monospace; font-size:0.68rem; color:var(--text-dim); margin-top:0.25rem; }
+
+.secondary-metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; margin-bottom:1.5rem; animation:slideUp 0.6s ease-out 0.15s both; }
+.sec-metric { background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:0.75rem 1rem; display:flex; align-items:baseline; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:0.82rem; }
+.sec-name { color:var(--text-secondary); font-weight:500; }
+.sec-val { color:var(--text-primary); font-weight:600; margin:0 0.4rem; }
+.sec-chg { font-weight:600; font-size:0.78rem; }
+.sec-chg.up { color:var(--bullish); } .sec-chg.down { color:var(--bearish); }
+
+.section-title { font-family:'DM Serif Display',serif; font-size:1.15rem; color:var(--text-primary); margin-bottom:1rem; display:flex; align-items:center; gap:0.75rem; }
+.section-title::before { content:''; width:3px; height:1.1em; background:var(--gold); border-radius:2px; flex-shrink:0; }
+.section { margin-bottom:2.5rem; animation:slideUp 0.6s ease-out both; }
+
+.heatmap-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0.6rem; margin-bottom:1.5rem; animation:slideUp 0.6s ease-out 0.2s both; }
+.heatmap-tile { border-radius:10px; padding:0.9rem 0.75rem; text-align:center; border:1px solid var(--border); }
+.ht-name { font-size:0.78rem; font-weight:500; color:var(--text-primary); margin-bottom:0.25rem; }
+.ht-chg { font-family:'JetBrains Mono',monospace; font-size:0.85rem; font-weight:700; }
+.heat-strong-up { background:rgba(74,222,128,0.18); } .heat-strong-up .ht-chg { color:#4ade80; }
+.heat-up { background:rgba(74,222,128,0.10); } .heat-up .ht-chg { color:#86efac; }
+.heat-mild-up { background:rgba(74,222,128,0.05); } .heat-mild-up .ht-chg { color:#a7f3d0; }
+.heat-flat { background:rgba(255,255,255,0.02); } .heat-flat .ht-chg { color:var(--text-secondary); }
+.heat-mild-down { background:rgba(248,113,113,0.05); } .heat-mild-down .ht-chg { color:#fca5a5; }
+.heat-down { background:rgba(248,113,113,0.10); } .heat-down .ht-chg { color:#fca5a5; }
+.heat-strong-down { background:rgba(248,113,113,0.18); } .heat-strong-down .ht-chg { color:#f87171; }
+
+.fx-row { display:flex; justify-content:center; gap:2rem; padding:0.9rem 0; margin-bottom:1.5rem; border-top:1px solid var(--border); border-bottom:1px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:0.82rem; color:var(--text-secondary); animation:slideUp 0.6s ease-out 0.25s both; }
+.fx-pair { display:flex; align-items:baseline; gap:0.4rem; }
+.fx-label { color:var(--text-dim); font-weight:500; }
+.fx-val { color:var(--text-primary); font-weight:600; }
+.fx-chg { font-size:0.72rem; font-weight:500; }
+.fx-chg.up { color:var(--bullish); } .fx-chg.down { color:var(--bearish); }
+
+.news-timeline { margin-bottom:1.5rem; animation:slideUp 0.6s ease-out 0.3s both; }
+.news-item { display:flex; align-items:flex-start; gap:0.75rem; padding:0.7rem 0; border-bottom:1px solid var(--border); font-size:0.85rem; color:var(--text-secondary); line-height:1.5; }
+.news-item:last-child { border-bottom:none; }
+.news-tag { font-family:'JetBrains Mono',monospace; font-size:0.62rem; font-weight:700; letter-spacing:0.08em; padding:0.2rem 0.5rem; border-radius:4px; white-space:nowrap; flex-shrink:0; margin-top:0.15rem; }
+.news-tag.fed { background:rgba(139,92,246,0.15); color:#a78bfa; }
+.news-tag.energy { background:rgba(251,146,60,0.15); color:#fb923c; }
+.news-tag.risk { background:var(--bearish-bg); color:var(--bearish); }
+.news-tag.watch { background:var(--neutral-bg); color:var(--neutral); }
+.news-tag.tech { background:rgba(56,189,248,0.15); color:#38bdf8; }
+.news-tag.earnings { background:rgba(168,85,247,0.15); color:#a855f7; }
+
+.macro-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; margin-bottom:2rem; animation:slideUp 0.6s ease-out 0.4s both; }
+.macro-card { background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:1rem; text-align:center; }
+.macro-card.hot { border-color:rgba(248,113,113,0.4); }
+.mc-label { font-family:'JetBrains Mono',monospace; font-size:0.62rem; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-dim); margin-bottom:0.4rem; }
+.mc-value { font-family:'JetBrains Mono',monospace; font-size:1.05rem; font-weight:600; color:var(--gold); margin-bottom:0.2rem; }
+.mc-value.red { color:var(--bearish); }
+.mc-note { font-size:0.72rem; color:var(--text-secondary); }
+
+.cross-market { display:grid; grid-template-columns:repeat(5,1fr); gap:0.6rem; margin-bottom:1.5rem; animation:slideUp 0.6s ease-out 0.42s both; }
+.cross-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:0.6rem 0.5rem; text-align:center; font-family:'JetBrains Mono',monospace; }
+.cc-name { font-size:0.65rem; color:var(--text-dim); margin-bottom:0.2rem; }
+.cc-val { font-size:0.82rem; font-weight:600; color:var(--text-primary); }
+.cc-chg { font-size:0.72rem; font-weight:600; }
+.cc-chg.up { color:var(--bullish); } .cc-chg.down { color:var(--bearish); }
+
+.section-divider { position:relative; text-align:center; margin:3rem 0 2.5rem; padding:1.5rem 0; }
+.section-divider::before { content:''; position:absolute; top:50%; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); box-shadow:0 0 12px var(--gold-glow); }
+.section-divider::after { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:8px; height:8px; background:var(--gold); border-radius:50%; box-shadow:0 0 16px var(--gold-glow); }
+.divider-label { position:relative; display:inline-block; background:var(--bg-primary); padding:0.4rem 1.5rem; font-family:'JetBrains Mono',monospace; font-size:0.65rem; font-weight:600; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold); }
+
+.debate-header { text-align:center; margin-bottom:2rem; padding-bottom:1.5rem; border-bottom:1px solid var(--border); }
+.debate-title { font-family:'DM Serif Display',serif; font-size:clamp(1.2rem,3vw,1.6rem); font-weight:400; color:var(--text-primary); margin-bottom:1rem; line-height:1.4; }
+.vote-summary { display:inline-flex; align-items:center; gap:0.75rem; font-family:'JetBrains Mono',monospace; font-size:0.95rem; padding:0.5rem 1.25rem; border:1px solid var(--border); border-radius:100px; background:var(--bg-card); }
+.num-bull { color:var(--bullish); font-weight:600; }
+.num-bear { color:var(--bearish); font-weight:600; }
+.num-neut { color:var(--neutral); font-weight:600; }
+.sep { color:var(--text-dim); }
+.confidence-badge { display:block; margin-top:0.75rem; font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--text-secondary); }
+.confidence-badge strong { color:var(--neutral); }
+
+.action-card { position:relative; border:1px solid var(--border-gold); border-radius:16px; padding:2rem; margin-bottom:2.5rem; background:linear-gradient(135deg,rgba(212,175,55,0.04),rgba(212,175,55,0.01)); overflow:hidden; }
+.action-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+.action-card-label { font-family:'JetBrains Mono',monospace; font-size:0.65rem; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; }
+.action-main { display:flex; align-items:baseline; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+.action-verb { font-family:'DM Serif Display',serif; font-size:2rem; line-height:1; color:var(--neutral); }
+.action-reason { font-size:0.95rem; color:var(--text-secondary); border-left:2px solid var(--border-gold); padding-left:1rem; }
+.action-details { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; }
+.action-detail-item { padding:0.75rem 1rem; background:rgba(0,0,0,0.25); border-radius:8px; border:1px solid var(--border); }
+.action-detail-item .label { font-family:'JetBrains Mono',monospace; font-size:0.65rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-dim); margin-bottom:0.25rem; }
+.action-detail-item .value { font-family:'JetBrains Mono',monospace; font-size:0.85rem; font-weight:500; color:var(--text-primary); }
+.action-detail-item .value.gold { color:var(--gold); }
+.action-detail-item .value.green { color:var(--bullish); }
+.action-detail-item .value.red { color:var(--bearish); }
+
+.vote-bar-wrap { background:var(--bg-card); border-radius:12px; padding:1.5rem; border:1px solid var(--border); }
+.vote-bar { display:flex; height:40px; border-radius:8px; overflow:hidden; margin-bottom:1rem; }
+.vote-bar > div { display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:0.75rem; font-weight:600; }
+.vb-bull { background:linear-gradient(135deg,#22c55e,#4ade80); color:#052e16; }
+.vb-neut { background:linear-gradient(135deg,#d97706,#fbbf24); color:#451a03; }
+.vb-bear { background:linear-gradient(135deg,#dc2626,#f87171); color:#450a0a; }
+.vote-legend { display:flex; justify-content:center; gap:2rem; font-size:0.8rem; }
+.vote-legend span { display:flex; align-items:center; gap:0.4rem; color:var(--text-secondary); }
+.legend-dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+.legend-dot.bull { background:var(--bullish); } .legend-dot.bear { background:var(--bearish); } .legend-dot.neut { background:var(--neutral); }
+
+.conf-chart { background:var(--bg-card); border-radius:12px; padding:1.5rem; border:1px solid var(--border); }
+.conf-row { display:grid; grid-template-columns:140px 1fr 50px; align-items:center; gap:0.75rem; padding:0.5rem 0; border-bottom:1px solid var(--border); }
+.conf-row:last-child { border-bottom:none; }
+.conf-name { font-size:0.82rem; font-weight:500; }
+.conf-bar-track { height:24px; background:rgba(255,255,255,0.03); border-radius:6px; overflow:hidden; }
+.conf-bar-fill { height:100%; border-radius:6px; }
+.conf-val { font-family:'JetBrains Mono',monospace; font-size:0.78rem; font-weight:600; text-align:right; }
+
+.disputes { display:grid; gap:1rem; margin-bottom:2rem; }
+.dispute-card { background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:1.25rem; }
+.d-title { font-size:0.85rem; font-weight:600; color:var(--text-primary); margin-bottom:0.75rem; }
+.d-sides { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
+.d-side { padding:0.6rem 0.8rem; border-radius:8px; font-size:0.78rem; line-height:1.4; }
+.d-side.bull { background:var(--bullish-bg); border:1px solid rgba(74,222,128,0.15); color:var(--text-secondary); }
+.d-side.bear { background:var(--bearish-bg); border:1px solid rgba(248,113,113,0.15); color:var(--text-secondary); }
+.d-verdict { margin-top:0.75rem; padding:0.5rem 0.8rem; background:var(--neutral-bg); border-radius:6px; font-size:0.75rem; color:var(--neutral); }
+
+.stance-table { width:100%; border-collapse:collapse; font-size:0.82rem; background:var(--bg-card); border-radius:12px; overflow:hidden; }
+.stance-table th { background:var(--bg-elevated); color:var(--text-dim); font-family:'JetBrains Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.75rem 1rem; text-align:left; font-weight:500; }
+.stance-table td { padding:0.7rem 1rem; border-top:1px solid var(--border); color:var(--text-secondary); }
+.stance-table td:first-child { color:var(--text-primary); font-weight:500; }
+.stance-badge { display:inline-block; padding:0.15rem 0.5rem; border-radius:4px; font-family:'JetBrains Mono',monospace; font-size:0.68rem; font-weight:700; }
+.stance-badge.long { background:var(--bullish-bg); color:var(--bullish); }
+.stance-badge.short { background:var(--bearish-bg); color:var(--bearish); }
+.stance-badge.hold { background:var(--neutral-bg); color:var(--neutral); }
+.stance-badge.hedge { background:rgba(139,92,246,0.15); color:#a78bfa; }
+
+.outlook-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:0.5rem; margin-bottom:1rem; }
+.outlook-cell { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:0.75rem 0.5rem; text-align:center; }
+.oc-label { font-family:'JetBrains Mono',monospace; font-size:0.62rem; font-weight:600; letter-spacing:0.1em; color:var(--text-dim); margin-bottom:0.3rem; }
+.oc-pct { font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:700; margin-bottom:0.2rem; }
+.oc-range { font-family:'JetBrains Mono',monospace; font-size:0.6rem; color:var(--text-dim); }
+.bull-pp .oc-pct { color:#4ade80; } .bull-p .oc-pct { color:#86efac; } .base-c .oc-pct { color:var(--neutral); } .bear-m .oc-pct { color:#fca5a5; } .bear-mm .oc-pct { color:#f87171; }
+
+.info-box { background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:1rem; font-size:0.82rem; color:var(--text-secondary); line-height:1.8; margin-bottom:1rem; }
+.veto-box { border:1px solid rgba(248,113,113,0.4); border-radius:10px; padding:1rem; background:rgba(248,113,113,0.04); font-size:0.82rem; color:var(--text-secondary); line-height:1.8; }
+.veto-box strong { color:var(--bearish); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="market-header">
+  <p class="header-eyebrow">US Equity · Post-Market · 2026-05-12</p>
+  <h1>美股盤後日報</h1>
+  <p class="header-subtitle">S&P 500 收 7,392 (-0.29%) · CPI Core +2.8% HOT · Warsh Fed Board 確認</p>
+  <div class="alert-badge">⚠ CPI Core +2.8% — HOT THRESHOLD 觸發 · Bear Condition Active</div>
+</header>
+
+<div class="hero-metrics">
+  <div class="hero-card">
+    <div class="hero-label">S&P 500</div>
+    <div class="hero-value">7,392</div>
+    <div class="hero-change down">▼ −0.29%</div>
+    <div class="hero-sub">收市</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">Nasdaq 100</div>
+    <div class="hero-value">26,088</div>
+    <div class="hero-change down">▼ −0.71%</div>
+    <div class="hero-sub">科技領跌</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">Dow Jones</div>
+    <div class="hero-value">44,452</div>
+    <div class="hero-change up">▲ +0.15%</div>
+    <div class="hero-sub">防守板塊支撐</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">VIX</div>
+    <div class="hero-value">17.99</div>
+    <div class="hero-change up">▼ −0.38 異常</div>
+    <div class="hero-sub">CPI hot 日反降</div>
+  </div>
+</div>
+
+<div class="secondary-metrics">
+  <div class="sec-metric"><span class="sec-name">CPI Core YoY</span><span class="sec-val" style="color:var(--bearish)">+2.8%</span><span class="sec-chg down">HOT ⚠</span></div>
+  <div class="sec-metric"><span class="sec-name">WTI 原油</span><span class="sec-val">$101.63</span><span class="sec-chg up">+0.36%</span></div>
+  <div class="sec-metric"><span class="sec-name">10Y Yield</span><span class="sec-val">4.46%</span><span class="sec-chg down">+5bp</span></div>
+  <div class="sec-metric"><span class="sec-name">Russell 2000</span><span class="sec-val">IWM</span><span class="sec-chg down">−1.02%</span></div>
+  <div class="sec-metric"><span class="sec-name">能源 CPI YoY</span><span class="sec-val" style="color:var(--bearish)">+17.9%</span><span class="sec-chg down">滯脹</span></div>
+  <div class="sec-metric"><span class="sec-name">SPY P/C</span><span class="sec-val">2.60</span><span class="sec-chg down">高度避險</span></div>
+</div>
+
+<div class="fx-row">
+  <div class="fx-pair"><span class="fx-label">USD/CNH</span><span class="fx-val">7.21</span><span class="fx-chg down">USD強</span></div>
+  <div class="fx-pair"><span class="fx-label">EUR/USD</span><span class="fx-val">1.088</span><span class="fx-chg down">−0.18%</span></div>
+  <div class="fx-pair"><span class="fx-label">DXY</span><span class="fx-val">104.8</span><span class="fx-chg down">+0.22%</span></div>
+  <div class="fx-pair"><span class="fx-label">Gold</span><span class="fx-val">$3,241</span><span class="fx-chg down">−0.45%</span></div>
+  <div class="fx-pair"><span class="fx-label">BTC</span><span class="fx-val">$104,200</span><span class="fx-chg up">+1.2%</span></div>
+</div>
+
+<div class="section-title">板塊熱力圖</div>
+<div class="heatmap-grid">
+  <div class="heatmap-tile heat-strong-up"><div class="ht-name">醫療 XLV</div><div class="ht-chg">+1.93%</div></div>
+  <div class="heatmap-tile heat-up"><div class="ht-name">金融 XLF</div><div class="ht-chg">+0.82%</div></div>
+  <div class="heatmap-tile heat-mild-up"><div class="ht-name">能源 XLE</div><div class="ht-chg">+0.43%</div></div>
+  <div class="heatmap-tile heat-mild-up"><div class="ht-name">工業 XLI</div><div class="ht-chg">+0.27%</div></div>
+  <div class="heatmap-tile heat-flat"><div class="ht-name">公用 XLU</div><div class="ht-chg">+0.11%</div></div>
+  <div class="heatmap-tile heat-flat"><div class="ht-name">必需 XLP</div><div class="ht-chg">+0.08%</div></div>
+  <div class="heatmap-tile heat-flat"><div class="ht-name">通訊 XLC</div><div class="ht-chg">−0.11%</div></div>
+  <div class="heatmap-tile heat-mild-down"><div class="ht-name">原料 XLB</div><div class="ht-chg">−0.35%</div></div>
+  <div class="heatmap-tile heat-mild-down"><div class="ht-name">地產 XLRE</div><div class="ht-chg">−0.68%</div></div>
+  <div class="heatmap-tile heat-down"><div class="ht-name">可選 XLY</div><div class="ht-chg">−0.87%</div></div>
+  <div class="heatmap-tile heat-strong-down"><div class="ht-name">科技 XLK</div><div class="ht-chg">−1.56%</div></div>
+</div>
+
+<div class="section-title">盤後重大新聞</div>
+<div class="news-timeline">
+  <div class="news-item"><span class="news-tag risk">CPI HOT</span><span>4月 CPI Core +2.8% YoY / +0.4% MoM（15個月最高月率），能源 +17.9% YoY。月率超預期觸發通脹黏性擔憂，Goldman 維持降息推至 2026年12月。</span></div>
+  <div class="news-item"><span class="news-tag fed">FED</span><span>Warsh 獲參議院確認加入 Fed Board（51-45），為 Chair 位置鋪路。Warsh 首次公開表態（5/13）是真正的 price discovery event，市場密切追蹤鷹/鴿措辭。</span></div>
+  <div class="news-item"><span class="news-tag energy">能源</span><span>WTI 收 $101.63，自 2023年以來首度站穩 $100+。能源板塊逆市 +0.43%，通脹滯後效應令 OPEC+ 減產持續影響估值。</span></div>
+  <div class="news-item"><span class="news-tag tech">科技</span><span>XLK -1.56% 領跌，NVDA/TSLA/MSFT 集體受壓。XLK P/C 0.32（科技對沖解除）vs SPY P/C 2.60（整體高度避險）—— 訊號矛盾，等 PPI 確認方向。</span></div>
+  <div class="news-item"><span class="news-tag watch">5/13事件</span><span>PPI（08:30 ET，預期+4.9%）、Warsh 首次公開表態、阿里 Q4 FY2026 業績（盤前）—— 三個催化劑同日，任一超預期均可推動市場定向。</span></div>
+  <div class="news-item"><span class="news-tag earnings">阿里業績</span><span>阿里巴巴 9988.HK 5/13 盤前發布 Q4 FY2026 業績。分析師預期 EPS $0.89、收入 246.5億人民幣（+4% YoY）。Q3 大幅 miss 是否充分定價，中概科技 read-through 效應待確認。</span></div>
+</div>
+
+<div class="section-title">宏觀指標</div>
+<div class="macro-grid">
+  <div class="macro-card hot"><div class="mc-label">CPI Core YoY</div><div class="mc-value red">+2.8%</div><div class="mc-note">精準踩 Hot Threshold</div></div>
+  <div class="macro-card hot"><div class="mc-label">CPI Core MoM</div><div class="mc-value red">+0.4%</div><div class="mc-note">15個月最高月率</div></div>
+  <div class="macro-card"><div class="mc-label">能源 CPI YoY</div><div class="mc-value">+17.9%</div><div class="mc-note">落後指標 · 滯脹風險</div></div>
+  <div class="macro-card"><div class="mc-label">10Y Yield</div><div class="mc-value">4.46%</div><div class="mc-note">+5bp · 估值壓縮</div></div>
+  <div class="macro-card"><div class="mc-label">首次降息預期</div><div class="mc-value">2026-12</div><div class="mc-note">Goldman 最新 · 利率高原延長</div></div>
+  <div class="macro-card"><div class="mc-label">FS KKR 不良率</div><div class="mc-value">8.1%</div><div class="mc-note">私信信貸壓力</div></div>
+</div>
+
+<div class="section-title">跨市場</div>
+<div class="cross-market">
+  <div class="cross-card"><div class="cc-name">恒指 HSI</div><div class="cc-val">26,348</div><div class="cc-chg down">−0.22%</div></div>
+  <div class="cross-card"><div class="cc-name">日經 NI225</div><div class="cc-val">37,820</div><div class="cc-chg down">−0.54%</div></div>
+  <div class="cross-card"><div class="cc-name">歐洲 DAX</div><div class="cc-val">18,340</div><div class="cc-chg down">−0.31%</div></div>
+  <div class="cross-card"><div class="cc-name">黃金 XAU</div><div class="cc-val">$3,241</div><div class="cc-chg down">−0.45%</div></div>
+  <div class="cross-card"><div class="cc-name">BTC/USD</div><div class="cc-val">104,200</div><div class="cc-chg up">+1.2%</div></div>
+</div>
+
+<div class="section-divider"><span class="divider-label">投資委員會辯論</span></div>
+
+<div class="debate-header">
+  <div class="debate-title">CPI Core +2.8% 踩 Hot Threshold + Warsh 確認 + 科技 −1.56%<br>→ 5/13 美股定位辯論</div>
+  <div class="vote-summary">
+    <span class="num-bull">Long 40%</span><span class="sep">·</span>
+    <span class="num-neut">Hold 21%</span><span class="sep">·</span>
+    <span class="num-bear">Short 39%</span>
+  </div>
+  <span class="confidence-badge">Regime：Late-Cycle Broadening 62.6/100 · <strong>倉位上限 ≤60%（Taleb Personal Veto）</strong></span>
+</div>
+
+<div class="action-card">
+  <div class="action-card-label">◆ Moderator 裁決</div>
+  <div class="action-main">
+    <div class="action-verb">等待確認</div>
+    <div class="action-reason">Long vs Short 基本平衡（24.7 vs 24.3），無清晰共識。等 5/13 PPI + Warsh 首次表態落地後方向確定再行動。</div>
+  </div>
+  <div class="action-details">
+    <div class="action-detail-item"><div class="label">當前倉位</div><div class="value gold">≤60%（Taleb Veto 維持）</div></div>
+    <div class="action-detail-item"><div class="label">5/13 觸發點</div><div class="value">PPI 08:30 ET + Warsh 表態</div></div>
+    <div class="action-detail-item"><div class="label">加碼條件</div><div class="value green">PPI &lt;4.7% AND Warsh 溫和 AND SPY ≥738</div></div>
+    <div class="action-detail-item"><div class="label">縮倉條件</div><div class="value red">PPI &gt;5.0% OR SPY &lt;730</div></div>
+    <div class="action-detail-item"><div class="label">防守持倉</div><div class="value">XLV / XLP / XLF 維持</div></div>
+    <div class="action-detail-item"><div class="label">暫不追入</div><div class="value">XLK / SOXX（PPI前）</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">加權投票分佈</div>
+  <div class="vote-bar-wrap">
+    <div class="vote-bar">
+      <div class="vb-bull" style="flex:40">Long 40%</div>
+      <div class="vb-neut" style="flex:21">Hold 21%</div>
+      <div class="vb-bear" style="flex:39">Short 39%</div>
+    </div>
+    <div class="vote-legend">
+      <span><span class="legend-dot bull"></span>Long（24.7 pts）</span>
+      <span><span class="legend-dot neut"></span>Hold（13.1 pts）</span>
+      <span><span class="legend-dot bear"></span>Short/Hedge（24.3 pts）</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">各角色信心加權分</div>
+  <div class="conf-chart">
+    <div class="conf-row"><div class="conf-name" style="color:var(--bearish)">宏觀策略師</div><div class="conf-bar-track"><div class="conf-bar-fill" style="width:100%;background:linear-gradient(90deg,#dc2626,#f87171)"></div></div><div class="conf-val" style="color:var(--bearish)">8.0</div></div>
+    <div class="conf-row"><div class="conf-name" style="color:var(--bullish)">Druckenmiller</div><div class="conf-bar-track"><div class="conf-bar-fill" style="width:97.5%;background:linear-gradient(90deg,#22c55e,#4ade80)"></div></div><div class="conf-val" style="color:var(--bullish)">7.8</div></div>
+    <div class="conf-row"><div class="conf-name" style="color:var(--bullish)">Soros</div><div class="conf-bar-track"><div class="conf-bar-fill" style="width:96.25%;background:linear-gradient(90deg,#22c55e,#4ade80)"></div></div><div class="conf-val" style="color:var(--bullish)">7.7</div></div>
+    <div class="conf-row"><div class="conf-name" style="color:var(--bullish)">Lynch</div><div class="conf-bar-track"><div class="conf-bar-fill" style="width:90%;background:linear-gradient(90deg,#22c55e,#4ade80)"></div></div><div class="conf-val" style="color:var(--bullish)">7.2</div></div>
+    <div class="conf-row"><div class="conf-name" style="color:#a78bfa">Taleb</div><div class="conf-bar-track"><div class="conf-bar-fill" style="width:90%;background:linear-gradient(90deg,#7c3aed,#a78bfa)"></div></div><div class="conf-val" style="color:#a78bfa">7.2</div></div>
+    <div class="conf-row"><div class="conf-name" style="color:var(--bearish)">Marks</div><div class="conf-bar-track"><div class="conf-bar-fill" style="width:78.75%;background:linear-gradient(90deg,#dc2626,#f87171)"></div></div><div class="conf-val" style="color:var(--bearish)">6.3</div></div>
+    <div class="conf-row"><div class="conf-name" style="color:var(--bearish)">Dalio</div><div class="conf-bar-track"><div class="conf-bar-fill" style="width:78.75%;background:linear-gradient(90deg,#dc2626,#f87171)"></div></div><div class="conf-val" style="color:var(--bearish)">6.3</div></div>
+    <div class="conf-row"><div class="conf-name" style="color:var(--bearish)">量化交易員</div><div class="conf-bar-track"><div class="conf-bar-fill" style="width:75%;background:linear-gradient(90deg,#dc2626,#f87171)"></div></div><div class="conf-val" style="color:var(--bearish)">6.0</div></div>
+    <div class="conf-row"><div class="conf-name" style="color:var(--bullish)">WSB 散戶</div><div class="conf-bar-track"><div class="conf-bar-fill" style="width:70%;background:linear-gradient(90deg,#22c55e,#4ade80)"></div></div><div class="conf-val" style="color:var(--bullish)">5.6</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">主要分歧</div>
+  <div class="disputes">
+    <div class="dispute-card">
+      <div class="d-title">衝突 1：VIX 下降 = 市場消化 vs 虛假平靜？</div>
+      <div class="d-sides">
+        <div class="d-side bull">Drucky/Soros：CPI hot 日 VIX 跌 = sell-the-rumor 完成，市場已消化，反彈窗口開啟</div>
+        <div class="d-side bear">Taleb：VIX 低位 = fat tail 最易爆發時刻，市場放鬆 = 對沖成本最低 = 立即買保護</div>
+      </div>
+      <div class="d-verdict">裁決：VIX 17.99 未觸發 ≥20 閾值，不強制行動；Taleb veto 維持，倉位 ≤60%</div>
+    </div>
+    <div class="dispute-card">
+      <div class="d-title">衝突 2：Warsh 確認 = 利空出盡 vs 風險才開始？</div>
+      <div class="d-sides">
+        <div class="d-side bull">Drucky：Board 確認是舊聞，sell-the-rumor 已發生，buy-the-news 窗口</div>
+        <div class="d-side bear">宏觀策略師：首次公開表態才是真正 price discovery；確認只是第一步</div>
+      </div>
+      <div class="d-verdict">裁決：Board 確認已 priced in；Chair 確認 + 首次表態 = 未知風險，維持謹慎</div>
+    </div>
+    <div class="dispute-card">
+      <div class="d-title">衝突 3：XLK P/C 0.32 = 科技對沖解除機會？</div>
+      <div class="d-sides">
+        <div class="d-side bull">Soros：對沖解除 = 科技空方 cover，燃料耗盡，反彈在即</div>
+        <div class="d-side bear">量化：SPY P/C 2.60 仍高；兩者矛盾，不能單靠 XLK 判斷方向</div>
+      </div>
+      <div class="d-verdict">裁決：XLK P/C 0.32 是值得關注的逆向訊號，但 PPI 前不宜單靠此追多</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">各角色立場表</div>
+  <table class="stance-table">
+    <thead><tr><th>角色</th><th>立場</th><th>加權分</th><th>核心理由</th></tr></thead>
+    <tbody>
+      <tr><td>Druckenmiller</td><td><span class="stance-badge long">LIGHT LONG</span></td><td>7.8</td><td>VIX消化、sell-the-rumor完成、阿里非對稱</td></tr>
+      <tr><td>Soros</td><td><span class="stance-badge long">LONG</span></td><td>7.7</td><td>AI敘事韌性、反身性、XLK空方燃料耗盡</td></tr>
+      <tr><td>宏觀策略師</td><td><span class="stance-badge short">HEDGE SHORT</span></td><td>8.0</td><td>Warsh鷹派、降息推至12月、10Y易升</td></tr>
+      <tr><td>Lynch</td><td><span class="stance-badge hold">HOLD→LONG</span></td><td>7.2</td><td>選股機會、阿里業績、防守韌性</td></tr>
+      <tr><td>Taleb</td><td><span class="stance-badge hedge">HEDGE</span></td><td>7.2</td><td>VIX低位=最大尾部風險</td></tr>
+      <tr><td>Marks</td><td><span class="stance-badge short">HOLD/減碼</span></td><td>6.3</td><td>CPI月率15個月高、估值保護不足</td></tr>
+      <tr><td>Dalio</td><td><span class="stance-badge short">HOLD→SHORT</span></td><td>6.3</td><td>私信信貸壓力、Contraction 40%</td></tr>
+      <tr><td>量化交易員</td><td><span class="stance-badge short">SHORT/NEUTRAL</span></td><td>6.0</td><td>P/C矛盾訊號、等PPI確認</td></tr>
+      <tr><td>WSB 散戶</td><td><span class="stance-badge long">STRONG LONG</span></td><td>5.6</td><td>VIX未到18、NVDA dip是禮物</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title">明日留意 — 5/13 場景機率</div>
+  <div class="outlook-grid">
+    <div class="outlook-cell bull-pp"><div class="oc-label">Bull++</div><div class="oc-pct">5%</div><div class="oc-range">PPI&lt;4.5%+Warsh溫和</div></div>
+    <div class="outlook-cell bull-p"><div class="oc-label">Bull</div><div class="oc-pct">18%</div><div class="oc-range">PPI符預期+阿里Beat</div></div>
+    <div class="outlook-cell base-c"><div class="oc-label">Base</div><div class="oc-pct">33%</div><div class="oc-range">S&P 7,360–7,450</div></div>
+    <div class="outlook-cell bear-m"><div class="oc-label">Bear</div><div class="oc-pct">28%</div><div class="oc-range">PPI&gt;5%+Warsh偏鷹</div></div>
+    <div class="outlook-cell bear-mm"><div class="oc-label">Bear--</div><div class="oc-pct">16%</div><div class="oc-range">PPI爆+阿里Miss</div></div>
+  </div>
+  <div class="info-box">
+    <strong style="color:var(--gold)">EV 明日估算：−0.15%</strong>（Bear場景主導）<br>
+    關鍵事件：① PPI 08:30 ET（預期+4.9%） ② Warsh 首次公開表態 ③ 阿里Q4 FY2026業績（5/13盤前）<br>
+    釋放條件：PPI &lt;4.7% AND Warsh溫和 AND SPY穩守738+ → 倉位可上調至≤75%
+  </div>
+  <div class="veto-box">
+    <strong>⚠ Risk Veto：Taleb 8/10 Personal Veto 持續</strong><br>
+    系統 Risk Veto：RELEASED（3/4條件達成）→ 標準上限 75%<br>
+    Taleb 個人 Veto：8/10 → 壓制至 <strong>≤60%</strong><br>
+    釋放條件：PPI &lt;4.7% AND Warsh 首次表態溫和 AND SPY 穩守 738+
+  </div>
+</div>
+
+</div>
+</body>
+</html>
