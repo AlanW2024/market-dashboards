@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>2026-W20 美股週報 Dashboard</title>
+<style>
+:root{--bg:#0a0a0f;--panel:#13131b;--panel-2:#1a1a24;--gold:#d4af37;--green:#16c784;--red:#ea3943;--text:#e7e7ee;--mut:#888899}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,SF Pro,system-ui,"PingFang TC","Noto Sans TC",sans-serif;padding:24px}
+h1{color:var(--gold);font-size:24px;margin-bottom:6px}
+h2{color:var(--gold);font-size:18px;margin:20px 0 12px;border-bottom:1px solid #2a2a36;padding-bottom:6px}
+.sub{color:var(--mut);margin-bottom:16px;font-size:12px}
+.banner{background:linear-gradient(90deg,#1a1a24,#252535);border-left:4px solid var(--gold);padding:12px 16px;margin:12px 0;border-radius:4px}
+.banner.alert{border-left-color:var(--red)}
+.banner.good{border-left-color:var(--green)}
+.grid{display:grid;gap:12px}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g5{grid-template-columns:repeat(5,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+.card{background:var(--panel);border:1px solid #252535;border-radius:6px;padding:14px}
+.metric .label{color:var(--mut);font-size:11px;letter-spacing:.5px;text-transform:uppercase}
+.metric .value{font-size:22px;font-weight:600;margin-top:4px}
+.metric .delta{font-size:13px;margin-top:2px}
+.up{color:var(--green)}.down{color:var(--red)}.flat{color:var(--mut)}.warn{color:var(--gold)}
+table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:6px;overflow:hidden}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid #252535;font-size:13px}
+th{background:var(--panel-2);color:var(--gold);font-weight:600}
+tr:last-child td{border-bottom:none}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.tag.bull{background:rgba(22,199,132,.18);color:var(--green)}
+.tag.bear{background:rgba(234,57,67,.18);color:var(--red)}
+.tag.warn{background:rgba(212,175,55,.18);color:var(--gold)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:30px 0}
+.hero{background:linear-gradient(135deg,var(--panel),var(--panel-2));border:1px solid #252535;border-radius:8px;padding:18px}
+.hero .label{color:var(--mut);font-size:12px}
+.hero .value{font-size:28px;font-weight:700;margin-top:4px}
+.note{color:var(--mut);font-size:12px;margin-top:8px}
+ul{list-style:none}
+ul.bullet li{padding-left:14px;position:relative;margin:6px 0}
+ul.bullet li:before{content:"▸";color:var(--gold);position:absolute;left:0}
+.regime-shift{background:linear-gradient(135deg,rgba(234,57,67,.12),rgba(212,175,55,.12));border:1px solid var(--gold);border-radius:6px;padding:14px;margin:14px 0}
+</style>
+</head>
+<body>
+<h1>2026-W20 美股週報 Dashboard</h1>
+<div class="sub">5 個完整交易日（5/11 - 5/15）| SPY +0.21%（淨變動近持平）| 內部 round-trip：5/12 CPI 2.8% / 5/13 PPI 6.0% / 5/14 連 2 日歷史新高 / 5/15 全線 sell-off | Regime 由 Late-Cycle Broadening 轉入 Stagflation Sell-Everything</div>
+
+<div class="banner alert">💥 <strong>5/15 全線 sell-off：SPY -1.20% / Nasdaq -1.54% / 半導體 -5~-6%</strong> — 10Y +14bps 衝 4.595% 年內高；US30Y 5.122% 自 2007 首破 5%；MOVE +14.71% bond vol 爆炸</div>
+<div class="banner">🔄 <strong>Round-trip 反轉週</strong>：5/13-5/14 市場「免疫」CPI 3.8% + PPI 6.0% 雙超預期，續創 SPX 7,501 / Nasdaq 26,635 / Dow 50,063 三大歷史新高；5/15 反轉一日吃掉 immune phase 累積</div>
+<div class="banner alert">⚠️ <strong>Regime shift confirmed</strong>：CPI 3.8% + PPI 6% + Brent $107 + DXY 5 連升 + Gold 4 連跌 + TLT V 2.25x = Stagflation Sell-Everything（類 1973 / 1979 / 2022，非 2020-03 / 2008 Lehman 類 liquidity squeeze）</div>
+
+<h2>週度核心指標</h2>
+<div class="grid g4">
+<div class="hero"><div class="label">SPY 週收</div><div class="value">$739.17 <span class="up">+0.21%</span></div><div class="note">737.62 → 739.17 | intra-week 高 ~$751 等值</div></div>
+<div class="hero"><div class="label">SPX 指數</div><div class="value">7,408.50 <span class="up">+1.38%</span></div><div class="note">5/14 高 7,501.24 → 5/15 -1.24%</div></div>
+<div class="hero"><div class="label">QQQ</div><div class="value">~$707 <span class="down">-0.59%</span></div><div class="note">連 2 日新高後 5/15 -1.54%</div></div>
+<div class="hero"><div class="label">半導體</div><div class="value"><span class="down">-5% 至 -6%</span></div><div class="note">5/15 INTC -6% / AMD -5.7% / MU -6.6%</div></div>
+</div>
+
+<h2>每日走勢軌跡（Round-Trip 反轉）</h2>
+<table>
+<tr><th>日期</th><th>SPX 收盤</th><th>SPY 日漲跌</th><th>關鍵事件</th></tr>
+<tr><td>05/11（一）</td><td>7,412.84</td><td><span class="up">+0.21%</span></td><td>Trump 拒伊朗；WTI +2.78% 至 $98；XLE 板塊第一 +2.77%；SPX 盤中創新高後微升</td></tr>
+<tr><td>05/12（二）</td><td>7,392.00</td><td><span class="down">-0.29%</span></td><td><strong>CPI Core +2.8% / Headline +3.8%</strong> 踩 hot threshold；XLK -1.56% 領跌；XLV +1.93% 防守輪動；Warsh 過 Fed Board 51-45；VIX 反跌 -0.38（異常）</td></tr>
+<tr><td>05/13（三）</td><td>7,444.25 🏆</td><td><span class="up">+0.58%</span></td><td><strong>PPI +6.0% YoY</strong>（32 月最高，遠超 4.9%）；阿里 Q4 FY26 收入 mixed 但 Cloud +38%；騰訊 Q1 FCF +20% 亮眼；30Y Treasury 拍賣 5.046% 自 2007 首破 5%；市場「免疫」PPI 創新高</td></tr>
+<tr><td>05/14（四）</td><td>7,501.24 🏆</td><td><span class="up">+0.80%</span></td><td><strong>三大指數連 2 日新高</strong>：SPX 7,501 / Nasdaq 26,635 / Dow 首破 50,063；Cisco +13.4%；NVDA +4.4%；Cerebras IPO 首日 +99%；Trump-Xi summit 開幕</td></tr>
+<tr><td>05/15（五）</td><td>7,408.50</td><td><span class="down">-1.20%</span></td><td><strong>全線 sell-off</strong>：SPX -1.24%、Nasdaq -1.54%、Dow -1.07% 失守 50K；半導體 -5~6%；TSLA -4.75% 至 $422.24；10Y +14bps → 4.59%；US30Y 5.122%；Boeing -4~-5.4%（200 vs 預期 500）；Brent ~$107</td></tr>
+</table>
+
+<h2>板塊週度（Round-trip 反轉特徵）</h2>
+<table>
+<tr><th>板塊</th><th>週度評估</th><th>關鍵單日</th><th>驅動</th></tr>
+<tr><td>XLK 科技</td><td><span class="tag warn">Round-trip 大幅回吐</span></td><td>5/12 -1.56% / 5/13-5/14 反彈 / 5/15 -5~-6%</td><td>CPI hot 打 → 市場「免疫」反彈 → 5/15 capitulation</td></tr>
+<tr><td>XLV 醫療</td><td><span class="tag bull">全週最穩</span></td><td>5/12 +1.93%</td><td>CPI hot 環境首選防守</td></tr>
+<tr><td>XLE 能源</td><td><span class="tag warn">前升後弱</span></td><td>5/11 +2.77% / 5/13 -0.45%</td><td>WTI 升但能源股 priced in</td></tr>
+<tr><td>XLP 必需消費</td><td><span class="tag bull">CPI hot 防守</span></td><td>5/12 +0.76%</td><td>定價能力強</td></tr>
+<tr><td>XLF 金融</td><td><span class="tag warn">利率升但 5/15 fade</span></td><td>5/12 +0.72%</td><td>淨息差 vs 5/15 risk-off</td></tr>
+<tr><td>XLI 工業</td><td><span class="tag bear">5/15 受 Boeing 拖累</span></td><td>5/15 弱</td><td>Trump-Xi 失望 + Boeing -4~-5.4%</td></tr>
+<tr><td>XLY 非必需消費</td><td><span class="tag bear">高利率 + 油價打擊</span></td><td>全週弱</td><td>消費信貸壓力</td></tr>
+</table>
+
+<h2>個股亮點 / 慘案</h2>
+<div class="grid g3">
+<div class="card">
+<h3 style="color:var(--green);font-size:14px;margin-bottom:8px">🟢 全週業績 / Catalyst</h3>
+<ul class="bullet">
+<li><strong>Cisco (CSCO)</strong> 5/13 AH +15% / 5/14 +13.4% — Q3 EPS $1.06 BEAT，網絡 + AI 基建</li>
+<li><strong>NVDA</strong> 5/14 +4.4% — H200 chip 批准 10 中國企業出貨</li>
+<li><strong>Cerebras (CBRS) IPO</strong> 5/14 首日 +99% — $185 → ~$350，AI hype 末段</li>
+<li><strong>Tencent ADR</strong> Q1 FCF +20%，廣告 +20%（質量亮眼 mixed print）</li>
+<li><strong>BABA ADR</strong> 5/13 +8% — Q4 Cloud +38% / AI 連 11 季三位數</li>
+</ul>
+</div>
+<div class="card">
+<h3 style="color:var(--red);font-size:14px;margin-bottom:8px">🔴 5/15 sell-off 慘案</h3>
+<ul class="bullet">
+<li><strong>TSLA</strong> 5/15 -4.75% 至 $422.24（距 $417 stop 1.25%）</li>
+<li><strong>NVDA</strong> 5/15 -4.42%（round-trip 回吐 5/14 +4.4%）</li>
+<li><strong>INTC</strong> 5/15 -6% 半導體最弱</li>
+<li><strong>AMD</strong> 5/15 -5.7%</li>
+<li><strong>MU</strong> 5/15 -6.6%</li>
+<li><strong>Boeing (BA)</strong> 5/15 -4~-5.4%（Trump-Xi 200 vs 500 失望）</li>
+</ul>
+</div>
+<div class="card">
+<h3 style="color:var(--gold);font-size:14px;margin-bottom:8px">🟡 Mag 7 內部分化延續</h3>
+<ul class="bullet">
+<li><strong>應用 AI 較抗跌</strong>：AAPL / MSFT / GOOGL（5/15 跌幅小於半導體一半）</li>
+<li><strong>訓練 AI 重挫</strong>：NVDA / AMD / MU / INTC（5/15 -5~6%）</li>
+<li>主題輪動鞏固：應用 AI vs 訓練 AI 分化</li>
+<li>下週 NVDA 月底業績為下個 binary catalyst</li>
+</ul>
+</div>
+</div>
+
+<h2>風險指標與宏觀（週度變化）</h2>
+<div class="grid g4">
+<div class="card metric"><div class="label">VIX</div><div class="value">18.43 <span class="up">+7.46%</span></div><div class="note">仍未到 panic（&lt; 22 Taleb veto 線）；5/15 +6.78%</div></div>
+<div class="card metric"><div class="label">MOVE 🔑</div><div class="value">79.87 <span class="down">+14.71%</span></div><div class="note">5/15 bond vol 爆炸 = 真正壓力源</div></div>
+<div class="card metric"><div class="label">10Y UST</div><div class="value">4.595% <span class="down">+23bps</span></div><div class="note">一年高位；5/15 +14bps 單日</div></div>
+<div class="card metric"><div class="label">30Y UST 🔑</div><div class="value">5.122% <span class="down">+22bps</span></div><div class="note">自 2007 首破 5%；5/13 auction 5.046%</div></div>
+<div class="card metric"><div class="label">DXY</div><div class="value">99.27 <span class="warn">+1.46%</span></div><div class="note">5 連升；強美元 stagflation tell</div></div>
+<div class="card metric"><div class="label">WTI / Brent</div><div class="value">~$106 / $107 <span class="down">+5%</span></div><div class="note">Iran 戰爭至今 +40%；庫存記錄速度下降</div></div>
+<div class="card metric"><div class="label">Gold (GLD) ⚠️</div><div class="value">$417.29 <span class="down">-2.95%</span></div><div class="note">4 連跌；real yield 升壓制；20D -6.42%</div></div>
+<div class="card metric"><div class="label">TLT 20Y+ ⚠️</div><div class="value">$83.66 <span class="down">-2.72%</span></div><div class="note">5/15 V 2.25x 最強 conviction sell signal</div></div>
+<div class="card metric"><div class="label">CPI Headline / Core</div><div class="value">3.8% / 2.8%</div><div class="note">5/12；Headline 自 2023-05 最高</div></div>
+<div class="card metric"><div class="label">PPI YoY</div><div class="value">+6.0%</div><div class="note">5/13；32 個月最高，遠超預期 +4.9%</div></div>
+<div class="card metric"><div class="label">NAAIM Exposure</div><div class="value">77.34 <span class="down">-19.33pts</span></div><div class="note">5/6 96.67 → 5/13 77.34；機構已 de-risk</div></div>
+<div class="card metric"><div class="label">Macro Regime</div><div class="value">~57.5</div><div class="note">Transition → Stagflation</div></div>
+</div>
+
+<h2>跨資產 Sell-Off Hypothesis Ranking（5/15）</h2>
+<table>
+<tr><th>Hypothesis</th><th>Weight</th><th>Score</th><th>Evidence</th></tr>
+<tr><td>H5 Iran / Oil Shock</td><td><strong>30%</strong></td><td>9</td><td>WTI $108、Hormuz closed、油價 +40% 自戰爭、import +4.2% YoY</td></tr>
+<tr><td>H1 Real Yield / Stagflation</td><td><strong>30%</strong></td><td>9</td><td>CPI 3.8% / PPI 6.0% / 10Y +14bps / breakeven inflation drift</td></tr>
+<tr><td>H3 Fed Hawkish / 候任 Warsh</td><td>15%</td><td>7</td><td>Warsh 5/12 過 Fed Board 51-45（仍待 full Senate 宣誓）；CME 37% 加息概率 by year-end；cuts priced out through 2027</td></tr>
+<tr><td>H4 Position Unwind</td><td>15%</td><td>6</td><td>NAAIM 96.67 → 77.34 機構 de-risk；連 2 日新高伴 majority lower</td></tr>
+<tr><td>H2 Japan Reflation / Carry</td><td>10%</td><td>5</td><td>JGB 30Y 突破 4%（1999 以來首次）；但 Bloomberg 明確 frame 為 broader trend；USDJPY 仍 158 未強</td></tr>
+</table>
+<div class="banner">📊 <strong>Verdict</strong>：30% H5 + 30% H1 + 15% H3 + 15% H4 + 10% H2 = Stagflation Regime Triggered by Iran Oil Shock + Confirmed by US Treasury Supply Stress + Amplified by Bullish Positioning + Warsh Hawkish Path</div>
+
+<h2>正面 vs 負面催化劑</h2>
+<div class="grid g2">
+<div class="card">
+<h3 style="color:var(--green);font-size:14px;margin-bottom:8px">🟢 正面催化（5）</h3>
+<ul class="bullet">
+<li><strong>5/13 PPI 後市場「免疫」續創新高</strong>（後驗為延遲反應）</li>
+<li><strong>Cisco Q3 BEAT</strong>（5/13 AH +15% / 5/14 +13.4%）</li>
+<li><strong>NVDA H200 chip 批准 10 中國企業</strong>（5/14）</li>
+<li><strong>Cerebras IPO +99%</strong>（5/14 末段 AI mania）</li>
+<li><strong>Trump-Xi summit 開幕</strong>（5/14，三年 strategic stability framework）</li>
+</ul>
+</div>
+<div class="card">
+<h3 style="color:var(--red);font-size:14px;margin-bottom:8px">🔴 負面催化（10）</h3>
+<ul class="bullet">
+<li><strong>CPI Core +2.8% / Headline +3.8%</strong>（5/12，自 2023-05 最高）</li>
+<li><strong>PPI +6.0% YoY</strong>（5/13，32 個月最高，遠超預期）</li>
+<li><strong>30Y Treasury 拍賣 5.046%</strong>（5/13，自 2007 首破 5%；BC 2.30x 最弱）</li>
+<li><strong>候任 Fed Chair Warsh 5/12 過 Fed Board 51-45</strong>（Goldman 推後降息至 2026-12）</li>
+<li>Schmid 5/14 講話偏鷹</li>
+<li>Trump-Xi Boeing 200 vs 預期 500 失望</li>
+<li><strong>5/15 全球債市拋售</strong>：US 10Y +14bps / 德國 Bunds +12bps / UK 10Y +18bps（28 年高）/ Japan 30Y 突破 4%</li>
+<li>Brent ~$107（本週 +5%，庫存記錄速度下降）</li>
+<li>TSLA Australian judge driver safety 指控</li>
+<li><strong>5/15 全線 sell-off + stagflation regime confirmation</strong></li>
+</ul>
+</div>
+</div>
+
+<div class="divider"></div>
+
+<h2>投資委員會：W19 → W20 情緒大逆轉</h2>
+<div class="regime-shift">
+<table>
+<tr><th>立場</th><th>W19</th><th>W20</th><th>Δ</th></tr>
+<tr><td>看多 / Long</td><td>6 票</td><td><span class="down">0 票</span></td><td><span class="down">-6</span></td></tr>
+<tr><td>中性 / Hold</td><td>3 票</td><td>2 票</td><td>-1</td></tr>
+<tr><td>看空 / Short / Hedge</td><td>1 票</td><td><span class="warn">8 票</span></td><td><span class="warn">+7</span></td></tr>
+<tr><td>加權信心</td><td>6.7（中性偏多）</td><td><span class="warn">6.8（明確偏空）</span></td><td>反轉</td></tr>
+</table>
+</div>
+
+<h2>各角色 W20 立場（加權）</h2>
+<table>
+<tr><th>角色</th><th>立場</th><th>信心</th><th>核心論點</th></tr>
+<tr><td>Howard Marks</td><td><span class="tag bear">減倉</span></td><td>8.0/10</td><td>W19 集中度警示 5/15 兌現；連 2 日新高 + 廣度 majority lower 為頂部前兆</td></tr>
+<tr><td>Ray Dalio</td><td><span class="tag bear">偏空</span></td><td>7.0/10</td><td>Regime 正式由 Late-Cycle 轉入 Stagflation；三殺確認</td></tr>
+<tr><td>Stanley Druckenmiller</td><td><span class="tag bear">偏空</span></td><td>7.0/10</td><td>EV W21 -0.5% to -0.8%；末段 AI rally 已 priced in，Risk/reward 2.5:1 偏 short</td></tr>
+<tr><td>George Soros</td><td><span class="tag bear">偏空</span></td><td>7.0/10</td><td>雙重反身性 W20 完整 cycle：免疫 → capitulation；下週繼續 reflexive unwind 65%</td></tr>
+<tr><td>Peter Lynch</td><td><span class="tag warn">Hold 偏多</span></td><td>6.0/10</td><td>Cisco / NVDA 業績真實，但 CPI 3.8% + PPI 6% 影響家庭購買力；5/22 Walmart 為 verification</td></tr>
+<tr><td>Nassim Taleb</td><td><span class="tag bear">避險強烈</span></td><td>7.0/10</td><td>5/14 警告兌現；MOVE +14.71% vs VIX 18.43 落差 = bond market leads；VIX &gt; 22 → 8/10 Veto</td></tr>
+<tr><td>量化交易員</td><td><span class="tag bear">偏空</span></td><td>6.5/10</td><td>Breadth 33 + MOVE 爆炸 + ATR 異常；5/18 first 30 min 決定方向</td></tr>
+<tr><td>宏觀策略師</td><td><span class="tag bear">偏空</span></td><td>8.0/10</td><td>Iran-induced 通脹 → bond revolt → equity de-rate；歷史 stagflation pattern 擬合</td></tr>
+<tr><td>WSB 散戶</td><td><span class="tag warn">觀望</span></td><td>5.0/10</td><td>信心由 5/14 9.5 → 5/15 5；「buy the dip」直覺被打破</td></tr>
+<tr><td>Fed Watcher</td><td><span class="tag bear">偏空</span></td><td>6.5/10</td><td>候任 Warsh 過 Fed Board 51-45 + Goldman 推後降息 + CME 37% 加息概率</td></tr>
+</table>
+
+<h2>W21 Forward Scenarios</h2>
+<table>
+<tr><th>情境</th><th>觸發條件</th><th>SPY 預期</th><th>機率</th></tr>
+<tr><td><span class="tag bull">Bull++ 反彈奇蹟</span></td><td>Iran ceasefire 突發 + 油價 &lt; $95 + 候任 Warsh 鴿派 surprise</td><td>SPY +2% to +3%</td><td>5%</td></tr>
+<tr><td><span class="tag bull">Bull 收窄</span></td><td>Trump-Xi follow-through 大豆 / Boeing 增量 + 10Y &lt; 4.50%</td><td>SPY +0.5% to +1.5%</td><td>20%</td></tr>
+<tr><td><span class="tag warn">Base 高位震盪</span></td><td>數據中性 + 等 NVDA 業績；油 $100-108；10Y 4.50-4.65%</td><td>SPY 730-740</td><td>30%</td></tr>
+<tr><td><span class="tag bear">Bear（base case）</span></td><td>油 stay $100+ + 10Y &gt; 4.65% + 廣度繼續惡化</td><td>SPY 725-735（-1.5%）</td><td>30%</td></tr>
+<tr><td><span class="tag bear">Bear-- Tail</span></td><td>Iran 升級 + 油 $120+ + VIX &gt; 25 + 候任 Warsh 鷹派定調</td><td>SPY 705-720（-3% to -5%）</td><td>15%</td></tr>
+</table>
+<div class="banner alert">📊 <strong>加權 EV</strong>：5×2.5 + 20×1 + 30×0 + 30×(-0.7) + 15×(-3) = <strong>-0.6% to -0.8%</strong>（明顯偏空；下行風險未充分釋放）</div>
+
+<h2>Action Card / 倉位指引</h2>
+<div class="grid g2">
+<div class="card">
+<h3 style="color:var(--gold);font-size:14px;margin-bottom:8px">✅ 應該做</h3>
+<ul class="bullet">
+<li>倉位上限降至 <strong>≤ 60%</strong>（System PARTIAL 2/4 + Taleb 7/10 接近觸發）；實際向 50% 區間靠</li>
+<li><strong>半導體（INTC / AMD / MU / NVDA）減倉 1/2</strong></li>
+<li>大型科技（AAPL / MSFT / GOOGL）保留約 60% 倉位（應用 AI 相對抗跌）</li>
+<li>保留 5-8% GLD（即使 5/15 -2.32%，stagflation 中作 tail hedge 仍必要）</li>
+<li>加 25% 短債（SGOV）作 cash equivalent，等 NVDA 業績 + Trump-Xi follow-through</li>
+<li>5/18 開市前 1 小時 check Asia session JGB / USDJPY / Brent，確認 Scenario B 是否 base case</li>
+</ul>
+</div>
+<div class="card">
+<h3 style="color:var(--red);font-size:14px;margin-bottom:8px">❌ 應該避</h3>
+<ul class="bullet">
+<li>「Buy the dip」WSB 直覺（W20 證明連 2 日新高後直接 sell-off）</li>
+<li>半導體 0DTE call / 高槓桿期權（VIX 升 + 多 catalyst）</li>
+<li>裸無 hedge 多頭（Taleb veto 接近觸發）</li>
+<li>將「市場免疫 PPI」當 trend 確認（5/13-5/14 immune 已在 5/15 完全 unwind）</li>
+<li>TSLA stop limit @ $417（base case Scenario B 機率 55%，可能 gap through）</li>
+<li>加重 high beta / small cap exposure（IWM 5/15 -2.3% 警示）</li>
+</ul>
+</div>
+</div>
+
+<h2>風險警示 / Veto 狀態</h2>
+<table>
+<tr><th>觸發條件</th><th>狀態</th><th>說明</th></tr>
+<tr><td>Taleb 個人 Veto（≥ 8/10）</td><td><span class="tag warn">接近觸發（7/10）</span></td><td>VIX &gt; 22 或 SPY &lt; -2% 即升 8/10</td></tr>
+<tr><td>System Veto - PPI &gt; 5.5%</td><td><span class="tag bear">✅ 觸發</span></td><td>實際 +6.0%</td></tr>
+<tr><td>System Veto - Brent &gt; $100</td><td><span class="tag bear">✅ 觸發</span></td><td>實際 ~$107</td></tr>
+<tr><td>廣度背離（Breadth &lt; 35）</td><td><span class="tag warn">⚠️ 警示</span></td><td>~30，連 2 日 majority lower</td></tr>
+<tr><td>動能崩潰</td><td><span class="tag warn">⚠️ 警示</span></td><td>5/14 新高 → 5/15 -1.20%</td></tr>
+<tr><td>流動性危機</td><td><span class="flat">❌ 未觸發</span></td><td>HY OAS ~2.80% 仍健康</td></tr>
+</table>
+<div class="banner alert">⚠️ <strong>System Veto PARTIAL 2/4</strong>（PPI + 油價雙觸發；廣度 + 動能皆為警示）→ 倉位上限 ≤ 60%；建議實際 50%</div>
+
+<h2>W21 Monday（5/18 HKT）Watchlist</h2>
+<table>
+<tr><th>時間 HKT</th><th>事件</th><th>Bull 信號</th><th>Bear 信號</th></tr>
+<tr><td>07:00</td><td>Tokyo open：USDJPY、Nikkei、JGB 30Y/10Y</td><td>JGB 30Y &lt; 3.95%、USDJPY &lt; 158</td><td>JGB 30Y &gt; 4.05%、USDJPY &gt; 159</td></tr>
+<tr><td>14:00-15:00</td><td>中港時段：HSI、人民幣</td><td>HSI flat / up</td><td>HSI -1%+</td></tr>
+<tr><td>16:30</td><td>London open：DXY、德國 / UK 10Y</td><td>DXY &lt; 99、UK 10Y &lt; 5.10%</td><td>DXY &gt; 99.5、UK 10Y &gt; 5.20%</td></tr>
+<tr><td>21:00-21:30</td><td>US pre-market：WTI、Fed funds futures、Treasury futures</td><td>WTI &lt; $100、加息概率 &lt; 30%</td><td>WTI &gt; $108、加息概率 &gt; 40%</td></tr>
+<tr><td>21:30</td><td>US open：SPY、NVDA、TSLA、VIX、TLT</td><td>SPY &gt; $740、TLT bounce、VIX &lt; 18</td><td>SPY &lt; $735、TLT 新低、VIX &gt; 20</td></tr>
+<tr><td>24:00</td><td>US 收市後：NAAIM update（週四）、Iran news flow</td><td>NAAIM &gt; 75</td><td>NAAIM &lt; 65</td></tr>
+</table>
+
+<h2>預測準確度審計（W20）</h2>
+<table>
+<tr><th>日期</th><th>覆蓋率</th><th>命中率</th><th>核心評估</th></tr>
+<tr><td>5/11（一）</td><td>5/5 = 100%</td><td><span class="up">70%</span></td><td>Hormuz 重燃命中 XLE 領漲；Base 32% 邊際勝出</td></tr>
+<tr><td>5/12（二）</td><td>5/5 = 100%</td><td><span class="warn">50%</span></td><td>方向命中但板塊 tilt 完全錯（預測 Broadening 實際 defensive）</td></tr>
+<tr><td>5/13（三）</td><td>5/5 = 100%</td><td><span class="down">10%</span> ❌</td><td>W20 最差日；PPI 6% 嚴重低估；線性「hot → 股跌」假設失效</td></tr>
+<tr><td>5/14（四）</td><td>5/5 = 100%</td><td><span class="up">70%</span></td><td>Cisco / NVDA / Cerebras 三引擎完全命中；Walmart 假命題撤銷</td></tr>
+<tr><td>5/15（五）</td><td>5/5 = 100%</td><td><span class="up">90%</span> ✅</td><td>EV -1.0~-1.4% 完全命中（actual -1.20%）；半導體 / Boeing 領跌全部 priced in</td></tr>
+</table>
+<div class="banner">W20 整體：覆蓋率 25/25 = <strong>100%</strong>（vs W19 80% 改善 ✅）｜ 命中率 14.5/25 = <strong>58%</strong>（vs W19 65%）｜ 5/13 PPI 線性假設失效拖累，但 5/14 + 5/15 連續高分顯示 reactivity 健康</div>
+
+<div class="banner" style="border-left-color:var(--gold);background:linear-gradient(90deg,rgba(212,175,55,.08),#252535)">
+⚠️ <strong>Audit Provisional Learning 提示</strong>：W20 Audit 內所列「延遲反應雙路徑」「MOVE +10% trigger」「CPI hot defensive rotation」等模型調整建議為 <strong>W20 provisional heuristic</strong>，源於單週案例。需經 W21-W24 多週驗證後才可考慮升級為正式 workflow rule。
+</div>
+
+<div class="divider"></div>
+<div class="note">報告生成：2026-05-17 ｜ 數據截止：W20 5/11-5/15 完整 5 日 ｜ 主要數據源：每日美股盤前 / 盤後日報 ｜ Part D 整合 2026-05-17 外部 sell-off 宏觀診斷 session（Yahoo Finance / CME FedWatch / Bloomberg / Reuters / NAAIM Exposure Index 等）｜ 配套文件：<a href="#" style="color:var(--gold)">2026-W20 美股週報.md</a> / <a href="#" style="color:var(--gold)">2026-W20 美股週報辯論記錄.md</a> / <a href="#" style="color:var(--gold)">2026-W20 美股預測準確度審計.md</a></div>
+</body>
+</html>

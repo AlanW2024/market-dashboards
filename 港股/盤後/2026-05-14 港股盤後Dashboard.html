@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-05-14 港股盤後 Dashboard</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --panel: #121a2b;
+    --panel-2: #162033;
+    --border: #2a3550;
+    --text: #e7edf7;
+    --muted: #94a3b8;
+    --gold: #f0b429;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --blue: #60a5fa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.5;
+  }
+  .wrap {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .header {
+    background: linear-gradient(135deg, #0f172a 0%, #172554 100%);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--gold);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .sub {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .chip {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.04);
+  }
+  .chip.red { color: #fca5a5; border-color: rgba(239,68,68,0.35); }
+  .chip.amber { color: #fcd34d; border-color: rgba(245,158,11,0.35); }
+  .chip.green { color: #86efac; border-color: rgba(34,197,94,0.35); }
+  .grid-4, .grid-3, .grid-2 {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .card h3 {
+    margin: 0 0 10px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .value {
+    font-size: 30px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .down { color: var(--red); }
+  .up { color: var(--green); }
+  .flat { color: var(--amber); }
+  .small {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 6px;
+    border-bottom: 1px solid rgba(148,163,184,0.16);
+    vertical-align: top;
+    font-size: 13px;
+  }
+  th {
+    color: var(--muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  tr:last-child td { border-bottom: none; }
+  .banner {
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.3);
+    color: #fde68a;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  .note {
+    background: var(--panel-2);
+    border-left: 3px solid var(--gold);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .bar {
+    height: 10px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .fill-red { height: 100%; background: var(--red); width: 70%; }
+  .fill-amber { height: 100%; background: var(--amber); width: 48%; }
+  .fill-green { height: 100%; background: var(--green); width: 35%; }
+  .footer {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 12px;
+  }
+  @media (max-width: 980px) {
+    .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="title">2026-05-14 港股盤後 Dashboard</div>
+      <div class="sub">Provisional 版本：收市指數已確認；主板成交額、北水終值與個股正式收市價仍待可靠盤後來源補齊。</div>
+      <div class="chips">
+        <span class="chip amber">HSI 幾乎平收</span>
+        <span class="chip red">高開後大幅回吐</span>
+        <span class="chip red">北水盤中仍偏流出</span>
+        <span class="chip amber">防守框架維持</span>
+      </div>
+    </div>
+
+    <div class="banner">
+      今日核心唔係「阿里有冇升」，而係 <strong>阿里升都帶唔動整體指數收高</strong>。呢個代表市場接受單點利好，但未接受全面加 beta。
+    </div>
+
+    <div class="grid-4">
+      <div class="card">
+        <h3>HSI</h3>
+        <div class="value flat">26,384.50</div>
+        <div class="small">-3.94 / -0.01%</div>
+      </div>
+      <div class="card">
+        <h3>HSCEI</h3>
+        <div class="value down">8,852.70</div>
+        <div class="small">-23.68 / -0.27%</div>
+      </div>
+      <div class="card">
+        <h3>HSTECH</h3>
+        <div class="value flat">5,092.90</div>
+        <div class="small">-0.95 / -0.02%</div>
+      </div>
+      <div class="card">
+        <h3>北水</h3>
+        <div class="value down">待補終值</div>
+        <div class="small">15:27 財聯社口徑：約 -70 億港元</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>盤中路徑</h3>
+        <table>
+          <tr><th>項目</th><th>數值</th><th>讀法</th></tr>
+          <tr><td>HSI 高位</td><td>26,906.00</td><td>早段逼近阻力，但尾市回到平盤</td></tr>
+          <tr><td>HSCEI 高位</td><td>9,033.70</td><td>內地權重股回吐更深</td></tr>
+          <tr><td>HSTECH 高位</td><td>5,258.14</td><td>業績催化有，但 follow-through 不足</td></tr>
+          <tr><td>主板成交額</td><td>待補</td><td>本版不硬填未核實數</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>重點股份（近尾市延遲口徑）</h3>
+        <table>
+          <tr><th>股票</th><th>近尾市</th><th>讀法</th></tr>
+          <tr><td>阿里 9988</td><td>約 138.0 / +3.92%</td><td>AI / Cloud 敘事仍有買盤</td></tr>
+          <tr><td>騰訊 0700</td><td>約 461 附近</td><td>mixed print 未帶來持續重估</td></tr>
+          <tr><td>美團 3690</td><td>約 86.15 / -1.66%</td><td>平台股未全面同步</td></tr>
+          <tr><td>小米 1810</td><td>約 31.84 / +0.13%</td><td>只屬輕微偏穩</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card">
+        <h3>盤前預測校驗</h3>
+        <table>
+          <tr><th>項目</th><th>結果</th></tr>
+          <tr><td>HSI Base 26,400–26,600</td><td>接近，但收在下沿之下</td></tr>
+          <tr><td>騰訊主導偏多</td><td>只帶來高開，未帶來全天延續</td></tr>
+          <tr><td>阿里偏弱</td><td>錯；市場更重視 AI / Cloud</td></tr>
+          <tr><td>北水若回流可偏多</td><td>未發生</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>風險結論</h3>
+        <div class="small">阿里單點轉強 ≠ 整體市場轉勢</div>
+        <div class="bar"><div class="fill-red"></div></div>
+        <div class="small" style="margin-top:10px;">沖高回吐說明上方供給仍重，北水盤中流出令風險偏好未完成確認。</div>
+      </div>
+      <div class="card">
+        <h3>倉位 / Veto</h3>
+        <div class="value amber">40-50%</div>
+        <div class="small">維持 PARTIAL；未見終值北水改善前，不追高。</div>
+        <div class="bar"><div class="fill-amber"></div></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>明日觀察</h3>
+        <table>
+          <tr><th>觀察點</th><th>含義</th></tr>
+          <tr><td>北水終值與滬/深 split</td><td>決定今日到底係「未確認」定「明確偏空」</td></tr>
+          <tr><td>阿里第 2 日 follow-through</td><td>判斷係單日績後炒作，定係板塊重估起點</td></tr>
+          <tr><td>騰訊能否重新企穩</td><td>若仍弱過阿里，平台股領導力不完整</td></tr>
+          <tr><td>HSI 26,900 / 26,200</td><td>前者係失敗突破位，後者係短線支持</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>一句判斷</h3>
+        <div class="note">
+          今日最佳讀法唔係「利好失效」，而係「利好不足以推動整體市場升穿阻力」。
+          所以策略上應該保留阿里個別強勢的觀察，但唔應該因為單一名字走強就把整體平台股倉位一次過調高。
+        </div>
+        <div class="footer">
+          Sources: Investing.com HSI / HSCEI / HSTECH historical data；財聯社盤中南向資金口徑；etnet 半日盤面。
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

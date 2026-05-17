@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>2026-W20 港股週報 Dashboard</title>
+<style>
+:root{--bg:#0a0a0f;--panel:#13131b;--panel-2:#1a1a24;--gold:#d4af37;--green:#16c784;--red:#ea3943;--text:#e7e7ee;--mut:#888899}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,SF Pro,system-ui,"PingFang TC","Noto Sans TC",sans-serif;padding:24px}
+h1{color:var(--gold);font-size:24px;margin-bottom:6px}
+h2{color:var(--gold);font-size:18px;margin:20px 0 12px;border-bottom:1px solid #2a2a36;padding-bottom:6px}
+h3{font-size:14px;margin-bottom:8px}
+.sub{color:var(--mut);margin-bottom:16px;font-size:12px}
+.banner{background:linear-gradient(90deg,#1a1a24,#252535);border-left:4px solid var(--gold);padding:12px 16px;margin:12px 0;border-radius:4px}
+.banner.alert{border-left-color:var(--red)}
+.banner.good{border-left-color:var(--green)}
+.banner.warn{border-left-color:var(--gold)}
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g5{grid-template-columns:repeat(5,1fr)}
+.card{background:var(--panel);border:1px solid #252535;border-radius:6px;padding:14px}
+.metric .label{color:var(--mut);font-size:11px;letter-spacing:.5px;text-transform:uppercase}
+.metric .value{font-size:22px;font-weight:600;margin-top:4px}
+.metric .delta{font-size:13px;margin-top:2px}
+.up{color:var(--green)}.down{color:var(--red)}.flat{color:var(--mut)}.warn{color:var(--gold)}
+table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:6px;overflow:hidden}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid #252535;font-size:13px}
+th{background:var(--panel-2);color:var(--gold);font-weight:600}
+tr:last-child td{border-bottom:none}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.tag.bull{background:rgba(22,199,132,.18);color:var(--green)}
+.tag.bear{background:rgba(234,57,67,.18);color:var(--red)}
+.tag.warn{background:rgba(212,175,55,.18);color:var(--gold)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:30px 0}
+.hero{background:linear-gradient(135deg,var(--panel),var(--panel-2));border:1px solid #252535;border-radius:8px;padding:18px}
+.hero .label{color:var(--mut);font-size:12px}
+.hero .value{font-size:28px;font-weight:700;margin-top:4px}
+.note{color:var(--mut);font-size:12px;margin-top:8px}
+ul{list-style:none}
+ul.bullet li{padding-left:14px;position:relative;margin:6px 0}
+ul.bullet li:before{content:"▸";color:var(--gold);position:absolute;left:0}
+.regime-shift{background:linear-gradient(90deg,rgba(234,57,67,.15),rgba(212,175,55,.15));border:1px solid #3a2a36;border-radius:6px;padding:14px;margin:12px 0}
+</style>
+</head>
+<body>
+<h1>2026-W20 港股週報 Dashboard</h1>
+<div class="sub">5 個完整交易日（5/11 - 5/15）｜ HSI -0.89%（26,393.71 → 26,160.03）｜ 業績週雙 miss + 油價衝擊 + Trump-Xi sell-the-news + 美股 5/15 stagflation sell-off spillover ｜ 4/5 盤前為盤中補做版</div>
+
+<div class="banner alert">⚠️ <strong>HSI 跌入 Bear-- 區間</strong>（5/15 收 26,160.03 < 26,200 防線）— 盤前自訂 Bear-- 概率僅 8%，<strong>嚴重低估下行風險</strong></div>
+<div class="banner alert">⚠️ <strong>5/13 業績日北水大流出 -67.71 億</strong>（深港通主賣 -72.70 億）— 業績密集日內地主動資金率先減倉，業績後未恢復</div>
+<div class="banner alert">⚠️ <strong>系統 Risk Veto 升級至 PARTIAL 2/4</strong>（PPI +6.0% + 油價衝擊 Brent >$100 雙觸發）— 倉位上限由 ≤75% 降至 <strong>≤60%</strong>（建議實際向 50% 區間靠攏）</div>
+<div class="banner warn">🟡 <strong>Warsh 統一口徑</strong>：候任 Fed Chair Kevin Warsh / 5/12 過 Fed Board 51-45 / Chair 提名仍待 full Senate 宣誓 confirmation / Powell 5/15 任期到期後仍為 chair pro tempore 直至 Warsh 宣誓就任</div>
+
+<h2>週度核心指標</h2>
+<div class="grid g4">
+<div class="hero"><div class="label">HSI 週收</div><div class="value">26,160.03 <span class="down">-0.89%</span></div><div class="note">26,393.71 → 26,160.03 / 跌入 Bear--</div></div>
+<div class="hero"><div class="label">HSCE 國指</div><div class="value">8,743.10 <span class="down">-1.64%</span></div><div class="note">國指比大市更弱</div></div>
+<div class="hero"><div class="label">恒生科技指數</div><div class="value">5,092.90（5/14）<span class="warn">~ -0.5%</span></div><div class="note">5/14 盤中高 5,258 後回吐</div></div>
+<div class="hero"><div class="label">5/13 北水（業績日）</div><div class="value down">-67.71 億</div><div class="note">深通 -72.70 億主賣</div></div>
+</div>
+
+<h2>每日走勢軌跡</h2>
+<table>
+<tr><th>日期</th><th>HSI</th><th>日漲跌</th><th>北水</th><th>關鍵事件</th></tr>
+<tr><td>05/11（一）</td><td>26,406.84</td><td><span class="up">+0.05%</span></td><td><span class="warn">+0.71億</span></td><td>守 26,200；騰訊 464.40 失 470；阿里 -3.67%；NFP +115K；Hormuz 反轉</td></tr>
+<tr><td>05/12（二）</td><td>26,347.91</td><td><span class="down">-0.22%</span></td><td><span class="warn">+7.91億（轉強但 &lt;50億）</span></td><td><strong>WTI $100.91 破 $100 防守升級</strong>；騰訊 RSI 35.8；快手 +3.49% 可靈分拆；美 CPI Core 2.8%</td></tr>
+<tr><td>05/13（三）</td><td>26,388.44</td><td><span class="up">+0.15%</span></td><td><span class="down">-67.71億</span></td><td><strong>阿里 + 騰訊雙 miss</strong>；京東 +8.28% beat；<strong>美 PPI +6.0%</strong>；Warsh 過 Fed Board 51-45；WTI $101.65</td></tr>
+<tr><td>05/14（四）</td><td>26,384.50</td><td><span class="flat">-0.01%</span></td><td><span class="warn">盤中約 -70億（終值 provisional，待確認）</span></td><td>沖高回吐（盤中高 26,906）；阿里 +3.92% 反買；騰訊 ~462 持平；Trump-Xi Day 1 樂觀</td></tr>
+<tr><td>05/15（五）</td><td><strong>26,160.03</strong></td><td><span class="down"><strong>-0.87%</strong></span></td><td><span class="warn">截至本稿仍待確認（provisional）</span></td><td><strong>跌入 Bear--</strong>；Trump-Xi 落幕 Boeing 200 vs 500；Iran Brent ~$107；美股期指 ES -0.9~1.1%</td></tr>
+</table>
+
+<h2>板塊與個股摘要</h2>
+<div class="grid g3">
+<div class="card">
+<h3 style="color:var(--green)">🟢 全週領升 / 亮點</h3>
+<ul class="bullet">
+<li><strong>京東 9618</strong> +8.28%（5/13）— 1Q26 業績 beat / 收入 3,157億 +4.9% YoY</li>
+<li><strong>中石油 0857</strong> +4.61%（5/12）— WTI 破 $100 受惠</li>
+<li><strong>快手 1024</strong> +3.49%（5/12）— 可靈 AI 視頻模型分拆上市</li>
+<li><strong>阿里 9988</strong> +3.92%（5/14）— 反向被買，市場交易 Cloud +38%</li>
+<li><strong>泡泡瑪特 9992</strong> 5/13 北水活躍 +4.72億</li>
+<li>騰訊 1Q26 <strong>FCF +20% YoY</strong> 亮點（但收入 miss 蓋過）</li>
+</ul>
+</div>
+<div class="card">
+<h3 style="color:var(--red)">🔴 全週領跌</h3>
+<ul class="bullet">
+<li><strong>阿里 9988</strong> -3.67%（5/11）— 業績前最大壓力源</li>
+<li><strong>騰訊 0700</strong> 整週 -1.5%（464.40 → 454.90）— 1Q26 收入 miss</li>
+<li><strong>中國航空股</strong> 5/15 -2%+ — Boeing 200 vs 500 失望</li>
+<li><strong>AI 鏈（小米 / 中芯）</strong> 5/15 -1~-2% — 美股半導體 sell-off</li>
+<li>工行 5/13 -0.71% — Warsh 鷹派 + 美息壓制</li>
+<li>BABA ADR 5/14 -3.55% — 高位回吐警示 9988 5/15 跟跌</li>
+</ul>
+</div>
+<div class="card">
+<h3 style="color:var(--gold)">🟡 防禦性穩定 / 結構訊號</h3>
+<ul class="bullet">
+<li><strong>中移動 0941</strong>：高息防守撐 5/11-5/12 指數</li>
+<li><strong>工行 1398</strong>：W20 早段內銀防守，後段受壓</li>
+<li>美股 5/14 三大新高（S&P / Nasdaq / Dow）— 對港股 5/15 早段曾提供承托</li>
+<li>HK 本地基本面穩固：Q1 GDP +5.9%、聯匯穩定</li>
+<li>滬港股通 5 日累計 +74.30 億 vs 深港股通 -173.41 億 = 深通主賣壓</li>
+</ul>
+</div>
+</div>
+
+<h2>北水流向分析（W20 核心結構訊號）</h2>
+<table>
+<tr><th>日期</th><th>淨額</th><th>滬 / 深拆分</th><th>主要動向</th><th>意涵</th></tr>
+<tr><td>5/11</td><td><span class="warn">+0.71億</span></td><td>滬 +35.25 / 深 -34.54</td><td>阿里 +4.37 / 快手 +4.11 / 中芯 +2.13；騰訊 -2.41</td><td>內部分歧，broad risk-on 未確認</td></tr>
+<tr><td>5/12</td><td><span class="warn">+7.91億</span></td><td>滬 +34.07 / 深 -26.17</td><td>瀾起 +1.90 / 滴普 +0.68；華虹 -6.60 / 騰訊 -5.09</td><td>轉強但 &lt;50億 Veto 釋放門檻</td></tr>
+<tr><td>5/13（業績日）</td><td><span class="down"><strong>-67.71億</strong></span></td><td>滬 +4.98 / 深 <strong>-72.70</strong></td><td>泡泡瑪特 +4.72；阿里 -14.26 / 小米 -5.87 / 長飛 -5.81 / 騰訊 -4.52 / 美團 -4.10</td><td><strong>業績密集日內地主動資金率先減倉</strong>；單日抹去前兩日累計</td></tr>
+<tr><td>5/14</td><td><span class="warn">盤中約 -70億（終值截至本稿仍待確認；provisional）</span></td><td>盤中口徑偏負</td><td>騰訊 -14.02 / 盈富 -14.22</td><td>沖高回吐配合北水未支持</td></tr>
+<tr><td>5/15</td><td><span class="warn">截至本稿仍待確認（provisional；預期延續偏負）</span></td><td>—</td><td>多隻仍見淨流出</td><td>主線不受影響（5/13 -67.71億為核心確認值）</td></tr>
+</table>
+<div class="banner alert">深港股通 5 日累計 -173.41 億（滬通 +74.30 億）= 深通主動賣盤為核心壓力源；資金集中度 W20 進一步收窄（北水活躍個股只剩泡泡瑪特為唯一明顯流入）</div>
+
+<h2>宏觀與風險指標</h2>
+<div class="grid g4">
+<div class="card metric"><div class="label">WTI / Brent</div><div class="value">$97.60 → ~$103 / Brent $107 <span class="down">+約 5-6% W</span></div><div class="note">5/12 破 $100 防守升級；Iran 戰爭</div></div>
+<div class="card metric"><div class="label">美 PPI 4 月</div><div class="value down">+6.0% YoY</div><div class="note">32 個月高；觸發 Veto 宏觀條件</div></div>
+<div class="card metric"><div class="label">美 Core CPI 4 月</div><div class="value warn">+2.8%</div><div class="note">踩線偏熱，未達 &gt;2.8% Bear trigger</div></div>
+<div class="card metric"><div class="label">美 10Y / 30Y</div><div class="value">4.595% / <strong>5.128%</strong></div><div class="note">30Y 自 2007 首破 5%</div></div>
+<div class="card metric"><div class="label">DXY</div><div class="value">+0.39% W <span class="up">5 連升</span></div><div class="note">強美元壓估值</div></div>
+<div class="card metric"><div class="label">VIX（美股）</div><div class="value">18.43 <span class="warn">+6.78%</span></div><div class="note">未進 panic 但 5/15 升</div></div>
+<div class="card metric"><div class="label">NAAIM</div><div class="value">96.67 → 77.34</div><div class="note">機構已 de-risk -19.33 pt</div></div>
+<div class="card metric"><div class="label">中國 4 月出口</div><div class="value up">+14.1% YoY</div><div class="note">AI 電子需求驅動；外需不弱</div></div>
+<div class="card metric"><div class="label">中國 4 月 CPI</div><div class="value warn">+1.2% YoY</div><div class="note">弱通脹延續 / 食品 -1.6%</div></div>
+<div class="card metric"><div class="label">USD/HKD</div><div class="value flat">7.83 區間</div><div class="note">聯匯穩定</div></div>
+<div class="card metric"><div class="label">USD/CNY</div><div class="value flat">6.80 區間</div><div class="note">人民幣穩</div></div>
+<div class="card metric"><div class="label">HK Q1 GDP</div><div class="value up">+5.9% YoY</div><div class="note">本地基本面底牌</div></div>
+</div>
+
+<h2>Hypothesis Ranking（5/15 sell-off Spillover）</h2>
+<table>
+<tr><th>假說</th><th>權重</th><th>港股 spillover</th></tr>
+<tr><td>H5 Iran 戰爭 / 油價衝擊</td><td>30%</td><td>Brent $107 直接傳導能源板塊；輸入通脹 net 負面</td></tr>
+<tr><td>H1 Stagflation / Real Yield</td><td>30%</td><td>Gold + TLT 雙跌 = stagflation regime；高估值科技 P/E 壓縮</td></tr>
+<tr><td>H3 Fed / 候任 Warsh</td><td>15%</td><td>5/12 過 Fed Board；market price hawkish path；Powell chair pro tempore</td></tr>
+<tr><td>H4 Position Unwind</td><td>15%</td><td>NAAIM 96.67 → 77.34；港股 5/13 北水 -67.71億 呼應</td></tr>
+<tr><td>H2 Japan / Carry</td><td>10%</td><td>USDJPY 158.73 接近干預區；risk-off contagion</td></tr>
+</table>
+<div class="banner alert">Regime 判定：<strong>Stagflation Sell-Everything（非 Liquidity Squeeze）</strong> — 避險資產同時失效（Gold -2.32% + TLT -1.48%）為決定性 signature</div>
+
+<h2>正面 vs 負面催化劑</h2>
+<div class="grid g2">
+<div class="card">
+<h3 style="color:var(--green)">🟢 正面催化（6）</h3>
+<ul class="bullet">
+<li>京東 9618 1Q26 業績 beat（5/13 +8.28%）</li>
+<li>快手 AI「可靈」分拆上市（5/12 +3.49%）</li>
+<li>騰訊 1Q26 FCF +20% YoY 亮點（但收入 miss 蓋過）</li>
+<li>中國 4 月出口 +14.1%（大幅超預期）</li>
+<li>美股 5/14 三大新高 read-through（但 5/15 被抹去）</li>
+<li>HK 本地基本面穩固（Q1 GDP +5.9% / 聯匯穩定）</li>
+</ul>
+</div>
+<div class="card">
+<h3 style="color:var(--red)">🔴 負面催化（8）</h3>
+<ul class="bullet">
+<li><strong>阿里 + 騰訊 1Q26 / FY26Q4 雙 miss</strong>（5/13）</li>
+<li><strong>5/13 北水大流出 -67.71 億</strong>（深通主賣 -72.70）</li>
+<li><strong>WTI 整週 +約 5-6% / Brent ~$107</strong> 輸入通脹</li>
+<li>美 PPI +6.0% / Core CPI 2.8% 踩線偏熱</li>
+<li><strong>Trump-Xi summit 失望</strong>：Boeing 200 vs 500 / Taiwan「clashes」延續</li>
+<li><strong>美股 5/15 stagflation sell-off</strong>（SPY -1.20% / NVDA -4.42%）</li>
+<li>候任 Warsh 5/12 過 Fed Board / hawkish path 鎖定</li>
+<li>NBS 非製造業 PMI 49.4 收縮持續</li>
+</ul>
+</div>
+</div>
+
+<div class="divider"></div>
+
+<div class="regime-shift">
+<h2 style="border:none;padding:0;margin-bottom:8px">W19 → W20 Regime Shift</h2>
+<div class="grid g2">
+<div>
+<h3 style="color:var(--mut)">W19 立場</h3>
+<ul class="bullet">
+<li>HSI +2.39%（SOX +4.5% 隔夜傳導 + WTI -11% + 假期後外資自發配置）</li>
+<li>「資金背馳」連 2 日警示</li>
+<li>WTI -11% W 緩通脹敘事</li>
+<li>業績前 Lynch setup（騰訊 52 週低反彈 / HSBC Q1 修復）</li>
+<li>Veto PARTIAL 1/4</li>
+</ul>
+</div>
+<div>
+<h3 style="color:var(--gold)">W20 立場</h3>
+<ul class="bullet">
+<li>HSI -0.89%（跌入 Bear--）</li>
+<li>「資金 + 業績 + 油價 + 美股 sell-off」<strong>四線同向</strong></li>
+<li><strong>WTI +約 5-6% W / Brent ~$107</strong> Stagflation 輸入</li>
+<li>業績 setup <strong>破壞</strong>（阿里 + 騰訊雙 miss）</li>
+<li>Veto <strong>PARTIAL 2/4</strong>（油價新觸發）</li>
+</ul>
+</div>
+</div>
+</div>
+
+<h2>投資委員會（W20 立場）</h2>
+<table>
+<tr><th>角色</th><th>立場</th><th>核心論點</th></tr>
+<tr><td>Howard Marks</td><td><span class="tag bear">減倉</span></td><td>「資金 + 業績」雙線負面已成型；W19 資金背馳未解除升級為四線同向</td></tr>
+<tr><td>Ray Dalio</td><td><span class="tag warn">觀望偏空</span></td><td>Late-Cycle + Stagflation 輸入；無 2026 PBOC 新刺激</td></tr>
+<tr><td>Druckenmiller</td><td><span class="tag warn">trim 騰訊</span></td><td>業績 binary 偏向左尾；下週 450 / 130 為兩個 binary 點</td></tr>
+<tr><td>Soros</td><td><span class="tag bear">追蹤反身性</span></td><td>5/14 樂觀 → 5/15 sell-the-news 典型 unwind；BABA ADR 已先警示</td></tr>
+<tr><td>Lynch</td><td><span class="tag warn">選擇性</span></td><td>京東 +0.5% / 騰訊 trim 至核心 3-5% / 阿里觀望 / 避能源、航空</td></tr>
+<tr><td>Taleb</td><td><span class="tag bear">veto 7/10</span></td><td>fragility 訊號全面兌現；釋放需 VIX&lt;20 + Brent&lt;$100 + 北水&gt;+30億 三選二</td></tr>
+<tr><td>量化</td><td><span class="tag bear">技術破位</span></td><td>HSI 5/15 跌入 Bear--；Breadth 33.1 持平 Weakening</td></tr>
+<tr><td>宏觀策略師</td><td><span class="tag bear">外圍三壓</span></td><td>Warsh hawkish + Brent $107 + 美股 sell-off 抵消所有正面</td></tr>
+<tr><td>WSB / 連登</td><td><span class="tag bull">看多</span></td><td>「FCF +20% / Cloud +38% 唔係 buying opp 是甚？」<strong>反指標警告</strong></td></tr>
+<tr><td>李嘉誠</td><td><span class="tag bear">≤60%</span></td><td>四線負面 + 候任 Warsh hawkish；倉位向 50% 區間靠</td></tr>
+</table>
+
+<h2>W21 Forward Scenarios</h2>
+<table>
+<tr><th>情境</th><th>觸發條件</th><th>HSI 目標</th><th>機率</th></tr>
+<tr><td><span class="tag bull">Bull++ 極端反彈</span></td><td>美股 5/15 收市意外正面 + 北水連 2 日 &gt;+30 億 + Boeing/大豆/牛肉補單 + Brent &lt;$100</td><td>26,500+</td><td>5%</td></tr>
+<tr><td><span class="tag bull">Bull 偏多</span></td><td>美股跌幅收窄 + 北水中性 + 油價降溫 + Taiwan 無新警示</td><td>26,200-26,500</td><td>15%</td></tr>
+<tr><td><span class="tag warn">Base 基準</span></td><td>高位整固震盪 / 北水弱負延續</td><td>25,900-26,200</td><td>35%</td></tr>
+<tr><td><span class="tag bear">Bear 偏空</span></td><td>美股跌幅延續 -1%+ / 北水持續負 / 油價繼升</td><td>25,700-25,900</td><td>30%</td></tr>
+<tr><td><span class="tag bear">Bear-- 極端跌</span></td><td>Taiwan 衝突信號 + Brent &gt;$115 + 美股 -2%+</td><td>&lt;25,700</td><td>15%</td></tr>
+</table>
+<div class="banner alert">加權期望值（EV）：約 <strong>-0.55%</strong>（明顯偏空；下行風險未充分釋放）</div>
+
+<h2>Action Card</h2>
+<div class="card">
+<ul class="bullet">
+<li><strong>倉位上限 ≤60%</strong>（建議實際向 50% 區間靠攏）— 加碼必須等：北水 &gt;+30 億且連 2 日 + HSI 重收 26,500 + Brent &lt;$100 三選二</li>
+<li>5/18 開盤首 30 分鐘觀察：北水方向 / 騰訊 450 守 / 阿里 130 守 / HSI 25,900 守</li>
+<li>監控觸發：美股 5/15 跌 &gt;-1.5% → 5/18 開市減至 40%；Brent &gt;$115 → 切 Bear--；Taiwan 衝突信號 → 即切 Bear--；VIX &gt;22 → Taleb 個人 Veto 觸發 → 倉位 ≤40%</li>
+<li>配置：防禦性（電能 0006 / 必需品 / 高息防守但注意美息壓制）；避能源短線追高 / 中國航空股 / AI 鏈 high beta</li>
+<li>W21 第一份報告前完成：5/14 + 5/15 北水全日確認（AAStocks / HKEX / etnet / 財聯社三源驗證）</li>
+</ul>
+</div>
+
+<h2>風險警示 / Veto 狀態</h2>
+<table>
+<tr><th>條件</th><th>W20 末狀態</th><th>變化 vs W19</th></tr>
+<tr><td>Taleb 個人 veto ≥9 強制</td><td>7/10（接近未觸發）</td><td>W19 7.5 → W20 7.0；釋放需 VIX&lt;20 + Brent&lt;$100 + 北水&gt;+30億 三選二</td></tr>
+<tr><td>廣度（HK Breadth）</td><td>33.1 持平</td><td>未改善</td></tr>
+<tr><td>北水方向</td><td>5/13 -67.71億 + 後續偏負</td><td>顯著惡化</td></tr>
+<tr><td>系統 Veto</td><td><strong>PARTIAL 2/4</strong>（PPI + 油價雙觸發）</td><td>由 W19 PARTIAL 1/4 升級</td></tr>
+<tr><td>倉位上限</td><td><strong>≤60%</strong>（建議實際 50%）</td><td>W19 60% 維持但實質收緊</td></tr>
+</table>
+
+<h2>W21 Watchlist</h2>
+<ul class="bullet">
+<li><strong>5/18（一）</strong>：美股 5/15 收市結果（已知）；Trump-Xi follow-through；北水首小時方向</li>
+<li><strong>5/19-5/22</strong>：美國 5 月製造業 PMI flash / Fed Speakers（Warsh policy path commentary）/ Iran 油價 / Taiwan 議題</li>
+<li><strong>5/22</strong>：候任 Warsh 宣誓就任後首次公開表態（如已排程）</li>
+<li>HK 公司業績：W21 已過業績高峰，注意零售 / 內房板塊個別公司</li>
+</ul>
+
+<h2>預測準確度審計（W20）</h2>
+<table>
+<tr><th>日期</th><th>覆蓋率</th><th>命中率</th><th>核心評估</th></tr>
+<tr><td>5/11（一）</td><td>5/5 = 100%</td><td><span class="warn">50%</span></td><td>北水首日預測 miss（5/8 強流入未延續）；騰訊 470 失守</td></tr>
+<tr><td>5/12（二）</td><td>6/6 = 100%</td><td><span class="warn">58%</span></td><td>WTI $100 防線預測命中；騰訊 470 重上失敗；北水方向半命中</td></tr>
+<tr><td>5/13（三）</td><td>6/6 = 100%</td><td><span class="down">42%</span></td><td>業績日北水方向完全錯誤（預測 &gt;30億，實際 -67.71億）；雙 miss 為主導</td></tr>
+<tr><td>5/14（四）</td><td>6/6 = 100%</td><td><span class="down">42%</span></td><td>阿里方向完全錯誤（預測 -1~-3%，實際 +3.92%）；沖高回吐未捕捉</td></tr>
+<tr><td>5/15（五）</td><td>6/6 = 100%</td><td><span class="down">25% ❌</span></td><td><strong>W20 最差</strong>：EV +0.10% vs 實際 -0.87%；Bear-- 8% 概率命中；sell-the-news + stagflation spillover 未預見</td></tr>
+</table>
+<div class="banner">W20 整體：覆蓋率 29/29 = 100%（延續 W19 標準化）｜ 命中率 12.5/29 = <strong>43%</strong>（vs W19 76%）｜ 主因業績週 binary + 5/15 三線匯流 sell-off + 4/5 補做版時序限制 — 屬尾部事件週，不可直接與 W19 比較</div>
+
+<div class="banner warn">⚠️ <strong>Audit Provisional Learning 提示</strong>：本 Dashboard 對應 [[2026-W20 港股預測準確度審計]] 之 W20 provisional learning（業績日北水 prior / 平台股業績 sub-case / Sell-the-news 對等情境 / Stagflation 港股 spillover trigger / Iran 油價 escalation 建模）。所有規則 / heuristic 源於 W20 單週案例，需經 W21-W24 多週驗證後才可考慮升級為正式 workflow rule。</div>
+
+<div class="divider"></div>
+<div class="note">報告生成：2026-05-17 ｜ 數據截止：W20 5/11-5/15 完整 5 日 ｜ 數據源：每日港股盤前/盤後日報 + 美股 W20 週報 Part D 整合 ｜ Warsh 統一口徑：候任 Fed Chair Kevin Warsh / 5/12 過 Fed Board 51-45 / Chair 提名仍待 full Senate 宣誓 confirmation / Powell 5/15 任期到期後仍為 chair pro tempore 直至 Warsh 宣誓就任 ｜ 本週並未發現 2026 specific date 之 PBOC / 國務院新刺激政策（延續 W19 source-date contamination 教訓）</div>
+</body>
+</html>
