@@ -180,6 +180,7 @@ const FILES = {
     {"name":"2026-04-01 港股盤前Dashboard.html","path":"港股/盤前/2026-04/2026-04-01 港股盤前Dashboard.html","dir":"港股/盤前/2026-04","month":"2026-04"},
   ],
   "🇭🇰 港股盤後": [
+    {"name":"2026-05-18 港股盤後Dashboard.html","path":"港股/盤後/2026-05-18 港股盤後Dashboard.html","dir":"港股/盤後"},
     {"name":"2026-05-15 港股盤後Dashboard.html","path":"港股/盤後/2026-05-15 港股盤後Dashboard.html","dir":"港股/盤後"},
     {"name":"2026-05-14 港股盤後Dashboard.html","path":"港股/盤後/2026-05-14 港股盤後Dashboard.html","dir":"港股/盤後"},
     {"name":"2026-05-13 港股盤後Dashboard.html","path":"港股/盤後/2026-05-13 港股盤後Dashboard.html","dir":"港股/盤後"},
