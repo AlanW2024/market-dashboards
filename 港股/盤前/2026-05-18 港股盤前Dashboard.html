@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>港股盤前 2026-05-18</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --panel: #13131b;
+    --border: #2a2e3e;
+    --gold: #d4af37;
+    --green: #16c784;
+    --red: #ea3943;
+    --yellow: #f0a500;
+    --blue: #3498db;
+    --text: #e8eaf0;
+    --muted: #7f8899;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'SF Pro Display', -apple-system, sans-serif; padding: 24px; }
+
+  .alert-banner { background: rgba(234,57,67,0.15); border: 1px solid rgba(234,57,67,0.5); border-radius: 8px; padding: 12px 20px; text-align: center; font-size: 13px; color: var(--red); margin-bottom: 20px; font-weight: 600; }
+
+  .header { text-align: center; margin-bottom: 28px; }
+  .header h1 { font-size: 26px; font-weight: 700; color: var(--gold); letter-spacing: 1px; }
+  .header .sub { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 20px 0; }
+
+  .badge-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px; flex-wrap: wrap; }
+  .badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-warn { background: rgba(240,165,0,0.15); color: #f0a500; border: 1px solid rgba(240,165,0,0.4); }
+  .badge-green { background: rgba(22,199,132,0.15); color: #16c784; border: 1px solid rgba(22,199,132,0.4); }
+  .badge-red { background: rgba(234,57,67,0.15); color: #ea3943; border: 1px solid rgba(234,57,67,0.4); }
+  .badge-info { background: rgba(52,152,219,0.15); color: #3498db; border: 1px solid rgba(52,152,219,0.4); }
+
+  .hero-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
+  @media(max-width:768px){ .hero-grid { grid-template-columns: repeat(2,1fr); } }
+  .hero-card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 18px 14px; text-align: center; }
+  .hero-card.bear-card { border-color: rgba(234,57,67,0.4); }
+  .hero-card .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .hero-card .value { font-size: 22px; font-weight: 700; }
+  .hero-card .change { font-size: 12px; margin-top: 4px; }
+  .hero-card .note { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .warn { color: var(--yellow); }
+  .neutral { color: var(--muted); }
+
+  .section-title { font-size: 13px; font-weight: 600; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 24px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+  td { padding: 8px 10px; border-bottom: 1px solid rgba(42,46,62,0.5); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .vote-bar-wrap { margin: 16px 0; }
+  .vote-label-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .vote-bar { display: flex; height: 22px; border-radius: 11px; overflow: hidden; }
+  .vote-long { background: var(--green); }
+  .vote-neutral { background: #4a5568; }
+  .vote-short { background: var(--red); }
+  .vote-hedge { background: var(--yellow); }
+  .vote-legend { display: flex; gap: 16px; margin-top: 10px; font-size: 12px; flex-wrap: wrap; }
+  .vote-legend span { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+  .veto-box { background: rgba(240,165,0,0.06); border: 1px solid rgba(240,165,0,0.35); border-radius: 8px; padding: 16px 18px; margin-bottom: 24px; }
+  .veto-title { color: var(--yellow); font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+  .veto-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; font-size: 12px; }
+  @media(max-width:600px){ .veto-grid { grid-template-columns: repeat(2,1fr); } }
+  .veto-item { background: rgba(0,0,0,0.25); border-radius: 6px; padding: 10px 12px; }
+  .veto-item .vi-label { color: var(--muted); font-size: 10px; margin-bottom: 4px; }
+  .veto-item .vi-val { font-weight: 700; font-size: 13px; }
+
+  .heatmap-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 24px; }
+  @media(max-width:768px){ .heatmap-grid { grid-template-columns: repeat(2,1fr); } }
+  .hm-card { border-radius: 8px; padding: 12px; text-align: center; }
+  .hm-code { font-size: 11px; color: rgba(255,255,255,0.55); }
+  .hm-name { font-size: 12px; font-weight: 600; margin: 4px 0; }
+  .hm-exp { font-size: 16px; font-weight: 800; }
+  .hm-note { font-size: 10px; margin-top: 4px; color: rgba(255,255,255,0.55); }
+  .hm-bull { background: rgba(22,199,132,0.2); border: 1px solid rgba(22,199,132,0.35); }
+  .hm-bear { background: rgba(234,57,67,0.18); border: 1px solid rgba(234,57,67,0.35); }
+  .hm-neutral { background: rgba(74,85,104,0.28); border: 1px solid rgba(74,85,104,0.5); }
+  .hm-watch { background: rgba(240,165,0,0.1); border: 1px solid rgba(240,165,0,0.35); }
+
+  .scenario-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; margin-bottom: 20px; }
+  @media(max-width:768px){ .scenario-grid { grid-template-columns: repeat(2,1fr); } }
+  .sc-card { border-radius: 8px; padding: 14px 10px; text-align: center; }
+  .sc-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .sc-prob { font-size: 24px; font-weight: 800; margin: 6px 0; }
+  .sc-range { font-size: 11px; }
+  .sc-desc { font-size: 10px; margin-top: 4px; color: rgba(255,255,255,0.55); }
+  .sc-bullpp { background: rgba(22,199,132,0.2); border: 1px solid rgba(22,199,132,0.45); }
+  .sc-bull { background: rgba(22,199,132,0.1); border: 1px solid rgba(22,199,132,0.25); }
+  .sc-base { background: rgba(74,85,104,0.22); border: 1px solid rgba(74,85,104,0.48); }
+  .sc-bear { background: rgba(234,57,67,0.12); border: 1px solid rgba(234,57,67,0.3); }
+  .sc-bearpp { background: rgba(234,57,67,0.22); border: 1px solid rgba(234,57,67,0.5); }
+
+  .action-card { background: rgba(234,57,67,0.05); border: 1px solid rgba(234,57,67,0.2); border-radius: 10px; padding: 16px 18px; margin-bottom: 24px; }
+  .action-card .ac-title { color: var(--red); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .trigger-row { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; padding: 6px 0; border-bottom: 1px solid rgba(234,57,67,0.12); }
+  .trigger-row:last-child { border-bottom: none; }
+  .trigger-icon { font-size: 14px; min-width: 20px; }
+  .trigger-cond { color: var(--muted); flex: 1; }
+  .trigger-act { color: var(--red); font-weight: 600; }
+
+  .footer { text-align: center; font-size: 11px; color: var(--muted); margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<div class="alert-banner">
+  ⚠️ Bear-- 區間警告：HSI 5/15 收 25,962.73（明確跌穿 26,200）· 5/15 美股 Stagflation Sell-off · System Veto PARTIAL 2/4 · 倉位上限 ≤60%
+</div>
+
+<div class="header">
+  <h1>🇭🇰 港股盤前 Dashboard</h1>
+  <div class="sub">2026-05-18（週一）W21 首個交易日 · Transition Zone + Stagflation 輸入信號（55-60/100）· 辯論制（10 角色）</div>
+</div>
+
+<div class="badge-row">
+  <span class="badge badge-red">Bear-- 區間（HSI &lt;26,200）</span>
+  <span class="badge badge-red">美股 5/15 Stagflation Sell-off</span>
+  <span class="badge badge-red">Trump-Xi Sell-the-News</span>
+  <span class="badge badge-warn">Brent $107（+5-6% W）</span>
+  <span class="badge badge-warn">Taleb Veto 7/10</span>
+  <span class="badge badge-warn">System PARTIAL 2/4 ≤60%</span>
+  <span class="badge badge-info">10Y 4.59%（年內高）</span>
+</div>
+
+<div class="divider"></div>
+
+<!-- Hero Cards Row 1 - HK -->
+<div class="hero-grid">
+  <div class="hero-card bear-card">
+    <div class="label">HSI 收市（5/15）</div>
+    <div class="value down">25,962.73</div>
+    <div class="change down">−1.60% ⚠️ 明確跌穿 Bear--</div>
+    <div class="note">明確跌穿 26,200 門檻</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">HSCEI（5/15）</div>
+    <div class="value down">8,691.03</div>
+    <div class="change down">−1.83% 跌幅更大</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">騰訊 0700（5/15）</div>
+    <div class="value up">456.40</div>
+    <div class="change up">+0.33% 相對抗跌 | 450 守位</div>
+    <div class="note">5/18 仍需北水確認</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">阿里 9988（5/15）</div>
+    <div class="value down">155.40</div>
+    <div class="change down">−2.02%</div>
+    <div class="note">130 守位底線</div>
+  </div>
+</div>
+
+<!-- Hero Cards Row 2 - US -->
+<div class="hero-grid">
+  <div class="hero-card bear-card">
+    <div class="label">S&amp;P 500（5/15）</div>
+    <div class="value down">7,408.50</div>
+    <div class="change down">−1.24% Stagflation Sell-off</div>
+    <div class="note">5/14 新高後最大回吐</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">Nasdaq（5/15）</div>
+    <div class="value down">26,225.14</div>
+    <div class="change down">−1.54% 科技領跌</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">Dow Jones（5/15）</div>
+    <div class="value down">49,526.17</div>
+    <div class="change down">−1.07% 跌穿 50,000</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">VIX（5/15）</div>
+    <div class="value warn">~18</div>
+    <div class="change warn">假平靜（&lt;22 未觸發）</div>
+    <div class="note">Taleb 警戒線 22</div>
+  </div>
+</div>
+
+<!-- Hero Cards Row 3 - Macro -->
+<div class="hero-grid">
+  <div class="hero-card">
+    <div class="label">10Y 美債（5/15）</div>
+    <div class="value down">4.59%</div>
+    <div class="change down">年內高 +~10bp</div>
+    <div class="note">Warsh 鷹派定價</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">WTI（5/15）</div>
+    <div class="value warn">~$103</div>
+    <div class="change warn">+5-6% W（$97.60→$103）</div>
+    <div class="note">Iran 戰爭風險溢價</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">Brent（5/15）</div>
+    <div class="value warn">~$107</div>
+    <div class="change warn">+5-6% W | >$100 觸發</div>
+    <div class="note">System Veto 第二項</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">北水 5/13（核心）</div>
+    <div class="value down">−67.71 億</div>
+    <div class="change down">三源確認</div>
+    <div class="note">5/14-5/15 provisional</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Market Data Table -->
+<div class="card">
+  <div class="section-title">美股 5/15 關鍵個股（港股 5/18 承壓來源）</div>
+  <table>
+    <thead><tr><th>類別</th><th>個股</th><th>5/15 表現</th><th>港股傳導</th></tr></thead>
+    <tbody>
+      <tr><td>半導體</td><td>INTC</td><td class="down">−6.0%</td><td class="down">中芯 / 半導體鏈直接承壓</td></tr>
+      <tr><td>半導體</td><td>AMD</td><td class="down">−5.7%</td><td class="down">AI 情緒鏈降溫</td></tr>
+      <tr><td>半導體</td><td>MU</td><td class="down">−6.6%</td><td class="down">記憶體板塊領跌</td></tr>
+      <tr><td>EV</td><td>TSLA</td><td class="down">−4.75%（$422.24）</td><td class="down">EV 情緒降溫</td></tr>
+      <tr><td>工業</td><td>Boeing</td><td class="down">−4~−5.4%</td><td class="down">大單縮水（200 vs 500）</td></tr>
+      <tr><td>跨資產</td><td>Gold</td><td class="down">跌（stagflation sell-off）</td><td class="down">非避險流入，而是整體收縮</td></tr>
+      <tr><td>跨資產</td><td>TLT（長債）</td><td class="down">跌（10Y 升至 4.59%）</td><td class="down">估值壓制加深</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Stock Heatmap -->
+<div class="section-title">重點港股 5/18 開盤前部署</div>
+<div class="heatmap-grid">
+  <div class="hm-card hm-watch">
+    <div class="hm-code">0700</div>
+    <div class="hm-name">騰訊</div>
+    <div class="hm-exp warn">450 守位</div>
+    <div class="hm-note">5/15 +0.33% 相對抗跌；等北水確認</div>
+  </div>
+  <div class="hm-card hm-neutral">
+    <div class="hm-code">9618</div>
+    <div class="hm-name">京東</div>
+    <div class="hm-exp neutral">防守選股</div>
+    <div class="hm-note">消費韌性；相對防守</div>
+  </div>
+  <div class="hm-card hm-bear">
+    <div class="hm-code">9988</div>
+    <div class="hm-name">阿里巴巴</div>
+    <div class="hm-exp down">全面觀望</div>
+    <div class="hm-note">130 破位前不入場</div>
+  </div>
+  <div class="hm-card hm-bear">
+    <div class="hm-code">0981</div>
+    <div class="hm-name">中芯國際</div>
+    <div class="hm-exp down">承壓</div>
+    <div class="hm-note">INTC/AMD −6% 傳導</div>
+  </div>
+  <div class="hm-card hm-bear">
+    <div class="hm-code">1810</div>
+    <div class="hm-name">小米</div>
+    <div class="hm-exp down">承壓</div>
+    <div class="hm-note">AI 情緒降溫；科技跌</div>
+  </div>
+  <div class="hm-card hm-neutral">
+    <div class="hm-code">北水</div>
+    <div class="hm-name">首 30 分鐘</div>
+    <div class="hm-exp warn">關鍵定調</div>
+    <div class="hm-note">&lt; −30 億：延遲加倉</div>
+  </div>
+</div>
+
+<!-- Section 3 - Previous Predictions -->
+<div class="card">
+  <div class="section-title">前日預測對比（5/15 盤前 Section 6）</div>
+  <table>
+    <thead><tr><th>情景</th><th>5/15 盤前概率</th><th>HSI 範圍</th><th>5/15 實際</th><th>命中？</th></tr></thead>
+    <tbody>
+      <tr><td>Bull++</td><td>8%</td><td>27,200+</td><td class="down">25,962.73</td><td class="down">❌</td></tr>
+      <tr><td>Bull</td><td>27%</td><td>26,800–27,200</td><td class="down">25,962.73</td><td class="down">❌</td></tr>
+      <tr><td>Base</td><td>35%</td><td>26,500–26,800</td><td class="down">25,962.73</td><td class="down">❌</td></tr>
+      <tr><td>Bear</td><td>22%</td><td>26,200–26,500</td><td class="down">25,962.73</td><td class="down">❌</td></tr>
+      <tr style="background:rgba(234,57,67,0.08)"><td><strong>Bear--</strong></td><td><strong>8%</strong></td><td><strong>&lt;26,200</strong></td><td class="down"><strong>25,962.73</strong></td><td class="down"><strong>✅ 命中</strong></td></tr>
+    </tbody>
+  </table>
+  <div style="display:flex;gap:24px;margin-top:14px;font-size:12px;flex-wrap:wrap;">
+    <div><span style="color:var(--muted)">5/15 盤前投票</span>　Long <span class="up">35.6%</span> / Neutral <span class="neutral">42.0%</span> / Short <span class="down">22.5%</span></div>
+    <div><span style="color:var(--muted)">實際方向</span>　<span class="down">Short 主導，多方全錯</span></div>
+    <div><span style="color:var(--muted)">EV 預測</span>　+0.10% → <span class="down">實際 −1.60%</span></div>
+  </div>
+</div>
+
+<!-- Vote Section -->
+<div class="card">
+  <div class="section-title">辯論加權結果（10 位角色）</div>
+  <div class="vote-bar-wrap">
+    <div class="vote-label-row">
+      <span class="down">做空 52%</span>
+      <span class="warn">防守 / Hedge 41%</span>
+      <span class="up">Long（反指標）7%</span>
+    </div>
+    <div class="vote-bar">
+      <div class="vote-short" style="width:52%"></div>
+      <div class="vote-hedge" style="width:41%"></div>
+      <div class="vote-long" style="width:7%"></div>
+    </div>
+    <div class="vote-legend">
+      <span><span class="dot" style="background:var(--red)"></span> Short 5.2 票 (52%)</span>
+      <span><span class="dot" style="background:var(--yellow)"></span> Hedge / 防守 4.1 票 (41%)</span>
+      <span><span class="dot" style="background:var(--green)"></span> Long（WSB 反指標）0.7 票 (7%)</span>
+    </div>
+  </div>
+
+  <table style="margin-top: 14px;">
+    <thead><tr><th>角色</th><th>立場</th><th>信心</th><th>加權</th><th>核心論點</th></tr></thead>
+    <tbody>
+      <tr><td>德魯肯米勒</td><td class="down">做空</td><td>7.5/10</td><td>×1.3</td><td>Gold + TLT 雙跌 = 系統性轉向；倉位削至 40%</td></tr>
+      <tr><td>彼得·林奇</td><td class="warn">防守選股</td><td>5/10</td><td>×1.2</td><td>僅留騰訊（450 守位）/ 京東；阿里全面觀望</td></tr>
+      <tr><td>索羅斯</td><td class="down">做空</td><td>7.5/10</td><td>×1.1</td><td>反身性：Summit 敘事破裂，sell-off 自我強化</td></tr>
+      <tr><td>李嘉誠</td><td class="warn">防守</td><td>6/10</td><td>×1.1</td><td>倉位 ≤60% 向 50% 靠攏；不加碼</td></tr>
+      <tr><td>宏觀策略師</td><td class="down">偏空</td><td>7/10</td><td>×1.0</td><td>油價 + PPI + 10Y 三重壓制；倉位 ≤50%</td></tr>
+      <tr><td>量化系統</td><td class="down">偏空</td><td>6.5/10</td><td>×1.0</td><td>Momentum 斷線；Bear-- 無反彈確認信號</td></tr>
+      <tr><td>達里奧</td><td class="neutral">觀望</td><td>5.5/10</td><td>×0.9</td><td>Regime 過渡期；多元配置，不押單向</td></tr>
+      <tr><td>霍華德·馬克思</td><td class="down">偏空防守</td><td>6.5/10</td><td>×0.9</td><td>Stagflation 非 V 型；估值壓制持續</td></tr>
+      <tr><td>塔勒布</td><td class="warn">避險 / Veto</td><td>7/10</td><td>×0.8</td><td>Veto 7/10（接近觸發）；倉位 ≤40% + 對沖</td></tr>
+      <tr><td>WSB 連登散戶</td><td class="up">做多（反指標）</td><td>4/10</td><td>×0.7</td><td>「跌咁多喺啱買！騰訊 $455 等緊！Cybercab 趁低吸！」</td></tr>
+    </tbody>
+  </table>
+  <div style="margin-top:12px;font-size:12px;color:var(--muted);line-height:1.6;">
+    主持人裁決：Short + Hedge 合計 <strong style="color:var(--red)">81%</strong>，W21 首日最清晰看空讀數。WSB 孤立多方（7%）為反指標信號。倉位向 50% 靠攏。
+  </div>
+</div>
+
+<!-- Veto Box -->
+<div class="veto-box">
+  <div class="veto-title">⚠️ Risk Veto 狀態（2026-05-18 盤前）</div>
+  <div class="veto-grid">
+    <div class="veto-item">
+      <div class="vi-label">Taleb 個人 Veto</div>
+      <div class="vi-val warn">7/10（未觸發）</div>
+    </div>
+    <div class="veto-item">
+      <div class="vi-label">System 條件</div>
+      <div class="vi-val warn">PARTIAL 2/4</div>
+    </div>
+    <div class="veto-item">
+      <div class="vi-label">最終倉位上限</div>
+      <div class="vi-val warn">≤60%（向 50%）</div>
+    </div>
+    <div class="veto-item">
+      <div class="vi-label">Regime</div>
+      <div class="vi-val">Transition + Stagflation</div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;font-size:12px;margin-top:12px;">
+    <div class="veto-item">
+      <div class="vi-label">PPI > 5.5%</div>
+      <div class="vi-val down">+6.0% ✅ 觸發</div>
+    </div>
+    <div class="veto-item">
+      <div class="vi-label">Brent > $100</div>
+      <div class="vi-val down">~$107 ✅ 觸發</div>
+    </div>
+    <div class="veto-item">
+      <div class="vi-label">北水 > 50 億</div>
+      <div class="vi-val warn">5/13 已觸發（provisional）</div>
+    </div>
+    <div class="veto-item">
+      <div class="vi-label">動能崩潰</div>
+      <div class="vi-val up">❌ 未觸發（VIX 18）</div>
+    </div>
+  </div>
+</div>
+
+<!-- Scenarios -->
+<div class="section-title">今日情景預測（5/18）</div>
+<div class="scenario-grid">
+  <div class="sc-card sc-bullpp">
+    <div class="sc-label" style="color:var(--green)">Bull++</div>
+    <div class="sc-prob up">5%</div>
+    <div class="sc-range">26,400+</div>
+    <div class="sc-desc">北水 >+30 億 + 期指轉正 + Trump-Xi 補單</div>
+  </div>
+  <div class="sc-card sc-bull">
+    <div class="sc-label" style="color:#52d68a">Bull</div>
+    <div class="sc-prob up">12%</div>
+    <div class="sc-range">26,200–26,400</div>
+    <div class="sc-desc">北水小幅正 + 油價降溫 + 技術反彈</div>
+  </div>
+  <div class="sc-card sc-base">
+    <div class="sc-label">Base</div>
+    <div class="sc-prob neutral">30%</div>
+    <div class="sc-range">25,900–26,200</div>
+    <div class="sc-desc">Bear-- 整固；北水偏負未惡化</div>
+  </div>
+  <div class="sc-card sc-bear">
+    <div class="sc-label" style="color:#ff8080">Bear</div>
+    <div class="sc-prob down">33%</div>
+    <div class="sc-range">25,600–25,900</div>
+    <div class="sc-desc">US sell-off 全面傳導 + 北水持續負</div>
+  </div>
+  <div class="sc-card sc-bearpp">
+    <div class="sc-label" style="color:var(--red)">Bear--</div>
+    <div class="sc-prob down">20%</div>
+    <div class="sc-range">&lt;25,600</div>
+    <div class="sc-desc">Taiwan + Iran 急升 + 期指 &lt;−1.5%</div>
+  </div>
+</div>
+<div style="text-align:center; font-size:12px; color:var(--muted); margin-bottom:24px;">
+  預期值（EV）：<span class="down" style="font-weight:700">−0.8%</span>
+  （較 5/15 盤後預測 −0.55% 更負；US close −1.24% 已確認）
+  &nbsp;|&nbsp; 倉位上限：<span class="warn">≤60%（建議向 50% 靠攏）</span>
+</div>
+
+<!-- Action Card -->
+<div class="action-card">
+  <div class="ac-title">🔴 關鍵觸發監控（5/18 盤中）</div>
+  <div class="trigger-row">
+    <div class="trigger-icon">🔴</div>
+    <div class="trigger-cond">北水首 30 分鐘 &lt; −30 億</div>
+    <div class="trigger-act">→ 延遲一切加倉</div>
+  </div>
+  <div class="trigger-row">
+    <div class="trigger-icon">🔴</div>
+    <div class="trigger-cond">騰訊 0700 跌破 450</div>
+    <div class="trigger-act">→ 縮倉；科技板塊全面觀望</div>
+  </div>
+  <div class="trigger-row">
+    <div class="trigger-icon">🔴</div>
+    <div class="trigger-cond">阿里 9988 跌破 130</div>
+    <div class="trigger-act">→ 中概全面觀望</div>
+  </div>
+  <div class="trigger-row">
+    <div class="trigger-icon">⚠️</div>
+    <div class="trigger-cond">美股期指 &lt; −1.5%</div>
+    <div class="trigger-act">→ 倉位降至 40%</div>
+  </div>
+  <div class="trigger-row">
+    <div class="trigger-icon">⚠️</div>
+    <div class="trigger-cond">Brent 急升 &gt; $115</div>
+    <div class="trigger-act">→ 切 Bear-- 倉位框架</div>
+  </div>
+  <div class="trigger-row">
+    <div class="trigger-icon">🚨</div>
+    <div class="trigger-cond">VIX 突破 22</div>
+    <div class="trigger-act">→ Taleb Veto 觸發 → 倉位 ≤30%</div>
+  </div>
+</div>
+
+<!-- Warsh Notice -->
+<div class="card" style="font-size:12px;color:var(--muted);padding:14px 16px;">
+  <strong style="color:var(--text)">Warsh 時間線</strong>：5/12 確認為 Fed governor 並啟動 chair vote；5/13 參議院 54-45 確認出任 Fed chair；Powell 仍為 chair pro tempore 至 Warsh 宣誓就職。
+  &nbsp;|&nbsp; 所有數據基於 5/15 EOD；無週末實時市場數據；北水 5/14-5/15 終值 provisional（不影響主線判讀）。
+</div>
+
+<div class="footer">
+  港股盤前日報 · 2026-05-18 · W21 首個交易日 · 辯論制（10 角色加權）· Regime: Transition Zone + Stagflation 55-60
+</div>
+
+</body>
+</html>
