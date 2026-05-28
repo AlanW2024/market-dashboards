@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-05-22 港股盤後 Dashboard</title>
+<style>
+:root { --bg:#0a0a0f; --panel:#13131b; --panel-2:#1a1a24; --border:#2a2a36; --text:#e8e8ee; --text-dim:#9b9bab; --gold:#d4af37; --green:#16c784; --red:#ea3943; --amber:#f59e0b; --purple:#7c3aed; --blue:#3b82f6; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif; line-height:1.6; padding:24px; max-width:1400px; margin:0 auto; }
+header { border-bottom:2px solid var(--gold); padding-bottom:16px; margin-bottom:24px; }
+h1 { font-size:28px; color:var(--gold); margin-bottom:8px; }
+.meta { color:var(--text-dim); font-size:13px; }
+.divider { height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:32px 0; }
+section { margin-bottom:28px; }
+h2 { font-size:18px; color:var(--gold); margin-bottom:14px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+.hero-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:20px; }
+.metric { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:14px; }
+.metric-label { color:var(--text-dim); font-size:12px; margin-bottom:4px; }
+.metric-value { font-size:22px; font-weight:600; }
+.metric-change { font-size:13px; margin-top:4px; }
+.up { color:var(--green); } .down { color:var(--red); } .warn { color:var(--amber); } .neutral { color:var(--text-dim); }
+table { width:100%; border-collapse:collapse; background:var(--panel); border-radius:8px; overflow:hidden; margin-bottom:12px; }
+th,td { padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); font-size:13px; }
+th { background:var(--panel-2); color:var(--gold); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:0.5px; }
+tr:last-child td { border-bottom:none; }
+.alert { background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05)); border-left:4px solid var(--amber); padding:14px 18px; border-radius:6px; margin:16px 0; font-size:14px; }
+.alert-green { background:linear-gradient(135deg,rgba(22,199,132,0.15),rgba(22,199,132,0.05)); border-left-color:var(--green); }
+.alert-red { background:linear-gradient(135deg,rgba(234,57,67,0.15),rgba(234,57,67,0.05)); border-left-color:var(--red); }
+.regime-badge { display:inline-block; padding:4px 12px; border-radius:4px; font-size:12px; font-weight:600; background:var(--gold); color:#000; margin-left:8px; }
+.vote-bar { display:flex; height:32px; border-radius:6px; overflow:hidden; margin:12px 0; font-size:12px; font-weight:600; }
+.vote-segment { display:flex; align-items:center; justify-content:center; color:#fff; }
+.vote-long { background:var(--green); } .vote-neutral { background:var(--text-dim); } .vote-short { background:var(--red); }
+.scenario-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin:12px 0; }
+.scenario { background:var(--panel-2); border:1px solid var(--border); border-radius:8px; padding:12px; border-top:4px solid var(--text-dim); }
+.scenario.bull-plus { border-top-color:var(--green); }
+.scenario.bull { border-top-color:#4ade80; }
+.scenario.base { border-top-color:var(--gold); }
+.scenario.bear { border-top-color:#fb923c; }
+.scenario.bear-minus { border-top-color:var(--red); }
+.scenario .prob { font-size:24px; font-weight:700; }
+.scenario .range { font-size:13px; color:var(--text-dim); margin:4px 0; }
+.scenario .name { font-size:11px; text-transform:uppercase; color:var(--text-dim); }
+.kv-row { display:grid; grid-template-columns:1fr 2fr; gap:12px; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.kv-row:last-child { border-bottom:none; }
+.kv-label { color:var(--text-dim); }
+.dispute { background:var(--panel-2); border-left:3px solid var(--purple); padding:12px 16px; margin:10px 0; border-radius:4px; font-size:13px; }
+.dispute .role { color:var(--gold); font-weight:600; }
+footer { margin-top:40px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-dim); font-size:11px; }
+.tag-list { margin-top:8px; }
+.tag { display:inline-block; padding:2px 8px; background:var(--panel); border-radius:4px; margin-right:6px; font-size:11px; color:var(--text-dim); }
+</style>
+</head>
+<body>
+
+<header>
+<h1>港股盤後 Dashboard · 2026-05-22 <span class="regime-badge">Base ★ 兌現 +0.77%</span></h1>
+<div class="meta">
+生成 HKT 16:05 · 港股 5/22 已收市 · 美股 5/22 RTH 距開市 ~5 小時 25 分鐘<br>
+oversold rebound 動能不足 · 中芯爆升 +7.35% · 9618 弱勢擴大 · 油價反向重燃
+</div>
+</header>
+
+<div class="alert">
+<strong>⚠️ 5/22 盤前 Bull ★ 35% 過樂觀；5/21 盤後 Base ★ 38% 精準命中</strong>：
+HSI 早段 25,723.04 (+1.33%) → 收 25,581.74 (+0.77%) = 午後回吐 −0.55pp；
+<strong>中芯 0981 +7.35% 爆升</strong>（vs NVDA -1.77% 完全脫鉤）；
+9988 早段 +2.06% → 收 +0.71% 動能不足；9618 -1.62% 跌幅擴大；
+<strong>Brent 重上 $105.64 (+2.98%) = 油價鬆動 trigger 反向重燃</strong>；
+北水終值淨賣出 <strong>64.94 億港元</strong>（滬 -22.97 / 深 -41.97），確認反彈未獲全市場資金支持。
+EV 由 +0.3~+0.6% 下修至 <strong>−0.4~+0.1%</strong>（下週 5/25）。
+</div>
+
+<section>
+<h2>港股 5/22 收盤 vs 早段</h2>
+<div class="hero-grid">
+  <div class="metric"><div class="metric-label">^HSI</div><div class="metric-value">25,581.74</div><div class="metric-change up">+195.22（+0.77%）Base 上緣</div></div>
+  <div class="metric"><div class="metric-label">^HSCE</div><div class="metric-value">8,542.41</div><div class="metric-change up">+67.09（+0.79%）</div></div>
+  <div class="metric"><div class="metric-label">3032 HSTECH ETF</div><div class="metric-value">$4.846</div><div class="metric-change up">+1.98%（早段 +2.23% 微收弱）</div></div>
+  <div class="metric"><div class="metric-label">0700 騰訊</div><div class="metric-value">$441.60</div><div class="metric-change up">+0.59% 守 $440</div></div>
+  <div class="metric"><div class="metric-label">9988 阿里</div><div class="metric-value">$126.90</div><div class="metric-change warn">+0.71% ⚠️ 早段 +2.06% 大幅回吐</div></div>
+  <div class="metric"><div class="metric-label">0981 中芯</div><div class="metric-value">$79.65</div><div class="metric-change up">+7.35% ✅ <strong>爆升</strong></div></div>
+  <div class="metric"><div class="metric-label">北水 / 南向</div><div class="metric-value">-64.94 億</div><div class="metric-change down">HKD -6.494B；滬 -22.97 / 深 -41.97</div></div>
+  <div class="metric"><div class="metric-label">1810 小米</div><div class="metric-value">$30.02</div><div class="metric-change up">+1.21%</div></div>
+  <div class="metric"><div class="metric-label">9618 京東</div><div class="metric-value">$121.50</div><div class="metric-change down">−1.62% ⚠️ 跌幅擴大</div></div>
+</div>
+</section>
+
+<section>
+<h2>美股 5/22 RTH 開市前狀態（HKT 16:05，距 21:30 開市 ~5.5 小時）</h2>
+<table>
+<tr><th>指標</th><th>5/22 早段最新</th><th>變動</th><th>訊號</th></tr>
+<tr><td>ES=F</td><td>7,486.50</td><td class="up">+20.50（+0.27%）</td><td>期指仍升但動能弱於 HK 早段</td></tr>
+<tr><td>NQ=F</td><td>29,569.75</td><td class="up">+122.50（+0.42%）</td><td>科技 beta 略強</td></tr>
+<tr><td>NVDA</td><td>$219.51（仍 5/21 reg close）</td><td class="down">5/21 −1.77%</td><td class="warn">5/22 RTH 接近 $218 stop</td></tr>
+<tr><td>AAPL</td><td>$304.99（仍 5/21 reg close）</td><td class="up">5/21 +0.91% / 52w 高 $305.54</td><td>leadership 待 5/22 確認</td></tr>
+<tr><td>BABA</td><td>$131.47（仍 5/21 reg close）</td><td class="down">5/21 −2.23%</td><td>5/22 是否跟 HK 9988 大幅回吐</td></tr>
+</table>
+</section>
+
+<section>
+<h2>商品 / 宏觀 — 油價反向重燃</h2>
+<div class="hero-grid">
+  <div class="metric"><div class="metric-label">Brent (BZ=F)</div><div class="metric-value">$105.64</div><div class="metric-change warn">+$3.06（+2.98%）⚠️ <strong>重上 $105</strong></div></div>
+  <div class="metric"><div class="metric-label">WTI (CL=F)</div><div class="metric-value">$98.70</div><div class="metric-change warn">+$2.35（+2.44%）重上 $98</div></div>
+  <div class="metric"><div class="metric-label">VIX</div><div class="metric-value">16.76</div><div class="metric-change neutral">持平（低位維持）</div></div>
+  <div class="metric"><div class="metric-label">10Y (^TNX)</div><div class="metric-value">4.586%</div><div class="metric-change neutral">+0.014（+0.31%）</div></div>
+  <div class="metric"><div class="metric-label">DXY</div><div class="metric-value">99.291</div><div class="metric-change neutral">+0.10%</div></div>
+  <div class="metric"><div class="metric-label">N225（5/22 收）</div><div class="metric-value">63,339.07</div><div class="metric-change up">+1,654.93（+2.68%）距 52w 高 0.72%</div></div>
+</div>
+<div class="alert alert-red">
+<strong>油價 V 型反轉</strong>：5/20 $105.02 → 5/21 早 $107.11 → 5/21 settle $102.58（鬆動 trigger fired）→ 5/22 早 $104.28 → 5/22 16:05 $105.64（重燃）。
+**volatility regime 不穩**（Taleb 觀點驗證）；5/22 US RTH settlement 將決定 = hold &lt; $105 鬆動延續 vs &gt; $107 警示加深。
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+<h2>盤前預測對比（雙重對賬）</h2>
+<table>
+<tr><th>情景</th><th>5/22 盤前概率</th><th>5/21 盤後概率</th><th>HSI 範圍</th><th>兌現</th></tr>
+<tr><td>Bull++</td><td>8%</td><td>4%</td><td>25,800+</td><td>❌</td></tr>
+<tr><td>Bull ★</td><td><strong>35%</strong></td><td>18%</td><td>25,600–25,800</td><td>❌（差 18 點）</td></tr>
+<tr><td><strong>Base ★</strong></td><td>30%</td><td><strong>38%</strong></td><td><strong>25,300–25,600</strong></td><td class="up">✅ <strong>5/21 盤後 38% 精準命中</strong></td></tr>
+<tr><td>Bear</td><td>18%</td><td>28%</td><td>25,000–25,300</td><td>❌</td></tr>
+<tr><td>Bear--</td><td>9%</td><td>12%</td><td>&lt;25,000</td><td>❌</td></tr>
+</table>
+<div class="alert-green alert">
+✅ <strong>5/21 盤後 Base ★ 38% 精準命中</strong>；
+❌ 5/22 盤前 Bull ★ 35% 因早段強反彈而過樂觀（午後 profit-taking 回吐 Base 區上緣）；
+⚠️ 5/22 盤前 ETA 已預警「午後 profit-taking 回吐至 Base 區」（Base 30%），但 ranking 上修 Bull 過頭 = over-fit 早段數據。
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+<h2>5/25 港股 RTH 預測（下週週一）</h2>
+<div class="scenario-grid">
+  <div class="scenario bull-plus">
+    <div class="name">BULL++ 極端牛</div>
+    <div class="prob">8%</div>
+    <div class="range">26,000+</div>
+  </div>
+  <div class="scenario bull">
+    <div class="name">BULL 偏牛</div>
+    <div class="prob">22%</div>
+    <div class="range">25,800–26,000</div>
+  </div>
+  <div class="scenario base">
+    <div class="name">BASE 基準 ★</div>
+    <div class="prob">38%</div>
+    <div class="range">25,400–25,800</div>
+  </div>
+  <div class="scenario bear">
+    <div class="name">BEAR 偏熊</div>
+    <div class="prob">22%</div>
+    <div class="range">25,000–25,400</div>
+  </div>
+  <div class="scenario bear-minus">
+    <div class="name">BEAR-- 極端熊</div>
+    <div class="prob">10%</div>
+    <div class="range">&lt;25,000</div>
+  </div>
+</div>
+<div class="kv-row"><div class="kv-label">預期值 EV</div><div><strong class="warn">−0.4% to +0.1%</strong>（vs 5/22 盤前 +0.3~+0.6% 下修；北水 -64.94 億確認反彈缺承接）</div></div>
+<div class="kv-row"><div class="kv-label">主導敘事</div><div>油價反向重燃 + 北水大幅淨賣出 + 9988 動能衰退 + 9618 弱勢擴大；中芯 +7.35% 為唯一強勢支撐</div></div>
+<div class="kv-row"><div class="kv-label">特殊性</div><div>5/23 週六 + 5/24 週日休市；5/22 美股 RTH（HKT 21:30→5/23 04:00）將決定 5/25 開市方向</div></div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+<h2>10 角色辯論結果（盤後加權後）</h2>
+<div class="vote-bar">
+  <div class="vote-segment vote-long" style="width:22%;">Long 22.0%</div>
+  <div class="vote-segment vote-neutral" style="width:50%;">Neutral 50.0%</div>
+  <div class="vote-segment vote-short" style="width:28%;">Short 28.0%</div>
+</div>
+
+<h3 style="color:var(--gold);font-size:14px;margin-top:18px;">三大分歧</h3>
+
+<div class="dispute">
+<span class="role">Druckenmiller（Long）vs Taleb（Short）</span> — 午後回吐是否破壞 rebound thesis：
+Druckenmiller 認為中芯 +7.35% 爆升係 5/22 最大 takeaway，半導體 leadership 完全脫鉤 NVDA；但北水 -64.94 億令 rebound 只剩局部主線，5/25 中芯 +2pp 需 hold $77+ 且北水不再大幅流出；
+Taleb 反駁油價反向重燃 +2.98% 至 $105.64 = vol regime 不穩確認，9988 動能衰退 -1.32pp = oversold rebound 已透支，9618 跌幅擴大係 short signal，Taleb 5.5/10 → <strong>6/10</strong>。
+</div>
+
+<div class="dispute">
+<span class="role">Soros（Neutral）vs 宏觀策略師（Neutral）</span> — 中芯 vs NVDA 半導體 leadership：
+Soros 認為中芯 +7.35% 完全獨立於 NVDA -1.77% = leadership 結構性分離（國產化 narrative）；亞洲半導體由日股 N225 + 中芯雙引擎驅動；
+宏觀策略師補充半導體子產業分化（高端 AI vs 國產化 / 成熟製程），但若 5/22 US NVDA 再跌穿 $218 可能短線拖累中芯 ADR 跟跌 → 中芯 HK 影響有限但 watch。
+</div>
+
+<div class="dispute">
+<span class="role">連登散戶（Short）vs 李嘉誠（Neutral）</span> — 電商 sell-the-news 是否系統性：
+連登散戶認為 9618 連跌四日累計 ~5% + 跌幅擴大 -1.62% + 距 $118 警戒只差 2.9% = sell-the-news 加深，9988 動能不足電商整體 trend 未 reverse，短倉 9618 / put 9988；
+李嘉誠反駁電商分化反映消費信心結構性疲弱（fundamental），9988 oversold rebound 屬技術性 mean reversion 非 turnaround；港股估值修復係板塊輪動（半導體 + 黃金 + 油股）而非全市場 risk-on。
+</div>
+</section>
+
+<section>
+<h2>Action Cards（5/22 盤後 → 5/25 開市操作 3 條）</h2>
+<table>
+<tr><th>Action</th><th>觸發</th><th>Size</th><th>Stop</th><th>Target</th></tr>
+<tr><td><strong>中芯 0981 +2pp 加碼</strong></td><td>5/22 +7.35% 兌現；5/25 hold $77+ + 北水 W22 不再 &lt; -30 億</td><td>+2pp 0981</td><td>$75</td><td>$85</td></tr>
+<tr><td><strong>9988 / 0700 不加碼</strong></td><td>北水 -64.94 億；阿里 / 騰訊分別遭淨賣出約 20.62 / 17.26 億</td><td>不動</td><td>$123</td><td>watch</td></tr>
+<tr><td><strong>9618 短倉 / put</strong></td><td>5/25 跌穿 $118 = 警示加深</td><td>1pp short 9618</td><td>$124</td><td>$115</td></tr>
+</table>
+</section>
+
+<section>
+<h2>Risk Veto / 倉位</h2>
+<table>
+<tr><th>項目</th><th>5/22 港股盤前</th><th>5/22 港股盤後</th><th>變化</th></tr>
+<tr><td>Taleb 個人 Veto</td><td>5.5/10</td><td>6/10</td><td class="warn">↑ 0.5pp（油價重燃 + 9988 動能衰退）</td></tr>
+<tr><td>系統 Veto — PPI</td><td>✅ 觸發</td><td>✅ 維持</td><td>不變</td></tr>
+<tr><td>系統 Veto — 北水</td><td>⏳ 待 5/22 終值</td><td class="down">✅ -64.94 億淨賣出</td><td class="warn">觸發；反彈缺全市場資金確認</td></tr>
+<tr><td>系統 Veto — 油價</td><td class="up">✅ 鬆動 ($102.58)</td><td class="warn"><strong>⚠️ 重燃 ($105.64)</strong></td><td class="down">大幅轉差</td></tr>
+<tr><td>系統 Veto — 動能</td><td>❌ 解除</td><td class="warn">⚠️ 輕度回啟（早段 +1.33% → 收 +0.77%）</td><td class="warn">微差</td></tr>
+<tr><td><strong>系統 PARTIAL</strong></td><td>1/4</td><td><strong>3/4</strong></td><td class="warn">↑（PPI + 北水流出 + 油價重燃）</td></tr>
+<tr><td><strong>倉位上限</strong></td><td>≤60%</td><td>≤60%</td><td>不變</td></tr>
+<tr><td><strong>HK 實質執行</strong></td><td>40–50%</td><td><strong>40–45%</strong></td><td class="warn">下修 −5pp</td></tr>
+</table>
+</section>
+
+<section>
+<h2>下週 ETA Matrix（5/25 港股週一專屬）</h2>
+<table>
+<tr><th>事件</th><th>時間 HKT</th><th>觸發</th><th>行動</th></tr>
+<tr><td><strong>5/22 北水終值</strong></td><td>已公布</td><td class="down">-64.94 億；滬 -22.97 / 深 -41.97</td><td>不加 9988 / 0700；只保留中芯 watch</td></tr>
+<tr><td><strong>5/22 美股 RTH 開市</strong></td><td>5/22 21:30</td><td>ES hold 7,460+ + NVDA hold $218</td><td>5/25 共振 → +2pp 中芯；跌穿 → HK 5/25 deleveraging</td></tr>
+<tr><td>HSI 5/25 開市方向</td><td>5/25 09:30</td><td>hold 25,500+ + 北水止跌或轉正</td><td>維持 40–45%；跌穿 → 回 35–40%</td></tr>
+<tr><td><strong>中芯 0981 5/25 hold $77+</strong></td><td>全日</td><td>5/22 +7.35% 延續 + NVDA 5/22 RTH hold $218</td><td>+2pp 0981</td></tr>
+<tr><td>中芯 0981 5/25 跌穿 $73</td><td>全日</td><td>5/22 爆升反向 + 半導體系統性回吐</td><td>減 3pp</td></tr>
+<tr><td><strong>9618 5/25 跌穿 $118</strong></td><td>全日</td><td>電商 sell-the-news 加深 + 早段 -1%</td><td>短倉 1pp 9618</td></tr>
+<tr><td>9988 5/25 跌穿 $123</td><td>全日</td><td>中概 sell-the-news 加深 + 北水負面</td><td>減 BABA / 9988 2pp</td></tr>
+<tr><td>Brent 突破 $108</td><td>全日</td><td>油價警示加深 + DXY &gt; 99.5</td><td>防禦 +5pp（GLD / cash）</td></tr>
+<tr><td>VIX &gt; 22（US）</td><td>5/22-5/23</td><td>跨市場 vol 急升 + 週五 deleveraging</td><td>重啟避險 → 倉位 ≤30%</td></tr>
+</table>
+</section>
+
+<section>
+<h2>Live Positioning Reference（美股 ETF 持倉 read-through）</h2>
+<table>
+<tr><th>Asset</th><th>Size</th><th>5/21 美股收</th><th>Paper P&L</th><th>Falsification 監控</th></tr>
+<tr><td>GLD</td><td>$15K (15%)</td><td>$416.99（−0.10%）</td><td class="up">+70.0%（paper）</td><td>DXY &gt; 106 = 失效；今日 99.291（距 6.7%）</td></tr>
+<tr><td>SHY</td><td>$20K (20%)</td><td>hold</td><td>—</td><td>10Y &lt; 4.0% = roll out；今日 4.586%（距 0.586pp 微擴大）</td></tr>
+</table>
+<div class="alert-green alert">
+<strong>5/22 盤後對 5/22 盤前 stance 變化</strong>：
+Taleb 5.5/10 → 6/10（↑ 0.5pp）；Long 票 32.0% → 22.0%（↓ 10pp）；Short 票 18.0% → 28.0%（↑ 10pp）；
+EV +0.3~+0.6% → −0.4~+0.1%（北水 -64.94 億後再下修）；
+主場景由 Bull ★ 35% → <strong>Base ★ 38%（切換回 Base）</strong>；
+HK 實質倉位 40–50% → 40–45%（↓ −5pp）。
+</div>
+</section>
+
+<footer>
+Sources: Yahoo Finance via mcp__tradingview-screener__yahoo_price, timestamp 2026-05-22T08:05 UTC ≈ HKT 16:05<br>
+Wikilinks: 2026-05-22 港股盤前日報 · 2026-05-21 港股盤後日報 · 2026-05-21 美股盤後日報 · 2026-05-22 美股盤前日報（今晚 placeholder）· 2026-05-25 港股盤前日報（週一 placeholder）<br>
+Delivery waiver: 本次盤後未另建獨立辯論記錄；辯論摘要已內嵌 Section 4
+<div class="tag-list">
+<span class="tag">#港股</span>
+<span class="tag">#盤後</span>
+<span class="tag">#日報</span>
+<span class="tag">#2026-05-22</span>
+</div>
+</footer>
+
+</body>
+</html>

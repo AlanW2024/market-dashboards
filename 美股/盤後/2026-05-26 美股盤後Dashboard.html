@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>2026-05-26 美股盤後 Dashboard</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --card: #1a1f2b;
+    --border: #2a3142;
+    --text: #e6e6e6;
+    --muted: #8b95a8;
+    --gold: #ffd166;
+    --green: #4ade80;
+    --red: #f87171;
+    --blue: #60a5fa;
+    --orange: #fb923c;
+    --purple: #c084fc;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    line-height: 1.55;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  h1 {
+    color: var(--gold);
+    font-size: 28px;
+    margin: 0 0 8px 0;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .card h2 {
+    color: var(--gold);
+    font-size: 16px;
+    margin: 0 0 12px 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  th, td {
+    text-align: left;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .pos { color: var(--green); font-weight: 600; }
+  .neg { color: var(--red); font-weight: 600; }
+  .neu { color: var(--muted); }
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  .pill-bullplus { background: #16a34a; color: white; }
+  .pill-bull { background: #4ade80; color: #0f1419; }
+  .pill-base { background: #fbbf24; color: #0f1419; }
+  .pill-bear { background: #f87171; color: white; }
+  .pill-bearminus { background: #b91c1c; color: white; }
+  .pill-trigger { background: var(--gold); color: #0f1419; }
+  .pill-hit { background: #16a34a; color: white; }
+  .pill-partial { background: #fbbf24; color: #0f1419; }
+  .pill-miss { background: #6b7280; color: white; }
+  ul { margin: 6px 0; padding-left: 18px; }
+  li { margin: 4px 0; font-size: 13px; }
+  .highlight {
+    background: rgba(255, 209, 102, 0.1);
+    border-left: 3px solid var(--gold);
+    padding: 8px 10px;
+    margin: 6px 0;
+    font-size: 13px;
+    border-radius: 0 4px 4px 0;
+  }
+  footer {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>2026-05-26 美股盤後 Dashboard</h1>
+  <div class="subtitle">S&amp;P 500 +0.61% / 收 7,519.12 — <strong style="color:var(--gold)">Bull++ 7,517+ 兌現</strong> · HKT 09:25 / ET 21:25 (after-hours)</div>
+</header>
+
+<div class="grid">
+
+  <div class="card">
+    <h2>① 核心指數收盤</h2>
+    <table>
+      <thead><tr><th>指數</th><th>收</th><th>Δ%</th><th>距 52w 高</th></tr></thead>
+      <tbody>
+        <tr><td>S&amp;P 500</td><td>7,519.12</td><td class="pos">+0.61%</td><td>-0.67%</td></tr>
+        <tr><td>Nasdaq</td><td>26,656.18</td><td class="pos">+1.19%</td><td>-0.26%</td></tr>
+        <tr><td>Dow</td><td>50,461.68</td><td class="neg">-0.23%</td><td>-0.72%</td></tr>
+        <tr><td>ES=F (AH)</td><td>7,546.50</td><td class="pos">+0.13%</td><td>-0.31%</td></tr>
+        <tr><td>NQ=F (AH)</td><td>30,139.25</td><td class="pos">+0.22%</td><td><strong style="color:var(--gold)">-0.06%</strong></td></tr>
+      </tbody>
+    </table>
+    <div class="highlight">內部梯度反轉：Dow &lt; S&amp;P &lt; Nasdaq → 防禦旋轉解除</div>
+  </div>
+
+  <div class="card">
+    <h2>② 個股 / ETF</h2>
+    <table>
+      <thead><tr><th>Symbol</th><th>收</th><th>Δ%</th><th>備註</th></tr></thead>
+      <tbody>
+        <tr><td>NVDA</td><td>214.86</td><td class="neg">-0.22%</td><td>落後</td></tr>
+        <tr><td>AAPL</td><td>308.33</td><td class="neg">-0.16%</td><td>盤中設新 52w 高 $311.82，收未守</td></tr>
+        <tr><td>TSLA</td><td>433.59</td><td class="pos">+1.78%</td><td>EV 強</td></tr>
+        <tr><td>META</td><td>612.34</td><td class="pos">+0.34%</td><td>—</td></tr>
+        <tr><td>MSFT</td><td>416.03</td><td class="neg">-0.61%</td><td>軟件弱</td></tr>
+        <tr><td>GOOGL</td><td>388.88</td><td class="pos">+1.54%</td><td>search 修復</td></tr>
+        <tr><td><strong>SMH</strong></td><td><strong>602.14</strong></td><td class="pos"><strong>+4.48%</strong></td><td><span class="pill pill-trigger">盤中觸 52w high $603.96，收未守</span></td></tr>
+        <tr><td>BABA</td><td>129.47</td><td class="neg">-0.41%</td><td>—</td></tr>
+        <tr><td>KWEB</td><td>27.26</td><td class="pos">+1.30%</td><td>反彈</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>③ 跨市場 / 宏觀</h2>
+    <table>
+      <thead><tr><th>資產</th><th>值</th><th>Δ%</th><th>訊號</th></tr></thead>
+      <tbody>
+        <tr><td>Brent (AH)</td><td>$95.87</td><td class="neg">-0.83%</td><td>跌穿 $96</td></tr>
+        <tr><td>VIX</td><td>17.01</td><td class="pos">+2.53%</td><td>低位</td></tr>
+        <tr><td><strong>10Y ^TNX</strong></td><td><strong>4.493%</strong></td><td class="neg"><strong>-0.065pp</strong></td><td><span class="pill pill-trigger">穿 4.50%</span></td></tr>
+        <tr><td>DXY</td><td>99.095</td><td class="neg">-0.06%</td><td>持平</td></tr>
+        <tr><td>HSI 5/26</td><td>25,589.20</td><td class="neg">-0.07%</td><td>Base 中位</td></tr>
+        <tr><td>HSI 5/27 09:25</td><td>25,599</td><td class="neu">~持平</td><td>spillover 有限</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>④ 盤前預測對賬</h2>
+    <table>
+      <thead><tr><th>情景</th><th>概率</th><th>區間</th><th>命中</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill pill-bullplus">Bull++</span></td><td>18%</td><td>7,517+</td><td><span class="pill pill-hit">✓ 命中</span></td></tr>
+        <tr><td><span class="pill pill-bull">Bull</span></td><td>32%</td><td>7,500-7,517</td><td>跨越</td></tr>
+        <tr><td><span class="pill pill-base">Base</span></td><td>27%</td><td>7,450-7,500</td><td>跨越</td></tr>
+        <tr><td><span class="pill pill-bear">Bear</span></td><td>16%</td><td>7,400-7,450</td><td>—</td></tr>
+        <tr><td><span class="pill pill-bearminus">Bear--</span></td><td>7%</td><td>&lt;7,400</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight">EV +0.3% to +0.7% / 實際 <strong>+0.61%</strong> → 上緣命中 · 評分 A</div>
+  </div>
+
+  <div class="card">
+    <h2>⑤ ETA Matrix 兌現</h2>
+    <table>
+      <thead><tr><th>#</th><th>Trigger</th><th>結果</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>ES hold 7,500 + 油 &lt; $100</td><td><span class="pill pill-hit">✓</span></td></tr>
+        <tr><td>2</td><td>AAPL hold $308 + 破 $311</td><td><span class="pill pill-partial">⚠ Partial</span></td></tr>
+        <tr><td>3</td><td>SMH 破 $582.50</td><td><span class="pill pill-hit">✓✓ +</span></td></tr>
+        <tr><td>4</td><td>10Y &lt; 4.50%</td><td><span class="pill pill-hit">✓</span></td></tr>
+        <tr><td>5</td><td>BABA 抄底 + 9988 spillover</td><td><span class="pill pill-partial">⚠ mixed</span></td></tr>
+        <tr><td>6</td><td>NVDA hold $215</td><td><span class="pill pill-partial">⚠ 邊緣</span></td></tr>
+        <tr><td>7</td><td>Brent &gt; $100 反彈</td><td><span class="pill pill-miss">✗</span></td></tr>
+        <tr><td>8</td><td>VIX &gt; 22</td><td><span class="pill pill-miss">✗</span></td></tr>
+      </tbody>
+    </table>
+    <div class="highlight">命中率 70%+ · 6 ✓ / 2 🟡 / 2 ✗</div>
+  </div>
+
+  <div class="card">
+    <h2>⑥ 9-角色辯論結果</h2>
+    <table>
+      <thead><tr><th>立場</th><th>盤前</th><th>盤後</th><th>Δ</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill pill-bull">Long</span></td><td>44%</td><td><strong>48%</strong></td><td class="pos">+4pp</td></tr>
+        <tr><td><span class="pill pill-base">Neutral</span></td><td>40%</td><td><strong>36%</strong></td><td class="neg">-4pp</td></tr>
+        <tr><td><span class="pill pill-bear">Short</span></td><td>16%</td><td>16%</td><td class="neu">0</td></tr>
+      </tbody>
+    </table>
+    <ul>
+      <li>🟢 Druckenmiller / Lynch / Soros / 量化 / WSB</li>
+      <li>🟡 宏觀 / Marks / Dalio</li>
+      <li>🔴 Taleb（hedge thesis 維持）</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>⑦ Risk Veto / 倉位</h2>
+    <table>
+      <thead><tr><th>項目</th><th>盤前</th><th>盤後</th></tr></thead>
+      <tbody>
+        <tr><td>Taleb Veto</td><td>5.0/10</td><td><strong style="color:var(--green)">4.5/10</strong></td></tr>
+        <tr><td>System Veto</td><td>3/5</td><td><strong style="color:var(--green)">1/4</strong></td></tr>
+        <tr><td>倉位下緣</td><td>50%</td><td><strong>55%</strong></td></tr>
+        <tr><td>倉位上緣</td><td>58%</td><td>58%</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight">解除：油價 / 動能 / Bond stress · 仍流出：北水 5/26 -9.68 億 · 未解除：PCE Core 5/29 風險</div>
+  </div>
+
+  <div class="card">
+    <h2>⑧ 5/27 預測（W22 第二日）</h2>
+    <table>
+      <thead><tr><th>情景</th><th>概率</th><th>區間</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill pill-bullplus">Bull++</span></td><td>20%</td><td>7,540+</td></tr>
+        <tr><td><span class="pill pill-bull">Bull ★</span></td><td><strong>33%</strong></td><td>7,517-7,540</td></tr>
+        <tr><td><span class="pill pill-base">Base</span></td><td>27%</td><td>7,470-7,517</td></tr>
+        <tr><td><span class="pill pill-bear">Bear</span></td><td>14%</td><td>7,420-7,470</td></tr>
+        <tr><td><span class="pill pill-bearminus">Bear--</span></td><td>6%</td><td>&lt;7,420</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight">EV +0.1% to +0.5% · HK Base ★ 40% (25,400-25,800)</div>
+  </div>
+
+  <div class="card">
+    <h2>⑨ Action Cards (4)</h2>
+    <ul>
+      <li><strong>Card #1：</strong>SMH 突破跟單 — 5/27 09:30 ES hold 7,540 + SMH &gt; $600 → SMH +1pp</li>
+      <li><strong>Card #2：</strong>10Y trigger 加 QQQ — 維持 &lt; 4.50% → QQQ +1pp</li>
+      <li><strong>Card #3：</strong>AAPL 觀察 — A 破 $311 加 0.5pp / B 跌 $306 不動</li>
+      <li><strong>Card #4：</strong>Brent 崩跌對沖 — &lt; $94 → TLT +0.5pp</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>⑩ Live Positioning</h2>
+    <table>
+      <thead><tr><th>資產</th><th>規模</th><th>狀態</th></tr></thead>
+      <tbody>
+        <tr><td>GLD</td><td>$15K @ $245.30</td><td class="pos">+68.7% paper</td></tr>
+        <tr><td>SHY</td><td>$20K @ $82.10</td><td class="neu">hold</td></tr>
+      </tbody>
+    </table>
+    <ul>
+      <li>加倉路徑：SMH +1pp → QQQ +1pp → GOOGL +0.5pp → KWEB +0.5pp（合計 +3pp）</li>
+      <li>上限 58% — 留 ≥ 42% cash/hedge 應對 5/29 PCE Core</li>
+    </ul>
+  </div>
+
+</div>
+
+<footer>
+  資料來源：Yahoo Finance · CBOE · Treasury.gov / FRED DGS10 · 自訂 9-role weighted ensemble<br>
+  Snapshot：2026-05-27T01:25 UTC ≈ HKT 09:25 / ET 21:25 (after-hours)<br>
+  Wikilinks：2026-05-26 美股盤前日報 · 2026-05-22 美股盤後日報 · 2026-05-26 港股盤後日報 · 2026-05-27 港股盤前日報（placeholder）· 2026-05-27 美股盤前日報（placeholder）
+</footer>
+
+</body>
+</html>

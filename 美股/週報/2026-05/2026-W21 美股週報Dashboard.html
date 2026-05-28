@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-W21 美股週報 Dashboard</title>
+<style>
+:root { --bg:#0a0a0f; --panel:#13131b; --panel-2:#1a1a24; --border:#2a2a36; --text:#e8e8ee; --text-dim:#9b9bab; --gold:#d4af37; --green:#16c784; --red:#ea3943; --amber:#f59e0b; --purple:#7c3aed; --blue:#3b82f6; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif; line-height:1.6; padding:24px; max-width:1400px; margin:0 auto; }
+header { border-bottom:2px solid var(--gold); padding-bottom:16px; margin-bottom:24px; }
+h1 { font-size:28px; color:var(--gold); margin-bottom:8px; }
+.meta { color:var(--text-dim); font-size:13px; }
+.divider { height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:32px 0; }
+section { margin-bottom:28px; }
+h2 { font-size:18px; color:var(--gold); margin-bottom:14px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+.hero-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:20px; }
+.metric { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:14px; }
+.metric-label { color:var(--text-dim); font-size:12px; margin-bottom:4px; }
+.metric-value { font-size:22px; font-weight:600; }
+.metric-change { font-size:13px; margin-top:4px; }
+.up { color:var(--green); } .down { color:var(--red); } .warn { color:var(--amber); } .neutral { color:var(--text-dim); }
+table { width:100%; border-collapse:collapse; background:var(--panel); border-radius:8px; overflow:hidden; margin-bottom:12px; }
+th,td { padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); font-size:13px; }
+th { background:var(--panel-2); color:var(--gold); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:0.5px; }
+tr:last-child td { border-bottom:none; }
+.alert { background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05)); border-left:4px solid var(--amber); padding:14px 18px; border-radius:6px; margin:16px 0; font-size:14px; }
+.alert-green { background:linear-gradient(135deg,rgba(22,199,132,0.15),rgba(22,199,132,0.05)); border-left-color:var(--green); }
+.regime-badge { display:inline-block; padding:4px 12px; border-radius:4px; font-size:12px; font-weight:600; background:#4ade80; color:#000; margin-left:8px; }
+.vote-bar { display:flex; height:32px; border-radius:6px; overflow:hidden; margin:12px 0; font-size:12px; font-weight:600; }
+.vote-segment { display:flex; align-items:center; justify-content:center; color:#fff; }
+.vote-long { background:var(--green); } .vote-neutral { background:var(--text-dim); } .vote-short { background:var(--red); }
+.scenario-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin:12px 0; }
+.scenario { background:var(--panel-2); border:1px solid var(--border); border-radius:8px; padding:12px; border-top:4px solid var(--text-dim); }
+.scenario.bull-plus { border-top-color:var(--green); }
+.scenario.bull { border-top-color:#4ade80; }
+.scenario.base { border-top-color:var(--gold); }
+.scenario.bear { border-top-color:#fb923c; }
+.scenario.bear-minus { border-top-color:var(--red); }
+.scenario .prob { font-size:24px; font-weight:700; }
+.scenario .range { font-size:13px; color:var(--text-dim); margin:4px 0; }
+.scenario .name { font-size:11px; text-transform:uppercase; color:var(--text-dim); }
+.dispute { background:var(--panel-2); border-left:3px solid var(--purple); padding:12px 16px; margin:10px 0; border-radius:4px; font-size:13px; }
+.dispute .role { color:var(--gold); font-weight:600; }
+footer { margin-top:40px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-dim); font-size:11px; }
+.tag-list { margin-top:8px; }
+.tag { display:inline-block; padding:2px 8px; background:var(--panel); border-radius:4px; margin-right:6px; font-size:11px; color:var(--text-dim); }
+</style>
+</head>
+<body>
+
+<header>
+<h1>2026-W21 美股週報 Dashboard <span class="regime-badge">Leadership Transition Regime</span></h1>
+<div class="meta">
+Period 2026-05-18 ~ 2026-05-22 · 5 個交易日 · 生成 HKT 2026-05-24<br>
+SPY +1.07% · NVDA 跌穿 $218 stop · AAPL 突破 $306 · 油價 V 反轉 · 中概 ADR 接近 52w low
+</div>
+</header>
+
+<div class="alert">
+<strong>W21 五大結構性轉變</strong>：
+① NVDA 業績消化失敗（5/22 跌穿 $218 stop trigger fired）；
+② AAPL 突破 $306 leadership 確認（新 52w 高 $311.40）；
+③ Brent intra-week 7% 區間 V 反轉（$105 → $107 → $102.58 → $107 → $100.21）；
+④ KWEB / PDD 接近 52w low；
+⑤ Dow 跑贏 5 日延續（防禦旋轉）。Regime 由 W20「Stagflation Sell-Everything」過渡至「Leadership Transition」。
+</div>
+
+<section>
+<h2>W21 核心指標</h2>
+<div class="hero-grid">
+  <div class="metric"><div class="metric-label">^GSPC S&P 500 (5/22)</div><div class="metric-value">7,473.47</div><div class="metric-change up">W21 +1.04% · 距 52w 高 0.58%</div></div>
+  <div class="metric"><div class="metric-label">^IXIC Nasdaq (5/22)</div><div class="metric-value">26,343.97</div><div class="metric-change up">W21 +0.63% NQ 落後</div></div>
+  <div class="metric"><div class="metric-label">^DJI Dow (5/22)</div><div class="metric-value">50,579.70</div><div class="metric-change up">W21 +1.38% 跑贏</div></div>
+  <div class="metric"><div class="metric-label">VIX</div><div class="metric-value">16.70</div><div class="metric-change up">W21 −0.74 低位</div></div>
+  <div class="metric"><div class="metric-label">10Y</div><div class="metric-value">4.558%</div><div class="metric-change up">W21 −0.109pp 距 4.50% 0.058pp</div></div>
+  <div class="metric"><div class="metric-label">Brent</div><div class="metric-value">$100.21</div><div class="metric-change up">W21 −4.6% 接近完全鬆動</div></div>
+</div>
+</section>
+
+<section>
+<h2>W21 5 日走勢軌跡</h2>
+<table>
+<tr><th>日期</th><th>S&P 收</th><th>日 %</th><th>關鍵事件</th></tr>
+<tr><td>05/18 Mon</td><td>~7,396</td><td class="neutral">~0</td><td>W21 開市；油價疑慮</td></tr>
+<tr><td>05/19 Tue</td><td>~7,353</td><td class="down">−0.58%</td><td>NVDA 業績前整固</td></tr>
+<tr><td>05/20 Wed</td><td><strong>7,432.97</strong></td><td class="up">+1.08% 🏆</td><td>NVDA 業績日 Bull++；AH ~$220.66 muted</td></tr>
+<tr><td>05/21 Thu</td><td>7,445.72</td><td class="up">+0.17%</td><td>Base ★ 兌現；NVDA -1.77% 業績消化失敗</td></tr>
+<tr><td>05/22 Fri</td><td><strong>7,473.47</strong></td><td class="up">+0.37%</td><td>Bull ★ 兌現；AAPL 突破 $306；NVDA 跌穿 $218 stop</td></tr>
+</table>
+</section>
+
+<section>
+<h2>個股 W21 表現（leadership transition）</h2>
+<table>
+<tr><th>Symbol</th><th>W21 軌跡</th><th>全週 %</th><th>關鍵事件</th></tr>
+<tr><td><strong>NVDA</strong></td><td>$220.61 → $215.33</td><td class="down">−2.39%</td><td class="warn">業績消化失敗；5/22 跌穿 $218 stop</td></tr>
+<tr><td><strong>AAPL</strong></td><td>~$300 → $308.82</td><td class="up">+~3%</td><td class="up">突破 $306；新 52w 高 $311.40</td></tr>
+<tr><td>TSLA</td><td>$404.11 → $426.01</td><td class="up">+5.42%</td><td>W21 強勢</td></tr>
+<tr><td>META</td><td>$602.61 → $610.26</td><td class="up">+1.27%</td><td>穩升</td></tr>
+<tr><td>MSFT</td><td>$417.42 → $418.57</td><td class="neutral">+0.28%</td><td>平</td></tr>
+<tr><td><strong>GOOGL</strong></td><td>$387.66 → $382.97</td><td class="down">−1.21%</td><td>跌 vs AAPL 分歧</td></tr>
+<tr><td><strong>SMH</strong></td><td>$543.96 → $576.32</td><td class="up">+5.95%</td><td class="up">新 52w 高 $582.5 ex-NVDA</td></tr>
+<tr><td>IGV</td><td>$91.95 → $94.01</td><td class="up">+2.24%</td><td>軟件強反彈</td></tr>
+<tr><td>BABA</td><td>$135.64 → $130.00</td><td class="down">−4.16%</td><td>中概崩</td></tr>
+<tr><td><strong>KWEB</strong></td><td>$28.28 → $26.91</td><td class="down">−4.85%</td><td class="warn">距 52w low 1.9%</td></tr>
+</table>
+</section>
+
+<div class="divider"></div>
+
+<section>
+<h2>W22 Forward Scenarios（5/26–5/29；5/25 Memorial Day 休市）</h2>
+<div class="scenario-grid">
+  <div class="scenario bull-plus">
+    <div class="name">BULL++ 極端牛</div>
+    <div class="prob">12%</div>
+    <div class="range">7,517+ 突破 52w high</div>
+  </div>
+  <div class="scenario bull">
+    <div class="name">BULL 偏牛 ★</div>
+    <div class="prob">35%</div>
+    <div class="range">7,473–7,517</div>
+  </div>
+  <div class="scenario base">
+    <div class="name">BASE 基準</div>
+    <div class="prob">28%</div>
+    <div class="range">7,420–7,473</div>
+  </div>
+  <div class="scenario bear">
+    <div class="name">BEAR 偏熊</div>
+    <div class="prob">18%</div>
+    <div class="range">7,370–7,420</div>
+  </div>
+  <div class="scenario bear-minus">
+    <div class="name">BEAR-- 極端熊</div>
+    <div class="prob">7%</div>
+    <div class="range">&lt;7,370</div>
+  </div>
+</div>
+<div class="alert-green alert">
+W22 EV +0.3% to +0.8%；Bull 區可能突破 52w high。
+Triggers fired（等 5/26 開市執行）：SPY +5pp + AAPL +2pp 雙啟動條件已備。
+Caveats：Memorial Day 三日 gap risk + OPEC+ 會議 + 中概 ADR cascading。
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+<h2>9 角色辯論結果（週度加權後）</h2>
+<div class="vote-bar">
+  <div class="vote-segment vote-long" style="width:35%;">Long 35.0%</div>
+  <div class="vote-segment vote-neutral" style="width:45%;">Neutral 45.0%</div>
+  <div class="vote-segment vote-short" style="width:20%;">Short 20.0%</div>
+</div>
+
+<h3 style="color:var(--gold);font-size:14px;margin-top:18px;">三大分歧</h3>
+
+<div class="dispute">
+<span class="role">Druckenmiller（Long）vs Taleb（Short）</span> — leadership 廣度 vs vol regime 不穩：
+Druckenmiller 認為 SMH/AAPL 新 52w 高 + Dow 跑贏 5 日 = leadership 廣度確認，NVDA stop 已隔離，油價接近完全鬆動 macro tailwind；
+Taleb 反駁 Brent intra-week 7% V 反轉 = vol regime 不穩 final 確認，KWEB / PDD 接近 52w low spillover catalyst，Memorial Day 三日 gap multi-risk。
+</div>
+
+<div class="dispute">
+<span class="role">Soros（Long reflexivity）vs Marks（Neutral）</span> — narrative 重建 vs 估值已 priced：
+Soros 認為 leadership transition = reflexivity narrative 重建（消費 + 廣度 + EV 三引擎）；S&P 距 52w high 0.58% narrative 完整可加碼；
+Marks 反駁 S&P 距 52w high + VIX 低位 + W21 SPY +1.07% 已 priced 油價鬆動 + leadership transition，追漲空間有限。
+</div>
+
+<div class="dispute">
+<span class="role">Lynch（Long buy-the-dip）vs WSB（Short）</span> — 中概 valuation vs trend：
+Lynch 認為 KWEB / PDD 距 52w low 只差 1.9%/2.1% = 估值極壓縮 buy-the-dip window；
+WSB 反駁 ADR 全線崩 + HK 升 US 跌 = 結構性 sell signal，W22 開市勢必跌穿 52w low cascading。
+</div>
+</section>
+
+<section>
+<h2>W20 → W21 Themes Drift</h2>
+<table>
+<tr><th>Theme</th><th>W20 status</th><th>W21 status</th><th>Drift</th></tr>
+<tr><td>Stagflation regime</td><td class="warn">✅ 觸發</td><td class="up">⚠️ 部分解除（油價急回）</td><td class="up">大幅改善</td></tr>
+<tr><td>單一龍頭 leadership (NVDA)</td><td class="up">✅ AI rally</td><td class="down">❌ 跌穿 stop</td><td>結構性轉變</td></tr>
+<tr><td>廣度警告</td><td class="warn">⚠️ 加深</td><td class="up">❌ 解除（SMH 新高）</td><td class="up">轉好</td></tr>
+<tr><td>油價衝擊</td><td class="warn">✅ 觸發</td><td class="up">⚠️ 接近完全鬆動</td><td class="up">大幅轉好</td></tr>
+<tr><td>中概崩塌</td><td class="neutral">—</td><td class="warn">⚠️ 新警示</td><td>新主題</td></tr>
+<tr><td>leadership transition</td><td class="neutral">—</td><td class="up">✅ 新確認</td><td>新主題</td></tr>
+<tr><td>vol regime 不穩</td><td class="neutral">—</td><td class="warn">⚠️ 新警示</td><td>新主題</td></tr>
+</table>
+</section>
+
+<section>
+<h2>Action Layer Decision Tree（W22 5/26 開市）</h2>
+<table>
+<tr><th>條件</th><th>動作</th><th>結果倉位</th></tr>
+<tr><td>ES hold 7,460+ + Brent &lt; $102 + AAPL hold $305+</td><td class="up">SPY +5pp + AAPL +2pp 雙啟動</td><td>55–60%</td></tr>
+<tr><td>ES hold + AAPL 跌穿 $305</td><td>SPY +3pp only</td><td>53%</td></tr>
+<tr><td>Range 7,420–7,460</td><td>Wait & watch；NVDA hold $215</td><td>50–55%</td></tr>
+<tr><td>ES 跌穿 7,400 + Brent &gt; $105</td><td class="warn">出 long -5pp + 防禦 +5pp</td><td>45–50%</td></tr>
+<tr><td>VIX &gt; 22</td><td class="down">重啟避險</td><td>≤40%</td></tr>
+</table>
+</section>
+
+<footer>
+Sources: 2026-05-18 至 2026-05-22 daily reports + Yahoo Finance via mcp__tradingview-screener__yahoo_price<br>
+Wikilinks: 2026-W21 美股週報.md · 2026-W21 美股週報辯論記錄.md · 2026-W21 美股預測準確度審計.md · 2026-W20 美股週報<br>
+本週報於 2026-05-24 補錄
+<div class="tag-list">
+<span class="tag">#週報</span>
+<span class="tag">#美股</span>
+<span class="tag">#W21</span>
+<span class="tag">#official</span>
+</div>
+</footer>
+
+</body>
+</html>

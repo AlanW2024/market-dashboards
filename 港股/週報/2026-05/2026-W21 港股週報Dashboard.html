@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-W21 港股週報 Dashboard</title>
+<style>
+:root { --bg:#0a0a0f; --panel:#13131b; --panel-2:#1a1a24; --border:#2a2a36; --text:#e8e8ee; --text-dim:#9b9bab; --gold:#d4af37; --green:#16c784; --red:#ea3943; --amber:#f59e0b; --purple:#7c3aed; --blue:#3b82f6; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif; line-height:1.6; padding:24px; max-width:1400px; margin:0 auto; }
+header { border-bottom:2px solid var(--gold); padding-bottom:16px; margin-bottom:24px; }
+h1 { font-size:28px; color:var(--gold); margin-bottom:8px; }
+.meta { color:var(--text-dim); font-size:13px; }
+.divider { height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:32px 0; }
+section { margin-bottom:28px; }
+h2 { font-size:18px; color:var(--gold); margin-bottom:14px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+.hero-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:20px; }
+.metric { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:14px; }
+.metric-label { color:var(--text-dim); font-size:12px; margin-bottom:4px; }
+.metric-value { font-size:22px; font-weight:600; }
+.metric-change { font-size:13px; margin-top:4px; }
+.up { color:var(--green); } .down { color:var(--red); } .warn { color:var(--amber); } .neutral { color:var(--text-dim); }
+table { width:100%; border-collapse:collapse; background:var(--panel); border-radius:8px; overflow:hidden; margin-bottom:12px; }
+th,td { padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); font-size:13px; }
+th { background:var(--panel-2); color:var(--gold); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:0.5px; }
+tr:last-child td { border-bottom:none; }
+.alert { background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05)); border-left:4px solid var(--amber); padding:14px 18px; border-radius:6px; margin:16px 0; font-size:14px; }
+.alert-green { background:linear-gradient(135deg,rgba(22,199,132,0.15),rgba(22,199,132,0.05)); border-left-color:var(--green); }
+.regime-badge { display:inline-block; padding:4px 12px; border-radius:4px; font-size:12px; font-weight:600; background:var(--gold); color:#000; margin-left:8px; }
+.vote-bar { display:flex; height:32px; border-radius:6px; overflow:hidden; margin:12px 0; font-size:12px; font-weight:600; }
+.vote-segment { display:flex; align-items:center; justify-content:center; color:#fff; }
+.vote-long { background:var(--green); } .vote-neutral { background:var(--text-dim); } .vote-short { background:var(--red); }
+.scenario-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin:12px 0; }
+.scenario { background:var(--panel-2); border:1px solid var(--border); border-radius:8px; padding:12px; border-top:4px solid var(--text-dim); }
+.scenario.bull-plus { border-top-color:var(--green); }
+.scenario.bull { border-top-color:#4ade80; }
+.scenario.base { border-top-color:var(--gold); }
+.scenario.bear { border-top-color:#fb923c; }
+.scenario.bear-minus { border-top-color:var(--red); }
+.scenario .prob { font-size:24px; font-weight:700; }
+.scenario .range { font-size:13px; color:var(--text-dim); margin:4px 0; }
+.scenario .name { font-size:11px; text-transform:uppercase; color:var(--text-dim); }
+.dispute { background:var(--panel-2); border-left:3px solid var(--purple); padding:12px 16px; margin:10px 0; border-radius:4px; font-size:13px; }
+.dispute .role { color:var(--gold); font-weight:600; }
+footer { margin-top:40px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-dim); font-size:11px; }
+.tag-list { margin-top:8px; }
+.tag { display:inline-block; padding:2px 8px; background:var(--panel); border-radius:4px; margin-right:6px; font-size:11px; color:var(--text-dim); }
+</style>
+</head>
+<body>
+
+<header>
+<h1>2026-W21 港股週報 Dashboard <span class="regime-badge">中概板塊內分化 Regime</span></h1>
+<div class="meta">
+Period 2026-05-18 ~ 2026-05-22 · 5 個交易日 · 生成 HKT 2026-05-24<br>
+HSI −0.85% · 中芯 0981 三日累計 +15.7% · 9988 V 型 · 9618 連跌 4 日 · 北水 5/21–5/22 連續流出 -126 億
+</div>
+</header>
+
+<div class="alert">
+<strong>W21 中概板塊內極端分化</strong>：
+① 中芯 0981 +15.7% 三日累計（5/20 +9.71% / 5/21 -1.86% / 5/22 +7.35%）= 半導體國產化 narrative 獨立 NVDA；
+② 9988 阿里 V 型（5/19 → 5/21 -4.40% Bear → 5/22 +0.71% 動能不足）；
+③ 9618 京東連跌 4 日累計 ~5% sell-the-news；
+④ 騰訊 0700 守 $440；⑤ N225 W21 +5.92% vs HSI -0.85% = 亞洲「日強港弱」極端。
+Regime 由 W20 stagflation 過渡至「中概板塊內分化 + 半導體獨立 leadership」。
+</div>
+
+<section>
+<h2>W21 核心指標</h2>
+<div class="hero-grid">
+  <div class="metric"><div class="metric-label">^HSI (5/22)</div><div class="metric-value">25,581.74</div><div class="metric-change down">W21 −0.85%</div></div>
+  <div class="metric"><div class="metric-label">^HSCE (5/22)</div><div class="metric-value">8,542.41</div><div class="metric-change down">W21 −1.45% 跑輸 HSI</div></div>
+  <div class="metric"><div class="metric-label">3032 HSTECH</div><div class="metric-value">$4.846</div><div class="metric-change down">W21 −1.31%</div></div>
+  <div class="metric"><div class="metric-label">^N225 (5/22)</div><div class="metric-value">63,339</div><div class="metric-change up">W21 +5.92% 距 52w 高 0.72%</div></div>
+  <div class="metric"><div class="metric-label">北水 5/21/5/22</div><div class="metric-value down">-126.0 億</div><div class="metric-change">兩日連續流出，rebound 未確認</div></div>
+  <div class="metric"><div class="metric-label">中芯 0981</div><div class="metric-value up">+15.7%</div><div class="metric-change">三日累計爆升</div></div>
+</div>
+</section>
+
+<section>
+<h2>HSI 5 日走勢軌跡</h2>
+<table>
+<tr><th>日期</th><th>HSI 收</th><th>日 %</th><th>關鍵事件</th></tr>
+<tr><td>05/18 Mon</td><td>~25,800</td><td class="neutral">~0</td><td>W21 開市；stagflation 殘餘</td></tr>
+<tr><td>05/19 Tue</td><td>25,797.85</td><td class="neutral">~0</td><td>NVDA 業績前整固；9988 +1.5%</td></tr>
+<tr><td>05/20 Wed</td><td>25,651.12</td><td class="down">−0.57%</td><td>NVDA 業績日觀望；中芯 +9.71% 起點</td></tr>
+<tr><td>05/21 Thu</td><td><strong>25,386.52</strong></td><td class="down">−1.12%</td><td class="warn">Bear ★ 兌現；9988 -4.40% / 0700 -3.56% / 9618 -3.36%</td></tr>
+<tr><td>05/22 Fri</td><td>25,581.74</td><td class="up">+0.77%</td><td>早段 +1.33% Bull 區 → 午後回吐 Base 上緣；中芯 +7.35%</td></tr>
+</table>
+</section>
+
+<section>
+<h2>個股 W21 表現 — 板塊內分化</h2>
+<table>
+<tr><th>個股</th><th>W21 軌跡</th><th>全週 %</th><th>關鍵事件</th></tr>
+<tr><td><strong>0981 中芯</strong></td><td>~$68.5 → $79.65</td><td class="up">+~16% 🏆</td><td class="up">三日累計 +15.7% 半導體獨立 leadership</td></tr>
+<tr><td>0700 騰訊</td><td>~$438 → $441.60</td><td class="up">+0.81%</td><td>守 $440 floor</td></tr>
+<tr><td>9988 阿里</td><td>$126 → $126.90</td><td class="up">+0.71%</td><td class="warn">V 型 5/21 -4.40% Bear → 5/22 動能不足</td></tr>
+<tr><td>1810 小米</td><td>$29.66 → $30.02</td><td class="up">+1.21%</td><td>穩升</td></tr>
+<tr><td><strong>9618 京東</strong></td><td>~$127.5 → $121.50</td><td class="down">−4.7%</td><td class="warn">連跌 4 日 sell-the-news；距 $118 警戒 2.9%</td></tr>
+<tr><td>3032 HSTECH ETF</td><td>$4.91 → $4.846</td><td class="down">−1.31%</td><td>中芯撐但其他拖累</td></tr>
+</table>
+</section>
+
+<div class="divider"></div>
+
+<section>
+<h2>W22 Forward Scenarios（5/25–5/30）</h2>
+<div class="scenario-grid">
+  <div class="scenario bull-plus">
+    <div class="name">BULL++ 極端牛</div>
+    <div class="prob">10%</div>
+    <div class="range">26,000+</div>
+  </div>
+  <div class="scenario bull">
+    <div class="name">BULL 偏牛</div>
+    <div class="prob">22%</div>
+    <div class="range">25,800–26,000</div>
+  </div>
+  <div class="scenario base">
+    <div class="name">BASE 基準 ★</div>
+    <div class="prob">38%</div>
+    <div class="range">25,400–25,800</div>
+  </div>
+  <div class="scenario bear">
+    <div class="name">BEAR 偏熊</div>
+    <div class="prob">20%</div>
+    <div class="range">25,000–25,400</div>
+  </div>
+  <div class="scenario bear-minus">
+    <div class="name">BEAR-- 極端熊</div>
+    <div class="prob">10%</div>
+    <div class="range">&lt;25,000</div>
+  </div>
+</div>
+<div class="alert">
+W22 EV 0% to +0.5%（中性偏 Bull）；但 5/25 Memorial Day gap + OPEC+ multi-event。
+HK 倉位 W22 開市維持 35–40%；條件加碼 trigger fired 後可上 45%。
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+<h2>10 角色辯論結果（週度加權後）</h2>
+<div class="vote-bar">
+  <div class="vote-segment vote-long" style="width:28%;">Long 28.0%</div>
+  <div class="vote-segment vote-neutral" style="width:50%;">Neutral 50.0%</div>
+  <div class="vote-segment vote-short" style="width:22%;">Short 22.0%</div>
+</div>
+
+<h3 style="color:var(--gold);font-size:14px;margin-top:18px;">三大分歧</h3>
+
+<div class="dispute">
+<span class="role">Druckenmiller（Long）vs Taleb（Short）</span> — 中芯 leadership vs 整體 HK 弱勢：
+Druckenmiller 認為中芯 +16% 三日累計係 W21 最大 takeaway，半導體國產化 narrative 結構性確認，5/25 hold $77+ → +2pp 加碼；
+Taleb 反駁中芯 +16% 三日 momentum 過熱訊號（vol regime 不穩），HSI 整週 -0.85% + Memorial Day gap 不應同時加碼 risk asset。
+</div>
+
+<div class="dispute">
+<span class="role">李嘉誠（Neutral）vs 連登散戶（Short）</span> — HK 價值 vs 動能：
+李嘉誠認為 HSI 5/22 收 25,581 接近 50d mean reversion buy zone；但北水 5/22 -64.94 億確認 rebound 缺全市場承接；
+連登散戶反駁 9618 -4.7% sell signal，9988 動能衰退 oversold rebound 透支，5/25 必跟 US 中概 ADR 崩塌；short 9618 / put 9988。
+</div>
+
+<div class="dispute">
+<span class="role">Soros（Neutral）vs 量化（Neutral）</span> — 日強港弱分歧意義：
+Soros 認為 N225 W21 +5.92% vs HSI -0.85% = HK 嘅 underperformance 反映中概板塊獨立壓力 + 美投資者 ADR 跟跌；reflexivity HK 同 US 中概同步而非跟 N225；
+量化補充 vol-target 模型 W22 對 HK 維持 reduce（35–40%）vs S&P 加碼（55–60%），跨資產 momentum 顯示分歧。
+</div>
+</section>
+
+<section>
+<h2>W20 → W21 Themes Drift</h2>
+<table>
+<tr><th>Theme</th><th>W20 status</th><th>W21 status</th><th>Drift</th></tr>
+<tr><td>HSI macro regime</td><td>Stagflation 跟 US</td><td>中概 idiosyncratic 獨立</td><td>結構性</td></tr>
+<tr><td>中概核心 leadership</td><td>Mixed</td><td>半導體獨立 / 電商弱 / 騰訊穩</td><td>板塊內分化</td></tr>
+<tr><td>北水資金流</td><td>5/21 -61.05 億</td><td class="down">5/22 -64.94 億</td><td>連續流出，否定全面 rebound</td></tr>
+<tr><td>中芯 0981</td><td>watch</td><td class="up">+16% 三日累計</td><td class="up">新爆發 leadership</td></tr>
+<tr><td>9618 京東</td><td>normal</td><td class="warn">連跌 4 日 sell-the-news</td><td>新警示</td></tr>
+<tr><td>Brent 鬆動</td><td>觸發</td><td class="up">接近完全鬆動</td><td class="up">改善</td></tr>
+<tr><td>N225 vs HSI 分歧</td><td>mild</td><td class="warn">+5.92% vs −0.85% 極端</td><td>結構性</td></tr>
+</table>
+</section>
+
+<section>
+<h2>Action Layer Decision Tree（W22 5/25 開市）</h2>
+<table>
+<tr><th>條件</th><th>動作</th><th>結果倉位</th></tr>
+<tr><td>HSI hold 25,500+ + 中芯 hold $77+ + 北水 &gt; +30 億</td><td class="up">+3pp 9988 / 0700</td><td>55%</td></tr>
+<tr><td>HSI hold + 中芯 hold + 北水 &lt; +30 億</td><td>+2pp 0981 only</td><td>45%</td></tr>
+<tr><td>Range 25,200–25,500</td><td>Wait & watch</td><td>40%</td></tr>
+<tr><td>HSI &lt; 25,200 + 9618 &lt; $118</td><td class="warn">短倉 1pp 9618 + 倉位 ≤35%</td><td>≤35%</td></tr>
+<tr><td>中芯 跌穿 $73</td><td class="down">減 3pp</td><td>−3pp</td></tr>
+</table>
+</section>
+
+<footer>
+Sources: 2026-05-18 至 2026-05-22 HK daily reports + US read-through + Yahoo Finance<br>
+Wikilinks: 2026-W21 港股週報.md · 2026-W21 港股週報辯論記錄.md · 2026-W21 港股預測準確度審計.md · 2026-W20 港股週報 · 2026-W21 美股週報<br>
+本週報於 2026-05-24 補錄
+<div class="tag-list">
+<span class="tag">#週報</span>
+<span class="tag">#港股</span>
+<span class="tag">#W21</span>
+<span class="tag">#official</span>
+</div>
+</footer>
+
+</body>
+</html>
