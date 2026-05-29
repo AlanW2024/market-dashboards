@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股盤後日報 — 2026-05-28</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#D4AF37;--gold-dim:rgba(212,175,55,0.15);--gold-glow:rgba(212,175,55,0.3);
+  --bg-primary:#0a0a0f;--bg-card:#12121a;--bg-elevated:#1e1e2a;
+  --text-primary:#e8e6e1;--text-secondary:#8a8a9a;--text-dim:#5a5a6a;
+  --border:rgba(255,255,255,0.06);--border-gold:rgba(212,175,55,0.3);
+  --bullish:#4ade80;--bearish:#f87171;--neutral:#fbbf24;
+  --bullish-bg:rgba(74,222,128,0.08);--bearish-bg:rgba(248,113,113,0.08);--neutral-bg:rgba(251,191,36,0.08);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg-primary);color:var(--text-primary);font-family:'Noto Sans TC',sans-serif;line-height:1.6;}
+.container{max-width:960px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.market-header{text-align:center;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--border);position:relative;}
+.market-header::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:120px;height:1px;background:var(--gold);box-shadow:0 0 20px var(--gold-glow);}
+.header-eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.5rem;}
+.header-title{font-family:'DM Serif Display',serif;font-size:2.2rem;color:var(--text-primary);margin-bottom:.4rem;}
+.header-sub{font-size:.85rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;}
+.pce-badge{display:inline-block;margin-top:.7rem;background:rgba(74,222,128,0.15);border:1px solid rgba(74,222,128,0.3);color:#4ade80;padding:.3rem 1rem;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:600;}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:.8rem;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border-gold);opacity:.4;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:1.5rem;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-bottom:1.5rem;}
+.metric-card{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1rem;}
+.metric-card.gold-border{border-color:var(--border-gold);}
+.metric-label{font-size:.65rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem;}
+.metric-value{font-size:1.4rem;font-weight:600;font-family:'JetBrains Mono',monospace;}
+.metric-change{font-size:.75rem;font-family:'JetBrains Mono',monospace;margin-top:.2rem;}
+.up{color:var(--bullish);}.down{color:var(--bearish);}.flat{color:var(--neutral);}
+.data-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-bottom:1.5rem;}
+.data-table th{background:var(--bg-elevated);color:var(--text-secondary);padding:.5rem .7rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.05em;text-align:left;border-bottom:1px solid var(--border);}
+.data-table td{padding:.5rem .7rem;border-bottom:1px solid var(--border);}
+.data-table tr:hover td{background:var(--bg-card);}
+.sector-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1.5rem;}
+.sector-pill{padding:.4rem .6rem;border-radius:6px;font-size:.72rem;font-family:'JetBrains Mono',monospace;text-align:center;}
+.sector-pill.pos{background:rgba(74,222,128,0.12);color:var(--bullish);border:1px solid rgba(74,222,128,0.2);}
+.sector-pill.neg{background:rgba(248,113,113,0.12);color:var(--bearish);border:1px solid rgba(248,113,113,0.2);}
+.sector-pill.fl{background:rgba(251,191,36,0.08);color:var(--neutral);border:1px solid rgba(251,191,36,0.15);}
+.gold-divider{height:3px;margin:2.5rem 0;background:linear-gradient(90deg,transparent,var(--gold),transparent);box-shadow:0 0 20px var(--gold-glow);}
+.gold-divider-label{text-align:center;margin:-1.8rem 0 2rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;}
+.gold-divider-label span{background:var(--bg-primary);padding:0 1rem;}
+.news-item{display:flex;gap:.8rem;padding:.7rem 0;border-bottom:1px solid var(--border);font-size:.82rem;}
+.news-tag{font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:.15rem .5rem;border-radius:4px;white-space:nowrap;flex-shrink:0;align-self:flex-start;margin-top:2px;}
+.tag-bull{background:var(--bullish-bg);color:var(--bullish);}
+.tag-bear{background:var(--bearish-bg);color:var(--bearish);}
+.tag-neu{background:var(--neutral-bg);color:var(--neutral);}
+.action-card{background:var(--bg-elevated);border-radius:8px;padding:1rem;margin-bottom:.7rem;border-left:3px solid;}
+.bar-row{display:flex;align-items:center;gap:.7rem;margin:.3rem 0;font-size:.75rem;}
+.bar-label{width:65px;font-family:monospace;}
+.bar-track{flex:1;background:rgba(255,255,255,0.06);border-radius:20px;height:8px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:20px;}
+.vote-box{flex:1;border-radius:8px;padding:1rem;text-align:center;}
+.pce-path-box{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.25);border-radius:10px;padding:1.2rem;margin-bottom:1.5rem;text-align:center;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="market-header">
+  <div class="header-eyebrow">US EQUITIES · POST-MARKET · W22 THU · 2026-05-28</div>
+  <div class="header-title">美股盤後日報</div>
+  <div class="header-sub">RTH CLOSE · 生成 2026-05-29 13:45 HKT · data: yfinance + FRED + web_search</div>
+  <div class="pce-badge">✅ PCE IN-LINE — 3.30% YoY / +0.20% MoM · Card #2 執行</div>
+</div>
+
+<!-- SECTION 1: INDICES -->
+<div class="section-label">5/28 收市指數</div>
+<div class="grid-4">
+  <div class="metric-card">
+    <div class="metric-label">SPY / S&P 500</div>
+    <div class="metric-value flat">750.05</div>
+    <div class="metric-change flat">-0.05% · SPX ~7,517</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">QQQ / Nasdaq 100</div>
+    <div class="metric-value down">727.82</div>
+    <div class="metric-change down">-0.22%</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">DIA / 道指</div>
+    <div class="metric-value up">506.94</div>
+    <div class="metric-change up">+0.10%</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">IWM / Russell 2000</div>
+    <div class="metric-value up">290.09</div>
+    <div class="metric-change up">+0.38%</div>
+  </div>
+</div>
+
+<!-- RISK INDICATORS -->
+<div class="section-label">風險指標 · 商品 · FX</div>
+<div class="grid-4">
+  <div class="metric-card">
+    <div class="metric-label">^VIX</div>
+    <div class="metric-value flat">16.29</div>
+    <div class="metric-change up">-2.87% · PCE 恐懼消化</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-label">10Y UST</div>
+    <div class="metric-value flat">4.48%</div>
+    <div class="metric-change flat">0bp · 利率不動</div>
+  </div>
+  <div class="metric-card gold-border">
+    <div class="metric-label">⚠️ WTI 原油</div>
+    <div class="metric-value down">$88.16</div>
+    <div class="metric-change down">-3.01% · Iran deal → war premium 消失</div>
+  </div>
+  <div class="metric-card gold-border">
+    <div class="metric-label">🥇 黃金 GC=F</div>
+    <div class="metric-value up">$4,535</div>
+    <div class="metric-change up">+2.75% · 不確定性 hedge</div>
+  </div>
+</div>
+<div style="background:rgba(212,175,55,0.06);border:1px solid var(--border-gold);border-radius:8px;padding:.8rem 1rem;margin-bottom:1.5rem;font-size:.78rem;color:var(--neutral);">
+  ⚠️ <strong>重大背離</strong>：WTI -3%（Iran 停火 → war premium 消除）vs Gold +2.75%（地緣不確定性仍高）= 兩種 risk 層同時定價，方向相反。下週持續監察 Iran deal 確認狀況。
+</div>
+
+<!-- INDIVIDUAL STOCKS TABLE -->
+<div class="section-label">個股收市 vs 5/28 盤前預測</div>
+<table class="data-table">
+  <thead>
+    <tr><th>標的</th><th>5/28 收</th><th>5/27 收</th><th>Change</th><th>盤前 Trigger</th><th>結果</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><b>NVDA</b></td><td class="down">$211.74</td><td>$212.60</td><td class="down">-0.40%</td><td>hold $210+</td><td class="up">✅ Hold</td></tr>
+    <tr><td><b>AAPL</b></td><td class="flat">$310.60</td><td>$310.85</td><td class="flat">-0.08%</td><td>突破 $313 收</td><td class="down">❌ 未突破</td></tr>
+    <tr><td><b>META</b></td><td class="up">~$637</td><td>$635.26</td><td class="up">+0.27%</td><td>hold $630+</td><td class="up">✅ Hold</td></tr>
+    <tr><td><b>SMCI</b></td><td class="flat">$37.92</td><td>~$38</td><td class="flat">-0.21%</td><td>—</td><td class="up">→ 5/29 +8.9%</td></tr>
+    <tr><td><b>TSM</b></td><td class="up">$421.53</td><td>~$421</td><td class="up">+0.13%</td><td>—</td><td class="flat">平穩</td></tr>
+    <tr><td><b>PLTR</b></td><td class="flat">$132.89</td><td>~$133</td><td class="flat">-0.08%</td><td>—</td><td class="up">→ 5/29 +7.9%</td></tr>
+    <tr style="background:rgba(212,175,55,0.04)"><td><b>SPX implied</b></td><td class="flat">~7,517</td><td>7,520.36</td><td class="flat">-0.05%</td><td>Base ★ 7,470–7,517</td><td class="up">✅ 精確命中</td></tr>
+  </tbody>
+</table>
+
+<!-- SECTOR HEATMAP -->
+<div class="section-label">板塊熱力圖（5/28 vs 5/27）</div>
+<div class="sector-grid">
+  <div class="sector-pill pos">XLE 能源<br>+0.33%</div>
+  <div class="sector-pill pos">XLB 材料<br>+0.29%</div>
+  <div class="sector-pill pos">XLRE 房產<br>+0.22%</div>
+  <div class="sector-pill pos">XLP 必需<br>+0.21%</div>
+  <div class="sector-pill pos">XLI 工業<br>+0.15%</div>
+  <div class="sector-pill pos">XLV 醫療<br>+0.13%</div>
+  <div class="sector-pill pos">XLU 公用<br>+0.11%</div>
+  <div class="sector-pill fl">XLY 非必需<br>+0.01%</div>
+  <div class="sector-pill fl">XLF 金融<br>-0.02%</div>
+  <div class="sector-pill neg">XLC 通訊<br>-0.28%</div>
+  <div class="sector-pill neg">XLK 科技<br>-0.35%</div>
+  <div class="sector-pill fl">DXY<br>-0.40%</div>
+</div>
+<div style="font-size:.75rem;color:var(--text-secondary);margin-bottom:1.5rem;">防禦/商品領跑 · 科技/通訊落後 = PCE 消化日防禦輪動</div>
+
+<!-- NEWS TIMELINE -->
+<div class="section-label">今日重大事件</div>
+<div style="margin-bottom:1.5rem;">
+  <div class="news-item">
+    <span class="news-tag tag-bull">✅ 核心 PCE</span>
+    <div>4 月核心 PCE <b>3.30% YoY / +0.20% MoM</b>（vs est +0.30%）。In-Line + MoM 邊際 dovish。通脹最壞情況未兌現，H2 降息預期邊際回升。</div>
+  </div>
+  <div class="news-item">
+    <span class="news-tag tag-neu">🟡 Iran 停火</span>
+    <div>Axios：US-Iran 同意 60 天停火延長 MOU，Hormuz 航運「不受限」。需 Trump 最終批准。WTI <span class="down">-3%</span>（war premium 消除）；Gold <span class="up">+2.75%</span>（不確定性 hedge）。</div>
+  </div>
+  <div class="news-item">
+    <span class="news-tag tag-bull">✅ Best Buy</span>
+    <div>BBY Q1 FY27 EPS 超預期 → <span class="up">+8.4%</span>。消費電子需求反彈，消費 narrative 確認。Lynch 論點支持。</div>
+  </div>
+  <div class="news-item">
+    <span class="news-tag tag-bull">✅ Dell DoD</span>
+    <div>DELL 獲 <b>$9.7B 國防部伺服器合同</b> → <span class="up">+3.9%</span>。AI 基礎設施 CAPEX supercycle 延伸至 defence/government。</div>
+  </div>
+  <div class="news-item">
+    <span class="news-tag tag-bull">🚀 SMCI/PLTR</span>
+    <div>5/29 早盤：SMCI <span class="up">+8.91%</span>（Verda AI 歐洲雲平台選用）/ PLTR <span class="up">+7.86%</span>（Snowflake AI customers +49%）。AI 企業採用加速確認。</div>
+  </div>
+</div>
+
+<!-- GOLD DIVIDER -->
+<div class="gold-divider"></div>
+<div class="gold-divider-label"><span>⚖️ 投資委員會 · Post-PCE 盤後辯論</span></div>
+
+<!-- PCE PATH -->
+<div class="pce-path-box">
+  <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-secondary);letter-spacing:.1em;">PCE PATH TRIGGERED</div>
+  <div style="font-size:1.8rem;font-weight:700;color:var(--bullish);font-family:'JetBrains Mono',monospace;">IN-LINE ✅</div>
+  <div style="font-size:.8rem;color:var(--text-secondary);margin-top:.3rem;">3.30% YoY (est 3.30%) / +0.20% MoM (est +0.30% → BEAT)</div>
+  <div style="font-size:.75rem;color:#4ade80;margin-top:.4rem;font-weight:600;">Card #2 執行完成 · 維持 48-54% · META +0.5pp</div>
+</div>
+
+<!-- 5/29 PREDICTION BARS -->
+<div class="section-label">5/29 RTH 展望（明日預測）</div>
+<div style="margin-bottom:.6rem;">
+  <div class="bar-row"><span class="bar-label up">Bull++</span><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--bullish)"></div></div><span class="up" style="font-family:monospace;font-size:.75rem;">25% · 7,555+</span></div>
+  <div class="bar-row"><span class="bar-label up" style="font-weight:600">Bull ★</span><div class="bar-track"><div class="bar-fill" style="width:35%;background:var(--bullish)"></div></div><span class="up" style="font-family:monospace;font-size:.75rem;font-weight:600">35% · 7,520–7,555</span></div>
+  <div class="bar-row"><span class="bar-label flat">Base ★</span><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--neutral)"></div></div><span class="flat" style="font-family:monospace;font-size:.75rem;">25% · 7,480–7,520</span></div>
+  <div class="bar-row"><span class="bar-label down">Bear</span><div class="bar-track"><div class="bar-fill" style="width:15%;background:var(--bearish)"></div></div><span class="down" style="font-family:monospace;font-size:.75rem;">15% · &lt;7,480</span></div>
+</div>
+<div style="font-size:.75rem;color:var(--text-secondary);margin-bottom:1.5rem;">EV +0.2% to +0.8%（上偏；AI momentum + month-end 雙催化）· Taleb Veto 5.0/10</div>
+
+<!-- 9 PERSONAS -->
+<div class="section-label">9 位角色立場（Post-PCE 更新）</div>
+<table class="data-table">
+  <thead><tr><th>角色</th><th>權重</th><th>立場</th><th>核心論點</th></tr></thead>
+  <tbody>
+    <tr><td><b>Druckenmiller</b></td><td style="font-family:monospace">1.3×</td><td class="up">🟢 Long</td><td>PCE MoM 0.20% 最重要信號；H2 降息回台；AI rally是 kicker</td></tr>
+    <tr><td><b>Lynch</b></td><td style="font-family:monospace">1.2×</td><td class="up">🟢 Long</td><td>BBY + Dell = 消費+政府雙引擎；SMCI 係業務勝利非炒作</td></tr>
+    <tr><td><b>Soros</b></td><td style="font-family:monospace">1.1×</td><td class="flat">🟡 Neutral</td><td>Iran deal 未確認；gold vs oil 背離 = 市場訊號分裂，中性等</td></tr>
+    <tr><td><b>宏觀策略師</b></td><td style="font-family:monospace">1.0×</td><td class="up">🟢 Long</td><td>PCE MoM trend 確立；Warsh 首份 in-line = 不需 hawkish flip</td></tr>
+    <tr><td><b>量化交易員</b></td><td style="font-family:monospace">1.0×</td><td class="flat">🟡 Neutral</td><td>SPY RSI 73.3 超買；MACD negative histogram；等 pullback 再加</td></tr>
+    <tr><td><b>Marks</b></td><td style="font-family:monospace">0.9×</td><td class="down">🔴 Short-N</td><td>Iran 破裂 = oil spike 30% prob；SMCI hype cycle 非 earnings</td></tr>
+    <tr><td><b>Dalio</b></td><td style="font-family:monospace">0.9×</td><td class="up">🟢 Long</td><td>PCE+yield curve = Growth/Disinflation 象限；GLD balanced</td></tr>
+    <tr><td><b>Taleb</b></td><td style="font-family:monospace">0.8×</td><td class="flat">🟡 Neutral</td><td>Veto 降 6.5→5.0；PCE tail resolved；Iran 破裂係新 tail</td></tr>
+    <tr><td><b>WSB</b></td><td style="font-family:monospace">0.7×</td><td class="up">🟢 Long</td><td>SMCI +8.9%！PLTR +7.9%！AI bull generational trade！全押！</td></tr>
+  </tbody>
+</table>
+
+<!-- VOTE DISPLAY -->
+<div style="display:flex;gap:1rem;margin-bottom:1.5rem;">
+  <div class="vote-box" style="background:var(--bullish-bg);border:1px solid rgba(74,222,128,0.2);">
+    <div style="font-size:.65rem;font-family:monospace;color:var(--text-secondary)">LONG</div>
+    <div style="font-size:1.8rem;font-weight:700;color:var(--bullish)">52%</div>
+    <div style="font-size:.7rem;color:var(--text-dim)">+16pp vs 盤前</div>
+  </div>
+  <div class="vote-box" style="background:var(--neutral-bg);border:1px solid rgba(251,191,36,0.15);">
+    <div style="font-size:.65rem;font-family:monospace;color:var(--text-secondary)">NEUTRAL</div>
+    <div style="font-size:1.8rem;font-weight:700;color:var(--neutral)">28%</div>
+    <div style="font-size:.7rem;color:var(--text-dim)">-8pp vs 盤前</div>
+  </div>
+  <div class="vote-box" style="background:var(--bearish-bg);border:1px solid rgba(248,113,113,0.2);">
+    <div style="font-size:.65rem;font-family:monospace;color:var(--text-secondary)">SHORT</div>
+    <div style="font-size:1.8rem;font-weight:700;color:var(--bearish)">20%</div>
+    <div style="font-size:.7rem;color:var(--text-dim)">-8pp vs 盤前</div>
+  </div>
+  <div class="vote-box" style="background:var(--bg-card);border:1px solid var(--border);">
+    <div style="font-size:.65rem;font-family:monospace;color:var(--text-secondary)">TALEB VETO</div>
+    <div style="font-size:1.8rem;font-weight:700;color:var(--neutral)">5.0</div>
+    <div style="font-size:.7rem;color:var(--text-dim)">↓ 6.5→5.0</div>
+  </div>
+</div>
+
+<!-- ETA MATRIX OUTCOMES -->
+<div class="section-label">ETA Matrix — 5/28 觸發結果</div>
+<table class="data-table" style="font-size:.78rem;">
+  <thead><tr><th>#</th><th>Trigger</th><th>結果</th><th>行動</th></tr></thead>
+  <tbody>
+    <tr><td>#1</td><td>PCE ≤3.20% + Claims &lt;20.5萬</td><td class="down">❌ PCE 3.30%</td><td>Card #1 +5pp QQQ 未觸發</td></tr>
+    <tr><td>#2</td><td>PCE ≥3.40% + 10Y ≥4.55%</td><td class="down">❌</td><td>Defensive 未觸發</td></tr>
+    <tr><td>#3</td><td>PCE ≥3.70% + VIX &gt;20</td><td class="down">❌</td><td>Systemic 未觸發</td></tr>
+    <tr style="background:rgba(74,222,128,0.04)"><td><b>#4</b></td><td>ES hold 7,510+ + AAPL $308+</td><td class="up">✅ 7,517 / $310.60</td><td>維持 48-54%（假設執行）</td></tr>
+    <tr style="background:rgba(74,222,128,0.04)"><td><b>#5</b></td><td>META hold $630+</td><td class="up">✅ ~$637</td><td>+0.5pp META（假設執行）</td></tr>
+    <tr><td>#7</td><td>S&P 突破 7,540+ 收盤</td><td class="down">❌ 7,517</td><td>Bull++ 未確認</td></tr>
+    <tr><td>#9</td><td>NVDA 跌穿 $210</td><td class="up">✅ 未觸發 ($211.74)</td><td>Stop 不執行（安全）</td></tr>
+    <tr><td>#11</td><td>Brent &gt;$98 / WTI &gt;$95</td><td class="down">❌ WTI $88.16 (-3%)</td><td>System Veto 不重啟</td></tr>
+    <tr><td>#12</td><td>VIX &gt;22</td><td class="up">✅ 未觸發 (16.29)</td><td>緊急模式不啟</td></tr>
+  </tbody>
+</table>
+<div style="font-size:.75rem;color:var(--text-secondary);margin-bottom:1.5rem;">觸發：2/14 = 14% · 低觸發日 = PCE 消化後市場等待新方向</div>
+
+<!-- ACTION CARDS -->
+<div class="section-label">Action Cards</div>
+<div class="action-card" style="border-color:var(--bullish)">
+  <div style="font-weight:600;color:var(--bullish);font-size:.85rem;">✅ Card #2 — PCE In-Line Path（已執行）</div>
+  <div style="font-size:.8rem;margin-top:.4rem;color:var(--text-secondary)">PCE 3.30% YoY / 0.20% MoM → 維持 48-54% · META hold $630+ → +0.5pp · 倉位 cap 回 56%</div>
+</div>
+<div class="action-card" style="border-color:var(--neutral)">
+  <div style="font-weight:600;color:var(--neutral);font-size:.85rem;">⚡ Card #A（新）：5/29 AI Momentum 順勢</div>
+  <div style="font-size:.8rem;margin-top:.4rem;color:var(--text-secondary)">Trigger：SMCI >$40 收 + PLTR >$140 收 + QQQ >$735<br>Action：觀察 / partial take profit on existing positions · <em>plan_status: hypothetical</em></div>
+</div>
+<div class="action-card" style="border-color:var(--bearish)">
+  <div style="font-weight:600;color:var(--bearish);font-size:.85rem;">⚠️ Card #B：Iran Deal 破裂 Watch（30% prob）</div>
+  <div style="font-size:.8rem;margin-top:.4rem;color:var(--text-secondary)">Trump 拒批准 + Brent >$94 → GLD +2pp · TLT +0.5pp · QQQ -2pp 防禦</div>
+</div>
+
+<!-- DISPUTES -->
+<div class="section-label">三大 Disputes</div>
+<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin-bottom:1.5rem;font-size:.82rem;">
+  <div style="font-weight:600;margin-bottom:.5rem;color:var(--neutral)">D1：Iran deal 可信度（Soros vs Druckenmiller）— 50/50</div>
+  <div style="color:var(--text-secondary);margin-bottom:.8rem;">Druckenmiller：Hormuz shipping 已恢復，supply 改善 · Soros：未確認 = 下週可能 reversal</div>
+  <div style="font-weight:600;margin-bottom:.5rem;color:var(--neutral)">D2：Gold +2.75% 信號（Dalio vs Marks）— 55/45 Dalio</div>
+  <div style="color:var(--text-secondary);margin-bottom:.8rem;">Dalio：gold+oil 可背離，各自定價不同 risk layer · Marks：矛盾信號，謹慎</div>
+  <div style="font-weight:600;margin-bottom:.5rem;color:var(--neutral)">D3：5/29 Friday Rally 持續性（Lynch vs 量化）— 55/45 Lynch</div>
+  <div style="color:var(--text-secondary)">Lynch：SMCI/PLTR 有具體業務 catalyst · 量化：RSI 73.3 + MACD divergence = Friday close 可能 mean revert</div>
+</div>
+
+<!-- W23 CALENDAR -->
+<div class="section-label">下週 W23 事件日曆</div>
+<table class="data-table">
+  <thead><tr><th>日期</th><th>事件</th><th>重要度</th><th>預期</th></tr></thead>
+  <tbody>
+    <tr><td>6/2 Mon</td><td>ISM 製造業</td><td>★★★</td><td>48-49（收縮邊緣）</td></tr>
+    <tr><td>6/4 Wed</td><td>ADP 就業</td><td>★★★</td><td>+14萬</td></tr>
+    <tr><td>6/5 Thu</td><td>Initial Claims</td><td>★★★</td><td>21萬</td></tr>
+    <tr style="background:rgba(212,175,55,0.04)"><td><b>6/6 Fri</b></td><td><b>非農 NFP</b></td><td><b>★★★★★</b></td><td>est +19萬；decisive for July cut</td></tr>
+    <tr style="background:rgba(212,175,55,0.04)"><td><b>6/17-18</b></td><td><b>FOMC（Warsh 首次）</b></td><td><b>★★★★★</b></td><td>Hold 預期；measures hawkish vs dovish</td></tr>
+  </tbody>
+</table>
+
+<!-- FOOTER -->
+<div style="margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);text-align:center;font-size:.65rem;font-family:monospace;color:var(--text-dim);">
+  美股盤後日報 2026-05-28 · market-analyst-skill v2.0 · 生成 HKT 2026-05-29 13:45
+  · data: yfinance(authoritative) + FRED + web_search · plan_status: hypothetical · 非投資建議
+</div>
+
+</div>
+</body>
+</html>
