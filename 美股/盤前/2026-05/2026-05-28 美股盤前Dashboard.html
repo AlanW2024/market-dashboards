@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>2026-05-28 美股盤前 Dashboard (PCE Day)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", sans-serif; background: #0f1419; color: #e0e6ed; line-height: 1.55; padding: 24px; }
+  .container { max-width: 1400px; margin: 0 auto; }
+  h1 { font-size: 1.8rem; margin-bottom: 8px; color: #ffd166; }
+  h2 { font-size: 1.3rem; color: #ffd166; margin: 22px 0 10px; }
+  .meta { color: #8b95a5; font-size: 0.9rem; margin-bottom: 6px; }
+  .divider-gold { background: linear-gradient(90deg, transparent, #ffd166, transparent); height: 2px; margin: 30px 0 22px; }
+
+  .alert-warning { background: linear-gradient(135deg, #6b4423 0%, #5a3818 100%); border-left: 4px solid #ffb627; padding: 12px 16px; margin: 14px 0; border-radius: 6px; }
+  .alert-info { background: linear-gradient(135deg, #0d5c63 0%, #0a4a52 100%); border-left: 4px solid #4ecdc4; padding: 12px 16px; margin: 14px 0; border-radius: 6px; }
+  .alert-bull { background: linear-gradient(135deg, #064e3b 0%, #053a2c 100%); border-left: 4px solid #4ade80; padding: 12px 16px; margin: 14px 0; border-radius: 6px; }
+  .alert-bear { background: linear-gradient(135deg, #7f1d1d 0%, #5f1717 100%); border-left: 4px solid #f87171; padding: 12px 16px; margin: 14px 0; border-radius: 6px; }
+  .alert-pce { background: linear-gradient(135deg, #4c1d95 0%, #3b1681 100%); border-left: 4px solid #c4b5fd; padding: 14px 18px; margin: 16px 0; border-radius: 6px; font-size: 1.02rem; }
+
+  .section { background: #1a2332; border-radius: 10px; padding: 20px; margin: 18px 0; border: 1px solid #2a3548; }
+  .section-title { font-size: 1.15rem; color: #ffd166; margin-bottom: 12px; border-bottom: 1px solid #2a3548; padding-bottom: 8px; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 0.9rem; }
+  th { background: #243049; color: #ffd166; padding: 8px 10px; text-align: left; }
+  td { padding: 7px 10px; border-bottom: 1px solid #243049; vertical-align: top; }
+  tr:hover { background: #1f2a3d; }
+
+  .pos { color: #4ade80; font-weight: 600; }
+  .neg { color: #f87171; font-weight: 600; }
+  .neutral { color: #fbbf24; }
+  .bold { font-weight: 700; }
+
+  .pill { display: inline-block; padding: 3px 9px; border-radius: 12px; font-size: 0.78rem; font-weight: 600; margin: 1px; }
+  .pill-bull { background: #064e3b; color: #6ee7b7; }
+  .pill-base { background: #78350f; color: #fde68a; }
+  .pill-bear { background: #7f1d1d; color: #fca5a5; }
+  .pill-neutral { background: #1f2937; color: #cbd5e1; }
+  .pill-veto { background: #831843; color: #fbcfe8; }
+
+  /* Hero metrics grid */
+  .hero-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 12px 0 18px; }
+  .hero-card { background: #243049; padding: 14px; border-radius: 8px; border-left: 3px solid #ffd166; }
+  .hero-label { font-size: 0.78rem; color: #8b95a5; text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero-value { font-size: 1.5rem; font-weight: 700; margin: 6px 0; color: #e0e6ed; }
+  .hero-delta { font-size: 0.85rem; }
+
+  /* Sector heatmap */
+  .heatmap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; margin: 10px 0; }
+  .sec-cell { background: #243049; padding: 8px 10px; border-radius: 6px; text-align: center; }
+  .sec-sym { font-weight: 700; font-size: 0.95rem; color: #ffd166; }
+  .sec-delta { font-size: 0.85rem; margin: 3px 0; }
+  .sec-week { font-size: 0.75rem; color: #8b95a5; }
+
+  /* Confidence bars */
+  .bar-row { display: flex; align-items: center; margin: 5px 0; gap: 8px; }
+  .bar-label { width: 90px; font-size: 0.85rem; color: #cbd5e1; }
+  .bar-bg { flex: 1; height: 18px; background: #243049; border-radius: 3px; overflow: hidden; }
+  .bar-fill { height: 100%; padding-left: 6px; display: flex; align-items: center; color: #0f1419; font-size: 0.75rem; font-weight: 700; }
+  .bar-bull { background: #4ade80; }
+  .bar-base { background: #fbbf24; }
+  .bar-bear { background: #f87171; }
+
+  /* Action cards */
+  .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin: 12px 0; }
+  .action-card { background: #243049; padding: 14px; border-radius: 8px; border-top: 3px solid; }
+  .action-card.dovish { border-color: #4ade80; }
+  .action-card.inline { border-color: #fbbf24; }
+  .action-card.hot { border-color: #f87171; }
+  .action-card.veryhot { border-color: #ef4444; }
+  .action-card.iran { border-color: #c4b5fd; }
+  .action-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; color: #ffd166; }
+  .action-trigger { font-size: 0.82rem; color: #cbd5e1; }
+  .action-body { font-size: 0.88rem; margin-top: 4px; color: #e0e6ed; }
+
+  /* Persona table */
+  .persona-row td:first-child { font-weight: 600; color: #ffd166; }
+
+  details { background: #1a2332; padding: 10px 14px; border-radius: 6px; margin: 12px 0; border: 1px solid #2a3548; }
+  summary { cursor: pointer; font-weight: 600; color: #ffd166; padding: 4px 0; }
+  summary:hover { color: #fbbf24; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>🇺🇸 2026-05-28 美股盤前 Dashboard — PCE Day</h1>
+<div class="meta">📅 W22 第三日 · HKT 2026-05-28 19:30 生成 · RTH 開市 21:30 HKT</div>
+<div class="meta">對比基準：<strong>[[2026-05-27 美股盤後日報]] Section 6 Bull++ 15% / Bull 30% / Base★32% / Bear 16% / Bear-- 7% / EV -0.1%~+0.4%</strong></div>
+
+<div class="alert-pce">
+  <strong>⏰ PCE Countdown — 60 分鐘後三大數據同時公布</strong><br>
+  • <strong>20:30 HKT (08:30 ET)</strong>：4 月核心 PCE 物價指數年率 ★★★★（est <span class="bold">+3.30%</span> vs 前 +3.20%）<br>
+  • <strong>20:30 HKT</strong>：Initial Jobless Claims ★★★★（est 21.1 萬，前 20.9 萬）<br>
+  • <strong>20:30 HKT</strong>：Q1 GDP 第二次修正 ★★★（est +2.00%）<br>
+  • 22:00 HKT (10:00 ET)：4 月新屋銷售 ★★★（est 66.5 萬）
+</div>
+
+<div class="alert-warning">
+  <strong>⚠️ 琴日盤後對 PCE 日期假設錯</strong>：5/27 盤後報告寫「PCE 5/29 公布」— calendar + WebSearch 確認 <strong>PCE 今日 5/28 20:30 HKT 公布</strong>，已修正。整個 5/28 圍繞 PCE reaction。
+</div>
+
+<div class="alert-bear">
+  <strong>🔴 Pre-PCE 信號：偏空 down-skew</strong><br>
+  • Polymarket 55% S&P 開市下跌 vs 45% 上升<br>
+  • SPY RSI 71.2 / QQQ 74.6 / AAPL 79.1 / SMH 70.5 = 四大標的全部超買<br>
+  • XLK put-call ratio 6.53 = sophisticated 重度 put 累積<br>
+  • VIX9D 13.27 (-10.58%) = event vol 壓縮極端（Taleb 警號）<br>
+  • 5/27 AAPL/SMH 突破未守 pattern + 新 52w 高 fade 確認<br>
+  • Taleb Veto upgraded <span class="pill pill-veto">5.0 → 6.5</span>
+</div>
+
+<!-- ============================================== -->
+<!-- 上半：市場數據可視化                              -->
+<!-- ============================================== -->
+
+<div class="section">
+  <div class="section-title">📊 Hero Metrics（5/28 19:11 HKT pre-PCE quote）</div>
+  <div class="hero-grid">
+    <div class="hero-card">
+      <div class="hero-label">ES=F (S&P 期指)</div>
+      <div class="hero-value">7,519.75</div>
+      <div class="hero-delta neutral">-0.01% (vs 5/27 RTH 收 7,520.36)</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-label">NQ=F (Nasdaq 期指)</div>
+      <div class="hero-value">29,883.0</div>
+      <div class="hero-delta neg">-0.63%（半導體弱勢 carry-over）</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-label">VIX / VIX9D</div>
+      <div class="hero-value">16.77 / 13.27</div>
+      <div class="hero-delta neg">VIX9D -10.58% = event vol crush</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-label">10Y Yield</div>
+      <div class="hero-value">4.48%</div>
+      <div class="hero-delta neutral">PE expansion intact；PCE hot 風險反彈 > 4.55%</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-label">DXY / WTI</div>
+      <div class="hero-value">99.40 / $90.90</div>
+      <div class="hero-delta neutral">yfinance；vs Reuters WTI +2-3% Iran spike divergence</div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-label">Polymarket 開市下跌 prob</div>
+      <div class="hero-value">55%</div>
+      <div class="hero-delta neg">偏空 implied probability</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">📈 5/27 RTH 收盤 baseline + 個股關鍵 levels</div>
+  <table>
+    <tr><th>標的</th><th>5/27 收</th><th>Δ%</th><th>RSI</th><th>Bull trigger</th><th>Bear trigger</th></tr>
+    <tr><td class="bold">SPY</td><td>$750.46</td><td class="pos">+0.05%</td><td class="neg">71.2 超買</td><td>hold $750 + 突破 $755 收</td><td>跌穿 $747 + 量增</td></tr>
+    <tr><td class="bold">QQQ</td><td>$729.45</td><td class="pos">+0.22%</td><td class="neg">74.6 極超買</td><td>hold $729 + 再試 $735</td><td>跌穿 $725 + 量增</td></tr>
+    <tr><td class="bold">NVDA</td><td>$212.60</td><td class="neg">-1.05%</td><td>51.0 中性 / MACD 熊叉增強</td><td>hold $212 + 反彈 $215</td><td>跌穿 $210 (5/27 stop)</td></tr>
+    <tr><td class="bold">AAPL</td><td>$310.85</td><td class="pos">+0.82%</td><td class="neg">79.1 極度超買</td><td>突破 $313.26 收盤確認</td><td>跌穿 $306 + breakout failure 確認</td></tr>
+    <tr><td class="bold">META</td><td>$635.26</td><td class="pos">+3.74%</td><td>56.9 牛叉增強</td><td>hold $630+ + 再試 $640</td><td>fade < $620</td></tr>
+    <tr><td class="bold">SMH</td><td>$595.50</td><td class="neg">-1.10%</td><td class="neg">70.5 超買</td><td>突破 $605 收盤</td><td>跌穿 $590 + 再 fade</td></tr>
+    <tr><td class="bold">TSLA</td><td>$440.36</td><td class="pos">+1.56%</td><td>63.0 牛叉增強</td><td>hold $435 + 再試 $445</td><td>跌穿 $430</td></tr>
+    <tr><td class="bold">GLD</td><td>$408.49</td><td class="neutral">+0.19%</td><td>36.5 偏弱</td><td>hold $405 + reflation hedge</td><td>跌穿 $402 + DXY 反彈</td></tr>
+    <tr><td class="bold">KWEB</td><td>$27.04</td><td class="pos">+0.48%</td><td class="neg">37.5 偏弱</td><td>hold $26.80（高於 $26.41 52w low）</td><td>跌穿 $26.41 → ADR -2pp</td></tr>
+    <tr><td class="bold">BABA</td><td>$127.76</td><td class="neg">-1.32%</td><td class="neg">41.6 / 下降趨勢</td><td>反彈 $130+</td><td>跌穿 $125</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title">🔥 板塊熱力圖（W22 week-to-date）</div>
+  <div class="heatmap-grid">
+    <div class="sec-cell"><div class="sec-sym">XLK 科技</div><div class="sec-delta pos">+0.35%</div><div class="sec-week">W22 +4.12%</div></div>
+    <div class="sec-cell"><div class="sec-sym">XLY 消費</div><div class="sec-delta neutral">-0.01%</div><div class="sec-week">W22 +3.06%</div></div>
+    <div class="sec-cell"><div class="sec-sym">XLB 材料</div><div class="sec-delta neg">-0.30%</div><div class="sec-week">W22 +2.94%</div></div>
+    <div class="sec-cell"><div class="sec-sym">XLI 工業</div><div class="sec-delta neg">-0.15%</div><div class="sec-week">W22 +2.09%</div></div>
+    <div class="sec-cell"><div class="sec-sym">XLU 公用</div><div class="sec-delta neg">-0.11%</div><div class="sec-week">W22 +1.42%</div></div>
+    <div class="sec-cell"><div class="sec-sym">XLV 醫療</div><div class="sec-delta neg">-0.13%</div><div class="sec-week">W22 +1.13%</div></div>
+    <div class="sec-cell"><div class="sec-sym">XLRE 房地</div><div class="sec-delta neg">-0.22%</div><div class="sec-week">W22 +0.45%</div></div>
+    <div class="sec-cell"><div class="sec-sym">XLC 通訊</div><div class="sec-delta pos">+0.28%</div><div class="sec-week">W22 +0.14%</div></div>
+    <div class="sec-cell"><div class="sec-sym">XLF 金融</div><div class="sec-delta pos">+0.02%</div><div class="sec-week neg">W22 -0.46%</div></div>
+    <div class="sec-cell"><div class="sec-sym">XLP 必需</div><div class="sec-delta neg">-0.21%</div><div class="sec-week neg">W22 -1.10%</div></div>
+    <div class="sec-cell"><div class="sec-sym">XLE 能源</div><div class="sec-delta neg">-0.33%</div><div class="sec-week neg">W22 -4.70%</div></div>
+  </div>
+  <div class="meta" style="margin-top:8px;">
+    Cyclical (XLK+XLY+XLI+XLF+XLB) W22 avg <span class="pos">+2.33%</span> vs Defensive (XLP+XLU+XLV+XLRE) W22 avg <span class="neutral">+0.47%</span> = Cyclical leads <span class="pos">+1.86pp</span>；但 XLF -0.46% + XLE -4.70% = 內部 dispersion 警示
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">🌐 宏觀 / 跨資產 / Options Flow</div>
+  <table>
+    <tr><th>類別</th><th>指標</th><th>數值</th><th>解讀</th></tr>
+    <tr><td rowspan="3">FRED</td><td>FEDFUNDS</td><td>3.64%</td><td>Fed Chair Warsh 上任；下次 FOMC 6/17-18</td></tr>
+    <tr><td>10Y-2Y spread</td><td class="pos">+0.49</td><td>正常；衰退指標 OFF</td></tr>
+    <tr><td>T5YIE (5Y 通脹預期)</td><td class="neg">2.53%</td><td><strong>>2.5% 警戒線</strong>；PCE upside 風險 confirm</td></tr>
+    <tr><td rowspan="2">Regime</td><td>Composite Score</td><td>62.8 / 100</td><td>Active Transition (Repositioning)</td></tr>
+    <tr><td>Yield Curve component</td><td>99/100</td><td>最強訊號；regime 轉變進行中</td></tr>
+    <tr><td rowspan="5">Options P/C 30D</td><td>SPY</td><td>0.93</td><td>中性偏 call-heavy</td></tr>
+    <tr><td>QQQ</td><td>0.83</td><td>call-heavy = PCE downside protection 不足</td></tr>
+    <tr><td>XLK</td><td class="neg bold">6.53</td><td><strong>重度 put 累積 = 科技 hedge 高 leverage</strong></td></tr>
+    <tr><td>XLF</td><td>1.84</td><td>put-heavy 防禦</td></tr>
+    <tr><td>XLU</td><td>0.41</td><td>call-heavy；rotation to defensive</td></tr>
+    <tr><td rowspan="3">FX</td><td>USD/JPY</td><td>159.42</td><td>接近 160 carry-trade 邊緣；PCE hot → JPY breakdown</td></tr>
+    <tr><td>USD/CNY</td><td>6.7821</td><td>CNY 走強；中港 ADR 跌唔係匯率 driven</td></tr>
+    <tr><td>EUR/USD</td><td>1.164 (rev)</td><td>DXY 99.40 持平偏弱</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title">📰 隔夜新聞 timeline</div>
+  <table>
+    <tr><th>事件</th><th>時間</th><th>impact</th></tr>
+    <tr><td>NVDA Q1 FY27 record（$81.6B revenue +85% YoY, $80B buyback）</td><td>5/20 公布；5/27 後市 -1.05%</td><td class="neg">post-blowout 獲利回吐；leadership 不確認</td></tr>
+    <tr><td>Micron Technology +19.3% 突破 $1T 市值</td><td>5/27</td><td class="pos">半導體 narrative 補位；但 momentum 集中</td></tr>
+    <tr><td>Iran-US 新軍事衝突（Reuters / Stocktwits）</td><td>5/27-28 隔夜</td><td class="neg">WTI 隔夜 +2-3%（vs yfinance -1.3% divergence）</td></tr>
+    <tr><td>S&P 5/27 Bull★ 33% 命中 (7,520.36)</td><td>5/27 RTH</td><td class="pos">區間下緣兌現；未破 52w high 7,569.75 收</td></tr>
+    <tr><td>AAPL 觸新 52w 高 $313.26 fade 收 $310.85 (-0.77%)</td><td>5/27</td><td class="neg">突破未守 pattern；breakout failure 邊緣</td></tr>
+    <tr><td>SMH 觸新 52w 高 $612.30 fade 收 $595.50 (-2.74%)</td><td>5/27</td><td class="neg">半導體 ETF 同步 fade</td></tr>
+    <tr><td>META +3.74% leadership reversal</td><td>5/27</td><td class="pos">唯一獨強；MACD 牛叉增強</td></tr>
+    <tr><td>HSI 5/28 收 24,773.91 (-1.97%)</td><td>5/28 港股已收</td><td class="neg">US-HK 結構性脫鈎；中概 ADR pre-open 警示</td></tr>
+  </table>
+</div>
+
+<!-- ============================================== -->
+<!-- Gold divider                                    -->
+<!-- ============================================== -->
+<div class="divider-gold"></div>
+
+<!-- ============================================== -->
+<!-- 下半：投資委員會辯論                              -->
+<!-- ============================================== -->
+
+<div class="section">
+  <div class="section-title">🎯 今日預測（5/28 RTH，PCE 雙峰結構）</div>
+  <table>
+    <tr><th>情景</th><th>概率</th><th>S&P 區間</th><th>PCE 驅動</th></tr>
+    <tr><td><span class="pill pill-bull">Bull++</span></td><td>10%</td><td>7,550+</td><td>PCE Core ≤ +3.10% YoY（dovish surprise）+ 10Y 跌穿 4.40% → melt-up</td></tr>
+    <tr><td><span class="pill pill-bull">Bull</span></td><td>20%</td><td>7,517–7,550</td><td>PCE +3.20-3.30% (in-line) + Claims neutral + META hold $630+</td></tr>
+    <tr><td><span class="pill pill-base">Base ★</span></td><td><strong>30%</strong></td><td><strong>7,470–7,517</strong></td><td>PCE in-line + 突破未守 pattern 延續 + 倉位 cap</td></tr>
+    <tr><td><span class="pill pill-bear">Bear</span></td><td>25%</td><td>7,400–7,470</td><td>PCE Core +3.40-3.60% (mild upside) + 10Y 反彈 > 4.55% + 半導體 fade</td></tr>
+    <tr><td><span class="pill pill-bear">Bear-- ★</span></td><td><strong>15%</strong></td><td>&lt;7,400</td><td><strong>PCE Core ≥ +3.70% YoY (hot stagflation lite)</strong> + VIX > 22 + Iran 油 spike → systemic de-risking</td></tr>
+  </table>
+  <p style="margin-top:10px;color:#cbd5e1;font-size:0.92rem;">
+    <strong>EV：<span class="neg">-0.4% to +0.2%</span></strong>（vs 5/27 盤後 -0.1~+0.4% <span class="neg">下修 -0.3pp</span>；PCE asymmetric tail + 超買 + Iran 三重 caveat）<br>
+    <strong>Tail risk asymmetry</strong>：Bull++ 10% / Bear-- 15% = down-skewed（fat tail 偏左）
+  </p>
+</div>
+
+<div class="section">
+  <div class="section-title">🗳️ 9 角色辯論加權立場（5/28 盤前 pre-PCE）</div>
+  <div class="bar-row">
+    <div class="bar-label">🟢 Long 36%</div>
+    <div class="bar-bg"><div class="bar-fill bar-bull" style="width:36%;">36%</div></div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">🟡 Neutral 36%</div>
+    <div class="bar-bg"><div class="bar-fill bar-base" style="width:36%;">36%</div></div>
+  </div>
+  <div class="bar-row">
+    <div class="bar-label">🔴 Short 28%</div>
+    <div class="bar-bg"><div class="bar-fill bar-bear" style="width:28%;">28%</div></div>
+  </div>
+  <p class="meta" style="margin-top:10px;">
+    vs 5/27 盤後 (Long 44% / Neutral 38% / Short 18%) = <strong>Long -8pp / Short +10pp</strong>（Marks + 宏觀 + Soros 三人翻 Short）= hawkish flip 達成；Taleb Veto upgraded 5.0 → 6.5
+  </p>
+</div>
+
+<div class="section">
+  <div class="section-title">📋 9 位角色立場 (詳)</div>
+  <table>
+    <tr><th>角色</th><th>權重</th><th>立場</th><th>核心觀點</th></tr>
+    <tr class="persona-row"><td>Druckenmiller</td><td>1.3×</td><td><span class="pill pill-bull">Long</span></td><td>10Y PE expansion intact + META 反彈；PCE dovish concept 35%；+5pp QQQ on dovish surprise</td></tr>
+    <tr class="persona-row"><td>Lynch</td><td>1.2×</td><td><span class="pill pill-base">Neutral-Long</span></td><td>三重消費 leadership 但 AAPL RSI 79 太擠；hold 唔加</td></tr>
+    <tr class="persona-row"><td>Soros</td><td>1.1×</td><td><span class="pill pill-bear">Short</span></td><td>reflexivity 翻轉：突破未守 + VIX9D crush + Polymarket bearish = 敘事自我消耗；short SPY straddle</td></tr>
+    <tr class="persona-row"><td>宏觀策略師</td><td>1.0×</td><td><span class="pill pill-bear">Short</span></td><td>T5YIE 2.53% + Warsh hawkish + Iran 油 spike = PCE upside surprise 35-40%；trim QQQ</td></tr>
+    <tr class="persona-row"><td>量化交易員</td><td>1.0×</td><td><span class="pill pill-base">Neutral</span></td><td>SPY RSI 71.2 mean revert Z +1.8 但 momentum +0.5；wait PCE actual</td></tr>
+    <tr class="persona-row"><td>Marks</td><td>0.9×</td><td><span class="pill pill-bear">Short</span></td><td>XLK put-call 6.53 + 超買 + Buffett indicator > 2 = peak warning；defensive</td></tr>
+    <tr class="persona-row"><td>Dalio</td><td>0.9×</td><td><span class="pill pill-base">Neutral</span></td><td>Triple Tailwind valid but Warsh transition + PCE 雙峰 = beta moment；中性</td></tr>
+    <tr class="persona-row"><td>Taleb</td><td>0.8×</td><td><span class="pill pill-bear">Short+Hedge</span></td><td><strong>Veto 6.5/10</strong>；VIX9D 13.27 = 風暴前完美平靜；long SPY put $470 + GLD overweight</td></tr>
+    <tr class="persona-row"><td>WSB</td><td>0.7×</td><td><span class="pill pill-bull">Long-Levered</span></td><td>Micron $1T + AAPL 新 52w high = momentum is destiny；TQQQ 0DTE + NVDA call ladder</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title">⚡ 5 張 Action Cards（PCE 雙峰決策樹）</div>
+  <div class="action-grid">
+    <div class="action-card dovish">
+      <div class="action-title">Card #1 — Dovish Path</div>
+      <div class="action-trigger">Trigger: PCE Core ≤ <strong>3.20%</strong> + Claims < 20.5 萬</div>
+      <div class="action-body">+5pp QQQ + 2pp AAPL（push 倉位 55-56%）<br>Reasoning: 10Y 跌穿 4.40%；TLT 跟升；melt-up</div>
+    </div>
+    <div class="action-card inline">
+      <div class="action-title">Card #2 — In-Line Path</div>
+      <div class="action-trigger">Trigger: PCE Core <strong>3.20-3.30%</strong> + Claims 21-21.5 萬</div>
+      <div class="action-body">維持 48-54%；午盤 META hold $630+ → +0.5pp META<br>Reasoning: consolidation；Bull region 但 RSI 超買 cap</div>
+    </div>
+    <div class="action-card hot">
+      <div class="action-title">Card #3 — Hot Path</div>
+      <div class="action-trigger">Trigger: PCE Core ≥ <strong>3.40%</strong> + 10Y ≥ 4.55%</div>
+      <div class="action-body">-5pp QQQ + 1pp TLT + 2pp GLD（降至 43-49%）<br>Reasoning: 科技壓縮；GLD reflation hedge re-activate</div>
+    </div>
+    <div class="action-card veryhot">
+      <div class="action-title">Card #4 — Very Hot / Systemic</div>
+      <div class="action-trigger">Trigger: PCE Core ≥ <strong>3.70%</strong> + VIX > 20 + Brent > $98</div>
+      <div class="action-body">倉位 ≤ 40% + SPY put $470 + GLD/TLT 重 hedge<br>Reasoning: stagflation lite tail; preserve capital + flip defensive</div>
+    </div>
+    <div class="action-card iran">
+      <div class="action-title">Card #5 — Iran Independent</div>
+      <div class="action-trigger">Trigger: Brent > <strong>$98</strong> + WTI > $95（隔夜或 RTH）</div>
+      <div class="action-body">System Veto 重啟 + TLT +0.5pp + XLE 觀察<br>Reasoning: 油 spillover PCE 上修預期；second-round inflation</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">⚔️ 三大 Disputes</div>
+  <p style="margin:8px 0;"><strong>Dispute 1：PCE 走向</strong> — Druckenmiller (dovish 35%) vs 宏觀 (hot 35%)；裁決 <span class="pill pill-base">50/50 binary</span>，20:30 公布即 collapse</p>
+  <p style="margin:8px 0;"><strong>Dispute 2：突破未守 pattern</strong> — Soros (false breakout 雙確認) vs WSB (single-day fade ≠ trend reversal)；裁決 <span class="pill pill-bear">55/45 Soros</span></p>
+  <p style="margin:8px 0;"><strong>Dispute 3：VIX9D 13.27 信號</strong> — Taleb (calm before storm) vs 量化 (event vol crush base case)；裁決 <span class="pill pill-bear">60/40 Taleb</span>（fat-tail asymmetric payoff）</p>
+</div>
+
+<div class="section">
+  <div class="section-title">📅 今日 ETA Matrix（14 個 trigger）</div>
+  <table>
+    <tr><th>#</th><th>時間 HKT/ET</th><th>Trigger 1</th><th>Trigger 2</th><th>行動</th></tr>
+    <tr><td>1</td><td><strong>20:30/08:30</strong></td><td>PCE Core YoY ≤ 3.20%</td><td>Initial Claims < 20.5 萬</td><td class="pos">+5pp QQQ / +2pp AAPL</td></tr>
+    <tr><td>2</td><td><strong>20:30/08:30</strong></td><td>PCE Core YoY ≥ 3.40%</td><td>10Y ≥ 4.55%</td><td class="neg">-5pp QQQ / +1pp TLT / +2pp GLD</td></tr>
+    <tr><td>3</td><td><strong>20:30/08:30</strong></td><td>PCE Core ≥ 3.70%</td><td>VIX > 20</td><td class="neg bold">倉位 ≤ 40% / SPY put hedge</td></tr>
+    <tr><td>4</td><td>21:30/09:30</td><td>ES 開市 hold 7,510+</td><td>AAPL hold $308+</td><td>維持 48-54%</td></tr>
+    <tr><td>5</td><td>22:00/10:00</td><td>META hold $630+</td><td>再試 $640</td><td class="pos">META +0.5pp</td></tr>
+    <tr><td>6</td><td>22:00/10:00</td><td>META fade < $620</td><td>mean revert</td><td class="neutral">不加倉 + watch</td></tr>
+    <tr><td>7</td><td>5/29 04:00/16:00</td><td>S&P 突破 7,540+ 收盤</td><td>NQ hold 30,000+</td><td class="pos">Bull++ 兌現 → up to 56%</td></tr>
+    <tr><td>8</td><td>5/29 04:00/16:00</td><td>AAPL 突破 $313 收盤</td><td>SMH > $605</td><td class="pos">leadership 確認</td></tr>
+    <tr><td>9</td><td>全 RTH</td><td>NVDA 跌穿 $210</td><td>SMH < $590</td><td class="neg">-2pp SMH/IGV</td></tr>
+    <tr><td>10</td><td>全 RTH</td><td>AAPL 跌穿 $306</td><td>突破未守確認</td><td class="neg">-0.5pp AAPL</td></tr>
+    <tr><td>11</td><td>全 RTH</td><td>Brent > $98 (Iran spike)</td><td>WTI > $95</td><td class="neg">System Veto + TLT +0.5pp</td></tr>
+    <tr><td>12</td><td>全 RTH</td><td>VIX 突破 22</td><td>VIX3M > 24</td><td class="neg bold">倉位 ≤ 40%</td></tr>
+    <tr><td>13</td><td>全 RTH</td><td>KWEB 跌穿 $26.41</td><td>BABA < $125</td><td class="neg">ADR -2pp + HK 警示</td></tr>
+    <tr><td>14</td><td>全 RTH</td><td>DXY > 100</td><td>EUR/USD < 1.155</td><td class="neg">-1pp EM FX</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title">💼 Live Positioning（5/28 開市前）</div>
+  <table>
+    <tr><th>資產</th><th>Entry</th><th>5/27 收</th><th>Paper P&L</th><th>Falsification</th><th>狀態</th></tr>
+    <tr><td class="bold">GLD $15K (15%)</td><td>$245.30</td><td>$408.49</td><td class="pos bold">+66.5% paper</td><td>Fed hawkish + DXY > 106</td><td class="pos">✅ DXY 99.40 距 6.6%；RSI 36.5 中性偏弱</td></tr>
+    <tr><td class="bold">SHY $20K (20%)</td><td>$82.10</td><td>$82.22</td><td class="pos">+0.15%</td><td>10Y < 4.0%</td><td class="neutral">✅ 10Y 4.481% 距 0.481pp 邊緣</td></tr>
+  </table>
+  <p style="margin-top:10px;color:#cbd5e1;font-size:0.9rem;">
+    Total exposure $35K (35%)；Dry powder $65K (65%)；plan_status: hypothetical (paper)；reference: <code>06-Positioning-Plan/current.md</code>
+  </p>
+</div>
+
+<details>
+<summary>📜 完整辯論記錄（3 輪展開）— click to expand</summary>
+<p style="padding:10px 0;">完整 9 角色辯論 transcript 入 <a href="../辯論記錄/2026-05-28 美股盤前辯論記錄.md" style="color:#4ecdc4;">2026-05-28 美股盤前辯論記錄.md</a>。包含 3 個獨立框架（風險鷹派 / 機會獵人 / 框架分析師）開場立場 + 3 輪 disputes（PCE 走向 / 突破未守 / VIX9D 信號）+ 9 角色加權投票表。</p>
+</details>
+
+<div class="alert-info">
+  <strong>🔄 下一份報告</strong>：2026-05-28 美股盤後日報（HKT 5/29 早晨生成；含 PCE actual vs 預期、4 種 path 中實際走 path、Cards 執行情況）
+</div>
+
+<div class="meta" style="margin-top:20px;text-align:center;">
+  <em>Generated by market-analyst skill v2.0 · 9-perspective debate · pre-PCE binary decision tree</em>
+</div>
+
+</div>
+</body>
+</html>

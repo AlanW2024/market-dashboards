@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>2026-05-11 美股盤後 Dashboard</title>
+<style>
+:root{--bg:#0a0a0f;--panel:#13131b;--panel-2:#1a1a24;--gold:#d4af37;--green:#16c784;--red:#ea3943;--text:#e7e7ee;--mut:#888899}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,"PingFang TC","Noto Sans TC",sans-serif;padding:24px}
+h1{color:var(--gold);font-size:24px;margin-bottom:6px}
+h2{color:var(--gold);font-size:18px;margin:20px 0 12px;border-bottom:1px solid #2a2a36;padding-bottom:6px}
+.sub{color:var(--mut);margin-bottom:16px;font-size:12px}
+.banner{background:linear-gradient(90deg,#1a1a24,#252535);border-left:4px solid var(--gold);padding:12px 16px;margin:8px 0;border-radius:4px}
+.banner.alert{border-left-color:var(--red)}
+.banner.good{border-left-color:var(--green)}
+.grid{display:grid;gap:12px}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g6{grid-template-columns:repeat(6,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+.card{background:var(--panel);border:1px solid #252535;border-radius:6px;padding:14px}
+.metric .label{color:var(--mut);font-size:11px;letter-spacing:.5px;text-transform:uppercase}
+.metric .value{font-size:22px;font-weight:600;margin-top:4px}
+.metric .delta{font-size:13px;margin-top:2px}
+.up{color:var(--green)}.down{color:var(--red)}.flat{color:var(--mut)}
+table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:6px;overflow:hidden}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid #252535;font-size:13px}
+th{background:var(--panel-2);color:var(--gold);font-weight:600}
+tr:last-child td{border-bottom:none}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.tag.bull{background:rgba(22,199,132,.18);color:var(--green)}
+.tag.bear{background:rgba(234,57,67,.18);color:var(--red)}
+.tag.warn{background:rgba(212,175,55,.18);color:var(--gold)}
+.tag.neutral{background:rgba(136,136,153,.15);color:var(--mut)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:30px 0}
+.hero{background:linear-gradient(135deg,var(--panel),var(--panel-2));border:1px solid #252535;border-radius:8px;padding:18px}
+.hero .label{color:var(--mut);font-size:12px}
+.hero .value{font-size:28px;font-weight:700;margin-top:4px}
+.note{color:var(--mut);font-size:12px;margin-top:6px}
+ul.bullet li{padding-left:14px;position:relative;margin:4px 0;color:#c8c8d4}
+ul.bullet li:before{content:"▸";color:var(--gold);position:absolute;left:0}
+.scenario-row{display:grid;grid-template-columns:120px 55px 1fr 90px;gap:12px;padding:7px 0;border-bottom:1px solid #252535;align-items:center;font-size:13px}
+.scenario-row:last-child{border-bottom:none}
+.bar{height:7px;background:#252535;border-radius:4px;overflow:hidden}
+.bar>span{display:block;height:100%;border-radius:4px}
+.bar .bar-bull{background:linear-gradient(90deg,var(--green),#4ade80)}
+.bar .bar-base{background:linear-gradient(90deg,var(--gold),#f0c850)}
+.bar .bar-bear{background:linear-gradient(90deg,var(--red),#f87171)}
+.vote-card{background:var(--panel);border:1px solid #252535;border-radius:6px;padding:12px 14px}
+.vote-card .name{font-weight:600;font-size:13px;margin-bottom:4px}
+.vote-card .stance{font-size:12px;color:var(--mut)}
+.vote-card .conf{font-size:11px;margin-top:4px;color:var(--mut)}
+.timeline-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #1e1e2a}
+.timeline-item:last-child{border-bottom:none}
+.tl-tag{flex-shrink:0;width:50px;text-align:center}
+.tl-body{flex:1;font-size:13px;color:#c8c8d4}
+.tl-source{font-size:11px;color:var(--mut);margin-top:2px}
+.scorecard-row{display:grid;grid-template-columns:160px 100px 100px 60px;gap:8px;padding:7px 0;border-bottom:1px solid #252535;font-size:13px;align-items:center}
+.scorecard-row:last-child{border-bottom:none}
+.check{color:var(--green)}.cross{color:var(--red)}.half{color:var(--gold)}
+</style>
+</head>
+<body>
+<h1>2026-05-11 美股盤後日報 Dashboard</h1>
+<div class="sub">Monday Post-Market · Quick Mode · Public Mode（無持倉）· Regime: Late-Cycle Broadening 62.6/100 · Risk Veto RELEASED 3/4</div>
+
+<div class="banner good">📈 <strong>S&P 500 盤中創歷史新高 7,412.84 · 收市 +0.21%</strong> — Base 場景實現（最高概率 32% 正確），能源 XLE +2.77% 帶動，通訊 XLC -1.16% 拖後</div>
+<div class="banner alert">🛢️ <strong>WTI +2.78% 至 $98.07 · Hormuz 仍封閉</strong> — Trump 拒絕伊朗回應，Saudi Aramco 警告每週損失 1 億桶供應，滯脹壓力延長</div>
+<div class="banner alert">📊 <strong>明日 CPI 5/12 20:30 HKT 關鍵</strong> — Headline +3.7% YoY（能源驅動）/ Core +2.7% YoY（Kiplinger / BofA/Investing forecast；BLS 為發布時間與官方數據來源）· 勿使用 Gemini summary 作 anchor</div>
+<div class="banner">🏦 <strong>Kevin Warsh 本週確認接任 Fed 主席（Powell 5/15 離任）</strong> — 鷹派傾向 · 減息路徑或後退至 2027 年初</div>
+
+<!-- ======= UPPER: MARKET DATA ======= -->
+
+<h2>Hero Metrics（5/11 收市）</h2>
+<div class="grid g4">
+  <div class="hero">
+    <div class="label">S&amp;P 500</div>
+    <div class="value">7,412.84 <span class="up">+0.21%</span></div>
+    <div class="note">盤中歷史新高 · Base 場景 ✅</div>
+  </div>
+  <div class="hero">
+    <div class="label">SOXX 半導體</div>
+    <div class="value"><span class="up">+2.39%</span></div>
+    <div class="note">5 日累漲 +15.30% · 動能強勁</div>
+  </div>
+  <div class="hero">
+    <div class="label">XLE 能源 🏆</div>
+    <div class="value"><span class="up">+2.77%</span></div>
+    <div class="note">WTI +2.78%，Hormuz 直接受益</div>
+  </div>
+  <div class="hero">
+    <div class="label">XLC 通訊 🔻</div>
+    <div class="value"><span class="down">-1.16%</span></div>
+    <div class="note">最弱板塊 · 消費信心承壓</div>
+  </div>
+</div>
+
+<h2>風險指標</h2>
+<div class="grid g4">
+  <div class="card metric">
+    <div class="label">VIX 恐慌指數</div>
+    <div class="value down">18.38</div>
+    <div class="delta down">+1.20 · 低於 19 警戒</div>
+  </div>
+  <div class="card metric">
+    <div class="label">10Y 孳息率</div>
+    <div class="value down">4.41%</div>
+    <div class="delta down">+0.02% · 守住 4.45% 紅線 ✅</div>
+  </div>
+  <div class="card metric">
+    <div class="label">WTI 原油</div>
+    <div class="value down">$98.07</div>
+    <div class="delta down">+2.78% · Hormuz 繼續封閉</div>
+  </div>
+  <div class="card metric">
+    <div class="label">黃金</div>
+    <div class="value up">$4,763.8</div>
+    <div class="delta up">+1.64% · 滯脹對沖需求</div>
+  </div>
+</div>
+
+<h2>信用 / Breadth / 通脹</h2>
+<div class="grid g3">
+  <div class="card">
+    <div class="label" style="color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.5px">市場寬度 Composite</div>
+    <div style="font-size:28px;font-weight:700;color:var(--gold);margin-top:6px">33.1<span style="font-size:14px">/100</span></div>
+    <div style="color:var(--mut);font-size:12px;margin-top:4px">Weakening · bearish divergence 持續 · 倉位上限 40-60%</div>
+  </div>
+  <div class="card">
+    <div class="label" style="color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.5px">5Y TIPS Breakeven</div>
+    <div style="font-size:28px;font-weight:700;color:var(--red);margin-top:6px">2.67%</div>
+    <div style="color:var(--mut);font-size:12px;margin-top:4px">⚠️ 突破 2.5% 警戒線 · 近期通脹壓力超過長期</div>
+  </div>
+  <div class="card">
+    <div class="label" style="color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.5px">QQQ P/C Ratio</div>
+    <div style="font-size:28px;font-weight:700;color:var(--red);margin-top:6px">2.96</div>
+    <div style="color:var(--mut);font-size:12px;margin-top:4px">大量 June $710/$715 Puts · left tail 正在定價</div>
+  </div>
+</div>
+
+<h2>板塊熱力圖</h2>
+<table>
+  <thead><tr><th>排名</th><th>板塊</th><th>ETF</th><th>表現</th><th>信號</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>能源</td><td>XLE</td><td class="up">+2.77%</td><td><span class="tag bull">偏多</span></td></tr>
+    <tr><td>2</td><td>原材料</td><td>XLB</td><td class="up">+1.18%</td><td><span class="tag bull">偏多</span></td></tr>
+    <tr><td>3</td><td>科技</td><td>XLK</td><td class="up">+1.17%</td><td><span class="tag bull">偏多</span></td></tr>
+    <tr><td>4</td><td>工業</td><td>XLI</td><td class="up">+0.95%</td><td><span class="tag bull">偏多</span></td></tr>
+    <tr><td>5</td><td>公用事業</td><td>XLU</td><td class="up">+0.53%</td><td><span class="tag neutral">中性</span></td></tr>
+    <tr><td>6</td><td>房地產</td><td>XLRE</td><td class="up">+0.09%</td><td><span class="tag neutral">中性</span></td></tr>
+    <tr><td>7</td><td>金融</td><td>XLF</td><td class="down">-0.12%</td><td><span class="tag neutral">中性</span></td></tr>
+    <tr><td>8</td><td>醫療</td><td>XLV</td><td class="down">-0.51%</td><td><span class="tag bear">偏空</span></td></tr>
+    <tr><td>9</td><td>非必需消費</td><td>XLY</td><td class="down">-0.52%</td><td><span class="tag bear">偏空</span></td></tr>
+    <tr><td>10</td><td>必需消費</td><td>XLP</td><td class="down">-0.99%</td><td><span class="tag bear">偏空</span></td></tr>
+    <tr><td>11</td><td>通訊</td><td>XLC</td><td class="down">-1.16%</td><td><span class="tag bear">偏空</span></td></tr>
+  </tbody>
+</table>
+
+<h2>重大新聞 Timeline</h2>
+<div class="card">
+  <div class="timeline-item">
+    <div class="tl-tag"><span class="tag bull">偏多</span></div>
+    <div class="tl-body">
+      <strong>S&P 500 / Russell 2000 盤中同創歷史新高</strong><br>
+      S&P 500 升至 7,412.84，收盤微升 +0.21%（Base 場景 ✅），Russell 2000 亦創新高。
+      <div class="tl-source">來源：TheStreet · CNBC</div>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-tag"><span class="tag bull">偏多</span></div>
+    <div class="tl-body">
+      <strong>SOXX 5 日 +15.30% · XLK P/C 從 2.3 壓縮至 0.23</strong><br>
+      機構連 3 日大規模移除科技對沖；AI CapEx 2026 年預計 $7,510 億（+32% YoY）繼續推動半導體需求。
+      <div class="tl-source">來源：yfinance options chain · Forbes</div>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-tag"><span class="tag bear">偏空</span></div>
+    <div class="tl-body">
+      <strong>WTI +2.78% 至 $98.07 · Hormuz 封閉無解封跡象</strong><br>
+      Trump 拒絕伊朗回應，Saudi Aramco 警告每週損失 1 億桶供應，滯脹壓力延長至 H2 2026。
+      <div class="tl-source">來源：CNBC Oil Price · EuroNews</div>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-tag"><span class="tag bear">偏空</span></div>
+    <div class="tl-body">
+      <strong>CPI 5/12 Headline 預期 +3.7% YoY（能源驅動）</strong><br>
+      Kiplinger 與 BofA/Investing forecast 指向 Core +2.7% YoY（in-line）及 Headline +3.7%；BLS 為發布時間與官方數據來源。兩個數字市場將如何解讀是明日關鍵。
+      <div class="tl-source">來源：Kiplinger CPI Preview · BLS</div>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-tag"><span class="tag bear">偏空</span></div>
+    <div class="tl-body">
+      <strong>Kevin Warsh 本週確認接任 Fed 主席 · Powell 5/15 離任</strong><br>
+      Warsh 被視為更鷹派，若以 Headline 3.7% 定調政策，減息路徑或後退至 2027 年，高估值科技股承壓。
+      <div class="tl-source">來源：Investing.com · Reuters</div>
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="tl-tag"><span class="tag neutral">中性</span></div>
+    <div class="tl-body">
+      <strong>黃金 +1.64% 至 $4,763 · 股金同升 = 滯脹對沖訊號</strong><br>
+      股票與黃金同步上升通常反映市場對滯脹的對沖需求，而非純粹 risk-on；5Y TIPS Breakeven 2.67% 印證。
+      <div class="tl-source">來源：yfinance</div>
+    </div>
+  </div>
+</div>
+
+<!-- ======= PREDICTION SCORECARD ======= -->
+
+<h2>預測記分卡（對比盤前 Section 6）</h2>
+<div class="card">
+  <div class="scorecard-row" style="font-weight:600;color:var(--gold);font-size:12px">
+    <div>觀察點</div><div>盤前預測</div><div>實際結果</div><div>評分</div>
+  </div>
+  <div class="scorecard-row">
+    <div>大市場景</div>
+    <div style="color:var(--mut)">Base 32%（最高）</div>
+    <div>+0.21% ✅ Base</div>
+    <div class="check">✅</div>
+  </div>
+  <div class="scorecard-row">
+    <div>SPY 735 守住</div>
+    <div style="color:var(--mut)">守住支撐</div>
+    <div>SPY 739.3 ✅</div>
+    <div class="check">✅</div>
+  </div>
+  <div class="scorecard-row">
+    <div>SOXX retracement</div>
+    <div style="color:var(--mut)">警惕過熱回撤</div>
+    <div>SOXX +2.39%（無回撤）</div>
+    <div class="half">🟡</div>
+  </div>
+  <div class="scorecard-row">
+    <div>VIX &lt; 19</div>
+    <div style="color:var(--mut)">低於 19 = 受控</div>
+    <div>18.38 ✅</div>
+    <div class="check">✅</div>
+  </div>
+  <div class="scorecard-row">
+    <div>XLE 帶動輪動</div>
+    <div style="color:var(--mut)">XLE 油價帶動</div>
+    <div>XLE +2.77% 板塊第一</div>
+    <div class="check">✅</div>
+  </div>
+  <div class="scorecard-row">
+    <div>10Y &lt; 4.45%</div>
+    <div style="color:var(--mut)">守住紅線</div>
+    <div>4.41% ✅</div>
+    <div class="check">✅</div>
+  </div>
+  <div style="padding:10px 0 4px;border-top:1px solid #252535;margin-top:4px">
+    <strong>Prediction Score: 4.5/5（90%）</strong>
+    <span style="color:var(--mut);font-size:12px;margin-left:8px">SOXX 預測「回撤」但實際繼續漲，為唯一方向偏差</span>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ======= LOWER: DEBATE + ACTION ======= -->
+
+<h2>投資委員會 — 投票結果</h2>
+
+<div class="grid g3" style="margin-bottom:16px">
+  <div class="card" style="text-align:center">
+    <div style="font-size:32px;font-weight:700;color:var(--red)">Short</div>
+    <div style="color:var(--mut);font-size:13px">加權 27.0 pts · 4 票</div>
+    <div style="color:var(--mut);font-size:11px;margin-top:4px">Marks / Taleb / Dalio / 宏觀策略師</div>
+  </div>
+  <div class="card" style="text-align:center">
+    <div style="font-size:32px;font-weight:700;color:var(--mut)">Hold</div>
+    <div style="color:var(--mut);font-size:13px">加權 17.7 pts · 3 票</div>
+    <div style="color:var(--mut);font-size:11px;margin-top:4px">量化 / Soros / Lynch</div>
+  </div>
+  <div class="card" style="text-align:center">
+    <div style="font-size:32px;font-weight:700;color:var(--green)">Long</div>
+    <div style="color:var(--mut);font-size:13px">加權 18.1 pts · 2 票</div>
+    <div style="color:var(--mut);font-size:11px;margin-top:4px">Druckenmiller / WSB</div>
+  </div>
+</div>
+
+<div style="background:var(--panel);border:1px solid #252535;border-radius:6px;padding:12px 16px;margin-bottom:16px">
+  <div style="color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.5px">結論</div>
+  <div style="font-size:16px;font-weight:600;margin-top:4px">Short 偏向（差 8.9）· 信心 6/10</div>
+  <div style="color:var(--mut);font-size:12px;margin-top:4px">較盤前（差 8.7）持平，Long 陣營因機構 unwind hedge 數據增強信心</div>
+  <div style="margin-top:8px;padding-top:8px;border-top:1px solid #2a2a36">
+    <span style="color:var(--red);font-size:12px;font-weight:600">⚠️ Taleb raw 8/10 — personal veto pattern 仍有效</span>
+    <span style="color:var(--mut);font-size:12px;margin-left:8px">倉位上限收緊至 60%（非 75%），維持 SPY put 對沖</span>
+  </div>
+</div>
+
+<h2>各方立場</h2>
+<div class="grid g3">
+  <div class="vote-card" style="border-left:3px solid var(--red)">
+    <div class="name">Marks（價值）</div>
+    <div class="stance">Short · 信心 7/10 → 加權 6.3</div>
+    <div style="font-size:12px;color:#c8c8d4;margin-top:6px">寬度 33.1 bearish divergence；margin of safety 為零；CPI Headline 3.7% 能源推升估值壓力。</div>
+  </div>
+  <div class="vote-card" style="border-left:3px solid var(--red)">
+    <div class="name">Taleb（黑天鵝）</div>
+    <div class="stance">Short · 信心 8/10 → 加權 6.4</div>
+    <div style="font-size:12px;color:#c8c8d4;margin-top:6px">QQQ P/C 2.96；June $710/$715 Puts 大量建倉；Warsh + Hormuz + 5Y TIPS 2.67% 三重 left tail。</div>
+  </div>
+  <div class="vote-card" style="border-left:3px solid var(--mut)">
+    <div class="name">量化交易員</div>
+    <div class="stance">Hold · 信心 5/10 → 加權 5.0</div>
+    <div style="font-size:12px;color:#c8c8d4;margin-top:6px">SOXX 動能 vs breadth 33.1 矛盾；CPI 前模型不輸出方向性倉位。</div>
+  </div>
+  <div class="vote-card" style="border-left:3px solid var(--green)">
+    <div class="name">Druckenmiller（非對稱）</div>
+    <div class="stance">Long · 信心 7/10 → 加權 9.1</div>
+    <div style="font-size:12px;color:#c8c8d4;margin-top:6px">XLK P/C 2.3→0.23 機構 unwind；SOXX 5 日 +15.30% 動能確鑿；Core 2.7% in-line 即突破。</div>
+  </div>
+  <div class="vote-card" style="border-left:3px solid var(--mut)">
+    <div class="name">Soros（反身性）</div>
+    <div class="stance">Hold · 信心 5/10 → 加權 5.5</div>
+    <div style="font-size:12px;color:#c8c8d4;margin-top:6px">Unwind 速度過快；breadth 背離裂縫；Headline 3.7% + Warsh 若逆轉敘事，速度同樣劇烈。</div>
+  </div>
+  <div class="vote-card" style="border-left:3px solid var(--green)">
+    <div class="name">WSB（散戶）</div>
+    <div class="stance">Long · 信心 9/10 → 加權 9.0</div>
+    <div style="font-size:12px;color:#c8c8d4;margin-top:6px">機構全移除對沖（XLK P/C 0.23）；Reddit SOXL 話題爆量；S&P 盤中歷史新高空頭已榨乾。</div>
+  </div>
+  <div class="vote-card" style="border-left:3px solid var(--red)">
+    <div class="name">Dalio（周期）</div>
+    <div class="stance">Short · 信心 7/10 → 加權 6.3</div>
+    <div style="font-size:12px;color:#c8c8d4;margin-top:6px">四象限滑入低增長+高通脹；5Y TIPS 2.67%；11 板塊 7 個下行趨勢；Late-Cycle 轉換概率 70-90%。</div>
+  </div>
+  <div class="vote-card" style="border-left:3px solid var(--mut)">
+    <div class="name">Lynch（常識）</div>
+    <div class="stance">Hold · 信心 6/10 → 加權 7.2</div>
+    <div style="font-size:12px;color:#c8c8d4;margin-top:6px">Core 2.7% 消費尚未崩壞；但 XLC -1.16% 金絲雀有雜音；等 Walmart 5/14、HD 5/15 確認。</div>
+  </div>
+  <div class="vote-card" style="border-left:3px solid var(--red)">
+    <div class="name">宏觀策略師</div>
+    <div class="stance">Short · 信心 8/10 → 加權 8.0</div>
+    <div style="font-size:12px;color:#c8c8d4;margin-top:6px">Warsh 以 Headline 3.7% 建鷹派公信力；10Y 若破 4.5% 指數真正受壓；今日 +0.21% 係假象。</div>
+  </div>
+</div>
+
+<!-- ======= TOMORROW SCENARIO ======= -->
+
+<h2>明日預測 Distribution — CPI 5/12 20:30 HKT</h2>
+<div class="card">
+  <div style="margin-bottom:10px;font-size:12px;color:var(--mut)">
+    CPI Anchor：Core +2.7% YoY、Headline +3.7% YoY（能源驅動）；forecast 來源為 Kiplinger/BofA/Investing，BLS 為發布時間與官方數據來源 · EV = <span style="color:var(--red)">-0.11%</span>（輕微負期望值）
+  </div>
+  <div class="scenario-row"><div><strong>Bull++</strong></div><div style="color:var(--green)">10%</div><div class="bar"><span class="bar-bull" style="width:10%"></span></div><div style="color:var(--mut);font-size:12px">Core &lt;2.6%</div></div>
+  <div class="scenario-row"><div><strong>Bull</strong></div><div style="color:var(--green)">20%</div><div class="bar"><span class="bar-bull" style="width:20%"></span></div><div style="color:var(--mut);font-size:12px">Core 2.6-2.7%，Warsh 中性</div></div>
+  <div class="scenario-row"><div><strong>Base</strong></div><div style="color:var(--gold)">30%</div><div class="bar"><span class="bar-base" style="width:30%"></span></div><div style="color:var(--mut);font-size:12px">Core in-line，Headline 噪音</div></div>
+  <div class="scenario-row"><div><strong>Bear</strong></div><div style="color:var(--red)">25%</div><div class="bar"><span class="bar-bear" style="width:25%"></span></div><div style="color:var(--mut);font-size:12px">Core 2.7-2.8%+Warsh 鷹</div></div>
+  <div class="scenario-row"><div><strong>Bear--</strong></div><div style="color:var(--red)">15%</div><div class="bar"><span class="bar-bear" style="width:15%"></span></div><div style="color:var(--mut);font-size:12px">Core &gt;2.8%+10Y 破 4.5%</div></div>
+</div>
+
+<!-- ======= ACTION CARD ======= -->
+
+<h2>Action Card</h2>
+<div class="grid g2">
+  <div class="card">
+    <div style="font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">應該做</div>
+    <ul class="bullet">
+      <li>CPI 前維持 ≤60% 倉位上限，不追高</li>
+      <li>SPY 5/16 735 put 對沖維持 2-3%</li>
+      <li>Core ≤2.7% → CPI 後可試多 SOXX 1-2%，止損 SOXX 5 日均線</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div style="font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">應該避</div>
+    <ul class="bullet">
+      <li>CPI 前新增任何 net long 倉位</li>
+      <li>裸無對沖追 SOXX 0DTE call</li>
+      <li>breadth 33.1 環境下追漲通訊 / 消費板塊</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" style="margin-top:12px">
+  <table>
+    <thead><tr><th>觸發條件</th><th>操作</th><th>止損</th></tr></thead>
+    <tbody>
+      <tr><td>Core CPI ≤2.7%（in-line / cool）</td><td>20:40 HKT 後 SOXX 試多 1-2%</td><td>SOXX 5 日均線跌破</td></tr>
+      <tr><td>Core CPI &gt;2.8%（hot）</td><td>倉位降至 40%，SPY put 持有</td><td>10Y 監測 4.5%</td></tr>
+      <tr><td>SPY 跌穿 735</td><td>全面減至防守倉位</td><td>—</td></tr>
+      <tr><td>XLC / XLP 繼續下滑</td><td>勿補消費板塊；等 Walmart 5/14 確認</td><td>—</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>本週催化劑日曆</h2>
+<table>
+  <thead><tr><th>日期</th><th>事件</th><th>HKT 時間</th><th>重要性</th></tr></thead>
+  <tbody>
+    <tr><td>5/12（明日）</td><td>CPI April — Core +2.7% / Headline +3.7% 預期</td><td><strong>20:30 HKT</strong>（8:30 EDT）</td><td>⭐⭐⭐</td></tr>
+    <tr><td>5/13</td><td>PPI April</td><td>20:30 HKT（8:30 EDT）</td><td>⭐⭐</td></tr>
+    <tr><td>5/14</td><td>Walmart Earnings（消費 canary）</td><td>盤前（~09:00 HKT）</td><td>⭐⭐</td></tr>
+    <tr><td>5/15</td><td>Home Depot Earnings</td><td>盤前</td><td>⭐⭐</td></tr>
+    <tr><td>5/15</td><td>Existing Home Sales</td><td><strong>22:00 HKT</strong>（10:00 EDT）</td><td>⭐</td></tr>
+    <tr><td>5/15</td><td>Powell 離任 → Warsh 接任 Fed 主席</td><td>—</td><td>⭐⭐⭐</td></tr>
+  </tbody>
+</table>
+
+<div style="margin-top:30px;padding-top:16px;border-top:1px solid #252535;color:var(--mut);font-size:11px">
+  Sources: TheStreet · CNBC · Kiplinger · BLS · yfinance · TraderMonty · Investing.com<br>
+  Generated: 2026-05-12 · Quick Mode · Public Mode
+</div>
+
+</body>
+</html>

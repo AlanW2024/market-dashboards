@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股盤後 2026-05-14</title>
+<style>
+  :root {
+    --bg: #0d0f14;
+    --card: #161a24;
+    --border: #2a2e3e;
+    --gold: #c9a84c;
+    --green: #26a65b;
+    --red: #e74c3c;
+    --yellow: #f39c12;
+    --blue: #3498db;
+    --text: #e8eaf0;
+    --muted: #7f8899;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'SF Pro Display', -apple-system, sans-serif; padding: 24px; }
+  .header { text-align: center; margin-bottom: 32px; }
+  .header h1 { font-size: 26px; font-weight: 700; color: var(--gold); letter-spacing: 1px; }
+  .header .sub { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 20px 0; }
+  .change-banner { background: rgba(243,156,18,0.1); border: 1px solid rgba(243,156,18,0.4); border-radius: 8px; padding: 12px 16px; text-align: center; font-size: 13px; margin-bottom: 24px; }
+  .badge-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 24px; flex-wrap: wrap; }
+  .badge { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-warn { background: rgba(243,156,18,0.2); color: #f39c12; border: 1px solid rgba(243,156,18,0.4); }
+  .badge-green { background: rgba(38,166,91,0.2); color: #26a65b; border: 1px solid rgba(38,166,91,0.4); }
+  .badge-red { background: rgba(231,76,60,0.2); color: #e74c3c; border: 1px solid rgba(231,76,60,0.4); }
+  .badge-info { background: rgba(52,152,219,0.2); color: #3498db; border: 1px solid rgba(52,152,219,0.4); }
+  .hero-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+  @media(max-width:768px){ .hero-grid { grid-template-columns: repeat(2,1fr); } }
+  .hero-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px 16px; text-align: center; }
+  .hero-card .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .hero-card .value { font-size: 24px; font-weight: 700; }
+  .hero-card .change { font-size: 13px; margin-top: 4px; }
+  .hero-card .note { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .up { color: var(--green); }
+  .down { color: var(--red); }
+  .warn { color: var(--yellow); }
+  .neutral { color: var(--muted); }
+  .section-title { font-size: 14px; font-weight: 600; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 28px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+  td { padding: 9px 10px; border-bottom: 1px solid rgba(42,46,62,0.5); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .vote-bar-wrap { margin: 16px 0; }
+  .vote-label-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .vote-bar { display: flex; height: 20px; border-radius: 10px; overflow: hidden; }
+  .vote-long { background: var(--green); }
+  .vote-neutral { background: #4a5568; }
+  .vote-short { background: var(--red); }
+  .vote-legend { display: flex; gap: 20px; margin-top: 10px; font-size: 12px; flex-wrap: wrap; }
+  .vote-legend span { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .veto-box { background: rgba(243,156,18,0.08); border: 1px solid rgba(243,156,18,0.3); border-radius: 8px; padding: 14px 16px; margin-bottom: 28px; }
+  .veto-title { color: var(--yellow); font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .veto-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; font-size: 12px; }
+  @media(max-width:600px){ .veto-grid { grid-template-columns: repeat(2,1fr); } }
+  .veto-item { background: rgba(0,0,0,0.2); border-radius: 6px; padding: 8px 10px; }
+  .veto-item .vi-label { color: var(--muted); font-size: 10px; }
+  .veto-item .vi-val { font-weight: 700; margin-top: 2px; }
+  .scenario-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; margin-bottom: 28px; }
+  @media(max-width:768px){ .scenario-grid { grid-template-columns: repeat(2,1fr); } }
+  .sc-card { border-radius: 8px; padding: 12px; text-align: center; }
+  .sc-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .sc-prob { font-size: 22px; font-weight: 800; margin: 6px 0; }
+  .sc-range { font-size: 11px; }
+  .sc-desc { font-size: 10px; margin-top: 4px; color: rgba(255,255,255,0.6); }
+  .sc-bullpp { background: rgba(38,166,91,0.25); border: 1px solid rgba(38,166,91,0.5); }
+  .sc-bull { background: rgba(38,166,91,0.15); border: 1px solid rgba(38,166,91,0.3); }
+  .sc-base { background: rgba(74,85,104,0.25); border: 1px solid rgba(74,85,104,0.5); }
+  .sc-bear { background: rgba(231,76,60,0.15); border: 1px solid rgba(231,76,60,0.3); }
+  .sc-bearpp { background: rgba(231,76,60,0.25); border: 1px solid rgba(231,76,60,0.5); }
+  .catalyst-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 28px; }
+  @media(max-width:768px){ .catalyst-grid { grid-template-columns: 1fr; } }
+  .cat-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .cat-title { font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+  .cat-row { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; border-bottom: 1px solid rgba(42,46,62,0.4); }
+  .cat-row:last-child { border-bottom: none; }
+  .cat-key { color: var(--muted); }
+  .miss { color: var(--red); }
+  .beat { color: var(--green); }
+  .footer { text-align: center; font-size: 11px; color: var(--muted); margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🇺🇸 美股盤後 Dashboard</h1>
+  <div class="sub">2026-05-14 · Transition Zone 57.5/100 · 辯論制日報</div>
+</div>
+
+<div class="change-banner">
+  🔴 <strong>三大新高 + Dow 重上 50,000</strong>，但 <strong>廣度警告抬頭</strong>（majority of stocks lower）；倉位上限維持 <strong>≤75%</strong>，建議實際向 60% 區間靠
+</div>
+
+<div class="badge-row">
+  <span class="badge badge-green">S&amp;P 連 2 日新高</span>
+  <span class="badge badge-green">Dow 首破 50,000</span>
+  <span class="badge badge-green">NVDA / Cisco / Cerebras AI rally</span>
+  <span class="badge badge-warn">廣度走弱（警示，未觸發 Veto）</span>
+  <span class="badge badge-warn">BABA −3.55% 高位回吐</span>
+  <span class="badge badge-info">Trump-Xi Beijing summit 開</span>
+</div>
+
+<div class="divider"></div>
+
+<!-- Hero Cards -->
+<div class="hero-grid">
+  <div class="hero-card">
+    <div class="label">S&amp;P 500</div>
+    <div class="value up">7,501.24</div>
+    <div class="change up">+0.80% 🔴 連 2 日新高</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">Nasdaq</div>
+    <div class="value up">26,635.22</div>
+    <div class="change up">+0.88% 🔴 新高</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">Dow Jones</div>
+    <div class="value up">50,063.46</div>
+    <div class="change up">+0.74% 🔴 首破 50K</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">VIX</div>
+    <div class="value warn">~17 區間</div>
+    <div class="change warn">⚠️ 假平靜延續</div>
+  </div>
+</div>
+
+<div class="hero-grid">
+  <div class="hero-card">
+    <div class="label">Cisco (CSCO)</div>
+    <div class="value up">+13.4%</div>
+    <div class="change up">AH +15% 落地</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">NVDA</div>
+    <div class="value up">+4.4%</div>
+    <div class="change up">月內 +15% / H200 中國</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">Cerebras IPO</div>
+    <div class="value up">+99%</div>
+    <div class="change up">$185 → ~$350</div>
+  </div>
+  <div class="hero-card">
+    <div class="label">BABA ADR</div>
+    <div class="value down">$140.63</div>
+    <div class="change down">−3.55% 高位回吐</div>
+    <div class="note">5/13 +8% 後</div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- Catalysts -->
+<div class="section-title">今日重大事件</div>
+<div class="catalyst-grid">
+  <div class="cat-card" style="border-color: rgba(52,152,219,0.4)">
+    <div class="cat-title" style="color:var(--blue)">🌐 Trump-Xi Beijing Summit</div>
+    <div class="cat-row"><span class="cat-key">框架共識</span><span>strategic stability 三年+</span></div>
+    <div class="cat-row"><span class="cat-key">商界隨行</span><span class="beat">Musk + Huang + Boeing</span></div>
+    <div class="cat-row"><span class="cat-key">潛在大單</span><span class="beat">Boeing / 大豆 / 牛肉</span></div>
+    <div class="cat-row"><span class="cat-key">Taiwan tail risk</span><span class="miss">「will have clashes」</span></div>
+  </div>
+  <div class="cat-card" style="border-color: rgba(38,166,91,0.4)">
+    <div class="cat-title up">🟢 AI Rally Extended</div>
+    <div class="cat-row"><span class="cat-key">Cisco</span><span class="beat">+13.4%（AI 基建）</span></div>
+    <div class="cat-row"><span class="cat-key">NVDA</span><span class="beat">+4.4%（H200 中國）</span></div>
+    <div class="cat-row"><span class="cat-key">Cerebras IPO</span><span class="beat">+99% 首日</span></div>
+    <div class="cat-row"><span class="cat-key">關鍵</span><span class="beat">三引擎驗證 AI 主題</span></div>
+  </div>
+  <div class="cat-card" style="border-color: rgba(243,156,18,0.4)">
+    <div class="cat-title warn">📊 經濟數據 in-line</div>
+    <div class="cat-row"><span class="cat-key">Retail Sales MoM</span><span class="warn">+0.5% (預期 +0.6%)</span></div>
+    <div class="cat-row"><span class="cat-key">Core MoM</span><span class="beat">+0.7% in-line</span></div>
+    <div class="cat-row"><span class="cat-key">Initial Claims</span><span class="warn">211K (預期 205K)</span></div>
+    <div class="cat-row"><span class="cat-key">Continuing Claims</span><span class="beat">1,782K (預期 1,790K)</span></div>
+  </div>
+</div>
+
+<!-- Section 3: Prediction Audit -->
+<div class="card">
+  <div class="section-title">前日預測對比（5/14 美股盤前 Section 6）</div>
+  <table>
+    <thead><tr><th>情景</th><th>昨日概率</th><th>S&amp;P 範圍</th><th>實際 7,501.24</th></tr></thead>
+    <tbody>
+      <tr><td>Bull++</td><td>10%</td><td>7,520+</td><td class="warn">未達</td></tr>
+      <tr><td><strong>Bull</strong></td><td>30%</td><td>7,480–7,520</td><td class="up"><strong>✅ 命中</strong></td></tr>
+      <tr><td>Base</td><td>35%</td><td>7,440–7,480</td><td>跨越上沿</td></tr>
+      <tr><td>Bear</td><td>18%</td><td>7,400–7,440</td><td>未觸發</td></tr>
+      <tr><td>Bear--</td><td>7%</td><td>&lt;7,400</td><td>未觸發</td></tr>
+    </tbody>
+  </table>
+  <div style="font-size:11px;color:var(--muted);margin-top:8px;">
+    ✅ Bull 情景命中（次高概率）｜ ✅ Cisco 餘波延續 ｜ ✅ Claims 無惡化 ｜ ✅ Taleb Veto 解除判斷被驗證 ｜ ❌ BABA follow-through 失敗（−3.55%）｜ ⚠️ 廣度警示（observation only，精確 breadth 數字來源不足，未正式計入 Veto）
+  </div>
+</div>
+
+<!-- Vote Section -->
+<div class="card">
+  <div class="section-title">辯論加權結果（9 位角色）</div>
+  <div class="vote-bar-wrap">
+    <div class="vote-label-row">
+      <span class="up">多方 49% (↓10pp vs 盤前)</span>
+      <span style="color:#4a5568">中性 24% (↓2pp)</span>
+      <span class="down">空/避險 27% (↑12pp)</span>
+    </div>
+    <div class="vote-bar">
+      <div class="vote-long" style="width:49%"></div>
+      <div class="vote-neutral" style="width:24%"></div>
+      <div class="vote-short" style="width:27%"></div>
+    </div>
+    <div class="vote-legend">
+      <span><span class="dot" style="background:var(--green)"></span> Long 4.32票</span>
+      <span><span class="dot" style="background:#4a5568"></span> Neutral 2.16票</span>
+      <span><span class="dot" style="background:var(--red)"></span> Short/Hedge 2.42票</span>
+    </div>
+  </div>
+
+  <table style="margin-top: 12px;">
+    <thead><tr><th>角色</th><th>立場</th><th>信心 (vs 盤前)</th><th>加權</th></tr></thead>
+    <tbody>
+      <tr><td>Drucky</td><td class="up">做多</td><td>7.5/10 (↓0.5)</td><td>×1.3</td></tr>
+      <tr><td>Lynch</td><td class="up">偏多</td><td>6/10 (↓1)</td><td>×1.2</td></tr>
+      <tr><td>Soros</td><td class="up">做多</td><td>6.5/10 (↓0.5)</td><td>×1.1</td></tr>
+      <tr><td>宏觀分析師</td><td class="down">中性偏空</td><td>7/10（轉空）</td><td>×1.0</td></tr>
+      <tr><td>量化系統</td><td>偏多但謹慎</td><td>5.5/10 (↓0.5)</td><td>×1.0</td></tr>
+      <tr><td>Dalio</td><td class="down">觀望偏空</td><td>7/10 (↑1)</td><td>×0.9</td></tr>
+      <tr><td>Marks</td><td class="down">減倉</td><td>7/10 (↑2)</td><td>×0.9</td></tr>
+      <tr><td>Taleb</td><td>輕避險</td><td>6/10 (=)</td><td>×0.8</td></tr>
+      <tr><td>WSB</td><td class="up">強烈做多</td><td>9.5/10 (=)</td><td>×0.7</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Veto Box -->
+<div class="veto-box">
+  <div class="veto-title">⚠️ Risk Veto 狀態 — 廣度警示 + AI 動能對沖</div>
+  <div class="veto-grid">
+    <div class="veto-item">
+      <div class="vi-label">Taleb 個人 Veto</div>
+      <div class="vi-val up">維持解除 6/10</div>
+    </div>
+    <div class="veto-item">
+      <div class="vi-label">System 條件</div>
+      <div class="vi-val warn">PARTIAL 1/4</div>
+    </div>
+    <div class="veto-item">
+      <div class="vi-label">最終倉位上限</div>
+      <div class="vi-val warn">≤75%（建議實際 60%）</div>
+    </div>
+    <div class="veto-item">
+      <div class="vi-label">變化</div>
+      <div class="vi-val">廣度仍為警示（未轉觸發）</div>
+    </div>
+  </div>
+  <div style="font-size:11px; color:rgba(255,255,255,0.7); margin-top:10px; line-height:1.5;">
+    ⚠️ 內部結構：PPI (+6%) 仍係唯一明確觸發；廣度走弱（majority lower）係 observation 但精確 breadth 數字來源不足，未正式計入新增觸發；AI 動能（NVDA / Cisco / Cerebras）係對沖力量。倉位上限 ≤75% 維持，理由：宏觀仍偏緊 + AI 動能對沖 + 廣度只作警示。
+  </div>
+</div>
+
+<!-- 5/15 Scenarios -->
+<div class="section-title">5/15 美股情景分佈</div>
+<div class="scenario-grid">
+  <div class="sc-card sc-bullpp">
+    <div class="sc-label" style="color:var(--green)">Bull++</div>
+    <div class="sc-prob up">8%</div>
+    <div class="sc-range">7,560+</div>
+    <div class="sc-desc">Trump-Xi 大單 + 廣度修復</div>
+  </div>
+  <div class="sc-card sc-bull">
+    <div class="sc-label" style="color:#52d68a">Bull</div>
+    <div class="sc-prob up">25%</div>
+    <div class="sc-range">7,520–7,560</div>
+    <div class="sc-desc">NVDA / Cisco 動能延續</div>
+  </div>
+  <div class="sc-card sc-base">
+    <div class="sc-label">Base</div>
+    <div class="sc-prob">35%</div>
+    <div class="sc-range">7,480–7,520</div>
+    <div class="sc-desc">高位整固</div>
+  </div>
+  <div class="sc-card sc-bear">
+    <div class="sc-label" style="color:#ff6b6b">Bear</div>
+    <div class="sc-prob down">22%</div>
+    <div class="sc-range">7,420–7,480</div>
+    <div class="sc-desc">廣度繼續惡化 + BABA 拖累</div>
+  </div>
+  <div class="sc-card sc-bearpp">
+    <div class="sc-label" style="color:var(--red)">Bear--</div>
+    <div class="sc-prob down">10%</div>
+    <div class="sc-range">&lt;7,420</div>
+    <div class="sc-desc">Taiwan 衝突 + VIX 突破 22</div>
+  </div>
+</div>
+<div style="text-align:center; font-size:12px; color:var(--muted); margin-bottom:28px;">
+  預期值（EV）：<span class="warn">+0.05%</span> | 倉位上限：<span class="warn">≤75%（建議實際 60%）</span>
+</div>
+
+<!-- Operation Guide -->
+<div class="card">
+  <div class="section-title">操作指引</div>
+  <table>
+    <thead><tr><th>項目</th><th>建議</th><th>觸發條件</th></tr></thead>
+    <tbody>
+      <tr><td>科技 mega-cap (NVDA/CSCO/MSFT/META)</td><td class="up">保留</td><td>動能延續</td></tr>
+      <tr><td>IPO post-pop (Cerebras 類)</td><td class="down">減持</td><td>降高 Beta 投機</td></tr>
+      <tr><td>BABA / 中概</td><td class="warn">觀望</td><td>5/15 連 2 日跌 → 暫停加倉</td></tr>
+      <tr><td>VIX call</td><td>保留少量</td><td>對冲 Trump-Xi tail risk</td></tr>
+      <tr><td>廣度監控</td><td class="down">關鍵</td><td>連 2 日 majority lower → ≤60%</td></tr>
+      <tr><td>Trump-Xi Taiwan</td><td class="down">監控</td><td>衝突信號 → 即切 Bear--</td></tr>
+      <tr><td>10Y 突破 4.55%</td><td class="down">減 Beta</td><td>PE 壓縮重啟</td></tr>
+      <tr><td>VIX 突破 20</td><td class="down">重評 Veto</td><td>Taleb 信心可能升回 8/10</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  美股盤後日報 · 2026-05-14 · 辯論制（9 角色加權）· Regime: Transition Zone 57.5 · 倉位上限 ≤75%（建議實際 60%）
+</div>
+</body>
+</html>

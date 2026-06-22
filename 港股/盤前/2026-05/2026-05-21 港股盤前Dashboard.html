@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-05-21 港股盤前 Dashboard（NVDA 業績後 + HK 獨立疲弱）</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --panel: #13131b;
+    --border: #1e1e2e;
+    --gold: #d4af37;
+    --green: #16c784;
+    --red: #ea3943;
+    --amber: #d4af37;
+    --purple: #7c3aed;
+    --text: #e2e8f0;
+    --muted: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+
+  .alert-banner {
+    background: linear-gradient(90deg, #1a1a10 0%, #15150a 100%);
+    border-bottom: 2px solid var(--amber);
+    padding: 10px 24px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.03em;
+  }
+  .alert-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  .header { padding: 20px 24px 8px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .header-title { font-size: 22px; font-weight: 700; color: var(--gold); letter-spacing: -0.02em; }
+  .header-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .header-meta { font-size: 11px; color: var(--muted); text-align: right; }
+  .regime-badge { display: inline-block; background: #1a1a0a; border: 1px solid var(--gold); color: #fde68a; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-top: 4px; }
+
+  .container { padding: 0 24px 24px; max-width: 1200px; margin: 0 auto; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 12px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px; }
+
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .card-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .card-value { font-size: 26px; font-weight: 700; letter-spacing: -0.02em; }
+  .card-change { font-size: 13px; font-weight: 600; margin-top: 4px; }
+  .card-note { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  .hero-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+  .hero-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .hero-value { font-size: 32px; font-weight: 800; letter-spacing: -0.03em; }
+  .hero-change { font-size: 14px; font-weight: 600; margin-top: 6px; }
+  .hero-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  .positive { color: var(--green); }
+  .negative { color: var(--red); }
+  .neutral { color: var(--gold); }
+  .warn { color: var(--amber); }
+
+  .macro-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 12px; }
+  .macro-card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
+  .macro-label { font-size: 9px; color: var(--muted); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+  .macro-value { font-size: 18px; font-weight: 700; }
+  .macro-change { font-size: 10px; font-weight: 600; margin-top: 2px; }
+  .macro-note { font-size: 9px; color: var(--muted); margin-top: 2px; line-height: 1.3; }
+
+  .stock-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 12px; }
+  .stock-card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+  .stock-ticker { font-size: 13px; font-weight: 700; color: var(--gold); }
+  .stock-name { font-size: 10px; color: var(--muted); margin-bottom: 6px; }
+  .stock-price { font-size: 17px; font-weight: 700; }
+  .stock-change { font-size: 11px; font-weight: 600; }
+  .stock-note { font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+  .debate-section { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 12px; }
+  .debate-title { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 14px; }
+  .vote-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .vote-label { font-size: 12px; font-weight: 600; width: 60px; }
+  .vote-bar { flex: 1; height: 20px; background: #1e1e2e; border-radius: 4px; overflow: hidden; }
+  .vote-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding: 0 8px; font-size: 11px; font-weight: 700; color: #000; }
+  .vote-fill-long { background: var(--green); }
+  .vote-fill-neutral { background: var(--gold); }
+  .vote-fill-short { background: var(--red); }
+  .vote-pct { font-size: 13px; font-weight: 700; width: 45px; text-align: right; }
+  .debate-verdict { margin-top: 12px; padding: 10px 12px; background: #1a1a0f; border-left: 3px solid var(--gold); border-radius: 0 6px 6px 0; font-size: 12px; line-height: 1.5; }
+
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .compare-table th { background: #0f0f18; color: var(--muted); font-weight: 600; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+  .compare-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr.active { background: rgba(212, 175, 55, 0.06); }
+  .compare-table tr.warn { background: rgba(234, 57, 67, 0.04); }
+  .hit-badge { display: inline-block; background: var(--gold); color: #000; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+  .miss-badge { display: inline-block; background: #1e1e2e; color: var(--muted); font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; }
+  .warn-badge { display: inline-block; background: var(--amber); color: #000; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+
+  .scenario-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 12px; }
+  .scenario-card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 12px; text-align: center; }
+  .scenario-card.active { border-color: var(--gold); background: #1a1a0a; }
+  .scenario-label { font-size: 11px; font-weight: 700; margin-bottom: 4px; }
+  .scenario-pct { font-size: 24px; font-weight: 800; }
+  .scenario-range { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .scenario-note { font-size: 10px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+  /* Divergence Banner */
+  .divergence-banner { background: linear-gradient(90deg, #2a1010, #1a0a0a); border: 2px solid var(--amber); border-radius: 12px; padding: 14px 18px; margin-bottom: 12px; }
+  .div-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: center; }
+  .div-item { text-align: center; }
+  .div-label { font-size: 10px; color: var(--muted); font-weight: 700; letter-spacing: 0.04em; margin-bottom: 4px; }
+  .div-value { font-size: 18px; font-weight: 800; }
+
+  .section-header { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 16px 0 8px; }
+
+  .trigger-list { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .trigger-title { font-size: 12px; font-weight: 700; color: var(--gold); margin-bottom: 10px; }
+  .trigger-item { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .trigger-item:last-child { border-bottom: none; }
+  .trigger-action { font-weight: 600; font-size: 11px; }
+
+  .ev-box { background: #0f0f18; border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; align-items: center; justify-content: space-between; }
+  .ev-label { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .ev-value { font-size: 22px; font-weight: 800; }
+
+  .veto-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+  .veto-card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+  .veto-label { font-size: 10px; color: var(--muted); font-weight: 600; margin-bottom: 4px; }
+  .veto-status { font-size: 12px; font-weight: 700; }
+  .triggered { color: var(--red); }
+  .clear { color: var(--green); }
+  .pending { color: var(--amber); }
+
+  .action-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 12px; }
+  .action-title { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 12px; }
+  .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .action-item { background: #0f0f18; border-radius: 8px; padding: 12px; }
+  .action-item-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .action-item-value { font-size: 16px; font-weight: 700; }
+  .action-item-note { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  .eta-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .eta-table th { background: #0f0f18; color: var(--muted); font-weight: 600; font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; padding: 8px; text-align: left; border-bottom: 1px solid var(--border); }
+  .eta-table td { padding: 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .eta-table tr:last-child td { border-bottom: none; }
+  .eta-event { font-weight: 700; color: var(--gold); }
+  .eta-time { font-size: 10px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="alert-banner">
+  <div class="alert-dot"></div>
+  <span style="color:var(--amber)">⚠️ NVDA 業績反應 muted（reg +1.30% / AH 約 −1.26%）+ HK 早段疲弱 consistent</span>
+  <span style="color:var(--muted);font-weight:400;margin-left:8px">US reg session Bull++ + 日經 +3.63% vs HK 平盤 / 騰訊 −1.67% / 阿里 −2.73%</span>
+</div>
+
+<div class="header">
+  <div>
+    <div class="header-title">2026-05-21 港股盤前（NVDA 業績後 + HK 獨立疲弱）</div>
+    <div class="header-sub">HK Pre-Market Dashboard · HKT 12:04 抓取（已開市 ~2 小時 34 分鐘）</div>
+    <div class="regime-badge">Base Regime · Score 43（區下沿；分歧訊號）</div>
+  </div>
+  <div class="header-meta">
+    System Veto: PARTIAL 1–2/4<br>
+    Position Cap: ≤60%（HK 實質 40–45%）<br>
+    Taleb: 5.5/10 ↓ (NVDA 消除但 HK 獨立)
+  </div>
+</div>
+
+<div class="container">
+
+<!-- Divergence Alert -->
+<div class="divergence-banner">
+  <div class="div-grid">
+    <div class="div-item">
+      <div class="div-label" style="color:#86efac">US 5/20 收</div>
+      <div class="div-value positive">S&P +1.08%</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:4px">Bull++ 兌現</div>
+    </div>
+    <div class="div-item">
+      <div class="div-label" style="color:#86efac">N225 5/21 盤中</div>
+      <div class="div-value positive">+3.63% 爆升</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:4px">亞洲標準動作</div>
+    </div>
+    <div class="div-item">
+      <div class="div-label" style="color:#fca5a5">HSI 5/21 早段</div>
+      <div class="div-value warn">−0.03% 平盤</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:4px">read-through 失靈</div>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:11px;color:var(--amber);margin-top:10px;font-weight:600">
+    ⚠️ HK 反應 consistent with NVDA AH 弱勢 + BABA ADR 弱 — 不再係「悖論」，但獨立疲弱仍存
+  </div>
+</div>
+
+<!-- US 5/20 Read-through Hero -->
+<div class="section-header">美股 5/20 收盤 + NVDA 業績結果（最關鍵 read-through）</div>
+<div class="grid-3">
+  <div class="card" style="border-color:var(--green)">
+    <div class="card-label">S&P 500 · Reg session Bull++</div>
+    <div class="card-value positive">7,432.97</div>
+    <div class="card-change positive">+1.08% · 突破 7,420</div>
+    <div class="card-note">Reg session 強；AH 由 NVDA 拖累</div>
+  </div>
+  <div class="card" style="border-color:var(--amber)">
+    <div class="card-label">NVDA · 業績反應 muted</div>
+    <div class="card-value warn">$223.47 → ~$220.66</div>
+    <div class="card-change warn">Reg +1.30% / AH ~−1.26%</div>
+    <div class="card-note">HK 半導體 read-through 預期 muted / 偏負</div>
+  </div>
+  <div class="card" style="border-color:var(--green)">
+    <div class="card-label">10Y 美債 · 大跌</div>
+    <div class="card-value positive">4.572%</div>
+    <div class="card-change positive">−0.095 ↓2.04%</div>
+    <div class="card-note">PE 壓縮警戒完全解除</div>
+  </div>
+</div>
+
+<!-- HK Hero -->
+<div class="section-header">港股 5/20 收 + 5/21 早段（HKT 12:04）</div>
+<div class="grid-3">
+  <div class="hero-card" style="border-color:var(--amber)">
+    <div class="hero-label">HSI 恒生指數 · 平盤</div>
+    <div class="hero-value warn">25,644.21</div>
+    <div class="hero-change neutral">−0.03%（−6.91 pts）</div>
+    <div class="hero-sub">vs US +1.08% read-through 冷淡</div>
+  </div>
+  <div class="hero-card" style="border-color:var(--red)">
+    <div class="hero-label">HSCEI 國企</div>
+    <div class="hero-value negative">8,570.42</div>
+    <div class="hero-change negative">−0.40%（−34.71 pts）</div>
+    <div class="hero-sub">國指偏弱於 HSI</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">HSTECH ETF (3032)</div>
+    <div class="hero-value neutral">$4.846</div>
+    <div class="hero-change neutral">0.00% 持平</div>
+    <div class="hero-sub">中芯撐起；騰訊拖後腿</div>
+  </div>
+</div>
+
+<!-- Stock Grid -->
+<div class="section-header">重點個股（5/21 早段 HKT 12:04）</div>
+<div class="stock-grid">
+  <div class="stock-card" style="border-color:var(--red)">
+    <div class="stock-ticker">0700</div>
+    <div class="stock-name">騰訊 · 跌幅擴大</div>
+    <div class="stock-price negative">447.60</div>
+    <div class="stock-change negative">−1.67% 🔴</div>
+    <div class="stock-note">跌穿 $450；中概核心受壓</div>
+  </div>
+  <div class="stock-card" style="border-color:var(--red)">
+    <div class="stock-ticker">9988</div>
+    <div class="stock-name">阿里 · 接近 Bear 觸發</div>
+    <div class="stock-price negative">128.30</div>
+    <div class="stock-change negative">−2.73% 🔴 接近 −3%</div>
+    <div class="stock-note">距 Bear 觸發 0.27pp</div>
+  </div>
+  <div class="stock-card">
+    <div class="stock-ticker">1810</div>
+    <div class="stock-name">小米</div>
+    <div class="stock-price negative">29.96</div>
+    <div class="stock-change negative">−0.60%</div>
+    <div class="stock-note">守住 $30</div>
+  </div>
+  <div class="stock-card" style="border-color:var(--green)">
+    <div class="stock-ticker">0981</div>
+    <div class="stock-name">中芯 · 延續強勢</div>
+    <div class="stock-price positive">76.75</div>
+    <div class="stock-change positive">+2.13% 🟢</div>
+    <div class="stock-note">5/20 +9.71% 後動能放緩</div>
+  </div>
+  <div class="stock-card" style="border-color:var(--red)">
+    <div class="stock-ticker">9618</div>
+    <div class="stock-name">京東 · 反轉</div>
+    <div class="stock-price negative">125.40</div>
+    <div class="stock-change negative">−1.88%</div>
+    <div class="stock-note">5/20 +1.51% 全反轉</div>
+  </div>
+</div>
+
+<!-- Macro Strip -->
+<div class="section-header">宏觀指標 + 跨市場</div>
+<div class="macro-strip">
+  <div class="macro-card" style="border-color:var(--green)">
+    <div class="macro-label">Nasdaq 5/20</div>
+    <div class="macro-value positive">26,270</div>
+    <div class="macro-change positive">+1.54%</div>
+    <div class="macro-note">科技強反彈</div>
+  </div>
+  <div class="macro-card" style="border-color:var(--green)">
+    <div class="macro-label">Dow 5/20</div>
+    <div class="macro-value positive">50,009</div>
+    <div class="macro-change positive">+1.31% 突破 50K</div>
+    <div class="macro-note">心理關口</div>
+  </div>
+  <div class="macro-card">
+    <div class="macro-label">VIX</div>
+    <div class="macro-value positive">17.44</div>
+    <div class="macro-change positive">−3.43%</div>
+    <div class="macro-note">緩和</div>
+  </div>
+  <div class="macro-card" style="border-color:var(--green)">
+    <div class="macro-label">Brent settlement</div>
+    <div class="macro-value positive">$105.02</div>
+    <div class="macro-change positive">−2.6%</div>
+    <div class="macro-note">接近 Veto 鬆動</div>
+  </div>
+  <div class="macro-card" style="border-color:var(--green)">
+    <div class="macro-label">N225 5/21</div>
+    <div class="macro-value positive">61,973</div>
+    <div class="macro-change positive">+3.63% 🟢</div>
+    <div class="macro-note">亞洲響應 US</div>
+  </div>
+  <div class="macro-card" style="border-color:var(--green)">
+    <div class="macro-label">GLD 5/20</div>
+    <div class="macro-value positive">$417.40</div>
+    <div class="macro-change positive">+1.43%</div>
+    <div class="macro-note">5/19 −1.66% 部分收復</div>
+  </div>
+</div>
+
+<!-- Section 3: Prediction vs Early Data -->
+<div class="section-header">盤前 vs 5/20 港股盤後預測（Section 3 對比）</div>
+<div class="card" style="margin-bottom:12px;padding:0;overflow:hidden">
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>情景</th>
+        <th>5/20 盤後概率</th>
+        <th>HSI 範圍</th>
+        <th>早段 HSI 25,644.21</th>
+        <th>狀態</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span style="color:#a78bfa;font-weight:700">Bull++</span></td>
+        <td style="color:var(--muted)">5%</td>
+        <td style="color:var(--muted)">26,100+</td>
+        <td style="color:var(--muted)">未觸</td>
+        <td><span class="miss-badge">待確認</span></td>
+      </tr>
+      <tr>
+        <td><span style="color:var(--green);font-weight:700">Bull</span></td>
+        <td style="color:var(--muted)">18%</td>
+        <td style="color:var(--muted)">25,800–26,100</td>
+        <td style="color:var(--muted)">未觸</td>
+        <td><span class="miss-badge">概率下修</span></td>
+      </tr>
+      <tr class="active">
+        <td><span style="color:var(--gold);font-weight:700">Base ★ 主</span></td>
+        <td style="color:var(--gold);font-weight:700">38%</td>
+        <td style="color:var(--gold)">25,500–25,800</td>
+        <td style="color:var(--amber);font-weight:700">25,644.21（區下沿）</td>
+        <td><span class="hit-badge">主場景（弱化）</span></td>
+      </tr>
+      <tr class="warn">
+        <td><span style="color:var(--red);font-weight:700">Bear ↑</span></td>
+        <td style="color:var(--red);font-weight:700">26%</td>
+        <td style="color:var(--red)">25,200–25,500</td>
+        <td style="color:var(--amber);font-weight:700">距 25,500 +144pt</td>
+        <td><span class="warn-badge">⚠️ 概率上修</span></td>
+      </tr>
+      <tr>
+        <td><span style="color:#f87171;font-weight:700">Bear--</span></td>
+        <td style="color:var(--muted)">13%</td>
+        <td style="color:var(--muted)">&lt;25,200</td>
+        <td style="color:var(--muted)">未觸</td>
+        <td><span class="miss-badge">待確認</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- NVDA Branch Reality Check -->
+<div class="card" style="margin-bottom:12px;border-color:var(--gold)">
+  <div style="font-size:12px;line-height:1.6">
+    <strong style="color:var(--gold)">NVDA 業績反應實際解讀：</strong>
+    <br>NVDA regular close +1.30%（$223.47，業績前 sentiment） / 業績後 after-hours 約 −1.26%（$220.66）
+    <br>= <strong style="color:var(--amber)">反應 muted；介乎「符合預期」與「不達預期 / 指引保守」之間</strong>
+    <br>對應 HSI 5/21 預期範圍 25,500–25,800（區下沿）；實際早段 25,644.21 落區下沿 ✓
+    <br><strong style="color:var(--amber)">Base 主場景仍 valid；HK 早段反應 consistent with NVDA AH 弱勢 + BABA ADR 5/20 −0.86%</strong>（**不再係「悖論」**，但 HK 獨立疲弱仍存）。
+  </div>
+</div>
+
+<!-- Trigger Status -->
+<div class="trigger-list" style="margin-bottom:12px">
+  <div class="trigger-title">觸發條件即時檢視</div>
+  <div class="trigger-item">
+    <span>北水 &lt; −30 億 → Bear</span>
+    <span class="trigger-action pending">⏳ Jin10 provisional</span>
+  </div>
+  <div class="trigger-item">
+    <span>9988 跌 > −3%</span>
+    <span class="trigger-action warn">⚠️ 極接近觸發（−2.73%，差 0.27pp）</span>
+  </div>
+  <div class="trigger-item">
+    <span>中芯 0981 跌穿 $70</span>
+    <span class="trigger-action clear">❌ 未觸（$76.75）</span>
+  </div>
+  <div class="trigger-item">
+    <span>Iran 攻擊重啟</span>
+    <span class="trigger-action clear">❌ 無新消息</span>
+  </div>
+  <div class="trigger-item">
+    <span>美股 ES 跌穿 7,420</span>
+    <span class="trigger-action clear">❌ 未觸（5/20 收 7,432.97）</span>
+  </div>
+</div>
+
+<!-- Debate -->
+<div class="debate-section">
+  <div class="debate-title">辯論委員會（盤前 · HK 10 角色）：5/21 HK 收盤如何？</div>
+  <div style="font-size:11px;color:var(--muted);margin-bottom:14px">
+    辯題：US regular session Bull++ + NVDA 業績反應 muted（reg +1.30% / AH 約 −1.26%）+ 10Y 大跌 + 日經 +3.63% vs HK 早段疲弱（HSI 平盤 / 騰訊 −1.67% / 阿里 −2.73%；與 NVDA AH 弱勢 consistent）→ 5/21 HK 收盤定位？
+  </div>
+
+  <div class="vote-row">
+    <div class="vote-label positive">做多</div>
+    <div class="vote-bar">
+      <div class="vote-fill vote-fill-long" style="width:7.0%">7.0%</div>
+    </div>
+    <div class="vote-pct positive">7.0%</div>
+  </div>
+  <div class="vote-row">
+    <div class="vote-label neutral">中性</div>
+    <div class="vote-bar">
+      <div class="vote-fill vote-fill-neutral" style="width:59.0%">59.0%</div>
+    </div>
+    <div class="vote-pct neutral">59.0%</div>
+  </div>
+  <div class="vote-row">
+    <div class="vote-label negative">空 / 避險</div>
+    <div class="vote-bar">
+      <div class="vote-fill vote-fill-short" style="width:34.0%">34.0%</div>
+    </div>
+    <div class="vote-pct negative">34.0%</div>
+  </div>
+
+  <div style="margin-top:12px;font-size:11px;color:var(--muted);display:grid;grid-template-columns:repeat(5,1fr);gap:6px">
+    <div style="background:#0f0f18;border-radius:6px;padding:7px">
+      <div style="color:var(--gold);font-weight:700;margin-bottom:3px">Drucky ×1.3</div>
+      <div>US 強 + HK 弱 = 分歧未解；觀察收斂</div>
+    </div>
+    <div style="background:#0f0f18;border-radius:6px;padding:7px">
+      <div style="color:var(--gold);font-weight:700;margin-bottom:3px">Lynch ×1.2</div>
+      <div>中概普跌 = 個股 floor 受質疑；sell-the-news</div>
+    </div>
+    <div style="background:#0f0f18;border-radius:6px;padding:7px">
+      <div style="color:var(--gold);font-weight:700;margin-bottom:3px">李嘉誠 ×1.1</div>
+      <div>中概三巨頭跌穿關鍵；持貨減倉</div>
+    </div>
+    <div style="background:#0f0f18;border-radius:6px;padding:7px">
+      <div style="color:var(--gold);font-weight:700;margin-bottom:3px">Taleb ×0.8</div>
+      <div>HK 獨立疲弱 = 未定價尾部</div>
+    </div>
+    <div style="background:#0f0f18;border-radius:6px;padding:7px">
+      <div style="color:var(--amber);font-weight:700;margin-bottom:3px">連登散戶 ×0.7</div>
+      <div>「中芯 +2.13% 獨強！美股大升一定追！」</div>
+    </div>
+  </div>
+
+  <div class="debate-verdict">
+    <strong style="color:var(--gold)">主持人裁決：</strong>Short / Hedge 34.0% 主導空頭傾斜（vs 美股盤後 0.0% 完全相反！）；Long 僅 7.0% — HK 委員會基於早段獨立疲弱表現高度警惕。Neutral 主導 59.0% 反映 NVDA 消除 + 10Y 跌等正向系統性背景。倉位上限 ≤60%，HK 實質執行 40–45%（個別市場風險升）。
+  </div>
+</div>
+
+<!-- Veto -->
+<div class="section-header">Risk Veto 狀態（港股版盤前）</div>
+<div class="veto-grid">
+  <div class="veto-card" style="border-color:var(--red)">
+    <div class="veto-label">1. PPI > 5.5%</div>
+    <div class="veto-status triggered">✅ 觸發（+6.0%）</div>
+  </div>
+  <div class="veto-card" style="border-color:var(--amber)">
+    <div class="veto-label">2. 北水大幅逆轉</div>
+    <div class="veto-status pending">⏳ Jin10 provisional</div>
+  </div>
+  <div class="veto-card" style="border-color:var(--amber)">
+    <div class="veto-label">3. 動能崩潰</div>
+    <div class="veto-status pending">⚠️ 警示加深（read-through 失靈）</div>
+  </div>
+  <div class="veto-card" style="border-color:var(--green)">
+    <div class="veto-label">4. 流動性危機</div>
+    <div class="veto-status clear">❌ 未觸發</div>
+  </div>
+</div>
+
+<!-- Taleb + Position -->
+<div class="grid-2" style="margin-bottom:12px">
+  <div class="ev-box">
+    <div>
+      <div class="ev-label">Taleb 個人 Veto（≥8 全停）</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px">NVDA 消除 + 系統改善；但 HK 獨立疲弱未消除</div>
+    </div>
+    <div class="ev-value warn">5.5 / 10 ↓</div>
+  </div>
+  <div class="ev-box">
+    <div>
+      <div class="ev-label">倉位上限 / HK 實質執行</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px">個別市場風險升；不跟美股 50–55% conditional 上修</div>
+    </div>
+    <div class="ev-value warn">≤60% / 40–45%</div>
+  </div>
+</div>
+
+<!-- Scenarios -->
+<div class="section-header">今日預測：5/21 HK 收盤（起點 25,651；早段 25,644 區下沿）</div>
+<div class="scenario-grid">
+  <div class="scenario-card">
+    <div class="scenario-label" style="color:#a78bfa">Bull++</div>
+    <div class="scenario-pct" style="color:#a78bfa">3%</div>
+    <div class="scenario-range">25,950+</div>
+    <div class="scenario-note">HK 收斂急速 + 北水大幅回流 + 中芯接力</div>
+  </div>
+  <div class="scenario-card">
+    <div class="scenario-label" style="color:var(--green)">Bull</div>
+    <div class="scenario-pct" style="color:var(--green)">15%</div>
+    <div class="scenario-range">25,800–25,950</div>
+    <div class="scenario-note">業績消化補漲 + 北水轉正 + 收斂</div>
+  </div>
+  <div class="scenario-card active">
+    <div class="scenario-label" style="color:var(--gold)">Base ★</div>
+    <div class="scenario-pct" style="color:var(--gold)">35%</div>
+    <div class="scenario-range">25,500–25,800</div>
+    <div class="scenario-note">早段已在區下沿；震盪整固</div>
+  </div>
+  <div class="scenario-card">
+    <div class="scenario-label" style="color:var(--red)">Bear ↑</div>
+    <div class="scenario-pct" style="color:var(--red)">32%</div>
+    <div class="scenario-range">25,200–25,500</div>
+    <div class="scenario-note">獨立疲弱加深 + 9988 跌穿 −3% + 北水負面</div>
+  </div>
+  <div class="scenario-card">
+    <div class="scenario-label" style="color:#f87171">Bear--</div>
+    <div class="scenario-pct" style="color:#f87171">15%</div>
+    <div class="scenario-range">&lt; 25,200</div>
+    <div class="scenario-note">中概系統性恐慌 + Iran 突發 + 北水大幅出走</div>
+  </div>
+</div>
+
+<div class="ev-box" style="margin-bottom:12px;border-color:var(--red)">
+  <div>
+    <div class="ev-label">5/21 HK 預期回報（EV）</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:2px">vs 5/20 盤後 −0.2% 加擴；US 正向被 HK 獨立壓力中和</div>
+  </div>
+  <div class="ev-value negative">−0.5%</div>
+</div>
+
+<!-- ETA Matrix -->
+<div class="section-header">今日 ETA Matrix</div>
+<div class="card" style="margin-bottom:12px;padding:0;overflow:hidden">
+  <table class="eta-table">
+    <thead>
+      <tr>
+        <th style="width:18%">事件</th>
+        <th style="width:14%">時間（HKT）</th>
+        <th style="width:18%">觸發 1</th>
+        <th style="width:18%">觸發 2</th>
+        <th>行動</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="background:rgba(234,57,67,0.05)">
+        <td><span class="eta-event">HSI &lt; 25,500 收</span><br><span class="eta-time">T+0</span></td>
+        <td>16:00</td>
+        <td>9988 跌穿 $126</td>
+        <td>騰訊跌穿 $445</td>
+        <td>Bear 觸發 → 倉位 ≤40%</td>
+      </tr>
+      <tr style="background:rgba(234,57,67,0.05)">
+        <td><span class="eta-event">9988 跌 > −3%</span><br><span class="eta-time">T+0</span></td>
+        <td>全日</td>
+        <td>早段 −2.73%</td>
+        <td>中概再賣壓</td>
+        <td>觸發即減 BABA/9988 倉位 3pp</td>
+      </tr>
+      <tr style="background:rgba(22,199,132,0.04)">
+        <td><span class="eta-event">北水 > +30 億</span><br><span class="eta-time">T+0</span></td>
+        <td>16:00</td>
+        <td>滬深北上回流</td>
+        <td>收盤反彈</td>
+        <td>Bull 收斂訊號 → 倉位 45–50%</td>
+      </tr>
+      <tr>
+        <td><span class="eta-event">中芯 跌穿 $74</span><br><span class="eta-time">T+0</span></td>
+        <td>全日</td>
+        <td>半導體 profit-taking</td>
+        <td>5/20 +9.71% 反轉</td>
+        <td>早段強勢瓦解確認</td>
+      </tr>
+      <tr style="background:rgba(22,199,132,0.04)">
+        <td><span class="eta-event">HSTECH &gt; $4.90</span><br><span class="eta-time">T+0</span></td>
+        <td>全日</td>
+        <td>NVDA read-through 發酵</td>
+        <td>HK 收斂訊號</td>
+        <td>加碼 3032 3pp</td>
+      </tr>
+      <tr style="background:rgba(234,57,67,0.05)">
+        <td><span class="eta-event">Iran 攻擊重啟</span><br><span class="eta-time">T+0</span></td>
+        <td>全日</td>
+        <td>Brent > $115</td>
+        <td>WTI > $108</td>
+        <td>即切 Bear--；倉位 ≤30%</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Live Positioning -->
+<div class="section-header">Live Positioning Reference</div>
+<div class="card" style="margin-bottom:12px">
+  <div style="font-size:12px;line-height:1.7">
+    <strong style="color:var(--gold)">stance 變化（vs 5/20 港股盤後）：</strong>
+    <table style="width:100%;margin-top:8px;border-collapse:collapse;font-size:11px">
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:6px;color:var(--muted)">維度</td>
+        <td style="padding:6px;text-align:right">5/20 港股盤後</td>
+        <td style="padding:6px;text-align:right">5/21 港股盤前</td>
+        <td style="padding:6px;text-align:right">變化</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:6px">Taleb Veto</td>
+        <td style="padding:6px;text-align:right">7.5/10</td>
+        <td style="padding:6px;text-align:right">5.5/10</td>
+        <td style="padding:6px;text-align:right;color:var(--green)">↓ 2pp</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:6px">Long 票數</td>
+        <td style="padding:6px;text-align:right">12.5%</td>
+        <td style="padding:6px;text-align:right;color:var(--red)">7.0%</td>
+        <td style="padding:6px;text-align:right;color:var(--red)">↓ 5.5pp</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:6px">Short 票數</td>
+        <td style="padding:6px;text-align:right">8.5%</td>
+        <td style="padding:6px;text-align:right;color:var(--red)">34.0%</td>
+        <td style="padding:6px;text-align:right;color:var(--red)">↑ 25.5pp</td>
+      </tr>
+      <tr>
+        <td style="padding:6px">EV 預測</td>
+        <td style="padding:6px;text-align:right">−0.2%</td>
+        <td style="padding:6px;text-align:right;color:var(--red)">−0.5%</td>
+        <td style="padding:6px;text-align:right;color:var(--red)">↓ 0.3pp</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- Action Card -->
+<div class="action-card">
+  <div class="action-title">5/21 HK 行動方針</div>
+  <div class="action-grid">
+    <div class="action-item">
+      <div class="action-item-title">倉位上限 / HK 實質執行</div>
+      <div class="action-item-value warn">≤60% / 40–45%</div>
+      <div class="action-item-note">vs 美股 50–55% conditional 不跟隨上修</div>
+    </div>
+    <div class="action-item">
+      <div class="action-item-title">優先觀察</div>
+      <div class="action-item-value warn">9988 / 0700 / 北水</div>
+      <div class="action-item-note">阿里距 −3% 僅 0.27pp；騰訊跌穿 $445？</div>
+    </div>
+    <div class="action-item">
+      <div class="action-item-title">HSTECH 加碼條件</div>
+      <div class="action-item-value positive">HSI 反彈 +0.5% + 中芯 hold</div>
+      <div class="action-item-note">收斂訊號出現先加碼 3–5pp</div>
+    </div>
+    <div class="action-item">
+      <div class="action-item-title">中芯特別 watch</div>
+      <div class="action-item-value warn">不追高（5/20 已 over-priced）</div>
+      <div class="action-item-note">跌穿 $74 = 強勢瓦解</div>
+    </div>
+  </div>
+</div>
+
+<!-- Bull/Bear Monitoring -->
+<div class="grid-2">
+  <div class="trigger-list">
+    <div class="trigger-title">5/21 Bull 上行監控</div>
+    <div class="trigger-item">
+      <span>HSI 反彈 +0.5%（25,750+）</span>
+      <span class="trigger-action positive">收斂訊號啟動</span>
+    </div>
+    <div class="trigger-item">
+      <span>北水終值 > +30 億</span>
+      <span class="trigger-action positive">中概 read-through 重啟</span>
+    </div>
+    <div class="trigger-item">
+      <span>騰訊 0700 反彈穿 $452</span>
+      <span class="trigger-action positive">中概核心修復</span>
+    </div>
+    <div class="trigger-item">
+      <span>HSTECH 突破 $4.90</span>
+      <span class="trigger-action positive">加碼 3032 3pp</span>
+    </div>
+  </div>
+  <div class="trigger-list">
+    <div class="trigger-title">5/21 Bear 下行監控</div>
+    <div class="trigger-item">
+      <span>9988 跌 &gt; −3%</span>
+      <span class="trigger-action negative">Bear 確認 + 減 5pp</span>
+    </div>
+    <div class="trigger-item">
+      <span>HSI 跌穿 25,500</span>
+      <span class="trigger-action negative">Bear → 倉位 ≤40%</span>
+    </div>
+    <div class="trigger-item">
+      <span>北水 &lt; −30 億</span>
+      <span class="trigger-action negative">Bear 加深</span>
+    </div>
+    <div class="trigger-item">
+      <span>中芯 0981 跌穿 $74</span>
+      <span class="trigger-action negative">半導體強勢瓦解</span>
+    </div>
+  </div>
+</div>
+
+<div style="font-size:10px;color:var(--muted);text-align:center;padding:16px 0 8px">
+  2026-05-21 港股盤前 Dashboard（NVDA 業績後 · HK 獨立疲弱）·
+  數據時序：HKT 12:04 抓取（港股已開市 ~2.5 小時）·
+  NVDA 業績反應 muted: regular close $223.47（+1.30% 業績前 sentiment）/ after-hours 約 $220.66（−1.26%）·
+  亞洲分歧極端化：US +1.08% / 日經 +3.63% vs HK 平盤 ·
+  所有倉位受 System Veto PARTIAL 1–2/4 + Taleb 5.5/10 約束
+</div>
+
+</div>
+</body>
+</html>

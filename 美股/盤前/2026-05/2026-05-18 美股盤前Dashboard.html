@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-05-18 美股盤前 Dashboard</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --panel: #13131b;
+    --panel2: #1a1a24;
+    --border: #2a2a3a;
+    --gold: #d4af37;
+    --green: #16c784;
+    --red: #ea3943;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --dim: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 0 0 40px;
+  }
+
+  /* ALERT BANNER */
+  .alert-banner {
+    background: linear-gradient(135deg, #1a1200, #2a1800);
+    border-bottom: 2px solid var(--amber);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .alert-icon { font-size: 20px; }
+  .alert-text { font-size: 13px; color: #fcd34d; }
+  .alert-text strong { color: var(--amber); }
+
+  /* HEADER */
+  .header {
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
+  .report-title { font-size: 22px; font-weight: 700; color: var(--gold); }
+  .report-meta { font-size: 12px; color: var(--dim); }
+  .regime-badge {
+    background: #1a1800;
+    border: 1px solid var(--amber);
+    color: var(--amber);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .header-summary {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 900px;
+  }
+
+  /* MAIN CONTENT */
+  .content { padding: 20px 24px; }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* FUTURES GRID */
+  .futures-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .futures-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    position: relative;
+  }
+  .futures-card.down { border-left: 3px solid var(--red); }
+  .futures-label { font-size: 11px; color: var(--dim); font-weight: 600; text-transform: uppercase; }
+  .futures-name { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .futures-price { font-size: 24px; font-weight: 700; color: var(--text); }
+  .futures-change { font-size: 13px; margin-top: 2px; }
+  .futures-change.down { color: var(--red); }
+  .futures-estimate { font-size: 11px; color: var(--dim); margin-top: 6px; }
+
+  /* MACRO STRIP */
+  .macro-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .macro-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .macro-card.warn { border-color: var(--amber); background: #1a1200; }
+  .macro-card.alert { border-color: var(--red); background: #1a0505; }
+  .macro-label { font-size: 11px; color: var(--dim); font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+  .macro-value { font-size: 18px; font-weight: 700; }
+  .macro-value.up { color: var(--red); }
+  .macro-value.down { color: var(--green); }
+  .macro-value.warn { color: var(--amber); }
+  .macro-value.neutral { color: var(--text); }
+  .macro-chg { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .macro-note { font-size: 10px; color: var(--amber); margin-top: 3px; }
+
+  /* STOCK GRID */
+  .stock-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .stock-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .stock-card.highlight-neg { border-left: 3px solid var(--red); }
+  .stock-card.highlight-pos { border-left: 3px solid var(--green); }
+  .stock-card.highlight-neutral { border-left: 3px solid var(--dim); }
+  .stock-ticker { font-size: 13px; font-weight: 700; color: var(--gold); }
+  .stock-name { font-size: 11px; color: var(--dim); margin-bottom: 6px; }
+  .stock-price { font-size: 18px; font-weight: 700; color: var(--text); }
+  .stock-chg { font-size: 12px; margin-top: 2px; }
+  .stock-chg.down { color: var(--red); }
+  .stock-chg.up { color: var(--green); }
+  .stock-note { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+  /* WARSH CARD */
+  .warsh-card {
+    background: linear-gradient(135deg, #0d0d1a, #12121f);
+    border: 1px solid #4a3fff44;
+    border-left: 3px solid #7c3aed;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .warsh-title { font-size: 13px; font-weight: 700; color: #a78bfa; margin-bottom: 8px; }
+  .warsh-quote { font-size: 12px; color: var(--muted); font-style: italic; border-left: 2px solid #7c3aed44; padding-left: 10px; margin: 6px 0; }
+  .warsh-impact { font-size: 11px; color: var(--dim); margin-top: 8px; }
+
+  /* DEBATE */
+  .debate-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .debate-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+  .vote-bar-wrap { margin-bottom: 8px; }
+  .vote-bar { display: flex; height: 28px; border-radius: 6px; overflow: hidden; gap: 2px; }
+  .vote-seg { display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; transition: width 0.3s; }
+  .vote-long { background: #16c78422; color: var(--green); border: 1px solid #16c78444; }
+  .vote-neutral { background: #94a3b822; color: var(--muted); border: 1px solid #94a3b844; }
+  .vote-short { background: #ea394322; color: var(--red); border: 1px solid #ea394344; }
+  .vote-legend { display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
+  .vote-item { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+  .vote-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .verdict-box {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .verdict-box strong { color: var(--amber); }
+
+  /* SCENARIO GRID */
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .scenario-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+  .scenario-card.active { border-color: var(--amber); background: #1a1200; }
+  .scenario-label { font-size: 11px; font-weight: 700; color: var(--dim); text-transform: uppercase; margin-bottom: 4px; }
+  .scenario-prob { font-size: 22px; font-weight: 800; }
+  .scenario-prob.bear { color: var(--red); }
+  .scenario-prob.base { color: var(--amber); }
+  .scenario-prob.bull { color: var(--green); }
+  .scenario-range { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+  /* VETO + ACTION */
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .veto-card, .action-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .veto-card { border-color: #ea394344; }
+  .card-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+  .veto-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .veto-row:last-child { border-bottom: none; }
+  .veto-label { color: var(--muted); }
+  .veto-status { font-weight: 600; }
+  .veto-status.triggered { color: var(--red); }
+  .veto-status.warn { color: var(--amber); }
+  .veto-status.ok { color: var(--green); }
+  .cap-big { font-size: 28px; font-weight: 800; color: var(--amber); }
+  .cap-label { font-size: 11px; color: var(--dim); margin-top: 2px; }
+  .trigger-list { list-style: none; margin-top: 10px; }
+  .trigger-list li {
+    font-size: 11px;
+    color: var(--muted);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 6px;
+  }
+  .trigger-list li:last-child { border-bottom: none; }
+  .trigger-list li::before { content: '▸'; color: var(--amber); flex-shrink: 0; }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--dim);
+    padding: 16px 24px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  /* EV BOX */
+  .ev-box {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .ev-label { font-size: 12px; color: var(--muted); }
+  .ev-value { font-size: 22px; font-weight: 800; color: var(--red); }
+  .ev-range { font-size: 11px; color: var(--dim); }
+
+  @media (max-width: 768px) {
+    .futures-grid { grid-template-columns: 1fr; }
+    .macro-strip { grid-template-columns: repeat(2, 1fr); }
+    .stock-grid { grid-template-columns: repeat(2, 1fr); }
+    .scenario-grid { grid-template-columns: repeat(2, 1fr); }
+    .bottom-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ALERT BANNER -->
+<div class="alert-banner">
+  <span class="alert-icon">⚠️</span>
+  <span class="alert-text">
+    <strong>偏空持續</strong> — ES −0.41%（估算 S&amp;P ~7,378，Bear 區間）· NVDA −4.42% 盤前 · Brent $110.54（距 $115 Veto 升級線 4.3%）· Iran Situation Room 週二 · 倉位上限 <strong>≤60%</strong>
+  </span>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="report-title">2026-05-18 美股盤前 Dashboard</div>
+      <div class="report-meta">HKT 19:50 · 美東 07:50 · W21 週一 · 數據來源：Yahoo Finance MCP</div>
+    </div>
+    <div class="regime-badge">Transition Zone → Bear 邊界 · Regime Score 48</div>
+  </div>
+  <div class="header-summary">
+    HK 5/18 Bear 確認（HSI 25,675，−1.11%）+ NVDA −4.42%（週三業績前賣壓）+ BABA −6.04% + 10Y 4.595%（Warsh +13.4bp）+ Brent $110.54（$115 Veto 升級線 4.3%）+ Iran Situation Room 週二討論軍事選項。
+    Trump-中國農業大單 $170 億（部分正面）。System Veto PARTIAL 2/4，Taleb 7/10 接近觸發。
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- FUTURES GRID -->
+  <div class="section-label">美股期指（盤前，CME）</div>
+  <div class="futures-grid">
+    <div class="futures-card down">
+      <div class="futures-label">ES</div>
+      <div class="futures-name">S&amp;P 500 Jun'26</div>
+      <div class="futures-price">7,402</div>
+      <div class="futures-change down">▼ −30.25 (−0.41%)</div>
+      <div class="futures-estimate">估算現貨開盤 ~7,378（Bear 區間）</div>
+    </div>
+    <div class="futures-card down">
+      <div class="futures-label">NQ</div>
+      <div class="futures-name">Nasdaq 100 Jun'26</div>
+      <div class="futures-price">29,125</div>
+      <div class="futures-change down">▼ −106 (−0.36%)</div>
+      <div class="futures-estimate">NVDA −4.42% 為主要拖累</div>
+    </div>
+    <div class="futures-card down">
+      <div class="futures-label">YM</div>
+      <div class="futures-name">Dow Jones Jun'26</div>
+      <div class="futures-price">49,294</div>
+      <div class="futures-change down">▼ −323 (−0.65%)</div>
+      <div class="futures-estimate">Boeing −3.80%；跌穿 50,000</div>
+    </div>
+  </div>
+
+  <!-- PREV CLOSE ROW -->
+  <div class="section-label">上日收市（5/15）</div>
+  <div class="macro-strip" style="grid-template-columns: repeat(3,1fr); margin-bottom: 20px;">
+    <div class="macro-card">
+      <div class="macro-label">S&amp;P 500</div>
+      <div class="macro-value neutral">7,408.50</div>
+      <div class="macro-chg" style="color:var(--red)">5/15 −1.24%</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">Nasdaq</div>
+      <div class="macro-value neutral">26,225.14</div>
+      <div class="macro-chg" style="color:var(--red)">5/15 −1.54%</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">Dow Jones</div>
+      <div class="macro-value neutral">49,526.17</div>
+      <div class="macro-chg" style="color:var(--red)">5/15 −1.07%</div>
+    </div>
+  </div>
+
+  <!-- MACRO STRIP -->
+  <div class="section-label">宏觀指標</div>
+  <div class="macro-strip">
+    <div class="macro-card alert">
+      <div class="macro-label">10Y 美債</div>
+      <div class="macro-value up">4.595%</div>
+      <div class="macro-chg">前收 4.461%，+13.4bp</div>
+      <div class="macro-note">Warsh 政策路徑重新定價</div>
+    </div>
+    <div class="macro-card warn">
+      <div class="macro-label">Brent Crude</div>
+      <div class="macro-value warn">$110.54</div>
+      <div class="macro-chg">+1.17%（前收 $109.26）</div>
+      <div class="macro-note">⚠ 距 $115 Veto 升級線 4.3%</div>
+    </div>
+    <div class="macro-card">
+      <div class="macro-label">WTI Crude</div>
+      <div class="macro-value up">$102.33</div>
+      <div class="macro-chg">+1.30%（前收 $101.02）</div>
+    </div>
+    <div class="macro-card warn">
+      <div class="macro-label">VIX</div>
+      <div class="macro-value warn">19.23</div>
+      <div class="macro-chg">前收 18.43，+4.34%</div>
+      <div class="macro-note">接近 20 警戒；22 = Taleb 觸發</div>
+    </div>
+  </div>
+
+  <!-- STOCKS -->
+  <div class="section-label">重點個股（盤前）</div>
+  <div class="stock-grid">
+    <div class="stock-card highlight-neg">
+      <div class="stock-ticker">NVDA</div>
+      <div class="stock-name">Nvidia — 週三業績</div>
+      <div class="stock-price">$225.32</div>
+      <div class="stock-chg down">▼ −$10.42 (−4.42%)</div>
+      <div class="stock-note">業績前賣壓；5/20 週三業績</div>
+    </div>
+    <div class="stock-card highlight-neg">
+      <div class="stock-ticker">BABA</div>
+      <div class="stock-name">Alibaba ADR</div>
+      <div class="stock-price">$132.59</div>
+      <div class="stock-chg down">▼ −$8.53 (−6.04%)</div>
+      <div class="stock-note">與 HK 9988 5/18 收市一致</div>
+    </div>
+    <div class="stock-card highlight-neg">
+      <div class="stock-ticker">BA</div>
+      <div class="stock-name">Boeing</div>
+      <div class="stock-price">$220.49</div>
+      <div class="stock-chg down">▼ −$8.72 (−3.80%)</div>
+      <div class="stock-note">200 架中國大單已 priced-in</div>
+    </div>
+    <div class="stock-card highlight-neutral">
+      <div class="stock-ticker">TSLA</div>
+      <div class="stock-name">Tesla</div>
+      <div class="stock-price">$422.24</div>
+      <div class="stock-chg" style="color:var(--dim)">5/15 收市（盤前未更新）</div>
+      <div class="stock-note">$400 支撐；Cybercab Q4 ramp 待確認</div>
+    </div>
+    <div class="stock-card highlight-neg">
+      <div class="stock-ticker">^VIX</div>
+      <div class="stock-name">恐慌指數</div>
+      <div class="stock-price" style="color:var(--amber)">19.23</div>
+      <div class="stock-chg down">▲ +0.80 (+4.34%)</div>
+      <div class="stock-note">接近 20 警戒；22 = Taleb Veto</div>
+    </div>
+    <div class="stock-card highlight-neutral">
+      <div class="stock-ticker">HSI</div>
+      <div class="stock-name">恒生指數（5/18 收市）</div>
+      <div class="stock-price" style="color:var(--red)">25,675.18</div>
+      <div class="stock-chg down">▼ −1.11%（Bear 確認）</div>
+      <div class="stock-note">read-through：亞太同步賣壓</div>
+    </div>
+  </div>
+
+  <!-- WARSH CARD -->
+  <div class="section-label">Warsh 風險</div>
+  <div class="warsh-card">
+    <div class="warsh-title">⚖ Kevin Warsh — 候任 Fed Chair 鷹派政策路徑</div>
+    <div class="warsh-quote">「Inflation is a choice」— 強烈反通脹優先</div>
+    <div class="warsh-quote">「Regime change in the conduct of policy」— 取代 Powell 框架</div>
+    <div class="warsh-quote">「Fed must stay in its lane」— 聚焦通脹，反對非貨幣職能擴張</div>
+    <div class="warsh-impact">
+      5/13 參議院 54-45 確認 · Powell 仍為 chair pro tempore 至 Warsh 宣誓就任 ·
+      10Y 週末 +13.4bp → 折現率上行直接壓縮高估值 PE（NVDA / TSLA 首當其衝）
+    </div>
+  </div>
+
+  <!-- DEBATE -->
+  <div class="section-label">投資委員會辯論（9 角色加權）</div>
+  <div class="debate-card">
+    <div class="debate-title">辯題：ES −0.41%（~7,378 Bear 區間）+ NVDA −4.42% + BABA −6.04% + 10Y 4.595% + Brent $110.54 + Iran Situation Room → 5/18 美股如何定位？</div>
+    <div class="vote-bar-wrap">
+      <div class="vote-bar">
+        <div class="vote-seg vote-long" style="width:21.3%">Long 21.3%</div>
+        <div class="vote-seg vote-neutral" style="width:14.6%">Neutral 14.6%</div>
+        <div class="vote-seg vote-short" style="width:64.1%">Short 64.0%</div>
+      </div>
+    </div>
+    <div class="vote-legend">
+      <div class="vote-item"><div class="vote-dot" style="background:var(--green)"></div> Long 21.3%（Lynch ×1.2 + WSB ×0.7）</div>
+      <div class="vote-item"><div class="vote-dot" style="background:var(--muted)"></div> Neutral 14.6%（Drucky ×1.3）</div>
+      <div class="vote-item"><div class="vote-dot" style="background:var(--red)"></div> Short 64.0%（Soros + 宏觀 + Quant + Dalio + Marks + Taleb）</div>
+    </div>
+    <div class="verdict-box">
+      <strong>主持人裁決</strong>：空方主導（64%）但未至 5/15 極端（71%）。Long 回升至 21.3% 反映 Trump-中國大單 + NVDA 業績正面不確定性。<strong>本週核心矛盾：NVDA 週三業績</strong> — MISS → Bear-- 升溫；BEAT → 可能觸發反彈。今日策略：保守持倉，等業績確認方向。
+    </div>
+  </div>
+
+  <!-- EV BOX -->
+  <div class="ev-box">
+    <div>
+      <div class="ev-label">今日 S&amp;P 500 預期值（EV）</div>
+      <div class="ev-range">起點 7,408.50 · 概率加權估算</div>
+    </div>
+    <div>
+      <div class="ev-value">−0.7% 至 −1.1%</div>
+    </div>
+    <div style="font-size:11px; color:var(--dim); max-width:300px;">
+      主要下行驅動：NVDA 業績前賣壓 + Iran Situation Room 週二 + 10Y 4.595% 高位 + HK Bear 傳導
+    </div>
+  </div>
+
+  <!-- SCENARIO GRID -->
+  <div class="section-label">今日情景預測（5/18 收盤）</div>
+  <div class="scenario-grid">
+    <div class="scenario-card">
+      <div class="scenario-label">Bull++</div>
+      <div class="scenario-prob bull">3%</div>
+      <div class="scenario-range">S&amp;P 7,500+</div>
+    </div>
+    <div class="scenario-card">
+      <div class="scenario-label">Bull</div>
+      <div class="scenario-prob bull">10%</div>
+      <div class="scenario-range">7,440–7,500</div>
+    </div>
+    <div class="scenario-card">
+      <div class="scenario-label">Base</div>
+      <div class="scenario-prob base">27%</div>
+      <div class="scenario-range">7,380–7,440</div>
+    </div>
+    <div class="scenario-card active">
+      <div class="scenario-label">Bear ★</div>
+      <div class="scenario-prob bear">37%</div>
+      <div class="scenario-range">7,320–7,380</div>
+    </div>
+    <div class="scenario-card">
+      <div class="scenario-label">Bear--</div>
+      <div class="scenario-prob bear">23%</div>
+      <div class="scenario-range">&lt;7,320</div>
+    </div>
+  </div>
+
+  <!-- VETO + ACTION -->
+  <div class="bottom-grid">
+    <div class="veto-card">
+      <div class="card-title">🛡 Risk Veto 狀態</div>
+      <div class="veto-row">
+        <span class="veto-label">Taleb 個人 Veto</span>
+        <span class="veto-status warn">7/10（接近觸發）</span>
+      </div>
+      <div class="veto-row">
+        <span class="veto-label">PPI &gt; 5.5%</span>
+        <span class="veto-status triggered">✅ 觸發（+6.0%）</span>
+      </div>
+      <div class="veto-row">
+        <span class="veto-label">Brent &gt; $100（$110.54）</span>
+        <span class="veto-status triggered">✅ 觸發（距 $115 僅 4.3%）</span>
+      </div>
+      <div class="veto-row">
+        <span class="veto-label">廣度背離</span>
+        <span class="veto-status warn">⚠️ 警示</span>
+      </div>
+      <div class="veto-row">
+        <span class="veto-label">動能崩潰</span>
+        <span class="veto-status warn">⚠️ 警示</span>
+      </div>
+      <div class="veto-row">
+        <span class="veto-label">流動性危機</span>
+        <span class="veto-status ok">❌ 未觸發</span>
+      </div>
+      <div style="margin-top:10px; text-align:center;">
+        <div class="cap-big">≤60%</div>
+        <div class="cap-label">倉位上限（System PARTIAL 2/4）</div>
+        <div style="font-size:10px; color:var(--amber); margin-top:4px;">Brent 突破 $115 → PARTIAL 3/4 → ≤40%</div>
+      </div>
+    </div>
+
+    <div class="action-card">
+      <div class="card-title">📋 今日操作指引</div>
+      <ul class="trigger-list">
+        <li><strong style="color:var(--text)">NVDA</strong>：今日不追跌；週三業績後決定；跌 &gt;−6% → 減至 ≤3%</li>
+        <li><strong style="color:var(--text)">BABA / 中概</strong>：觀望；不抄底</li>
+        <li><strong style="color:var(--text)">配置</strong>：防禦 + 現金 ≥40%；核心科技 ≤20%；高 Beta ≤15%</li>
+        <li><strong style="color:var(--text)">VIX &gt; 22</strong> → Taleb Veto 觸發 → 倉位 ≤40%</li>
+        <li><strong style="color:var(--text)">S&amp;P &lt; 7,360</strong> → 切 Bear--，≤30%</li>
+        <li><strong style="color:var(--amber)">Brent &gt; $115</strong> → PARTIAL 3/4 → ≤40%</li>
+        <li><strong style="color:var(--red)">Iran 軍事行動</strong> → 即切 Bear--，≤30%</li>
+        <li><strong style="color:var(--text)">NVDA 週三 MISS</strong> → 科技 Beta 清倉，≤40%</li>
+        <li><strong style="color:var(--text)">10Y &gt; 4.65%</strong> → 減科技 Beta 至 15%</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- NVDA EARNINGS HIGHLIGHT -->
+  <div class="section-label">本週關鍵事件</div>
+  <div style="background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-bottom:20px;">
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
+      <div>
+        <div style="font-size:11px; color:var(--dim); margin-bottom:4px;">週二（5/19）</div>
+        <div style="font-size:12px; color:var(--red); font-weight:600;">🚨 Iran Situation Room</div>
+        <div style="font-size:11px; color:var(--muted);">媒體引述：討論伊朗軍事選項</div>
+      </div>
+      <div>
+        <div style="font-size:11px; color:var(--dim); margin-bottom:4px;">週三（5/20）</div>
+        <div style="font-size:12px; color:var(--amber); font-weight:600;">⭐ NVDA 業績公布</div>
+        <div style="font-size:11px; color:var(--muted);">本週最大雙向催化劑</div>
+      </div>
+      <div>
+        <div style="font-size:11px; color:var(--dim); margin-bottom:4px;">持續監控</div>
+        <div style="font-size:12px; color:var(--amber); font-weight:600;">Brent $110.54 → $115</div>
+        <div style="font-size:11px; color:var(--muted);">Veto PARTIAL 3/4 觸發線</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  2026-05-18 美股盤前日報 · 辯論制 · System Veto PARTIAL 2/4 · Taleb 7/10 · 倉位上限 ≤60%<br>
+  數據來源：Yahoo Finance（mcp__tradingview-screener__yahoo_price，HKT 19:50）· StockTwits · CNBC · Robinhood Prediction Markets
+</div>
+
+</body>
+</html>

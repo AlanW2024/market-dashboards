@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-05-26 港股盤前 Dashboard</title>
+<style>
+:root { --bg:#0a0a0f; --panel:#13131b; --panel-2:#1a1a24; --border:#2a2a36; --text:#e8e8ee; --text-dim:#9b9bab; --gold:#d4af37; --green:#16c784; --red:#ea3943; --amber:#f59e0b; --purple:#7c3aed; --blue:#3b82f6; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif; line-height:1.6; padding:24px; max-width:1400px; margin:0 auto; }
+header { border-bottom:2px solid var(--gold); padding-bottom:16px; margin-bottom:24px; }
+h1 { font-size:28px; color:var(--gold); margin-bottom:8px; }
+.meta { color:var(--text-dim); font-size:13px; }
+.divider { height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:32px 0; }
+section { margin-bottom:28px; }
+h2 { font-size:18px; color:var(--gold); margin-bottom:14px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+.hero-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:20px; }
+.metric { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:14px; }
+.metric-label { color:var(--text-dim); font-size:12px; margin-bottom:4px; }
+.metric-value { font-size:22px; font-weight:600; }
+.metric-change { font-size:13px; margin-top:4px; }
+.up { color:var(--green); } .down { color:var(--red); } .warn { color:var(--amber); } .neutral { color:var(--text-dim); }
+table { width:100%; border-collapse:collapse; background:var(--panel); border-radius:8px; overflow:hidden; margin-bottom:12px; }
+th,td { padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); font-size:13px; }
+th { background:var(--panel-2); color:var(--gold); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:0.5px; }
+tr:last-child td { border-bottom:none; }
+.alert { background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05)); border-left:4px solid var(--amber); padding:14px 18px; border-radius:6px; margin:16px 0; font-size:14px; }
+.alert-green { background:linear-gradient(135deg,rgba(22,199,132,0.15),rgba(22,199,132,0.05)); border-left-color:var(--green); }
+.alert-red { background:linear-gradient(135deg,rgba(234,57,67,0.15),rgba(234,57,67,0.05)); border-left-color:var(--red); }
+.regime-badge { display:inline-block; padding:4px 12px; border-radius:4px; font-size:12px; font-weight:600; background:#4ade80; color:#000; margin-left:8px; }
+.vote-bar { display:flex; height:32px; border-radius:6px; overflow:hidden; margin:12px 0; font-size:12px; font-weight:600; }
+.vote-segment { display:flex; align-items:center; justify-content:center; color:#fff; }
+.vote-long { background:var(--green); } .vote-neutral { background:var(--text-dim); } .vote-short { background:var(--red); }
+.scenario-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin:12px 0; }
+.scenario { background:var(--panel-2); border:1px solid var(--border); border-radius:8px; padding:12px; border-top:4px solid var(--text-dim); }
+.scenario.bull-plus { border-top-color:var(--green); }
+.scenario.bull { border-top-color:#4ade80; }
+.scenario.base { border-top-color:var(--gold); }
+.scenario.bear { border-top-color:#fb923c; }
+.scenario.bear-minus { border-top-color:var(--red); }
+.scenario .prob { font-size:24px; font-weight:700; }
+.scenario .range { font-size:13px; color:var(--text-dim); margin:4px 0; }
+.scenario .name { font-size:11px; text-transform:uppercase; color:var(--text-dim); }
+.kv-row { display:grid; grid-template-columns:1fr 2fr; gap:12px; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.kv-row:last-child { border-bottom:none; }
+.kv-label { color:var(--text-dim); }
+.dispute { background:var(--panel-2); border-left:3px solid var(--purple); padding:12px 16px; margin:10px 0; border-radius:4px; font-size:13px; }
+.dispute .role { color:var(--gold); font-weight:600; }
+footer { margin-top:40px; padding-top:20px; border-top:1px solid var(--border); color:var(--text-dim); font-size:11px; }
+.tag-list { margin-top:8px; }
+.tag { display:inline-block; padding:2px 8px; background:var(--panel); border-radius:4px; margin-right:6px; font-size:11px; color:var(--text-dim); }
+</style>
+</head>
+<body>
+
+<header>
+<h1>港股盤前 Dashboard · 2026-05-26 <span class="regime-badge">Bull ★ 35% — macro tailwind 三重</span></h1>
+<div class="meta">
+生成 HKT 09:27 · 港股距 09:30 開市 ~3 分鐘 · W22 第一個 HK 交易日（5/25 港股佛誕補假 + US Memorial Day 同日休市）<br>
+中芯 +14.97% 三度爆升 · 騰訊跌穿 $440 floor · Brent 崩跌 -7.86% 完全鬆動 · ES 距 52w high 0.41%
+</div>
+</header>
+
+<div class="alert">
+<strong>📅 假期 context</strong>：5/25 (Mon) 港股佛誕補假休市 + US Memorial Day 同日休市 → W22 港股 = 5/26–5/30 共 4 個交易日。5/22 盤後 Section 6 預測直接對 5/26 開市作 reference（無中間 trading session）。
+<br><br>
+<strong>三重 macro tailwind 同日齊發</strong>：
+① <strong>油價崩跌</strong>（Brent 5/22 $100.21 → 5/26 $95.40 = -4.80%，24h -7.86%）= System Veto 條件 2 完全解除 trigger fired；
+② <strong>ES 距 52w high 7,569.75 僅 0.41%</strong>，Memorial Day 後 gap up；N225 5/26 已創新 52w 高 $65,317.69；
+③ <strong>中芯 0981 +14.97% 三度爆升</strong>（4 日累計 +35%，距 52w high 1.85%）。
+EV 由 -0.2~+0.3% 大幅上修至 <strong>+0.3~+0.8%</strong>。
+</div>
+
+<section>
+<h2>港股 5/26 開市前 indicative（5/25 港股佛誕補假休市）</h2>
+<div class="hero-grid">
+  <div class="metric"><div class="metric-label">^HSI</div><div class="metric-value">25,606.03</div><div class="metric-change up">+0.095% vs 5/22 收 Base 上緣</div></div>
+  <div class="metric"><div class="metric-label">^HSCE</div><div class="metric-value">8,550.87</div><div class="metric-change up">+0.099%</div></div>
+  <div class="metric"><div class="metric-label">3032 HSTECH</div><div class="metric-value">$4.76</div><div class="metric-change down">−1.77%（中芯未反映入 ETF）</div></div>
+  <div class="metric"><div class="metric-label">0700 騰訊</div><div class="metric-value">$435.00</div><div class="metric-change down">−1.45% ⚠️ <strong>跌穿 $440 floor</strong></div></div>
+  <div class="metric"><div class="metric-label">9988 阿里</div><div class="metric-value">$125.10</div><div class="metric-change down">−1.50%</div></div>
+  <div class="metric"><div class="metric-label">0981 中芯</div><div class="metric-value up">$91.80</div><div class="metric-change up">+14.97% 🏆 距 52w 高 1.85%</div></div>
+  <div class="metric"><div class="metric-label">9618 京東</div><div class="metric-value">$120.50</div><div class="metric-change down">−0.99% 距 $118 警戒 2.1%</div></div>
+  <div class="metric"><div class="metric-label">1810 小米</div><div class="metric-value">$30.20</div><div class="metric-change up">+0.60%</div></div>
+</div>
+</section>
+
+<section>
+<h2>商品 / 宏觀 — 油價崩跌 macro tailwind</h2>
+<div class="hero-grid">
+  <div class="metric"><div class="metric-label">Brent (BZ=F)</div><div class="metric-value up">$95.40</div><div class="metric-change up">−7.86% ✅ <strong>完全鬆動 trigger fired</strong></div></div>
+  <div class="metric"><div class="metric-label">WTI (CL=F)</div><div class="metric-value up">$91.81</div><div class="metric-change up">−4.96% 跌穿 $95 + $92</div></div>
+  <div class="metric"><div class="metric-label">VIX</div><div class="metric-value">16.59</div><div class="metric-change up">−0.66% 低位</div></div>
+  <div class="metric"><div class="metric-label">10Y (^TNX)</div><div class="metric-value">4.558%</div><div class="metric-change neutral">持平 vs 5/22；距 4.50% 0.058pp</div></div>
+  <div class="metric"><div class="metric-label">DXY</div><div class="metric-value">99.239</div><div class="metric-change neutral">−0.08%</div></div>
+  <div class="metric"><div class="metric-label">GLD（5/22 收）</div><div class="metric-value">$413.82</div><div class="metric-change neutral">5/25 US 休市</div></div>
+</div>
+</section>
+
+<section>
+<h2>美股 5/22 RTH（5/25 Memorial Day 休市；5/26 RTH 開市方向 reference）</h2>
+<table>
+<tr><th>指標</th><th>5/22 收</th><th>訊號</th></tr>
+<tr><td>^GSPC</td><td>7,473.47 (+0.37%)</td><td>Bull ★ 兌現</td></tr>
+<tr><td><strong>NVDA</strong></td><td>$215.33 (−1.90%)</td><td class="warn">跌穿 $218 stop（仍 stop fired）</td></tr>
+<tr><td><strong>AAPL</strong></td><td>$308.82 (+1.26%)</td><td class="up">新 52w 高 $311.40；leadership 加碼 trigger fired</td></tr>
+<tr><td>BABA</td><td>$130.00 (−1.12%)</td><td>中概 ADR 跟跌</td></tr>
+<tr><td><strong>KWEB</strong></td><td>$26.91 (−2.61%)</td><td class="warn">距 52w low $26.41 僅 1.9%</td></tr>
+</table>
+</section>
+
+<section>
+<h2>跨市場（5/26 早段）— ES + N225 接近 / 突破 52w high</h2>
+<div class="hero-grid">
+  <div class="metric"><div class="metric-label">ES=F（5/26 早段）</div><div class="metric-value up">7,538.50</div><div class="metric-change up">+0.63% <strong>距 52w 高 7,569.75 僅 0.41%</strong></div></div>
+  <div class="metric"><div class="metric-label">NQ=F（5/26 早段）</div><div class="metric-value up">29,814.25</div><div class="metric-change up">+0.86% 距 52w 高 0.60%</div></div>
+  <div class="metric"><div class="metric-label">^N225（5/26 早段）</div><div class="metric-value up">65,054.02</div><div class="metric-change up">−0.16%（已突破 W21 末 52w 高，5/26 新高 $65,317.69）</div></div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+<h2>5/26 港股 RTH 預測（盤前重估 vs 5/22 盤後）</h2>
+<div class="scenario-grid">
+  <div class="scenario bull-plus">
+    <div class="name">BULL++ 極端牛</div>
+    <div class="prob">12%</div>
+    <div class="range">26,000+</div>
+    <div style="font-size:11px;color:var(--text-dim);">+4pp vs 5/22 盤後</div>
+  </div>
+  <div class="scenario bull">
+    <div class="name">BULL 偏牛 ★</div>
+    <div class="prob">35%</div>
+    <div class="range">25,800–26,000</div>
+    <div style="font-size:11px;color:var(--text-dim);">+13pp（主場景）</div>
+  </div>
+  <div class="scenario base">
+    <div class="name">BASE 基準</div>
+    <div class="prob">30%</div>
+    <div class="range">25,400–25,800</div>
+    <div style="font-size:11px;color:var(--text-dim);">−8pp</div>
+  </div>
+  <div class="scenario bear">
+    <div class="name">BEAR 偏熊</div>
+    <div class="prob">16%</div>
+    <div class="range">25,000–25,400</div>
+    <div style="font-size:11px;color:var(--text-dim);">−6pp</div>
+  </div>
+  <div class="scenario bear-minus">
+    <div class="name">BEAR-- 極端熊</div>
+    <div class="prob">7%</div>
+    <div class="range">&lt;25,000</div>
+    <div style="font-size:11px;color:var(--text-dim);">−3pp</div>
+  </div>
+</div>
+<div class="kv-row"><div class="kv-label">預期值 EV</div><div><strong class="up">+0.3% to +0.8%</strong>（vs 5/22 盤後 -0.2~+0.3% 大幅上修 +0.5pp）</div></div>
+<div class="kv-row"><div class="kv-label">主導敘事</div><div>油價崩跌 + ES 接近 52w high + 中芯催化 三重 macro tailwind；caveat：騰訊 floor 失守 + 中芯過熱 reversal risk</div></div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+<h2>10 角色辯論結果（盤前加權後）</h2>
+<div class="vote-bar">
+  <div class="vote-segment vote-long" style="width:38%;">Long 38.0%</div>
+  <div class="vote-segment vote-neutral" style="width:44%;">Neutral 44.0%</div>
+  <div class="vote-segment vote-short" style="width:18%;">Short 18.0%</div>
+</div>
+
+<h3 style="color:var(--gold);font-size:14px;margin-top:18px;">三大分歧</h3>
+
+<div class="dispute">
+<span class="role">Druckenmiller（Long）vs Taleb（Short）</span> — 中芯 +14.97% momentum sustain vs 過熱反向：
+Druckenmiller 認為 4 日累計 +35% 係 catalyst-driven（國產化 + 半導體 cycle + 業績預期），距 52w high 僅 1.9% breakthrough 邊緣，5/26 hold $90 → +2pp 加碼；
+Taleb 反駁 4 日 +35% single-stock reversal probability 50%+，RSI overbought，隔日 catalyst surprise 凸性 downside，Taleb 維持 5.5/10。
+</div>
+
+<div class="dispute">
+<span class="role">李嘉誠（Long）vs 連登散戶（Short）</span> — HSI Bull 區突破 vs 騰訊 floor 失守：
+李嘉誠認為 HSI 距 26,000 1.5% + 油價崩跌 macro tailwind + 中芯催化 + ES 突破 52w high 三重支撐，騰訊跌穿 $440 屬個股事件可由 0981 / AAPL/SMH 廣度補位；
+連登散戶反駁騰訊跌穿 $440 = 中概核心動能瓦解訊號（連續 floor 失守），9988 + 9618 同步跌板塊壓力擴散，short 騰訊 + put 9988，唔 chase HSI Bull。
+</div>
+
+<div class="dispute">
+<span class="role">Soros（Long）vs 宏觀策略師（Neutral）</span> — 油價崩跌的解讀：
+Soros 認為 Brent intra-day -7.86% reflexivity 完全反向（W21「接近完全鬆動」→ W22「完全解除」），narrative shift（通脹 weakening + Fed 降息預期回升）= risk asset 普遍 priced；
+宏觀策略師補充油價崩跌 source 模糊（① OPEC+ 5/25 dovish / ② 中美需求疑慮 / ③ 中東緩和），如果係 ② 需求疑慮 = stagflation 反向 risk（增長疑慮），維持 Neutral。
+</div>
+</section>
+
+<section>
+<h2>Action Cards（5/26 盤前 4 條）</h2>
+<table>
+<tr><th>Action</th><th>觸發</th><th>Size</th><th>Stop</th><th>Target</th></tr>
+<tr><td><strong>中芯 0981 +2pp 加碼</strong></td><td>5/26 hold $90 + NVDA 5/26 RTH hold $215</td><td>+2pp 0981</td><td>$85</td><td>$98（突破 52w high）</td></tr>
+<tr><td><strong>HSTECH ETF 3032 +2pp</strong></td><td>5/26 hold 開市方向 + 中芯延續</td><td>+2pp 3032</td><td>$4.65</td><td>$5.00</td></tr>
+<tr><td><strong>騰訊 0700 short watch</strong></td><td>5/26 跌穿 $430 = floor 完全失守</td><td>1pp short 0700</td><td>$440</td><td>$420</td></tr>
+<tr><td><strong>9618 短倉</strong>（連登）</td><td>5/26 跌穿 $118</td><td>1pp short 9618</td><td>$122</td><td>$115</td></tr>
+</table>
+</section>
+
+<section>
+<h2>Risk Veto / 倉位</h2>
+<table>
+<tr><th>項目</th><th>5/22 港股盤後</th><th>5/26 港股盤前</th><th>變化</th></tr>
+<tr><td>Taleb 個人 Veto</td><td>6/10</td><td>5.5/10</td><td class="up">↓ 0.5pp（油價完全鬆動）</td></tr>
+<tr><td>系統 Veto — PPI</td><td>✅ 觸發</td><td>✅ 維持</td><td>不變</td></tr>
+<tr><td>系統 Veto — 北水</td><td>累計 −126 億</td><td>⏳ provisional</td><td>—</td></tr>
+<tr><td>系統 Veto — 油價</td><td class="warn">⚠️ 接近完全鬆動 ($100.21)</td><td class="up">✅ <strong>完全解除 ($95.40)</strong></td><td class="up">大幅轉好</td></tr>
+<tr><td>系統 Veto — 動能</td><td class="warn">⚠️ 輕度回啟</td><td class="up">❌ 解除</td><td class="up">轉好</td></tr>
+<tr><td><strong>系統 PARTIAL</strong></td><td>2/4</td><td class="up"><strong>1/4</strong></td><td class="up">↓（油價 + 動能轉好）</td></tr>
+<tr><td><strong>HK 實質執行</strong></td><td>40–45%</td><td class="up"><strong>45–55%（cond. 55–60%）</strong></td><td class="up">↑ +5–10pp</td></tr>
+</table>
+</section>
+
+<section>
+<h2>今日 ETA Matrix（5/26 W22 第二日）</h2>
+<table>
+<tr><th>事件</th><th>時間 HKT</th><th>觸發</th><th>行動</th></tr>
+<tr><td><strong>HSI 5/26 開市方向</strong></td><td>09:30</td><td>hold 25,500+ + 中芯 hold $90</td><td>維持 45–50%</td></tr>
+<tr><td><strong>HSI 5/26 收盤</strong></td><td>16:00</td><td>hold 25,800+ + 北水正向</td><td>Bull 兌現 → +5pp 50–55%</td></tr>
+<tr><td>中芯 hold $90</td><td>全日</td><td>+14.97% 延續 + NVDA hold $215</td><td>+2pp</td></tr>
+<tr><td><strong>中芯 突破 $93.50（52w high）</strong></td><td>全日</td><td>4 日 +35% breakthrough</td><td>新 leadership → +3pp</td></tr>
+<tr><td><strong>騰訊 跌穿 $430</strong></td><td>全日</td><td>floor 完全失守</td><td>減 0700 2pp + 警示</td></tr>
+<tr><td>9618 跌穿 $118</td><td>全日</td><td>電商 sell-the-news</td><td>短倉 1pp</td></tr>
+<tr><td>9988 跌穿 $123</td><td>全日</td><td>中概 trend confirm</td><td>減 BABA 2pp</td></tr>
+<tr><td>Brent hold &lt; $100</td><td>全日</td><td>完全鬆動延續</td><td>System Veto 1/4 confirm → 60% 上限</td></tr>
+<tr><td><strong>Brent &lt; $95</strong></td><td>全日</td><td>完全 deflation 訊號</td><td>增長疑慮 → 防禦 +5pp 邊緣</td></tr>
+<tr><td><strong>美股 ES 5/26 開市</strong></td><td>21:30</td><td>hold 7,500+ / 突破 52w 高 7,570</td><td>共振 → HK hold；跌穿 7,400 → deleveraging</td></tr>
+<tr><td>VIX &gt; 22</td><td>全日</td><td>跨市場 vol 急升</td><td>重啟避險 → HK ≤30%</td></tr>
+</table>
+</section>
+
+<section>
+<h2>Live Positioning Reference</h2>
+<table>
+<tr><th>Asset</th><th>Size</th><th>5/22 收</th><th>Paper P&L</th><th>Falsification 監控</th></tr>
+<tr><td>GLD</td><td>$15K (15%)</td><td>$413.82</td><td class="up">+68.7%（paper）</td><td>DXY &gt; 106 = 失效；今日 99.239（距 6.8%）</td></tr>
+<tr><td>SHY</td><td>$20K (20%)</td><td>hold</td><td>—</td><td>10Y &lt; 4.0% = roll out；今日 4.558%（距 0.558pp）</td></tr>
+</table>
+<div class="alert-green alert">
+✅ GLD：W21 -1.12% 但 thesis 不變；W22 油價崩跌 = 通脹預期 weakening = 短線 GLD 利淡<br>
+⚠️ SHY：10Y 維持 4.558% 距 4.50% trigger 0.058pp；W22 油價崩跌可能加速 10Y 跌穿（PE 解壓利好科技）<br>
+<strong>HK 倉位 W22 上修</strong>：5/22 盤後 40–45% → 5/26 盤前 45–55%（cond. 55–60%）= ↑ +5–10pp（macro tailwind 三重）
+</div>
+</section>
+
+<section>
+<h2>📅 W22 港股假期 context</h2>
+<div class="alert-green alert">
+<strong>5/25 (Mon) 港股佛誕補假休市</strong>（佛誕逢 5/24 週日 → 5/25 補假）+ <strong>US Memorial Day 同日休市</strong>。<br>
+W22 港股交易日 = 5/26 (Tue) → 5/30 (Fri) <strong>4 個交易日</strong>（非 W21 5 個）。<br>
+5/22 盤後 Section 6 預測直接對 5/26 開市作 reference（無中間 trading session 介入）。
+</div>
+</section>
+
+<footer>
+Sources: Yahoo Finance via mcp__tradingview-screener__yahoo_price, timestamp 2026-05-26T01:26 UTC ≈ HKT 09:26<br>
+Wikilinks: 2026-05-22 港股盤後日報 · 2026-05-22 美股盤後日報 · 2026-05-26 港股盤後日報（今日 placeholder）· 2026-05-26 美股盤前日報（今晚 placeholder）<br>
+假期 context: 5/25 港股佛誕補假休市 + US Memorial Day 同日休市；W22 港股 = 5/26–5/30 4 個交易日<br>
+Delivery waiver: 本次盤前未另建獨立辯論記錄；辯論摘要已內嵌 Section 4
+<div class="tag-list">
+<span class="tag">#港股</span>
+<span class="tag">#盤前</span>
+<span class="tag">#日報</span>
+<span class="tag">#2026-05-26</span>
+</div>
+</footer>
+
+</body>
+</html>

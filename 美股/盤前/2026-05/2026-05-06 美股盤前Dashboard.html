@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>美股盤前日報（補做版）— 2026-05-06</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#D4AF37;--gold-dim:rgba(212,175,55,0.15);--gold-glow:rgba(212,175,55,0.3);--bg-primary:#0a0a0f;--bg-card:#12121a;--bg-elevated:#1e1e2a;--text-primary:#e8e6e1;--text-secondary:#8a8a9a;--text-dim:#5a5a6a;--border:rgba(255,255,255,0.06);--border-gold:rgba(212,175,55,0.3);--bullish:#4ade80;--bearish:#f87171;--neutral:#fbbf24;--bullish-bg:rgba(74,222,128,0.08);--bearish-bg:rgba(248,113,113,0.08);--neutral-bg:rgba(251,191,36,0.08);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg-primary);color:var(--text-primary);font-family:'Noto Sans TC','JetBrains Mono',sans-serif;line-height:1.6;min-height:100vh;}
+.container{max-width:860px;margin:0 auto;padding:2rem 1.5rem 5rem;}
+.market-header{text-align:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);position:relative;}
+.market-header::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:120px;height:1px;background:var(--gold);}
+.header-eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;}
+.market-header h1{font-family:'DM Serif Display',serif;font-size:clamp(1.6rem,4vw,2.2rem);color:var(--text-primary);margin-bottom:0.25rem;}
+.header-subtitle{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-secondary);}
+.recon-banner{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.3);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:0.85rem;color:var(--neutral);display:flex;align-items:flex-start;gap:0.75rem;}
+.recon-icon{font-size:1.2rem;flex-shrink:0;}
+.hero-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin-bottom:1.5rem;}
+.hero-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center;}
+.hero-label{font-family:'JetBrains Mono',monospace;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.4rem;}
+.hero-value{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--text-primary);margin-bottom:0.2rem;}
+.hero-change{font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:600;}
+.hero-change.up{color:var(--bullish);}
+.hero-change.down{color:var(--bearish);}
+.section-title{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text-primary);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.6rem;}
+.section-title::before{content:'';width:3px;height:1em;background:var(--gold);border-radius:2px;flex-shrink:0;}
+.news-timeline{margin-bottom:1.5rem;}
+.news-item{display:flex;align-items:flex-start;gap:0.7rem;padding:0.65rem 0;border-bottom:1px solid var(--border);font-size:0.83rem;color:var(--text-secondary);line-height:1.5;}
+.news-item:last-child{border-bottom:none;}
+.news-tag{font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;padding:0.18rem 0.45rem;border-radius:4px;white-space:nowrap;flex-shrink:0;}
+.news-tag.positive{background:var(--bullish-bg);color:var(--bullish);}
+.news-tag.energy{background:rgba(251,146,60,0.15);color:#fb923c;}
+.news-tag.macro{background:rgba(56,189,248,0.15);color:#38bdf8;}
+.news-tag.watch{background:var(--neutral-bg);color:var(--neutral);}
+.news-tag.earnings{background:rgba(168,85,247,0.15);color:#a855f7;}
+.scenario-table{width:100%;border-collapse:collapse;margin-bottom:1.5rem;background:var(--bg-card);border-radius:12px;overflow:hidden;}
+.scenario-table th{background:var(--bg-elevated);font-family:'JetBrains Mono',monospace;font-size:0.63rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);padding:0.6rem 0.75rem;text-align:left;}
+.scenario-table td{padding:0.6rem 0.75rem;border-top:1px solid var(--border);font-size:0.82rem;color:var(--text-secondary);}
+.scenario-table td:first-child{font-weight:600;color:var(--text-primary);}
+.obs-list{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.5rem;}
+.obs-item{padding:0.5rem 0;border-bottom:1px solid var(--border);font-size:0.83rem;color:var(--text-secondary);display:flex;align-items:flex-start;gap:0.5rem;line-height:1.5;}
+.obs-item:last-child{border-bottom:none;}
+.obs-num{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--gold);font-weight:600;min-width:20px;}
+.footer{text-align:center;padding:1.5rem 0 1rem;font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-dim);border-top:1px solid var(--border);margin-top:1.5rem;}
+@media(max-width:600px){.hero-metrics{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="market-header">
+  <div class="header-eyebrow">US Equity · Pre-Market · Wednesday · Late Reconstruction</div>
+  <h1>2026-05-06 美股盤前日報（補做版）</h1>
+  <div class="header-subtitle">補做：2026-05-07 HKT ｜ 數據截止：2026-05-05 收市 ｜ AMD AH +13% · Iran 和談新進展</div>
+</div>
+
+<div class="recon-banner">
+  <span class="recon-icon">⚠️</span>
+  <div>
+    <strong>Late Reconstruction 補做版</strong> — 本報告於 2026-05-07 補做。Section 6（今日預測）直接沿用 [[2026-05-05 美股盤後日報]] Section 6 明日留意框架，<strong>未反填任何收市後數據</strong>。本版本存在以滿足盤後報告 Delivery Gate Rule #10 要求。
+  </div>
+</div>
+
+<!-- ===== HERO METRICS (5/5 Close Reference) ===== -->
+<div class="section-title">盤前參考數據（5/5 收市）</div>
+<div class="hero-metrics">
+  <div class="hero-card">
+    <div class="hero-label">SPY（前日收）</div>
+    <div class="hero-value">726.42</div>
+    <div class="hero-change up">▲ +1.02%</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">QQQ（前日收）</div>
+    <div class="hero-value">687.24</div>
+    <div class="hero-change up">▲ +1.30%</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">VIX（前日收）</div>
+    <div class="hero-value">17.38</div>
+    <div class="hero-change up">▼ −4.98%</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label">WTI（前日收）</div>
+    <div class="hero-value">$102.27</div>
+    <div class="hero-change up">▼ −3.9%</div>
+  </div>
+</div>
+
+<!-- ===== PRE-MARKET NEWS ===== -->
+<div class="section-title">盤前重大消息（AH）</div>
+<div class="news-timeline">
+  <div class="news-item">
+    <span class="news-tag earnings">AMD AH</span>
+    <span>AMD Q1 2026 業績大幅超預期，盤後 +13%：EPS $1.37（預期 $1.29）、Revenue $10.25B（+38% YoY）、Data Center +57% 至 $5.8B。AI 晶片超週期確認。</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag earnings">SMCI AH</span>
+    <span>Super Micro Computer 盤後 +18%：Q4 指引 $11–12.5B，Revenue YoY +123%，AI 伺服器訂單強勁。全年指引升至 $38.9–40.4B。</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag energy">IRAN 進展</span>
+    <span>US-Iran 和平備忘錄接近完成——Trump 暫停 Project Freedom，巴基斯坦調解。WTI 期油預期進一步下行，Hormuz 溢價加速出清。</span>
+  </div>
+  <div class="news-item">
+    <span class="news-tag macro">中國金融</span>
+    <span>中國要求銀行暫停向美制裁煉油商提供新貸款（Bloomberg）——中美金融脫鉤局部信號。</span>
+  </div>
+</div>
+
+<!-- ===== SCENARIOS (carried from 5/5 post-market) ===== -->
+<div class="section-title">今日情境框架（沿用 5/5 盤後 Section 6）</div>
+<table class="scenario-table">
+  <thead>
+    <tr><th>情境</th><th>概率</th><th>觸發條件</th><th>SPY 目標</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>🚀 Bull++</td>
+      <td>12%</td>
+      <td>Hormuz 正式停火 + WTI &lt; $98 + Gold 回落</td>
+      <td>SPY +0.8%+</td>
+    </tr>
+    <tr>
+      <td>🟢 Bull</td>
+      <td>28%</td>
+      <td>WTI 守 $100–$104 + 無新地緣事件</td>
+      <td>SPY +0.3–0.5%</td>
+    </tr>
+    <tr>
+      <td>🟡 Base</td>
+      <td>40%</td>
+      <td>WTI $100–$105 震盪 + Fed 官員中性</td>
+      <td>SPY ±0.3%（722–728）</td>
+    </tr>
+    <tr>
+      <td>🔴 Bear</td>
+      <td>15%</td>
+      <td>Hormuz 升級反彈 + WTI $106+</td>
+      <td>SPY −0.5%</td>
+    </tr>
+    <tr>
+      <td>🚨 Bear--</td>
+      <td>5%</td>
+      <td>WTI &gt; $108 外交破裂 + VIX &gt; 20</td>
+      <td>SPY −1.2%</td>
+    </tr>
+  </tbody>
+</table>
+<p style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--neutral);margin-bottom:1.5rem;">EV 估算：+0.26%（偏多）｜ AMD AH +13% 是額外正面催化劑（5/5 報告未預見）</p>
+
+<!-- ===== 5 WATCHPOINTS ===== -->
+<div class="section-title">今日 5 個觀察點</div>
+<div class="obs-list">
+  <div class="obs-item">
+    <span class="obs-num">1.</span>
+    <span><strong>WTI $100 技術關口</strong>——AH 訊號預期跌穿。若盤中守住 $100 反而是「Bull 需消化」訊號；跌破 = Hormuz 溢價出清加速。</span>
+  </div>
+  <div class="obs-item">
+    <span class="obs-num">2.</span>
+    <span><strong>AMD +13% AH 能否延續正市</strong>——AH 大升後正市通常有回吐，+5%+ 延續屬強勢。</span>
+  </div>
+  <div class="obs-item">
+    <span class="obs-num">3.</span>
+    <span><strong>Gold $4,638 走向</strong>——若繼續升 > $4,650 而 SPY 同升 = 非典型（Taleb 警示）；Gold 微落 = 正常 Risk-on。</span>
+  </div>
+  <div class="obs-item">
+    <span class="obs-num">4.</span>
+    <span><strong>VIX 跌穿 16</strong>——跌穿 16 = Bull 全面確認；反彈 19+ = 降倉訊號。</span>
+  </div>
+  <div class="obs-item">
+    <span class="obs-num">5.</span>
+    <span><strong>Mag 7 AI 全面上漲 vs 分化</strong>——XLC 5/5 弱（META/MSFT），AMD 業績能否帶動 NVDA/AI 板塊全面反彈。</span>
+  </div>
+</div>
+
+<div class="footer">
+  2026-05-06 美股盤前（補做版）· 補做：2026-05-07 HKT<br>
+  ⚠️ 本版本為 Late Reconstruction · Section 6 沿用 5/5 盤後框架 · 未反填收市後數據<br>
+  完整說明：[[2026-05-06 美股盤前日報（補做版）]]
+</div>
+
+</div>
+</body>
+</html>

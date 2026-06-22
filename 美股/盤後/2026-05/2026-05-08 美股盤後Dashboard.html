@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>2026-05-08 美股盤後 Dashboard（補做版）</title>
+<style>
+:root{--bg:#0a0a0f;--panel:#13131b;--panel-2:#1a1a24;--gold:#d4af37;--green:#16c784;--red:#ea3943;--text:#e7e7ee;--mut:#888899}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,SF Pro,system-ui,"PingFang TC","Noto Sans TC",sans-serif;padding:24px}
+h1{color:var(--gold);font-size:24px;margin-bottom:6px}
+h2{color:var(--gold);font-size:18px;margin:20px 0 12px;border-bottom:1px solid #2a2a36;padding-bottom:6px}
+.sub{color:var(--mut);margin-bottom:16px;font-size:12px}
+.banner{background:linear-gradient(90deg,#1a1a24,#252535);border-left:4px solid var(--gold);padding:12px 16px;margin:12px 0;border-radius:4px}
+.banner.alert{border-left-color:var(--red)}
+.banner.good{border-left-color:var(--green)}
+.grid{display:grid;gap:12px}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g6{grid-template-columns:repeat(6,1fr)}
+.card{background:var(--panel);border:1px solid #252535;border-radius:6px;padding:14px}
+.metric .label{color:var(--mut);font-size:11px;letter-spacing:.5px;text-transform:uppercase}
+.metric .value{font-size:22px;font-weight:600;margin-top:4px}
+.metric .delta{font-size:13px;margin-top:2px}
+.up{color:var(--green)}.down{color:var(--red)}.flat{color:var(--mut)}
+table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:6px;overflow:hidden}
+th,td{padding:8px 12px;text-align:left;border-bottom:1px solid #252535;font-size:13px}
+th{background:var(--panel-2);color:var(--gold);font-weight:600}
+tr:last-child td{border-bottom:none}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.tag.bull{background:rgba(22,199,132,.18);color:var(--green)}
+.tag.bear{background:rgba(234,57,67,.18);color:var(--red)}
+.tag.warn{background:rgba(212,175,55,.18);color:var(--gold)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:30px 0}
+.hero{background:linear-gradient(135deg,var(--panel),var(--panel-2));border:1px solid #252535;border-radius:8px;padding:18px}
+.hero .label{color:var(--mut);font-size:12px}
+.hero .value{font-size:28px;font-weight:700;margin-top:4px}
+.list li{margin:6px 0 6px 18px;color:#c8c8d4}
+ul{list-style:none}
+ul.bullet li{padding-left:14px;position:relative}
+ul.bullet li:before{content:"▸";color:var(--gold);position:absolute;left:0}
+.note{color:var(--mut);font-size:12px;margin-top:8px}
+.scenario-row{display:grid;grid-template-columns:120px 60px 1fr 100px;gap:12px;padding:8px 0;border-bottom:1px solid #252535;align-items:center}
+.scenario-row:last-child{border-bottom:none}
+.bar{height:8px;background:#252535;border-radius:4px;overflow:hidden}
+.bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#f0c850)}
+</style>
+</head>
+<body>
+<h1>2026-05-08 美股盤後日報 Dashboard <span style="font-size:14px;color:var(--mut)">（補做版）</span></h1>
+<div class="sub">Friday Post-Market | NFP +115K 低於 180-200K 共識（4.3% U-rate / +0.2% MoM AHE），市場以 dovish / soft-landing 解讀 | XLK +3.67% 史詩級科技反彈 | QQQ +2.37% vs Dow +0.02% 板塊撕裂 | 10Y 跌至 4.36% | 俄烏 3 天停火</div>
+
+<div class="banner good">🚀 <strong>SPY +0.85% / QQQ +2.37% 史詩科技反彈</strong> — XLK +3.67%，DIA 持平，板塊撕裂達 2.35pt</div>
+<div class="banner alert">⚠️ <strong>密西根 5 月初值 48.2</strong>（UMich preliminary 已公布）— 弱消費 vs 股市 risk-on liquidity divergence；final May reading 5/22 公布</div>
+<div class="banner">📅 <strong>下週錨點：5/13 CPI（最高）+ 5/15 Powell 任期到期（Warsh 待 full Senate confirmation）</strong></div>
+
+<h2>Hero Metrics（5/8 收市）</h2>
+<div class="grid g4">
+<div class="hero"><div class="label">SPY</div><div class="value">$737.62 <span class="up">+0.85%</span></div><div class="note">prev $731.43 | 5/7 close</div></div>
+<div class="hero"><div class="label">QQQ 🚀</div><div class="value">$711.23 <span class="up">+2.37%</span></div><div class="note">prev $694.73 | 科技史詩反彈</div></div>
+<div class="hero"><div class="label">DIA</div><div class="value">$496.13 <span class="flat">+0.02%</span></div><div class="note">Dow 完全停滯 | 撕裂 -2.35pt vs QQQ</div></div>
+<div class="hero"><div class="label">IWM</div><div class="value">$284.17 <span class="up">+0.74%</span></div><div class="note">小型股止跌但弱於 QQQ</div></div>
+</div>
+
+<h2>板塊熱力圖（11 板塊）</h2>
+<div class="grid g6">
+<div class="card metric"><div class="label">XLK 科技</div><div class="value up">+3.67%</div></div>
+<div class="card metric"><div class="label">XLB 物料</div><div class="value flat">+0.10%</div></div>
+<div class="card metric"><div class="label">XLC 通訊</div><div class="value flat">+0.09%</div></div>
+<div class="card metric"><div class="label">XLY 消費循環</div><div class="value flat">+0.02%</div></div>
+<div class="card metric"><div class="label">XLP 必需消費</div><div class="value down">-0.11%</div></div>
+<div class="card metric"><div class="label">XLRE 房地產</div><div class="value down">-0.18%</div></div>
+<div class="card metric"><div class="label">XLI 工業</div><div class="value down">-0.40%</div></div>
+<div class="card metric"><div class="label">XLF 金融</div><div class="value down">-0.54%</div></div>
+<div class="card metric"><div class="label">XLU 公用</div><div class="value down">-0.95%</div></div>
+<div class="card metric"><div class="label">XLV 健康</div><div class="value down">-1.08%</div></div>
+<div class="card metric"><div class="label">XLE 能源</div><div class="value down">-1.26%</div></div>
+</div>
+<div class="note">📊 11 板塊中僅 4 板塊收紅，科技以 +3.67% 一枝獨秀；俄烏停火 + 美伊降溫 → 能源 / 防衛 / 健康跑輸最深</div>
+
+<h2>風險指標 + 期權</h2>
+<div class="grid g4">
+<div class="card metric"><div class="label">VIX</div><div class="value">17.19 <span class="up">+0.64%</span></div><div class="note">週度 -6.01%</div></div>
+<div class="card metric"><div class="label">VIX 9D</div><div class="value">14.21 <span class="down">-2.40%</span></div><div class="note">短線冷卻；&lt;14 = complacency</div></div>
+<div class="card metric"><div class="label">10Y UST</div><div class="value">4.36% <span class="down">-0.64%</span></div><div class="note">NFP 後 bond rally</div></div>
+<div class="card metric"><div class="label">DXY 美元</div><div class="value">97.84 <span class="down">-0.40%</span></div><div class="note">美元走弱</div></div>
+<div class="card metric"><div class="label">WTI</div><div class="value">$94.68 <span class="down">-1.06%</span></div><div class="note">週度 -11.03% 創新低</div></div>
+<div class="card metric"><div class="label">Gold</div><div class="value">$4,723.70 <span class="down">-0.11%</span></div><div class="note">高位整固</div></div>
+<div class="card metric"><div class="label">SPY PCR</div><div class="value">1.59</div><div class="note">從 5/7 的 2.90 大幅平倉</div></div>
+<div class="card metric"><div class="label">QQQ PCR</div><div class="value">2.31</div><div class="note">高位反差 = short squeeze 條件</div></div>
+</div>
+
+<h2>5/8 重大新聞 Timeline</h2>
+<table>
+<tr><th>順序</th><th>事件</th><th>板塊影響</th><th>標記</th></tr>
+<tr><td>08:30</td><td>NFP +115K（低於 180-200K 共識）/ 失業率 4.3% / AHE +0.2% MoM 市場 dovish 解讀</td><td>SPY/QQQ 升 + 10Y 跌 + DXY 跌</td><td><span class="tag warn">雙刃</span></td></tr>
+<tr><td>全日</td><td>科技 + AI 半導體史詩反彈</td><td>XLK +3.67%</td><td><span class="tag bull">主軸</span></td></tr>
+<tr><td>盤中</td><td>Trump 宣俄烏 5/9-11 停火</td><td>XLE -1.26% / XLV -1.08%</td><td><span class="tag bull">risk-on</span></td></tr>
+<tr><td>盤中</td><td>密西根 5 月初值 48.2（UMich preliminary 已公布）</td><td>弱消費 vs risk-on divergence</td><td><span class="tag bear">隱藏</span></td></tr>
+<tr><td>盤中</td><td>Burry 重提 AI 1999 泡沫</td><td>名人警示</td><td><span class="tag bear">尾風險</span></td></tr>
+<tr><td>盤中</td><td>WTI 週度 -11% 創新低</td><td>能源股負面 / 通脹敘事退潮</td><td><span class="tag warn">雙刃</span></td></tr>
+</table>
+
+<h2>宏觀指標</h2>
+<div class="grid g4">
+<div class="card metric"><div class="label">Regime Score</div><div class="value">59.8</div><div class="note">Transition Zone（從 62.4 下移）</div></div>
+<div class="card metric"><div class="label">Breadth</div><div class="value">33.1</div><div class="note">Weakening 不變；廣度仍弱</div></div>
+<div class="card metric"><div class="label">Yield Curve 2s10s</div><div class="value">+0.49</div><div class="note">正常陡峭</div></div>
+<div class="card metric"><div class="label">10Y-3M</div><div class="value">+0.72</div><div class="note">正常</div></div>
+</div>
+
+<div class="divider"></div>
+
+<h2>預測追蹤（5/7 盤後 → 5/8 收市）</h2>
+<table>
+<tr><th>預測項目</th><th>預測</th><th>實際</th><th>評分</th></tr>
+<tr><td>NFP 180-200K + 美伊降溫 + WTI&lt;$93 = Bull++（8%）</td><td>SPY +0.8%+</td><td>SPY +0.85%（命中幅度，但 NFP 實際 +115K 低於共識，機制相反）</td><td><span class="tag warn">⚠️→✅</span></td></tr>
+<tr><td>Dow 50,000 重奪</td><td>DIA &gt;500</td><td>DIA 496.13（未重奪）</td><td><span class="tag bear">❌</span></td></tr>
+<tr><td>QQQ 續強</td><td>QQQ 跑贏</td><td>QQQ +2.37% 史詩反彈</td><td><span class="tag bull">✅✅</span></td></tr>
+<tr><td>IWM 是否止跌</td><td>止跌 = risk-on 改善</td><td>IWM +0.74%（止跌但弱）</td><td><span class="tag bull">✅</span></td></tr>
+<tr><td>SPY P/C 是否回落</td><td>對沖平倉支持反彈</td><td>PCR 從 2.90 → 1.59</td><td><span class="tag bull">✅</span></td></tr>
+</table>
+<div class="note">💡 大偏差根源：模型假設 NFP 落 180-200K = Bull++ goldilocks；實際 NFP +115K 低於共識，但市場以 dovish surprise / 降息預期 加速 解讀，bond rally + DXY 跌 推動 XLK +3.67% 反彈。Bull++ 實現但機制相反。</div>
+
+<h2>投資委員會辯論結果</h2>
+<table>
+<tr><th>角色</th><th>立場</th><th>信心</th><th>核心論點</th></tr>
+<tr><td>Growth / AI Bull</td><td><span class="tag bull">看多</span></td><td>8/10</td><td>XLK +3.67% trend 確認；AI 主線重新點火</td></tr>
+<tr><td>Macro / Fed Watcher</td><td><span class="tag warn">觀望偏多</span></td><td>7/10</td><td>NFP +115K 低於共識 + 10Y 跌 = soft-landing / dovish pricing</td></tr>
+<tr><td>Energy / Geopolitical</td><td><span class="tag warn">中性</span></td><td>6/10</td><td>俄烏停火 + 美伊降溫雙催化</td></tr>
+<tr><td>Risk / Taleb</td><td><span class="tag bear">看空（隱藏）</span></td><td>7/10</td><td>密西根 5 月初值 48.2 確認家庭壓力 + 板塊撕裂 = 弱消費 vs risk-on divergence</td></tr>
+<tr><td>Breadth / Marks</td><td><span class="tag bear">觀望偏空</span></td><td>6/10</td><td>集中度極端，廣度未改善</td></tr>
+<tr><td>WSB Retail</td><td><span class="tag bull">看多</span></td><td>9/10</td><td>NVDA / AMD short squeeze</td></tr>
+<tr><td>Soros Reflexivity</td><td><span class="tag bear">看空</span></td><td>7/10</td><td>Burry / Shilling 警告 = 反身性循環啟動</td></tr>
+</table>
+<div class="banner">投票：看多 3 / 看空 2 / 觀望 4 ｜ 加權 +0.4 ｜ 信心 6.8/10 ｜ Risk Veto：不擴大 high beta / small cap</div>
+
+<h2>下週一 5/11 情境框架</h2>
+<div class="card">
+<div class="scenario-row"><span class="tag bull">🚀 Bull++</span><span>12%</span><span>俄烏停火延長 + WTI 破 $90 + 科技續強 → SPY +0.5%+</span><div class="bar"><span style="width:12%"></span></div></div>
+<div class="scenario-row"><span class="tag bull">🟢 Bull</span><span>28%</span><span>5/8 漲幅持續消化 + 10Y 續跌 → SPY +0.1-0.4%</span><div class="bar"><span style="width:28%"></span></div></div>
+<div class="scenario-row"><span class="tag warn">🟡 Base</span><span>35%</span><span>整固 + 等 5/13 CPI + 板塊輪動 → SPY ±0.3%</span><div class="bar"><span style="width:35%"></span></div></div>
+<div class="scenario-row"><span class="tag bear">🔴 Bear</span><span>20%</span><span>急漲後獲利回吐 + Burry 警示發酵 → SPY -0.3-0.7%</span><div class="bar"><span style="width:20%"></span></div></div>
+<div class="scenario-row"><span class="tag bear">🚨 Bear--</span><span>5%</span><span>俄烏停火崩潰 + 消費信心訊號 amplify → SPY -1%+</span><div class="bar"><span style="width:5%"></span></div></div>
+</div>
+<div class="banner">EV 估算：約 -0.05%（5/8 急漲後 1-2 日大概率整固，CPI 5/13 是真正的下一個錨點）</div>
+
+<h2>下週 5 個觀察點</h2>
+<ul class="bullet">
+<li><strong>QQQ 是否站穩 710</strong>：5/8 收 711.23；&gt;715 = trend 確認；&lt;705 = 一日 short squeeze</li>
+<li><strong>10Y 是否續跌</strong>：5/8 收 4.36%；&lt;4.30% = goldilocks 鞏固；&gt;4.45% = hawkish 重來</li>
+<li><strong>板塊廣度是否改善</strong>：8/11 板塊負回報；XLF/XLI/XLY 跟漲 = rally quality 提升</li>
+<li><strong>VIX 9D 是否破 14</strong>：5/8 收 14.21；&lt;14 = complacency；&gt;16 = 反彈虛火</li>
+<li><strong>俄烏停火進展</strong>：5/9-11 停火期；違反 = 防衛 / 能源股回歸</li>
+</ul>
+
+<div class="divider"></div>
+<div class="note">報告生成：2026-05-09（補做）｜ 數據截止：2026-05-08 收市 ｜ 數據源：yfinance, FMP, FRED, Gemini Search</div>
+</body>
+</html>
