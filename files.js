@@ -337,6 +337,7 @@ const FILES = {
     {"name":"2026-06-01 港股盤前Dashboard.html","path":"港股/盤前/2026-06/2026-06-01 港股盤前Dashboard.html","dir":"港股/盤前/2026-06","month":"2026-06"},
   ],
   "🇭🇰 港股盤後": [
+    {"name":"2026-06-26 港股盤後Dashboard.html","path":"港股/盤後/2026-06-26 港股盤後Dashboard.html","dir":"港股/盤後"},
     {"name":"2026-06-25 港股盤後Dashboard.html","path":"港股/盤後/2026-06-25 港股盤後Dashboard.html","dir":"港股/盤後"},
     {"name":"2026-06-24 港股盤後Dashboard.html","path":"港股/盤後/2026-06-24 港股盤後Dashboard.html","dir":"港股/盤後"},
     {"name":"2026-06-23 港股盤後Dashboard.html","path":"港股/盤後/2026-06-23 港股盤後Dashboard.html","dir":"港股/盤後"},
