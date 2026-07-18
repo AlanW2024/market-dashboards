@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-06-17 港股盤後 Slim Dashboard</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161b22;--border:#2d333b;--text:#e6edf3;--muted:#8b949e;--gold:#d4af37;--red:#f85149;--green:#3fb950;--amber:#d29922}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,"PingFang HK","Segoe UI",sans-serif;line-height:1.55;padding:28px 18px;max-width:920px;margin:0 auto}
+  h1{font-size:1.5rem;font-weight:700;letter-spacing:.5px}
+  .sub{color:var(--muted);font-size:.85rem;margin:6px 0 4px}
+  .tag{display:inline-block;background:rgba(212,175,55,.12);color:var(--gold);border:1px solid rgba(212,175,55,.35);border-radius:5px;padding:2px 9px;font-size:.72rem;margin-right:6px}
+  .gold-divider{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:22px 0;border:0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+  .metric{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px}
+  .metric .label{color:var(--muted);font-size:.75rem}
+  .metric .val{font-size:1.35rem;font-weight:700;margin-top:3px}
+  .metric .chg{font-size:.85rem;font-weight:600;margin-top:2px}
+  .down{color:var(--red)} .up{color:var(--green)} .warn{color:var(--amber)} .muted{color:var(--muted)}
+  h2{font-size:1.05rem;margin:8px 0 10px;color:var(--gold)}
+  table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;font-size:.86rem}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:rgba(255,255,255,.03);color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.5px}
+  tr:last-child td{border-bottom:0}
+  .prob{text-align:right;font-weight:700;color:var(--gold)}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;font-size:.9rem}
+  .panel li{margin:5px 0 5px 18px}
+  .fix-note{background:rgba(210,153,34,.08);border:1px solid rgba(210,153,34,.35);border-radius:8px;padding:10px 14px;font-size:.84rem;margin:14px 0}
+  .rules{background:rgba(212,175,55,.07);border:1px solid rgba(212,175,55,.3);border-radius:10px;padding:14px;font-size:.85rem}
+  .rules .marker{color:var(--gold);font-weight:700;font-size:.92rem;margin-bottom:8px}
+  .ev td:last-child{text-align:center}
+  .foot{color:var(--muted);font-size:.74rem;margin-top:24px;border-top:1px solid var(--border);padding-top:12px}
+</style>
+</head>
+<body>
+  <h1>港股盤後 · Slim Daily Prediction</h1>
+  <div class="sub">2026-06-17（星期三）· 16:07 HKT 生成（收市後）· 對證今早 6/17 盤前 + 預測明日 6/18（FOMC 後反應日）· 6/18 補回北水終值</div>
+  <div style="margin-top:8px"><span class="tag">SLIM MODE</span><span class="tag">pre-FOMC de-risk</span><span class="tag">FOMC 決議夜</span><span class="tag">R1–R6 ✓Evidence</span></div>
+
+  <div class="fix-note">⚠️ <strong>數據修正</strong>：prev_close 用正確 <strong>6/16 收 24,493.95</strong>（yfinance + 路透/BBN 確認），非 6/16 報告誤記之 24,447.79（差 46 點 / 0.19%）。6/16 報告 + scorecard 同一錯誤已於用戶批准後一併更正。</div>
+
+  <hr class="gold-divider">
+  <h2>① Market State（6/17 收市）</h2>
+  <div class="grid">
+    <div class="metric"><div class="label">恒生指數（收）</div><div class="val">24,312.16</div><div class="chg down">-0.74%（對 6/16 24,493.95）</div></div>
+    <div class="metric"><div class="label">國企指數</div><div class="val">8,132.32</div><div class="chg down">-1.31%</div></div>
+    <div class="metric"><div class="label">工商銀行 / 小米</div><div class="val">-2.23% / -1.48%</div><div class="chg down">銀行領跌 de-risk</div></div>
+    <div class="metric"><div class="label">A股 ETF（滬深300）</div><div class="val">+1.40%</div><div class="chg up">逆升抗跌</div></div>
+    <div class="metric"><div class="label">北水</div><div class="val down">-32.22億</div><div class="chg down">滬 -10.37 / 深 -21.85</div></div>
+    <div class="metric"><div class="label">今晚焦點</div><div class="val">FOMC 決議</div><div class="chg warn">6/18 02:00 拆</div></div>
+  </div>
+  <div class="panel">HK 6/17 = pre-FOMC <strong>防守性減倉日</strong>，恒指 -0.74% 溫和回落。<strong>銀行（工行 -2.23%）+ 小米領跌、平台股抗跌（騰訊 -0.22% / 阿里 -0.19%）、A股逆升（+1.4%）</strong>；南向最終淨賣出 32.22 億，確認資金面係減風險，而唔係回流撐市。明日 6/18 = <strong class="warn">FOMC 決議後第一個反應日</strong>（HK 開市已知結果，或大幅 gap），方向取決於 dot plot / Warsh 首場 presser 語調。</div>
+
+  <hr class="gold-divider">
+  <h2>② Predictions（明日 6/18 留意）</h2>
+  <table><thead><tr><th>項目</th><th>預測</th><th class="prob">機率</th><th>觸發</th></tr></thead><tbody>
+    <tr><td>Index 恒指</td><td><strong>FOMC 後反應日、波動放大</strong>，收 <strong>23,825–24,745</strong>（±1.9%，環繞 ~24,285）；方向待今晚決議</td><td class="prob">50% 收紅</td><td>dovish hold / dot 不上移→上沿；鷹派 dot / Warsh hawkish→下沿</td></tr>
+    <tr><td>Sector/Theme<br><span class="warn" style="font-size:.75rem">🔻 R4 跨市場低信心</span></td><td>唔落 sub-call，只跟指數；留意平台股 vs 銀行輪動</td><td class="prob">—</td><td>FOMC 後利率反應 + 6/18 即日北水是否扭轉</td></tr>
+    <tr><td><span class="down">Tail 熊尾</span></td><td>鷹派 FOMC + 美科技去槓桿擴散 → 恒指 -1.9%+（23,825 下破）</td><td class="prob">18%</td><td>6/17 北水已流出；若 6/18 續流出則加強</td></tr>
+    <tr><td><span class="up">Tail 牛尾</span></td><td>dovish hold + 油低反通脹 + 北水由流出轉回流 → 恒指 +1.9%+（24,745+）</td><td class="prob">17%</td><td>美期回穩 + 6/18 南向重新淨買入</td></tr>
+  </tbody></table>
+
+  <hr class="gold-divider">
+  <h2>③ Position Implication</h2>
+  <div class="panel"><em style="color:var(--muted)">Placeholder 持倉（GLD/SHY）</em><ul>
+    <li><strong>Exposure：</strong>明日 HK 開市已知 FOMC 結果（或大幅 gap）→ 今晚 / 開市前唔盲開新方向重注。</li>
+    <li><strong>Veto：</strong>唔賭 FOMC 方向；美科技去槓桿未完，唔追港股平台股博 FOMC 反彈（R4）。</li>
+    <li><strong>北水補數：</strong>最終淨賣出 32.22 億，支持 pre-FOMC de-risk 判讀；不支持提高 exposure。</li>
+    <li><strong>Watch：</strong>恒指 <span class="down">23,825</span> / 24,312（今收）/ 24,494（6/16 收·缺口）/ <span class="warn">24,745</span>。</li>
+    <li><strong>No-trade：</strong>FOMC（今晚 02:00）+ HK 開市消化前，唔重注。</li>
+  </ul></div>
+
+  <hr class="gold-divider">
+  <h2>④ Rules Applied + Rule Evidence</h2>
+  <div class="rules"><div class="marker">📋 應用預測規矩：R1、R2、R3、R4、R5、R6</div>
+    <table class="ev" style="margin-top:6px"><thead><tr><th>Rule</th><th>Threshold</th><th>Applied</th><th>✓</th></tr></thead><tbody>
+      <tr><td>R1 區間半寬</td><td>±1.04%</td><td>±1.90%（FOMC 後反應日放闊）</td><td class="up">✅</td></tr>
+      <tr><td>R2 最低尾部</td><td>≥15%</td><td>熊 18% / 牛 17%</td><td class="up">✅</td></tr>
+      <tr><td>R3 spillover</td><td>&gt;1%→×1.3</td><td>美 6/16 -0.48%（&lt;1%）→ ×1.0；真 driver = 今晚 FOMC（data_lag）</td><td class="up">✅</td></tr>
+      <tr><td>R4 板塊類型</td><td>cross⇒no-subcall</td><td>cross-market（US FOMC→HK）；sub-call: none</td><td class="up">✅</td></tr>
+      <tr><td>R5 機構源</td><td>≥0.7</td><td>FOMC 機構源充足（Fed 官方 / Reuters）</td><td class="up">✅</td></tr>
+      <tr><td>R6 data_lag</td><td>已標記</td><td>北水 6/17 終值已於 6/18 補回；報告生成時 FOMC 結果仍未知</td><td class="up">✅</td></tr>
+    </tbody></table>
+  </div>
+
+  <hr class="gold-divider">
+  <h2>⑤ Score Tomorrow — 今日 6/17 morning call 對證</h2>
+  <table><thead><tr><th>預測</th><th>實際</th><th>分數</th><th>Error Type</th><th>Lesson</th></tr></thead><tbody>
+    <tr><td>恒指 24,000–24,900（~24,450）、pre-FOMC 窄幅、48% 收紅</td><td>收 24,312.16（-0.74%）</td><td class="up">✅</td><td>—</td><td>區間 + 窄幅 thesis 命中；但寬帶 + coin-flip = 低資訊量，未捕捉銀行領跌 de-risk（工行 -2.23%）</td></tr>
+    <tr><td>Sector 🔍 R4 唔落 sub-call</td><td>銀行領跌 / A股抗跌</td><td class="muted">🔍</td><td>no_clear_prediction</td><td>主動棄 sub-call，剔出分母</td></tr>
+    <tr><td>熊尾 24,000 下破（18%）</td><td>24,312，未觸發</td><td class="up">✅</td><td>—</td><td>-1.8% 尾部正確設低概率</td></tr>
+    <tr><td>牛尾 24,900+（15%）</td><td>24,312，未觸發</td><td class="up">✅</td><td>—</td><td>上行尾部正確設低概率</td></tr>
+  </tbody></table>
+  <div class="panel" style="margin-top:12px"><strong>Verdict</strong>：3/3 計分項命中（1 項 🔍 剔除）= 100%，但屬寬帶易中。北水補數後，南向淨賣出 32.22 億確認「防守性 de-risk」而非回流撐市。下次 pre-FOMC HK 應收窄區間 + 加「決議前溫和偏下」先驗。明日 6/18 收市由 6/18 港股盤後回填。</div>
+  <div class="foot">數據：fetch_all.py（yfinance / hkex_connect / regime 等）+ 6/16 收市 web cross-check（路透/BBN）。Slim · market-analyst skill v2.0（可驗證 Rule Evidence gate 生效）。</div>
+</body>
+</html>

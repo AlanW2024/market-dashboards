@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-07-08 美股盤後 市場快訊 Dashboard（bulletin-v1）</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161b22;--border:#2d333b;--text:#e6edf3;--muted:#8b949e;--gold:#d4af37;--red:#f85149;--green:#3fb950;--amber:#d29922}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,"PingFang HK","Segoe UI",sans-serif;line-height:1.55;padding:28px 18px;max-width:920px;margin:0 auto}
+  h1{font-size:1.5rem;font-weight:700;letter-spacing:.5px}
+  .sub{color:var(--muted);font-size:.85rem;margin:6px 0 4px}
+  .tag{display:inline-block;background:rgba(212,175,55,.12);color:var(--gold);border:1px solid rgba(212,175,55,.35);border-radius:5px;padding:2px 9px;font-size:.72rem;margin-right:6px}
+  .gold-divider{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:22px 0;border:0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+  .metric{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px}
+  .metric .label{color:var(--muted);font-size:.75rem}
+  .metric .val{font-size:1.35rem;font-weight:700;margin-top:3px}
+  .metric .chg{font-size:.85rem;font-weight:600;margin-top:2px}
+  .down{color:var(--red)} .up{color:var(--green)} .warn{color:var(--amber)} .muted{color:var(--muted)}
+  h2{font-size:1.05rem;margin:8px 0 10px;color:var(--gold)}
+  table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;font-size:.86rem}
+  th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+  th{background:rgba(255,255,255,.03);color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.5px}
+  tr:last-child td{border-bottom:0}
+  .prob{text-align:right;font-weight:700;color:var(--gold)}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px;font-size:.9rem}
+  .panel li{margin:5px 0 5px 18px}
+  .key-note{background:rgba(210,153,34,.1);border:1px solid rgba(210,153,34,.4);border-radius:8px;padding:10px 14px;font-size:.84rem;margin:14px 0}
+  .bug-note{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.4);border-radius:8px;padding:10px 14px;font-size:.82rem;margin:14px 0}
+  .rules{background:rgba(212,175,55,.07);border:1px solid rgba(212,175,55,.3);border-radius:10px;padding:14px;font-size:.85rem}
+  .rules .marker{color:var(--gold);font-weight:700;font-size:.92rem;margin-bottom:8px}
+  .ev td:last-child{text-align:center}
+  .score{display:inline-block;background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.4);border-radius:6px;padding:2px 10px;font-weight:700}
+  .meta{background:rgba(139,148,158,.08);border:1px dashed var(--muted);border-radius:10px;padding:14px;font-size:.83rem;margin-top:20px}
+  .foot{color:var(--muted);font-size:.74rem;margin-top:24px;border-top:1px solid var(--border);padding-top:12px}
+</style>
+</head>
+<body>
+  <h1>美股盤後 · 市場快訊（bulletin-v1）</h1>
+  <div class="sub">2026-07-08（星期三）收市 · 中東局勢驅動溫和 risk-off，能源股跑贏</div>
+  <div style="margin-top:8px"><span class="tag">bulletin-v1</span><span class="tag">收市 settle 已核實</span><span class="tag">今日對證 3.0/3=100%</span></div>
+
+  <div class="bug-note">🐛 <strong>數據修正</strong>：fetch_all.py 嘅 yfinance previousClose 欄位系統性唔可靠（8 隻 ticker 全部中招），本報告全數改用逐日收市價交叉核實 change_pct；WTI/Gold 亦改用 7/8 官方 settle，唔用凌晨即市價（已入 7/9 亞洲時段）。詳見文末。</div>
+
+  <hr class="gold-divider">
+  <h2>§A 市況（官方收市，已修正）</h2>
+  <div class="grid">
+    <div class="metric"><div class="label">SPY</div><div class="val">745.40</div><div class="chg down">-0.31% · 對 7/7 收 747.71</div></div>
+    <div class="metric"><div class="label">QQQ</div><div class="val up">711.44</div><div class="chg up">+0.28%</div></div>
+    <div class="metric"><div class="label">道指 ETF</div><div class="val down">522.77</div><div class="chg down">-1.08%</div></div>
+    <div class="metric"><div class="label">Russell 2000</div><div class="val down">293.48</div><div class="chg down">-0.91%</div></div>
+    <div class="metric"><div class="label">VIX</div><div class="val warn">16.90</div><div class="chg warn">+4.77%，較中午17.58回落</div></div>
+    <div class="metric"><div class="label">WTI（settle）</div><div class="val up">73.52</div><div class="chg up">+4.37%</div></div>
+    <div class="metric"><div class="label">黃金（settle）</div><div class="val down">4070.90</div><div class="chg down">-1.79%</div></div>
+    <div class="metric"><div class="label">10Y</div><div class="val down">4.57</div><div class="chg down">+0.88%</div></div>
+  </div>
+  <div class="panel"><strong>Regime</strong>：地緣政治/石油供應衝擊主導嘅溫和 risk-off——VIX 收市較中午回落，顯示市場已消化大部分即市恐慌；能源股（XLE +1.76%）明顯跑贏，防守大盤（道指 -1.08%）同金融股（XLF -1.93%）跑輸，符合「油價受惠 vs 利率敏感」邏輯。Reuters 收市後仍有新頭條顯示局勢未落幕。</div>
+
+  <hr class="gold-divider">
+  <h2>§B 而家最好嘅策略</h2>
+  <div class="panel">
+    <p>收市後重新檢視：規則 1、2 字面仍未命中（VIX 16.90 未到 25），但局勢仍未落幕（收市後仍有新軍事行動頭條）。</p>
+    <p style="margin-top:8px"><strong>判語不變：⛔ 唔開倉窗口（比照規則 1）</strong>，直到局勢方向明朗化。</p>
+    <p style="margin-top:8px" class="warn">⚠️ 今日再次印證規則 1 冇涵蓋地緣政治/大宗商品供應衝擊事件嘅缺口。</p>
+  </div>
+
+  <hr class="gold-divider">
+  <h2>§C 可以做乜</h2>
+  <table><thead><tr><th>Ticker</th><th>IV rank</th><th>IV</th><th>Expected Move</th><th>下個 earnings</th><th>註</th></tr></thead><tbody>
+    <tr><td>TSLA</td><td class="warn">100（不穩）</td><td>49.95%</td><td>12.55%</td><td>2026-07-23</td><td class="warn">50↔100 再跳，數字唔可信</td></tr>
+    <tr><td>MSFT</td><td>100</td><td>42.07%</td><td>10.57%</td><td>2026-07-30</td><td>校準中(2日)</td></tr>
+    <tr><td>NVDA</td><td>50</td><td>42.15%</td><td>10.59%</td><td>2026-08-27</td><td>校準中(2日)</td></tr>
+    <tr><td>SPY</td><td>50</td><td>14.17%</td><td>3.56%</td><td>—</td><td>校準中(2日)</td></tr>
+    <tr><td>META</td><td>50</td><td>48.12%</td><td>12.09%</td><td>2026-07-30</td><td>校準中(2日)</td></tr>
+    <tr><td>QQQ</td><td class="warn">0（不穩）</td><td>25.39%</td><td>6.38%</td><td>—</td><td class="warn">中午讀 50，而家 0</td></tr>
+    <tr><td>AAPL</td><td class="warn">0（不穩）</td><td>27.50%</td><td>6.91%</td><td>2026-07-31</td><td class="warn">同上不穩定</td></tr>
+  </tbody></table>
+  <div class="panel" style="margin-top:14px"><ul>
+    <li><strong>本週唔適合開倉日：</strong>今日（7/8）——事件仍未落幕。</li>
+    <li><strong>今日結論（收市覆核）：</strong>唔開新倉依然正確——局勢未落幕、IV rank 再度大幅跳動仍不可信。</li>
+  </ul></div>
+
+  <hr class="gold-divider">
+  <h2>§D 預測與對證</h2>
+
+  <div class="panel" style="margin-bottom:14px"><strong>今日對證（7/8 盤前 → 盤後）：<span class="score">3.0 / 3 = 100%</span></strong>（1 項 🔍 Sector 剔出分母）</div>
+  <table><thead><tr><th>#</th><th>預測</th><th>實際</th><th>分數</th><th>Lesson</th></tr></thead><tbody>
+    <tr><td>1</td><td>SPY 734–753，~40% 收紅</td><td>745.40（-0.31%，區間中段偏上、收跌）</td><td class="up">✅</td><td>Range+lean 雙命中</td></tr>
+    <tr><td>2</td><td>🔍 能源受惠 vs 防守/細價股受壓</td><td>XLE +1.76% 確認；但道指跌得比 Russell 深，同觀察略有出入</td><td class="warn">🔍</td><td>能源方向啱，細節有出入，觀察非預測不評分</td></tr>
+    <tr><td>3</td><td>熊尾 失守734（20%）</td><td>未觸及</td><td class="up">✅</td><td>機率合理</td></tr>
+    <tr><td>4</td><td>牛尾 升穿753（14%）</td><td>未觸及</td><td class="up">✅</td><td>機率合理</td></tr>
+  </tbody></table>
+
+  <h2 style="margin-top:18px">明日預測（7/9 收市）</h2>
+  <table><thead><tr><th>項目</th><th>預測</th><th class="prob">機率</th><th>觸發</th></tr></thead><tbody>
+    <tr><td>Index SPY</td><td>局勢未落幕，維持風險溢價，收 <strong>738–753</strong>（中樞 745.5）</td><td class="prob">~42% 收紅</td><td>局勢緩和/油價回落→上沿；再升級+油價續飆→下沿</td></tr>
+    <tr><td>Sector<br><span class="warn" style="font-size:.75rem">🔍 無模組</span></td><td>觀察：能源能否延續強勢、防守/科技邊個更快消化風險</td><td class="prob">—</td><td>油價走勢+局勢頭條</td></tr>
+    <tr><td class="down">熊尾</td><td>海峽航運中斷/油價再+5%+/VIX>25 → SPY -2.5%+（跌穿727）</td><td class="prob">18%</td><td>航運中斷確認</td></tr>
+    <tr><td class="up">牛尾</td><td>停火/斡旋消息+油價回落 → SPY +2.0%+（升穿760）</td><td class="prob">15%</td><td>停火消息</td></tr>
+  </tbody></table>
+
+  <hr class="gold-divider">
+  <div class="rules"><div class="marker">📋 Rule Evidence</div>
+    <table class="ev" style="margin-top:6px"><thead><tr><th>Rule</th><th>Threshold</th><th>Applied</th><th>✓</th></tr></thead><tbody>
+      <tr><td>R1</td><td>±0.62%</td><td>±1.00%（738–753）</td><td class="up">✅</td></tr>
+      <tr><td>R2</td><td>≥12%</td><td>熊18% / 牛15%</td><td class="up">✅</td></tr>
+      <tr><td>R3</td><td>N/A</td><td>N/A</td><td class="muted">—</td></tr>
+      <tr><td>R4</td><td>cross⇒no-subcall</td><td>same-market；無模組</td><td class="up">✅</td></tr>
+      <tr><td>R5</td><td>≥0.7</td><td>yfinance收市+finnhub/Reuters交叉核實</td><td class="up">✅</td></tr>
+      <tr><td>R6</td><td>已標記</td><td>局勢未定/IV rank校準中</td><td class="up">✅</td></tr>
+    </tbody></table>
+  </div>
+
+  <div class="meta">
+    <strong>📋 試新格式心得（續）</strong>
+    <ol style="margin:8px 0 0 18px">
+      <li><code>yfinance_fetch.py</code> 嘅 <code>fast_info.previousClose</code> 系統性唔可靠——SPY/QQQ/DIA/IWM/XLE/XLK/XLF/XLI 全部同真實逐日收市價唔符，令 change_pct 全錯（SPY fetch報-0.1%，真實-0.31%）。建議改用 <code>hist["Close"].iloc[-2]</code>。</li>
+      <li>WTI/Gold 呢類 24 小時資產喺凌晨 ET 跑「盤後」fetch 會攞到已經進入 7/9 亞洲時段嘅即市價，唔係 7/8 官方 settle——差距 WTI 4.4%、Gold 0.04%。已手動改用 settle bar。</li>
+      <li>IV rank N=2 不穩定再次驗證：TSLA 50↔100 再跳，QQQ/AAPL 由中午 50 跳到而家 0。</li>
+    </ol>
+  </div>
+
+  <div class="foot">數據：fetch_all.py（slim profile）+ yfinance history() 逐日收市交叉核實 + finnhub/Reuters 新聞。市場快訊 bulletin-v1 · market-analyst skill v2.0。</div>
+</body>
+</html>
