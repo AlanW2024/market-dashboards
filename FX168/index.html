@@ -601,11 +601,14 @@ function showModal(i){
     html += `<div style="margin-bottom:8px"><span class="label">DISSENT SIGNALS</span>${dissent.map(d=>`<div style="color:var(--yellow);margin-top:2px;font-size:11px">⚠ ${escHtml(d)}</div>`).join('')}</div>`;
   }
   if(a.source_weight!=null){
-    const w = Number(a.source_weight);
+    const w = Number(a.source_quality ?? a.source_weight);
     const wColor = w>=0.7?'var(--green)':w<=0.3?'var(--red)':'var(--amber)';
     html += `<div style="margin-top:10px;border-top:1px dashed var(--border);padding-top:8px;font-size:10px">
-      <span class="label">SOURCE WEIGHT:</span>
+      <span class="label" title="來源品質評分，並非已查證真確性；舊資料可能包含歷史權重規則">SOURCE QUALITY SCORE:</span>
       <span style="color:${wColor};font-weight:600;margin-left:6px">${w.toFixed(2)}</span>
+      <span style="margin-left:6px">${a.source_quality==null?'[LEGACY WEIGHT; QUALITY UNKNOWN]':''}</span>
+      <span style="margin-left:6px">EVIDENCE: ${a.evidence_completeness==null?'UNKNOWN':Number(a.evidence_completeness).toFixed(2)}</span>
+      ${a.is_promotional===true?'<span style="margin-left:6px">[PROMOTIONAL]</span>':''}
       ${a.is_duplicate_news?'<span style="color:var(--red);margin-left:10px">[DUPLICATE]</span>':''}
       ${a.clicks?`<span style="margin-left:10px;color:var(--text-muted)">${a.clicks} CLICKS</span>`:''}
       ${a.likes?`<span style="margin-left:10px;color:var(--text-muted)">${a.likes} LIKES</span>`:''}
